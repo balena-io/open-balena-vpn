@@ -1,5 +1,5 @@
 FROM jpetazzo/openvpn
-ADD . /etc/openvpn
+ADD ./openvpn /etc/openvpn
 
 EXPOSE 1194
 EXPOSE 11194
