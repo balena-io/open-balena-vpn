@@ -1,4 +1,4 @@
-FROM jpetazzo/openvpn
+FROM jpetazzo/openvpn:latest
 ADD ./openvpn/config /etc/openvpn
 ADD ./openvpn/entry.sh /entry.sh
 
