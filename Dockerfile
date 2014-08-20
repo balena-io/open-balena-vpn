@@ -1,6 +1,6 @@
 FROM jpetazzo/openvpn:latest
-ADD ./openvpn/config /etc/openvpn
-ADD ./openvpn/entry.sh /entry.sh
+ADD ./config /etc/openvpn
+ADD ./entry.sh /entry.sh
 
 EXPOSE 1194
 EXPOSE 11194
