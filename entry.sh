@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 #--- Pull configuration from etcd into /config/env (see config/env.*)
