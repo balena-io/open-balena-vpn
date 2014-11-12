@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-#--- Pull configuration from etcd into /config/env (see config/env.*)
+#--- Pull configuration from etcd into /etc/openvpn/env (see config/env.*)
 
 if nc -z -w 4 172.17.42.1 4001;
 then
