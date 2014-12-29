@@ -81,18 +81,20 @@ describe 'OpenVPN event hooks', ->
 			requestMock.disable()
 
 		it 'should first send a request to connect hook', ->
+			expect(@requests).to.have.property(0)
 			expect(@requests[0]).to.have.property('method').that.equals('post')
 			expect(@requests[0]).to.have.property('url').that.match(/services\/vpn\/client-connect/)
-			expect(@requests[0]).to.have.deep.property('form.uuid').that.equals(@client1.uuid)
-			expect(@requests[0]).to.have.deep.property('form.vpn_address').that.match(/^10.1.0.[0-9]+$/)
-			expect(@requests[0]).to.have.deep.property('form.remote_ip').that.equals('127.0.0.1')
+			expect(@requests[0]).to.have.deep.property('form.common_name').that.equals(@client1.uuid)
+			expect(@requests[0]).to.have.deep.property('form.virtual_address').that.match(/^10.1.0.[0-9]+$/)
+			expect(@requests[0]).to.have.deep.property('form.real_address').that.equals('127.0.0.1')
 
 		it 'and then a request to disconnect hook', ->
+			expect(@requests).to.have.property(1)
 			expect(@requests[1]).to.have.property('method').that.equals('post')
 			expect(@requests[1]).to.have.property('url').that.match(/services\/vpn\/client-disconnect/)
-			expect(@requests[1]).to.have.deep.property('form.uuid').that.equals(@client1.uuid)
-			expect(@requests[1]).to.have.deep.property('form.vpn_address').that.match(/^10.1.0.[0-9]+$/)
-			expect(@requests[1]).to.have.deep.property('form.remote_ip').that.equals('127.0.0.1')
+			expect(@requests[1]).to.have.deep.property('form.common_name').that.equals(@client1.uuid)
+			expect(@requests[1]).to.have.deep.property('form.virtual_address').that.match(/^10.1.0.[0-9]+$/)
+			expect(@requests[1]).to.have.deep.property('form.real_address').that.equals('127.0.0.1')
 
 	describe 'when a client connects and then disconnects while the service is down', ->
 		before (done) ->
