@@ -4,7 +4,7 @@
   "description": "RESTful VPN api",
   "main": "server.js",
   "scripts": {
-    "test": "docker build -t vpntest . && docker run -it --privileged -e VPN_TESTING=1 -e VPN_EVENTS_FILE=/var/run/openvpn-events.txt -e VPN_HOST=127.0.0.1 -e VPN_MANAGEMENT_PORT=11194 vpntest /app/node_modules/mocha/bin/mocha --compilers coffee:coffee-script/register --reporter spec /app/test/"
+    "test": "docker build -t vpntest . && docker run -it --privileged -e VPN_TESTING=1 vpntest /app/node_modules/mocha/bin/mocha --compilers coffee:coffee-script/register --reporter spec /app/test/"
   },
   "dependencies": {
     "block-queue": "~0.0.2",
