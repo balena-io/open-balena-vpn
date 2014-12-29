@@ -7,11 +7,11 @@ _ = require 'lodash'
 path = require 'path'
 { spawn } = require 'child_process'
 
-process.env.CA_ENDPOINT ?= 'http://ca.resindev.io:9292/1/certificate/issue/'
-process.env.CA_NAME ?= 'resin_dev'
-process.env.VPN_HOST ?= '127.0.0.1'
-process.env.VPN_PORT ?= 1194
-process.env.CA_CERT_PATH ?= '/app/test/data/ca.crt'
+CA_ENDPOINT = process.env.CA_ENDPOINT ? 'http://ca.resindev.io:9292/1/certificate/issue/'
+CA_NAME = process.env.CA_NAME ? 'resin_dev'
+VPN_HOST = process.env.VPN_HOST ? '127.0.0.1'
+VPN_PORT = process.env.VPN_PORT ? 1194
+CA_CERT_PATH = process.env.CA_CERT_PATH ? '/app/test/data/ca.crt'
 
 exports.getSignedCertificate = getSignedCertificate = (uuid, caEndpoint, caName, outputDir) ->
 	csrgen(uuid,
@@ -51,18 +51,16 @@ exports.writeVPNConfiguration = writeVPNConfiguration = (confDir, ca, cert, vpnh
 
 exports.createVPNClient = createVPNClient = (baseDir) ->
 	uuid = crypto.pseudoRandomBytes(31).toString('hex')
-	vpnhost = process.env.VPN_HOST
-	vpnport = process.env.VPN_PORT
 	confDir = "/app/test/data/#{uuid}"
 
 	fs.mkdirSync(confDir)
 
 	Promise.all( [
-		getSignedCertificate(uuid, process.env.CA_ENDPOINT, process.env.CA_NAME, confDir),
-		fs.readFileAsync(process.env.CA_CERT_PATH, 'utf8'),
+		getSignedCertificate(uuid, CA_ENDPOINT, CA_NAME, confDir),
+		fs.readFileAsync(CA_CERT_PATH, 'utf8'),
 	] )
 	.spread (cert, ca) ->
-		writeVPNConfiguration(confDir, ca, cert, vpnhost, vpnport)
+		writeVPNConfiguration(confDir, ca, cert, VPN_HOST, VPN_PORT)
 	.then ->
 		new Promise (resolve, reject) ->
 			openvpn = spawn('openvpn', [ 'client.conf' ], cwd: confDir)

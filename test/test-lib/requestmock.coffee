@@ -5,10 +5,10 @@ request = require 'request'
 # and to be able to use the default module for some requests
 # and mock for others.
 
-requestMock = {
+requestMock =
 	defaultHandler: request
 	handlers: {}
-	enable: (url, handler) -> # change handler
+	enable: (url, handler) ->
 		this.handlers[url] = handler
 	disable: ->
 		this.handlers = {}
@@ -17,7 +17,6 @@ requestMock = {
 			return this.handlers[url]
 		else
 			return this.defaultHandler
-}
 
 mockery.enable(warnOnUnregistered: false)
 mockery.registerMock 'request', (opts, cb) ->
