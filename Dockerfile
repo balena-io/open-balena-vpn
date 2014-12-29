@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM dockerfile/nodejs
 
 RUN echo 'deb http://rep.logentries.com/ trusty main' > /etc/apt/sources.list.d/logentries.list \
 	&& gpg --keyserver pgp.mit.edu --recv-keys C43C79AD && gpg -a --export C43C79AD | apt-key add - \
@@ -10,26 +10,31 @@ RUN wget -O /usr/local/bin/confd https://github.com/kelseyhightower/confd/releas
 
 RUN useradd openvpn
 RUN mkdir -p /var/log/openvpn-debug/
+RUN mkdir -p /var/run/
 RUN chown -R openvpn:openvpn /var/log/openvpn-debug/
 
 ADD ./config/env.toml /etc/confd/conf.d/env.toml
 ADD ./config/env.tmpl /etc/confd/templates/env.tmpl
 
 RUN mkdir /resin-log
-ADD resin-vpn.conf /etc/supervisor/conf.d/resin-vpn.conf
-ADD ./config /etc/openvpn
-ADD ./entry.sh /entry.sh
-ADD ./scripts/client-connect.sh /client-connect.sh
-ADD ./scripts/client-disconnect.sh /client-disconnect.sh
+RUN touch /var/run/openvpn-events.txt
+RUN chown openvpn:openvpn /var/run/openvpn-events.txt
 
-RUN chown openvpn:openvpn /connect.sh
-RUN chmod u+x /connect.sh
-RUN chown openvpn:openvpn /disconnect.sh
-RUN chmod u+x /disconnect.sh
+ADD resin-vpn.conf /etc/supervisor/conf.d/resin-vpn.conf
+ADD resin-vpn-api.conf /etc/supervisor/conf.d/resin-vpn-api.conf
+ADD ./config /etc/openvpn
+ADD . /app
+
+RUN chown openvpn:openvpn /app/scripts/client-connect.sh
+RUN chmod u+x /app/scripts/client-connect.sh
+RUN chown openvpn:openvpn /app/scripts/client-disconnect.sh
+RUN chmod u+x /app/scripts/client-disconnect.sh
 
 EXPOSE 1194
 EXPOSE 11194
+EXPOSE 80
 
 WORKDIR /etc/openvpn
-ENTRYPOINT ["/entry.sh"]
+ENTRYPOINT ["/app/entry.sh"]
+
 CMD ["tail", "-f", "/var/log/supervisor/supervisord.log"]
