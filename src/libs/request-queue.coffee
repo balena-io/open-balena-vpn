@@ -22,4 +22,4 @@ exports.requestQueue = (queueOpts = {}) ->
 		requestRetry(opts)
 		.catch (err) ->
 			console.log("Maximum attempts exceeded: ", err)
-		.then(done)
+		.nodeify(done)
