@@ -16,7 +16,7 @@ vpn = new OpenVPN(process.env.VPN_MANAGEMENT_PORT, process.env.VPN_HOST)
 app.get '/api/v1/clients/', (req, res) ->
 	vpn.getStatus()
 	.then (results) ->
-		res.status(200).send(results.client_list)
+		res.send(results.client_list)
 	.catch (error) ->
 		console.error('Error getting VPN client list', error)
 
@@ -28,16 +28,18 @@ queue = requestQueue(
 )
 
 vpnEvents.on 'client-connect', (data) ->
-	url = "#{process.env.API_ENDPOINT}/services/vpn/client-connect?apikey=#{process.env.API_KEY}"
-	method = "post"
-	form = data
-	queue.push( { url, method, form } )
+	queue.push(
+		url: "#{process.env.API_ENDPOINT}/services/vpn/client-connect?apikey=#{process.env.API_KEY}"
+		method: "post"
+		form: data
+	)
 
 vpnEvents.on 'client-disconnect', (data) ->
-	url = "#{process.env.API_ENDPOINT}/services/vpn/client-disconnect?apikey=#{process.env.API_KEY}"
-	method = "post"
-	form = data
-	queue.push( { url, method, form } )
+	queue.push(
+		url: "#{process.env.API_ENDPOINT}/services/vpn/client-disconnect?apikey=#{process.env.API_KEY}"
+		method: "post"
+		form: data
+	)
 
 vpnEvents.on 'error', (err) ->
 	console.log('Error reading openvpn events', err)

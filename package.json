@@ -4,13 +4,14 @@
   "description": "RESTful VPN api",
   "main": "server.js",
   "scripts": {
-    "test": "docker build -t vpntest . && docker run -it --privileged -e VPN_TESTING=1 vpntest /app/node_modules/mocha/bin/mocha --compilers coffee:coffee-script/register --reporter spec /app/test/"
+    "test": "docker build -t vpntest . && docker run -it --privileged -e VPN_TESTING=1 vpntest /bin/sh -c 'cd /app && npm install && ./node_modules/mocha/bin/mocha --compilers coffee:coffee-script/register --reporter spec ./test/'"
   },
   "dependencies": {
     "block-queue": "~0.0.2",
     "bluebird": "~2.4.2",
     "coffee-script": "~1.8.0",
     "event-stream": "~3.1.7",
+    "eventemitter2": "~0.4.14",
     "express": "~4.10.6",
     "lodash": "~2.4.1",
     "request": "~2.51.0",

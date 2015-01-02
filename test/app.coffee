@@ -1,6 +1,5 @@
-mocha = require 'mocha'
 request = require 'supertest'
-expect = require('chai').expect
+{ expect } = require('chai')
 Promise = require 'bluebird'
 _ = require 'lodash'
 
@@ -8,10 +7,16 @@ _ = require 'lodash'
 { requestMock } = require './test-lib/requestmock'
 
 app = require '../src/app'
-
 beforeEach ->
 	requests = []
 	@requests = requests
+
+# NOTE:
+# 	ca.resindev.io or process.env.CA_ENDPOINT must be running for tests to work.
+#
+#   The before and after hooks in most tests require that openvpn hooks work,
+#   which means that if openvpn hooks don't work, they will break the 
+#   before and after scripts of the other tests as well.
 
 describe '/api/v1/clients/', ->
 	describe 'When no clients are connected', ->
@@ -22,6 +27,9 @@ describe '/api/v1/clients/', ->
 		@timeout(10000)
 
 		before (done) ->
+			requestMock.enable "#{process.env.API_ENDPOINT}/services/vpn/client-connect", (opts, cb) =>
+				cb(null, statusCode: 200, 'OK')
+
 			Promise.all( [
 				createVPNClient(),
 				createVPNClient()
@@ -32,11 +40,15 @@ describe '/api/v1/clients/', ->
 				done()
 
 		after (done) ->
-			Promise.all( [
-				@client1.disconnect()
-				@client2.disconnect()
-			] ).delay(1000).then ->
-				done()
+			requestMock.enable "#{process.env.API_ENDPOINT}/services/vpn/client-disconnect", (opts, cb) =>
+				disconnected += 1
+				cb(null, statusCode: 200, 'OK')
+				if disconnected == 2
+					requestMock.disable()
+					done()
+			disconnected = 0
+			@client1.disconnect()
+			@client2.disconnect()
 
 		it 'should return the list of clients', (done) ->
 			request(app).get('/api/v1/clients/')
@@ -45,12 +57,12 @@ describe '/api/v1/clients/', ->
 				body = res.body
 				expect(body).to.have.property(@client1.uuid)
 				expect(body).to.have.property(@client2.uuid)
-				expect(body[@client1.uuid]).to.have.property('common_name').that.equal(@client1.uuid)
+				expect(body[@client1.uuid]).to.have.property('common_name').that.equals(@client1.uuid)
 				expect(body[@client1.uuid]).to.have.property('real_address').that.match(/^127\.0\.0\.1:[0-9]+$/)
 				expect(body[@client1.uuid]).to.have.property('virtual_address').that.match(/^10\.1\.0\.[0-9]+$/)
 				expect(body[@client1.uuid]).to.have.property('connected_since')
 				expect(body[@client1.uuid]).to.have.property('connected_since_t')
-				expect(body[@client2.uuid]).to.have.property('common_name').that.equal(@client2.uuid)
+				expect(body[@client2.uuid]).to.have.property('common_name').that.equals(@client2.uuid)
 				expect(body[@client2.uuid]).to.have.property('real_address').that.match(/^127\.0\.0\.1:[0-9]+$/)
 				expect(body[@client2.uuid]).to.have.property('virtual_address').that.match(/^10\.1\.0\.[0-9]+$/)
 				expect(body[@client2.uuid]).to.have.property('connected_since')
@@ -75,13 +87,15 @@ describe 'OpenVPN event hooks', ->
 			.then (client) =>
 				@client1 = client
 				@client1.disconnect()
+			.delay(1000)
 			.then ->
 				done()
+
 		after ->
 			requestMock.disable()
 
 		it 'should first send a request to connect hook', ->
-			expect(@requests).to.have.property(0)
+			expect(@requests.length).to.be.above(0)
 			expect(@requests[0]).to.have.property('method').that.equals('post')
 			expect(@requests[0]).to.have.property('url').that.match(/services\/vpn\/client-connect/)
 			expect(@requests[0]).to.have.deep.property('form.common_name').that.equals(@client1.uuid)
@@ -89,7 +103,7 @@ describe 'OpenVPN event hooks', ->
 			expect(@requests[0]).to.have.deep.property('form.real_address').that.equals('127.0.0.1')
 
 		it 'and then a request to disconnect hook', ->
-			expect(@requests).to.have.property(1)
+			expect(@requests.length).to.be.equal(2)
 			expect(@requests[1]).to.have.property('method').that.equals('post')
 			expect(@requests[1]).to.have.property('url').that.match(/services\/vpn\/client-disconnect/)
 			expect(@requests[1]).to.have.deep.property('form.common_name').that.equals(@client1.uuid)

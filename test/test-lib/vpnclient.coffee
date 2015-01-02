@@ -53,12 +53,11 @@ exports.createVPNClient = createVPNClient = (baseDir) ->
 	uuid = crypto.pseudoRandomBytes(31).toString('hex')
 	confDir = "/app/test/data/#{uuid}"
 
-	fs.mkdirSync(confDir)
-
-	Promise.all( [
-		getSignedCertificate(uuid, CA_ENDPOINT, CA_NAME, confDir),
-		fs.readFileAsync(CA_CERT_PATH, 'utf8'),
-	] )
+	fs.mkdirAsync(confDir)
+	.then ->
+		cert = getSignedCertificate(uuid, CA_ENDPOINT, CA_NAME, confDir)
+		ca = fs.readFileAsync(CA_CERT_PATH, 'utf8')
+		return [ cert, ca ]
 	.spread (cert, ca) ->
 		writeVPNConfiguration(confDir, ca, cert, VPN_HOST, VPN_PORT)
 	.then ->

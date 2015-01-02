@@ -9,14 +9,14 @@ requestMock =
 	defaultHandler: request
 	handlers: {}
 	enable: (url, handler) ->
-		this.handlers[url] = handler
+		@handlers[url] = handler
 	disable: ->
-		this.handlers = {}
+		@handlers = {}
 	getHandler: (url) ->
-		if url of this.handlers
-			return this.handlers[url]
+		if url of @handlers
+			return @handlers[url]
 		else
-			return this.defaultHandler
+			return @defaultHandler
 
 mockery.enable(warnOnUnregistered: false)
 mockery.registerMock 'request', (opts, cb) ->

@@ -25,6 +25,9 @@ ADD resin-vpn-api.conf /etc/supervisor/conf.d/resin-vpn-api.conf
 ADD ./config /etc/openvpn
 ADD . /app
 
+WORKDIR /app
+RUN npm install --production && npm cache clean
+
 RUN chown openvpn:openvpn /app/scripts/client-connect.sh
 RUN chmod u+x /app/scripts/client-connect.sh
 RUN chown openvpn:openvpn /app/scripts/client-disconnect.sh

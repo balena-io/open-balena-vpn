@@ -1,8 +1,8 @@
-{ EventEmitter } = require 'events'
+{ EventEmitter2 } = require 'eventemitter2'
 { Tail } = require 'tail'
 
 # Export an EventEmitter that emits events from OpenVPN server.
-module.exports = exports = events = new EventEmitter()
+module.exports = exports = events = new EventEmitter2()
 
 if not process.env.VPN_EVENTS_FILE?
 	console.log('VPN_EVENTS_FILE env variable is not set')
