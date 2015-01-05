@@ -7,9 +7,6 @@ _ = require 'lodash'
 { requestMock } = require './test-lib/requestmock'
 
 app = require '../src/app'
-beforeEach ->
-	requests = []
-	@requests = requests
 
 # NOTE:
 # 	ca.resindev.io or process.env.CA_ENDPOINT must be running for tests to work.
@@ -17,6 +14,10 @@ beforeEach ->
 #   The before and after hooks in most tests require that openvpn hooks work,
 #   which means that if openvpn hooks don't work, they will break the 
 #   before and after scripts of the other tests as well.
+
+# After each tests the client uuids used are added here
+# This way openvpn events from previous tests are ignored in next tests
+ignoreClients = []
 
 describe '/api/v1/clients/', ->
 	describe 'When no clients are connected', ->
@@ -40,15 +41,14 @@ describe '/api/v1/clients/', ->
 				done()
 
 		after (done) ->
-			requestMock.enable "#{process.env.API_ENDPOINT}/services/vpn/client-disconnect", (opts, cb) =>
-				disconnected += 1
-				cb(null, statusCode: 200, 'OK')
-				if disconnected == 2
-					requestMock.disable()
-					done()
-			disconnected = 0
-			@client1.disconnect()
-			@client2.disconnect()
+			Promise.all( [
+				@client1.disconnect()
+				@client2.disconnect()
+			] )
+			.then =>
+				ignoreClients.push(@client1.uuid, @client2.uuid)
+				requestMock.disable()
+				done()
 
 		it 'should return the list of clients', (done) ->
 			request(app).get('/api/v1/clients/')
@@ -76,22 +76,25 @@ describe 'OpenVPN event hooks', ->
 	describe 'when a client connects and then disconnects', ->
 		before (done) ->
 			@requests = []
+	
+			# listen to connect and disconnect events and start testing on first disconnect
 			requestMock.enable "#{process.env.API_ENDPOINT}/services/vpn/client-connect", (opts, cb) =>
-				@requests.push(_.clone(opts))
+				if not (opts.form.common_name in ignoreClients)
+					@requests.push(_.clone(opts))
 				cb(null, statusCode: 200, 'OK')
 			requestMock.enable "#{process.env.API_ENDPOINT}/services/vpn/client-disconnect", (opts, cb) =>
-				@requests.push(_.clone(opts))
+				if not (opts.form.common_name in ignoreClients)
+					@requests.push(_.clone(opts))
+					done()
 				cb(null, statusCode: 200, 'OK')
 
 			createVPNClient()
 			.then (client) =>
 				@client1 = client
 				@client1.disconnect()
-			.delay(1000)
-			.then ->
-				done()
 
 		after ->
+			ignoreClients.push(@client1)	
 			requestMock.disable()
 
 		it 'should first send a request to connect hook', ->
@@ -115,30 +118,34 @@ describe 'OpenVPN event hooks', ->
 			serviceIsDown = true
 			@requests = []
 			@successfulRequests = []
+
+			# listen to wait and disconnect requests and start testing on first disconnect
 			requestMock.enable "#{process.env.API_ENDPOINT}/services/vpn/client-connect", (opts, cb) =>
 				if serviceIsDown
 					cb(null, statusCode: 500, 'ERROR')
 				else
 					cb(null, statusCode: 200, 'OK')
 				opts.succeeded = not serviceIsDown
-				@requests.push(_.clone(opts))
+				if not (opts.form.common_name in ignoreClients)
+					@requests.push(_.clone(opts))
 			requestMock.enable "#{process.env.API_ENDPOINT}/services/vpn/client-disconnect", (opts, cb) =>
 				if serviceIsDown
 					cb(null, statusCode: 500, 'ERROR')
 				else
 					cb(null, statusCode: 200, 'OK')
 				opts.succeeded = not serviceIsDown
-				@requests.push(_.clone(opts))
+				if not (opts.form.common_name in ignoreClients)
+					@requests.push(_.clone(opts))
+					done()
 
 			createVPNClient()
 			.then (client) =>
 				@client1 = client
 				serviceIsDown = false
 				@client1.disconnect()
-			.then ->
-				# give it time to send all the requests
-				setTimeout done, 1000
+
 		after ->
+			ignoreClients.push(@client1)
 			requestMock.disable()
 
 		it 'should retry client-connect hook until it succeeds', ->
