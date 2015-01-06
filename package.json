@@ -9,13 +9,13 @@
   "dependencies": {
     "block-queue": "~0.0.2",
     "bluebird": "~2.4.2",
-    "body-parser": "^1.10.1",
+    "body-parser": "~1.10.1",
     "coffee-script": "~1.8.0",
     "event-stream": "~3.1.7",
     "eventemitter2": "~0.4.14",
     "express": "~4.10.6",
     "lodash": "~2.4.1",
-    "morgan": "^1.5.1",
+    "morgan": "~1.5.1",
     "request": "~2.51.0",
     "requestretry": "~1.2.1",
     "tail": "~0.4.0"

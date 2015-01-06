@@ -16,6 +16,11 @@ if not process.env.VPN_HOST
 
 vpn = new OpenVPN(process.env.VPN_MANAGEMENT_PORT, process.env.VPN_HOST)
 
+queue = requestQueue(
+	maxAttempts: 3600
+	retryDelay: 1000
+)
+
 module.exports = app = express()
 
 app.use(morgan('combined', skip: (req) -> req.url is '/ping'))
@@ -63,8 +68,3 @@ app.delete '/api/v1/clients/', (req, res) ->
 	res.send('OK')
 
 app.listen(80)
-
-queue = requestQueue(
-	maxAttempts: 3600
-	retryDelay: 1000
-)

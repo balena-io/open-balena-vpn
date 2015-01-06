@@ -38,7 +38,7 @@ describe '/api/v1/clients/', ->
 			.spread (client1, client2) =>
 				@client1 = client1
 				@client2 = client2
-				done()
+			.nodeify(done)
 
 		after (done) ->
 			Promise.all( [
@@ -48,7 +48,7 @@ describe '/api/v1/clients/', ->
 			.then =>
 				ignoreClients.push(@client1.uuid, @client2.uuid)
 				requestMock.disable()
-				done()
+			.nodeify(done)
 
 		it 'should return the list of clients', (done) ->
 			request(app).get('/api/v1/clients/')
@@ -149,8 +149,8 @@ describe 'OpenVPN event hooks', ->
 			requestMock.disable()
 
 		it 'should retry client-connect hook until it succeeds', ->
-			retries = 0
-			retries++ while @requests[retries] and not @requests[retries].succeeded and @requests[retries].url.match(/services\/vpn\/client-connect/)
+			retries = _.size _.first @requests, (request) ->
+				not request.succeeded and request.url.match(/services\/vpn\/client-connect/)
 
 			expect(retries).to.be.at.least(1)
 			expect(retries).to.be.equal(@requests.length - 2)

@@ -18,7 +18,6 @@ fi
 export LOGENTRIES_ACCOUNT_KEY=${LOGENTRIES_ACCOUNT_KEY:=}
 export API_ENDPOINT=${API_ENDPOINT:=https://api.resindev.io}
 export API_KEY=${API_KEY:=UAGIApnIbZRUm9CeEYwQbRTV6wYkX0Fy}
-export VPN_EVENTS_FILE=${VPN_EVENTS_FILE:=/var/run/openvpn-events.txt}
 export VPN_MANAGEMENT_PORT=${VPN_MANAGEMENT_PORT:=11194}
 export VPN_HOST=${VPN_HOST:=127.0.0.1}
 

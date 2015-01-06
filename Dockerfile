@@ -9,16 +9,12 @@ RUN echo 'deb http://rep.logentries.com/ trusty main' > /etc/apt/sources.list.d/
 RUN wget -O /usr/local/bin/confd https://github.com/kelseyhightower/confd/releases/download/v0.6.0-alpha3/confd-0.6.0-alpha3-linux-amd64 && chmod a+x /usr/local/bin/confd && mkdir -p /etc/confd/conf.d && mkdir /etc/confd/templates
 
 RUN useradd openvpn
-RUN mkdir -p /var/log/openvpn-debug/
 RUN mkdir -p /var/run/
-RUN chown -R openvpn:openvpn /var/log/openvpn-debug/
 
 ADD ./config/env.toml /etc/confd/conf.d/env.toml
 ADD ./config/env.tmpl /etc/confd/templates/env.tmpl
 
 RUN mkdir /resin-log
-RUN touch /var/run/openvpn-events.txt
-RUN chown openvpn:openvpn /var/run/openvpn-events.txt
 
 ADD resin-vpn.conf /etc/supervisor/conf.d/resin-vpn.conf
 ADD resin-vpn-api.conf /etc/supervisor/conf.d/resin-vpn-api.conf
