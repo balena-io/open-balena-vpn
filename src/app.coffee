@@ -29,7 +29,7 @@ app.use(bodyParser.json())
 app.get '/api/v1/clients/', (req, res) ->
 	vpn.getStatus()
 	.then (results) ->
-		res.send(results.client_list)
+		res.send(_.values(results.client_list))
 	.catch (error) ->
 		console.error('Error getting VPN client list', error)
 
