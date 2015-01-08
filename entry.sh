@@ -21,13 +21,6 @@ export API_KEY=${API_KEY:=UAGIApnIbZRUm9CeEYwQbRTV6wYkX0Fy}
 export VPN_MANAGEMENT_PORT=${VPN_MANAGEMENT_PORT:=11194}
 export VPN_HOST=${VPN_HOST:=127.0.0.1}
 
-# scripts need API_KEY in /etc/openvpn/env to be able to send data to vpn_api
-# we need to write it here so that tests work
-if ! grep '\^API_KEY=' /etc/openvpn/env >/dev/null;
-then
-	echo "API_KEY=$API_KEY" >> /etc/openvpn/env
-fi
-
 touch /etc/openvpn/ipp.txt
 
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf

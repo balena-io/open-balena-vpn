@@ -34,7 +34,7 @@ app.get '/api/v1/clients/', (req, res) ->
 		console.error('Error getting VPN client list', error)
 
 app.post '/api/v1/clients/', (req, res) ->
-	if req.query.apikey != process.env.API_KEY
+	if req.ip isnt '127.0.0.1'
 		return res.send(401)
 	if not req.body.common_name?
 		return res.send(400)
@@ -51,7 +51,7 @@ app.post '/api/v1/clients/', (req, res) ->
 	res.send('OK')
 
 app.delete '/api/v1/clients/', (req, res) ->
-	if req.query.apikey != process.env.API_KEY
+	if req.ip isnt '127.0.0.1'
 		return res.send(401)
 	if not req.body.common_name?
 		return res.send(400)
