@@ -7,11 +7,11 @@ OpenVPN = require './libs/openvpn-nc'
 { requestQueue } = require './libs/request-queue'
 
 if not process.env.VPN_MANAGEMENT_PORT
-	console.log('VPN_MANAGEMENT_PORT env var not set')
+	console.error('VPN_MANAGEMENT_PORT env var not set')
 	process.exit(1)
 
 if not process.env.VPN_HOST
-	console.log('VPN_HOST env var not set')
+	console.error('VPN_HOST env var not set')
 	process.exit(1)
 
 vpn = new OpenVPN(process.env.VPN_MANAGEMENT_PORT, process.env.VPN_HOST)
@@ -32,6 +32,7 @@ app.get '/api/v1/clients/', (req, res) ->
 		res.send(_.values(results.client_list))
 	.catch (error) ->
 		console.error('Error getting VPN client list', error)
+		res.send(500, 'Error getting VPN client list')
 
 app.post '/api/v1/clients/', (req, res) ->
 	if req.ip isnt '127.0.0.1'
