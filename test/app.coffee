@@ -56,7 +56,8 @@ describe '/api/v1/clients/', ->
 			.expect (res) =>
 				body = res.body
 				expect(body).to.be.instanceof(Array)
-				clients = _.sortBy(body, 'connected_since_t')
+				# ensure client1 is first and client2 is second
+				clients = _.sortBy(body, (c) => c.common_name != @client1.uuid)
 				expect(clients[0]).to.have.property('common_name').that.equals(@client1.uuid)
 				expect(clients[0]).to.have.property('real_address').that.match(/^127\.0\.0\.1:[0-9]+$/)
 				expect(clients[0]).to.have.property('virtual_address').that.match(/^10\.1\.0\.[0-9]+$/)
