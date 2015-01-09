@@ -1,0 +1,28 @@
+{
+  "name": "resin-vpn-server",
+  "version": "0.0.1",
+  "description": "RESTful VPN api",
+  "main": "server.js",
+  "scripts": {
+    "test": "docker build -t vpntest . && docker run -it --privileged -e VPN_TESTING=1 vpntest /bin/sh -c 'cd /app && npm install && ./node_modules/mocha/bin/mocha --compilers coffee:coffee-script/register --reporter spec ./test/'"
+  },
+  "dependencies": {
+    "block-queue": "~0.0.2",
+    "bluebird": "~2.4.2",
+    "body-parser": "~1.10.1",
+    "coffee-script": "~1.8.0",
+    "event-stream": "~3.1.7",
+    "express": "~4.10.6",
+    "lodash": "~2.4.1",
+    "morgan": "~1.5.1",
+    "request": "~2.51.0",
+    "requestretry": "~1.2.1"
+  },
+  "devDependencies": {
+    "chai": "~1.10.0",
+    "csr-gen": "~0.2.1",
+    "mocha": "~2.1.0",
+    "mockery": "~1.4.0",
+    "supertest": "~0.15.0"
+  }
+}
