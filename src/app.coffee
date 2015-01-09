@@ -3,18 +3,21 @@ bodyParser = require 'body-parser'
 morgan = require 'morgan'
 _ = require 'lodash'
 
-OpenVPN = require './libs/openvpn-nc'
+{ OpenVPNSet } = require './libs/openvpn-nc'
 { requestQueue } = require './libs/request-queue'
 
-if not process.env.VPN_MANAGEMENT_PORT
-	console.error('VPN_MANAGEMENT_PORT env var not set')
+{ VPN_MANAGEMENT_PORT, VPN_MANAGEMENT_NEW_PORT, VPN_HOST } = process.env
+
+fatal = (msg) ->
+	console.error(msg)
 	process.exit(1)
 
-if not process.env.VPN_HOST
-	console.error('VPN_HOST env var not set')
-	process.exit(1)
+fatal('VPN_MANAGEMENT_PORT env var not set') if not VPN_MANAGEMENT_PORT
+fatal('VPN_MANAGEMENT_NEW_PORT env var not set') if not VPN_MANAGEMENT_NEW_PORT
+fatal('VPN_HOST env var not set') if not VPN_HOST
 
-vpn = new OpenVPN(process.env.VPN_MANAGEMENT_PORT, process.env.VPN_HOST)
+managementPorts = [ VPN_MANAGEMENT_PORT, VPN_MANAGEMENT_NEW_PORT ]
+vpn = new OpenVPNSet(managementPorts, VPN_HOST)
 
 queue = requestQueue(
 	maxAttempts: 3600

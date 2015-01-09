@@ -17,6 +17,7 @@ ADD ./config/env.tmpl /etc/confd/templates/env.tmpl
 RUN mkdir /resin-log
 
 ADD resin-vpn.conf /etc/supervisor/conf.d/resin-vpn.conf
+ADD resin-vpn-legacy.conf /etc/supervisor/conf.d/resin-vpn-legacy.conf
 
 ADD resin-vpn-api.conf /etc/supervisor/conf.d/resin-vpn-api.conf
 ADD ./config /etc/openvpn
@@ -25,21 +26,16 @@ ADD . /app
 WORKDIR /app
 RUN npm install --production && npm cache clean
 
-RUN chown openvpn:openvpn /app/scripts/client-connect.sh
-RUN chmod u+x /app/scripts/client-connect.sh
-RUN chown openvpn:openvpn /app/scripts/client-disconnect.sh
-RUN chmod u+x /app/scripts/client-disconnect.sh
-
-ADD resin-failsafe-vpn.conf /etc/supervisor/conf.d/resin-failsafe-vpn.conf
-ADD ./entry.sh /entry.sh
-RUN chmod a=r+x /etc/openvpn/apiverify.sh
-
-EXPOSE 1194
-EXPOSE 11194
-EXPOSE 80
+WORKDIR /app/scripts
+RUN chown openvpn *.sh && chmod u+x *.sh
 
 EXPOSE 443
 EXPOSE 11195
+
+EXPOSE 1194
+EXPOSE 11194
+
+EXPOSE 80
 
 WORKDIR /etc/openvpn
 ENTRYPOINT ["/app/entry.sh"]
