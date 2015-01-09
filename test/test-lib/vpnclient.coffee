@@ -66,7 +66,6 @@ exports.createVPNClient = createVPNClient = (baseDir) ->
 
 			# Prefix and log all OpenVPN output
 			openvpn.stdout.on 'data', (data) ->
-				# console.log('OPENVPN: ', data.toString())
 				if data.toString().match('Initialization Sequence Completed')
 					resolve(openvpn)
 	.then (proc) ->

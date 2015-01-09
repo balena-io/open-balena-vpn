@@ -22,7 +22,7 @@ ignoreClients = []
 describe '/api/v1/clients/', ->
 	describe 'When no clients are connected', ->
 		it 'should return empty client list', (done) ->
-			request(app).get('/api/v1/clients/').expect(200, '{}', done)
+			request(app).get('/api/v1/clients/').expect(200, '[]', done)
 
 	describe 'When clients are connected', ->
 		@timeout(10000)
@@ -55,18 +55,18 @@ describe '/api/v1/clients/', ->
 			.expect(200)
 			.expect (res) =>
 				body = res.body
-				expect(body).to.have.property(@client1.uuid)
-				expect(body).to.have.property(@client2.uuid)
-				expect(body[@client1.uuid]).to.have.property('common_name').that.equals(@client1.uuid)
-				expect(body[@client1.uuid]).to.have.property('real_address').that.match(/^127\.0\.0\.1:[0-9]+$/)
-				expect(body[@client1.uuid]).to.have.property('virtual_address').that.match(/^10\.1\.0\.[0-9]+$/)
-				expect(body[@client1.uuid]).to.have.property('connected_since')
-				expect(body[@client1.uuid]).to.have.property('connected_since_t')
-				expect(body[@client2.uuid]).to.have.property('common_name').that.equals(@client2.uuid)
-				expect(body[@client2.uuid]).to.have.property('real_address').that.match(/^127\.0\.0\.1:[0-9]+$/)
-				expect(body[@client2.uuid]).to.have.property('virtual_address').that.match(/^10\.1\.0\.[0-9]+$/)
-				expect(body[@client2.uuid]).to.have.property('connected_since')
-				expect(body[@client2.uuid]).to.have.property('connected_since_t')
+				expect(body).to.be.instanceof(Array)
+				clients = _.sortBy(body, 'connected_since_t')
+				expect(clients[0]).to.have.property('common_name').that.equals(@client1.uuid)
+				expect(clients[0]).to.have.property('real_address').that.match(/^127\.0\.0\.1:[0-9]+$/)
+				expect(clients[0]).to.have.property('virtual_address').that.match(/^10\.1\.0\.[0-9]+$/)
+				expect(clients[0]).to.have.property('connected_since')
+				expect(clients[0]).to.have.property('connected_since_t')
+				expect(clients[1]).to.have.property('common_name').that.equals(@client2.uuid)
+				expect(clients[1]).to.have.property('real_address').that.match(/^127\.0\.0\.1:[0-9]+$/)
+				expect(clients[1]).to.have.property('virtual_address').that.match(/^10\.1\.0\.[0-9]+$/)
+				expect(clients[1]).to.have.property('connected_since')
+				expect(clients[1]).to.have.property('connected_since_t')
 				return false
 			.end(done)
 
