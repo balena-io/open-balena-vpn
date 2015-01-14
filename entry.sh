@@ -19,9 +19,11 @@ export LOGENTRIES_ACCOUNT_KEY=${LOGENTRIES_ACCOUNT_KEY:=}
 export API_ENDPOINT=${API_ENDPOINT:=https://api.resindev.io}
 export API_KEY=${API_KEY:=UAGIApnIbZRUm9CeEYwQbRTV6wYkX0Fy}
 export VPN_MANAGEMENT_PORT=${VPN_MANAGEMENT_PORT:=11194}
+export VPN_MANAGEMENT_NEW_PORT=${VPN_MANAGEMENT_NEW_PORT:=11195}
 export VPN_HOST=${VPN_HOST:=127.0.0.1}
 
 touch /etc/openvpn/ipp.txt
+touch /etc/openvpn/ipp_legacy.txt
 
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
@@ -31,6 +33,7 @@ touch /etc/openvpn/ipp.txt
     mknod /dev/net/tun c 10 200
 
 supervisorctl start resin-vpn
+supervisorctl start resin-vpn-legacy
 
 # Tests start vpn-api server manually
 if [ -z "$VPN_TESTING" ]; then
@@ -46,6 +49,9 @@ if [ $LOGENTRIES_ACCOUNT_KEY ]; then
     /usr/bin/le register --name=VPN
     /usr/bin/le follow '/resin-log/resin_vpn_stdout.log' --name=VPN_LOGS_STDOUT
     /usr/bin/le follow '/resin-log/resin_vpn_error.log' --name=VPN_LOGS_ERROR
+    /usr/bin/le follow '/resin-log/resin_vpn_legacy_stdout.log' --name=VPN_LOGS_STDOUT
+    /usr/bin/le follow '/resin-log/resin_vpn_legacy_error.log' --name=VPN_LOGS_ERROR
+
     service logentries start
 fi
 
