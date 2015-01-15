@@ -1,0 +1,6 @@
+# Put the API on its own subdomain.
+ifconfig-push 10.255.255.1 10.255.255.2
+
+# Gain access to all devices.
+push "route 10.1.0.0 255.255.0.0"
+push "route 10.2.0.0 255.255.0.0"
