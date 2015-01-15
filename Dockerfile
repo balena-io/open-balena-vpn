@@ -30,11 +30,7 @@ WORKDIR /app/scripts
 RUN chown openvpn *.sh && chmod u+x *.sh
 
 EXPOSE 443
-EXPOSE 11195
-
 EXPOSE 1194
-EXPOSE 11194
-
 EXPOSE 80
 
 WORKDIR /etc/openvpn
