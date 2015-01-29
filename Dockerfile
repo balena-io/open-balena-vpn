@@ -29,9 +29,7 @@ COPY . /app
 WORKDIR /app/scripts
 RUN chown openvpn *.sh && chmod u+x *.sh
 
-EXPOSE 443
-EXPOSE 1194
-EXPOSE 80
+EXPOSE 80 443 1194
 
 WORKDIR /etc/openvpn
 ENTRYPOINT ["/app/entry.sh"]
