@@ -6,7 +6,10 @@ RUN echo 'deb http://rep.logentries.com/ trusty main' > /etc/apt/sources.list.d/
 	&& apt-get install -qy supervisor openvpn wget logentries logentries-daemon curl \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN wget -O /usr/local/bin/confd https://github.com/kelseyhightower/confd/releases/download/v0.6.0-alpha3/confd-0.6.0-alpha3-linux-amd64 && chmod a+x /usr/local/bin/confd && mkdir -p /etc/confd/conf.d && mkdir /etc/confd/templates
+RUN wget -O /usr/local/bin/confd https://github.com/kelseyhightower/confd/releases/download/v0.6.0-alpha3/confd-0.6.0-alpha3-linux-amd64 \
+	&& chmod a+x /usr/local/bin/confd \
+	&& mkdir -p /etc/confd/conf.d \
+	&& mkdir /etc/confd/templates
 
 RUN useradd openvpn
 RUN mkdir -p /var/run/
