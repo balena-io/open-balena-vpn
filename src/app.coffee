@@ -24,6 +24,9 @@ fatal = (msg) ->
 
 fatal("#{k} env var not set") for k in envKeys when !env[k]
 
+if env.API_VPN_IP.split('.')[0] isnt env.VPN_SUBNET_24
+	fatal("API VPN IP #{env.API_VPN_IP} isn't on the VPN subnet.")
+
 managementPorts = [ env.VPN_MANAGEMENT_PORT, env.VPN_MANAGEMENT_NEW_PORT ]
 vpn = new OpenVPNSet(managementPorts, env.VPN_HOST)
 
