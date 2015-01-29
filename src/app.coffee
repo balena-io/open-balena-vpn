@@ -6,18 +6,29 @@ _ = require 'lodash'
 { OpenVPNSet } = require './libs/openvpn-nc'
 { requestQueue } = require './libs/request-queue'
 
-{ VPN_MANAGEMENT_PORT, VPN_MANAGEMENT_NEW_PORT, VPN_HOST } = process.env
+envKeys = [
+	'API_ENDPOINT'
+	'API_KEY'
+	'API_VPN_IP'
+	'VPN_HOST'
+	'VPN_MANAGEMENT_NEW_PORT'
+	'VPN_MANAGEMENT_PORT'
+	'VPN_SUBNET_24'
+]
+
+{ env } = process
 
 fatal = (msg) ->
 	console.error(msg)
 	process.exit(1)
 
-fatal('VPN_MANAGEMENT_PORT env var not set') if not VPN_MANAGEMENT_PORT
-fatal('VPN_MANAGEMENT_NEW_PORT env var not set') if not VPN_MANAGEMENT_NEW_PORT
-fatal('VPN_HOST env var not set') if not VPN_HOST
+fatal("#{k} env var not set") for k in envKeys when !env[k]
 
-managementPorts = [ VPN_MANAGEMENT_PORT, VPN_MANAGEMENT_NEW_PORT ]
-vpn = new OpenVPNSet(managementPorts, VPN_HOST)
+if env.API_VPN_IP.split('.')[0] isnt env.VPN_SUBNET_24
+	fatal("API VPN IP #{env.API_VPN_IP} isn't on the VPN subnet.")
+
+managementPorts = [ env.VPN_MANAGEMENT_PORT, env.VPN_MANAGEMENT_NEW_PORT ]
+vpn = new OpenVPNSet(managementPorts, env.VPN_HOST)
 
 queue = requestQueue(
 	maxAttempts: 3600
@@ -26,8 +37,15 @@ queue = requestQueue(
 
 module.exports = app = express()
 
+notFromVpnClients = (req, res, next) ->
+	if req.ip.split('.')[0] is env.VPN_SUBNET_24 and req.ip isnt env.API_VPN_IP
+		return res.send(401)
+	else
+		next()
+
 app.use(morgan('combined', skip: (req) -> req.url is '/ping'))
 app.use(bodyParser.json())
+app.use(notFromVpnClients)
 
 app.get '/api/v1/clients/', (req, res) ->
 	vpn.getStatus()
@@ -48,7 +66,7 @@ app.post '/api/v1/clients/', (req, res) ->
 		return res.send(400)
 	data = _.pick(req.body, [ 'common_name', 'virtual_address', 'real_address' ])
 	queue.push(
-		url: "#{process.env.API_ENDPOINT}/services/vpn/client-connect?apikey=#{process.env.API_KEY}"
+		url: "#{env.API_ENDPOINT}/services/vpn/client-connect?apikey=#{env.API_KEY}"
 		method: "post"
 		form: data
 	)
@@ -65,7 +83,7 @@ app.delete '/api/v1/clients/', (req, res) ->
 		return res.send(400)
 	data = _.pick(req.body, [ 'common_name', 'virtual_address', 'real_address' ])
 	queue.push(
-		url: "#{process.env.API_ENDPOINT}/services/vpn/client-disconnect?apikey=#{process.env.API_KEY}"
+		url: "#{env.API_ENDPOINT}/services/vpn/client-disconnect?apikey=#{env.API_KEY}"
 		method: "post"
 		form: data
 	)
