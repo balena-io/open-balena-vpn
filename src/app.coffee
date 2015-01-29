@@ -35,7 +35,7 @@ queue = requestQueue(
 module.exports = app = express()
 
 notFromVpnClients = (req, res, next) ->
-	if req.ip[...3] is env.VPN_SUBNET_24 + '.' and req.ip isnt env.API_VPN_IP
+	if req.ip.split('.')[0] is env.VPN_SUBNET_24 and req.ip isnt env.API_VPN_IP
 		return res.send(401)
 	else
 		next()
