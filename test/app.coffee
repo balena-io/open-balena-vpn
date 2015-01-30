@@ -150,7 +150,7 @@ describe 'OpenVPN event hooks', ->
 			requestMock.disable()
 
 		it 'should retry client-connect hook until it succeeds', ->
-			retries = _.size _.first @requests, (request) ->
+			retries = _.size _.takeWhile @requests, (request) ->
 				not request.succeeded and request.url.match(/services\/vpn\/client-connect/)
 
 			expect(retries).to.be.at.least(1)
