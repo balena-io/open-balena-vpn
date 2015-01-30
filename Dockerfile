@@ -24,17 +24,15 @@ ADD resin-vpn-legacy.conf /etc/supervisor/conf.d/resin-vpn-legacy.conf
 
 ADD resin-vpn-api.conf /etc/supervisor/conf.d/resin-vpn-api.conf
 ADD ./config /etc/openvpn
-ADD . /app
 
-WORKDIR /app
-RUN npm install --production && npm cache clean
+COPY package.json /app/
+RUN cd /app && npm install --production && npm cache clean
+COPY . /app
 
 WORKDIR /app/scripts
 RUN chown openvpn *.sh && chmod u+x *.sh
 
-EXPOSE 443
-EXPOSE 1194
-EXPOSE 80
+EXPOSE 80 443 1194
 
 WORKDIR /etc/openvpn
 ENTRYPOINT ["/app/entry.sh"]
