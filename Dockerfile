@@ -1,29 +1,42 @@
 FROM dockerfile/nodejs
 
+# Logentries/supervisor
 RUN echo 'deb http://rep.logentries.com/ trusty main' > /etc/apt/sources.list.d/logentries.list \
 	&& gpg --keyserver pgp.mit.edu --recv-keys C43C79AD && gpg -a --export C43C79AD | apt-key add - \
 	&& apt-get -q update \
-	&& apt-get install -qy supervisor openvpn wget logentries logentries-daemon curl \
+	&& apt-get install -qy supervisor wget logentries logentries-daemon \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN wget -O /usr/local/bin/confd https://github.com/kelseyhightower/confd/releases/download/v0.6.0-alpha3/confd-0.6.0-alpha3-linux-amd64 \
+# Confd
+ENV CONFD_VERSION 0.7.1
+RUN wget -O /usr/local/bin/confd https://github.com/kelseyhightower/confd/releases/download/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64 \
 	&& chmod a+x /usr/local/bin/confd \
 	&& mkdir -p /etc/confd/conf.d \
 	&& mkdir /etc/confd/templates
 
+# Openvpn
+RUN apt-get -q update \
+	&& apt-get install -qy openvpn
+	&& apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Additional apt packages
+RUN apt-get -q update \
+	&& apt-get install -qy curl
+	&& apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Confd config
+COPY config/env.toml /etc/confd/conf.d/env.toml
+COPY config/env.tmpl /etc/confd/templates/env.tmpl
+
+# Supervisor configs
+RUN mkdir /resin-log
+COPY resin-vpn.conf resin-vpn-legacy.conf /etc/supervisor/conf.d/
+
 RUN useradd openvpn
 RUN mkdir -p /var/run/
 
-ADD ./config/env.toml /etc/confd/conf.d/env.toml
-ADD ./config/env.tmpl /etc/confd/templates/env.tmpl
-
-RUN mkdir /resin-log
-
-ADD resin-vpn.conf /etc/supervisor/conf.d/resin-vpn.conf
-ADD resin-vpn-legacy.conf /etc/supervisor/conf.d/resin-vpn-legacy.conf
-
-ADD resin-vpn-api.conf /etc/supervisor/conf.d/resin-vpn-api.conf
-ADD ./config /etc/openvpn
+COPY resin-vpn-api.conf /etc/supervisor/conf.d/
+COPY config /etc/openvpn
 
 COPY package.json /app/
 RUN cd /app && npm install --production && npm cache clean
