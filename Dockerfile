@@ -16,12 +16,12 @@ RUN wget -O /usr/local/bin/confd https://github.com/kelseyhightower/confd/releas
 
 # Openvpn
 RUN apt-get -q update \
-	&& apt-get install -qy openvpn
+	&& apt-get install -qy openvpn \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Additional apt packages
 RUN apt-get -q update \
-	&& apt-get install -qy curl
+	&& apt-get install -qy curl \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Confd config
