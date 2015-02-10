@@ -21,7 +21,7 @@ RUN apt-get -q update \
 
 # Additional apt packages
 RUN apt-get -q update \
-	&& apt-get install -qy curl \
+	&& apt-get install -qy curl iptables \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Confd config

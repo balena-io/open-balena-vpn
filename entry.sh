@@ -24,6 +24,17 @@ export VPN_HOST=${VPN_HOST:=127.0.0.1}
 export VPN_SUBNET_24=${VPN_SUBNET_24:=10}
 export API_VPN_IP=${API_VPN_IP:=10.255.255.1}
 
+# Prevent client devices from communicating with one another.
+
+# Allow already established connections.
+iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+# Allow communication between 10.255.255.1 and 10.{1,2}.0.0/16, only if initiated by 10.255.255.1.
+iptables -A FORWARD -s 10.255.255.0/24 -d 10.1.0.0/16 -m conntrack --ctstate NEW -j ACCEPT
+iptables -A FORWARD -s 10.255.255.0/24 -d 10.2.0.0/16 -m conntrack --ctstate NEW -j ACCEPT
+
+# Deny everything else.
+iptables -A FORWARD -j DROP
+
 touch /etc/openvpn/ipp.txt
 touch /etc/openvpn/ipp_legacy.txt
 
