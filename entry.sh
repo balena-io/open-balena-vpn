@@ -28,15 +28,21 @@ export VPN_PRIVILEGED_SUBNET_24=${VPN_PRIVILEGED_SUBNET_24:=10.255.255}
 
 # Allow already established connections.
 iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-# Allow communication between 10.255.255.1 and 10.{1,2}.0.0/16, only if initiated by 10.255.255.1.
-iptables -A FORWARD -s 10.255.255.0/24 -d 10.1.0.0/16 -m conntrack --ctstate NEW -j ACCEPT
-iptables -A FORWARD -s 10.255.255.0/24 -d 10.2.0.0/16 -m conntrack --ctstate NEW -j ACCEPT
+# Allow communication between privileged clients and 10.{1,2}.0.0/16, only if initiated by privileged clients.
+iptables -A FORWARD -s $VPN_PRIVILEGED_SUBNET_24.0/24 -d 10.1.0.0/16 -m conntrack --ctstate NEW -j ACCEPT
+iptables -A FORWARD -s $VPN_PRIVILEGED_SUBNET_24.0/24 -d 10.2.0.0/16 -m conntrack --ctstate NEW -j ACCEPT
 
 # Deny everything else.
 iptables -A FORWARD -j DROP
 
 touch /etc/openvpn/ipp.txt
 touch /etc/openvpn/ipp_legacy.txt
+
+# Delete if already there so we don't accidentally prevent privileged access IP assignments.
+rm -rf /etc/openvpn/privileged_assigned.txt
+touch /etc/openvpn/privileged_assigned.txt
+
+chown openvpn:openvpn /etc/openvpn/*.txt
 
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
