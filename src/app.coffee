@@ -13,7 +13,7 @@ envKeys = [
 	'VPN_HOST'
 	'VPN_MANAGEMENT_NEW_PORT'
 	'VPN_MANAGEMENT_PORT'
-	'VPN_SUBNET_24'
+	'VPN_SUBNET_8'
 ]
 
 { env } = process
@@ -24,7 +24,7 @@ fatal = (msg) ->
 
 fatal("#{k} env var not set") for k in envKeys when !env[k]
 
-if env.API_VPN_IP.split('.')[0] isnt env.VPN_SUBNET_24
+if env.API_VPN_IP.split('.')[0] isnt env.VPN_SUBNET_8
 	fatal("API VPN IP #{env.API_VPN_IP} isn't on the VPN subnet.")
 
 managementPorts = [ env.VPN_MANAGEMENT_PORT, env.VPN_MANAGEMENT_NEW_PORT ]
@@ -38,7 +38,7 @@ queue = requestQueue(
 module.exports = app = express()
 
 notFromVpnClients = (req, res, next) ->
-	if req.ip.split('.')[0] is env.VPN_SUBNET_24 and req.ip isnt env.API_VPN_IP
+	if req.ip.split('.')[0] is env.VPN_SUBNET_8 and req.ip isnt env.API_VPN_IP
 		return res.send(401)
 	else
 		next()

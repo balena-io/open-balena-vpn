@@ -21,7 +21,7 @@ export API_KEY=${API_KEY:=UAGIApnIbZRUm9CeEYwQbRTV6wYkX0Fy}
 export VPN_MANAGEMENT_PORT=${VPN_MANAGEMENT_PORT:=11194}
 export VPN_MANAGEMENT_NEW_PORT=${VPN_MANAGEMENT_NEW_PORT:=11195}
 export VPN_HOST=${VPN_HOST:=127.0.0.1}
-export VPN_SUBNET_24=${VPN_SUBNET_24:=10}
+export VPN_SUBNET_8=${VPN_SUBNET_8:=10}
 export API_VPN_IP=${API_VPN_IP:=10.255.255.1}
 
 # Prevent client devices from communicating with one another.
