@@ -1,6 +1,7 @@
 express = require 'express'
 bodyParser = require 'body-parser'
 morgan = require 'morgan'
+Netmask = require('netmask').Netmask
 _ = require 'lodash'
 
 { OpenVPNSet } = require './libs/openvpn-nc'
@@ -24,11 +25,12 @@ fatal = (msg) ->
 
 fatal("#{k} env var not set") for k in envKeys when !env[k]
 
-privileged = env.VPN_PRIVILEGED_SUBNET_24.split('.')
+privileged = new Netmask(env.VPN_PRIVILEGED_SUBNET_24)
+vpnSubnet = new Netmask(env.VPN_SUBNET_8)
 
 # Basic sanity check.
-if privileged[0] isnt env.VPN_SUBNET_8
-	fatal("Privileged IP subnet/24 #{env.VPN_PRIVILEGED_SUBNET_24} isn't on the VPN subnet/8.")
+if !vpnSubnet.contains(privileged)
+	fatal("Privileged IP subnet/24 #{env.VPN_PRIVILEGED_SUBNET_24} isn't on the VPN subnet #{env.VPN_SUBNET_8}")
 
 managementPorts = [ env.VPN_MANAGEMENT_PORT, env.VPN_MANAGEMENT_NEW_PORT ]
 vpn = new OpenVPNSet(managementPorts, env.VPN_HOST)
@@ -41,11 +43,8 @@ queue = requestQueue(
 module.exports = app = express()
 
 notFromVpnClients = (req, res, next) ->
-	if req.ip.split('.')[0] is env.VPN_SUBNET_8
-		bytes = req.ip.split('.')
-		for expected, i in privileged
-			if bytes[i] isnt expected
-				return res.send(401)
+	if vpnSubnet.contains(req.ip) and !privileged.contains(req.ip)
+		return res.sendStatus(401)
 
 	next()
 

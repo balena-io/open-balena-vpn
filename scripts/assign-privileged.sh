@@ -3,7 +3,7 @@
 # Assigns privileged clients appropriate IP addresses and push routes for unprivileged clients.
 # Adapted from http://sourceforge.net/p/openvpn/mailman/message/28047551/.
 
-ip24=${VPN_PRIVILEGED_SUBNET_24:=10.255.255}
+ip24=10.255.255
 cache_path=/etc/openvpn/privileged_assigned.txt
 
 # We use ifconfig-pool-linear so can ignore windows /30 subnet limitations.
