@@ -21,16 +21,16 @@ export API_KEY=${API_KEY:=UAGIApnIbZRUm9CeEYwQbRTV6wYkX0Fy}
 export VPN_MANAGEMENT_PORT=${VPN_MANAGEMENT_PORT:=11194}
 export VPN_MANAGEMENT_NEW_PORT=${VPN_MANAGEMENT_NEW_PORT:=11195}
 export VPN_HOST=${VPN_HOST:=127.0.0.1}
-export VPN_SUBNET_8=${VPN_SUBNET_8:=10.0.0.0/8}
-export VPN_PRIVILEGED_SUBNET_24=${VPN_PRIVILEGED_SUBNET_24:=10.255.255.0/24}
+export VPN_SUBNET=${VPN_SUBNET:=10.0.0.0/8}
+export VPN_PRIVILEGED_SUBNET=${VPN_PRIVILEGED_SUBNET:=10.255.255.0/24}
 
 # Prevent client devices from communicating with one another.
 
 # Allow already established connections.
 iptables -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 # Allow communication between privileged clients and 10.{1,2}.0.0/16, only if initiated by privileged clients.
-iptables -A FORWARD -s $VPN_PRIVILEGED_SUBNET_24 -d 10.1.0.0/16 -m conntrack --ctstate NEW -j ACCEPT
-iptables -A FORWARD -s $VPN_PRIVILEGED_SUBNET_24 -d 10.2.0.0/16 -m conntrack --ctstate NEW -j ACCEPT
+iptables -A FORWARD -s $VPN_PRIVILEGED_SUBNET -d 10.1.0.0/16 -m conntrack --ctstate NEW -j ACCEPT
+iptables -A FORWARD -s $VPN_PRIVILEGED_SUBNET -d 10.2.0.0/16 -m conntrack --ctstate NEW -j ACCEPT
 
 # Deny everything else.
 iptables -A FORWARD -j DROP

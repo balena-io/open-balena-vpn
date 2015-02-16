@@ -13,8 +13,8 @@ envKeys = [
 	'VPN_HOST'
 	'VPN_MANAGEMENT_NEW_PORT'
 	'VPN_MANAGEMENT_PORT'
-	'VPN_PRIVILEGED_SUBNET_24'
-	'VPN_SUBNET_8'
+	'VPN_PRIVILEGED_SUBNET'
+	'VPN_SUBNET'
 ]
 
 { env } = process
@@ -25,12 +25,12 @@ fatal = (msg) ->
 
 fatal("#{k} env var not set") for k in envKeys when !env[k]
 
-privileged = new Netmask(env.VPN_PRIVILEGED_SUBNET_24)
-vpnSubnet = new Netmask(env.VPN_SUBNET_8)
+privileged = new Netmask(env.VPN_PRIVILEGED_SUBNET)
+vpnSubnet = new Netmask(env.VPN_SUBNET)
 
 # Basic sanity check.
 if !vpnSubnet.contains(privileged)
-	fatal("Privileged IP subnet/24 #{env.VPN_PRIVILEGED_SUBNET_24} isn't on the VPN subnet #{env.VPN_SUBNET_8}")
+	fatal("Privileged IP subnet/24 #{env.VPN_PRIVILEGED_SUBNET} isn't on the VPN subnet #{env.VPN_SUBNET}")
 
 managementPorts = [ env.VPN_MANAGEMENT_PORT, env.VPN_MANAGEMENT_NEW_PORT ]
 vpn = new OpenVPNSet(managementPorts, env.VPN_HOST)
