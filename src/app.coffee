@@ -62,11 +62,11 @@ app.get '/api/v1/clients/', (req, res) ->
 
 app.post '/api/v1/clients/', (req, res) ->
 	if not req.body.common_name?
-		return res.send(400)
+		return res.sendStatus(400)
 	if not req.body.virtual_address?
-		return res.send(400)
+		return res.sendStatus(400)
 	if not req.body.real_address?
-		return res.send(400)
+		return res.sendStatus(400)
 	data = _.pick(req.body, [ 'common_name', 'virtual_address', 'real_address' ])
 	queue.push(
 		url: "#{env.API_ENDPOINT}/services/vpn/client-connect?apikey=#{env.API_KEY}"
@@ -85,11 +85,11 @@ fromLocalHost = (req, res, next) ->
 
 app.delete '/api/v1/clients/', fromLocalHost, (req, res) ->
 	if not req.body.common_name?
-		return res.send(400)
+		return res.sendStatus(400)
 	if not req.body.virtual_address?
-		return res.send(400)
+		return res.sendStatus(400)
 	if not req.body.real_address?
-		return res.send(400)
+		return res.sendStatus(400)
 	data = _.pick(req.body, [ 'common_name', 'virtual_address', 'real_address' ])
 	queue.push(
 		url: "#{env.API_ENDPOINT}/services/vpn/client-disconnect?apikey=#{env.API_KEY}"
