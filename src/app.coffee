@@ -61,8 +61,6 @@ app.get '/api/v1/clients/', (req, res) ->
 		res.send(500, 'Error getting VPN client list')
 
 app.post '/api/v1/clients/', (req, res) ->
-	if req.ip isnt '127.0.0.1'
-		return res.send(401)
 	if not req.body.common_name?
 		return res.send(400)
 	if not req.body.virtual_address?
@@ -77,9 +75,15 @@ app.post '/api/v1/clients/', (req, res) ->
 	)
 	res.send('OK')
 
-app.delete '/api/v1/clients/', (req, res) ->
+## Private endpoints, each of these should use the `fromLocalHost` middleware.
+
+fromLocalHost = (req, res, next) ->
 	if req.ip isnt '127.0.0.1'
-		return res.send(401)
+		return res.sendStatus(401)
+
+	next()
+
+app.delete '/api/v1/clients/', fromLocalHost, (req, res) ->
 	if not req.body.common_name?
 		return res.send(400)
 	if not req.body.virtual_address?
