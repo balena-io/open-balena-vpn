@@ -129,3 +129,6 @@ app.get '/api/v1/privileged/peer', fromLocalHost, (req, res) ->
 		res.sendStatus(400)
 
 app.listen(80)
+
+# Now endpoints are established, release VPN hold.
+vpn.execCommand('hold release')
