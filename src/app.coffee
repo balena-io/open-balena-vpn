@@ -25,11 +25,13 @@ fatal = (msg) ->
 
 fatal("#{k} env var not set") for k in envKeys when !env[k]
 
-privileged = new Netmask(env.VPN_PRIVILEGED_SUBNET)
+# Require once we know we have sufficient env vars.
+privileged = require './privileged'
+
 vpnSubnet = new Netmask(env.VPN_SUBNET)
 
 # Basic sanity check.
-if !vpnSubnet.contains(privileged)
+if !vpnSubnet.contains(env.VPN_PRIVILEGED_SUBNET)
 	fatal("Privileged IP subnet/24 #{env.VPN_PRIVILEGED_SUBNET} isn't on the VPN subnet #{env.VPN_SUBNET}")
 
 managementPorts = [ env.VPN_MANAGEMENT_PORT, env.VPN_MANAGEMENT_NEW_PORT ]
@@ -97,5 +99,33 @@ app.delete '/api/v1/clients/', fromLocalHost, (req, res) ->
 		form: data
 	)
 	res.send('OK')
+
+app.post '/api/v1/privileged/ip', fromLocalHost, (req, res) ->
+	{ common_name } = req.body
+	if not common_name?
+		return res.sendStatus(400)
+
+	ip = privileged.assign(common_name)
+	return res.sendStatus(501) if !ip?
+
+	res.send(ip)
+
+app.delete '/api/v1/privileged/ip', fromLocalHost, (req, res) ->
+	{ ip } = req.body
+	return res.sendStatus(400) if not ip?
+
+	privileged.unassign(ip)
+	# We output a message if unassigned ip provided, but this shouldn't be an error.
+	res.send('OK')
+
+app.get '/api/v1/privileged/ip', fromLocalHost, (req, res) ->
+	res.send(privileged.list())
+
+app.get '/api/v1/privileged/peer', fromLocalHost, (req, res) ->
+	peer = privileged.peer(req.query.ip)
+	if peer?
+		res.send(peer)
+	else
+		res.sendStatus(400)
 
 app.listen(80)
