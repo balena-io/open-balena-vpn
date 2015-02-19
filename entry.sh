@@ -23,6 +23,7 @@ export VPN_MANAGEMENT_NEW_PORT=${VPN_MANAGEMENT_NEW_PORT:=11195}
 export VPN_HOST=${VPN_HOST:=127.0.0.1}
 export VPN_SUBNET=${VPN_SUBNET:=10.0.0.0/8}
 export VPN_PRIVILEGED_SUBNET=${VPN_PRIVILEGED_SUBNET:=10.255.255.0/24}
+export CURL_EXTRA_FLAGS=${CURL_EXTRA_FLAGS:="--retry 5 --retry-delay 2 --retry-max-time 30"}
 
 # Prevent client devices from communicating with one another.
 
