@@ -4,6 +4,9 @@ privileged = new Netmask(process.env.VPN_PRIVILEGED_SUBNET)
 
 ips = {}
 
+class IpFoundError
+	constructor: (@ip) ->
+
 # We have to manually assign privileged IP addresses as OpenVPN doesn't provide
 # an easy means of selectively providing a dynamic pool of IP addresses
 # depending on the connecting client.
@@ -17,13 +20,10 @@ module.exports =
 		return privileged.contains(ip)
 
 	list: ->
-		lines = ("#{ip}\t#{name}\n" for ip, name of ips when name?)
-
-		return lines.join('')
+		lines = ("#{ip}\t#{name}" for ip, name of ips when name?)
+		return lines.join('\n') + '\n'
 
 	assign: (name) ->
-		ret = null
-
 		# This could be done more efficiently algorithm-wise, but I don't think it's
 		# worth it given the small number of privileged clients and the fact they
 		# will be [dis]connecting infrequently.
@@ -34,14 +34,13 @@ module.exports =
 
 				if !ips[ip]?
 					ips[ip] = name or 'unknown'
-					throw { found: true, ip }
+					throw new IpFoundError(ip)
 		catch err
-			if err.found
-				ret = err.ip
-			else
-				throw err
+			return err.ip if err instanceof IpFoundError
 
-		return ret
+			throw err
+
+		return null
 
 	unassign: (ip) ->
 		if !ips[ip]?
@@ -56,7 +55,9 @@ module.exports =
 		octets = ip.split('.')
 		lastOctet = parseInt(octets?[3], 10)
 
-		if isNaN(lastOctet) or lastOctet % 2 == 0 or !(0 < lastOctet < 256)
+		# The input should be sane, and since peer IP addresses are by (our)
+		# convention even, the input ip address shouldn't be.
+		if isNaN(lastOctet) or !(0 < lastOctet < 256) or lastOctet % 2 == 0
 			return null
 
 		# We simply increment the last octet to obtain the IPv4 address's peer.
