@@ -39,12 +39,6 @@ iptables -A FORWARD -j DROP
 touch /etc/openvpn/ipp.txt
 touch /etc/openvpn/ipp_legacy.txt
 
-# Delete if already there so we don't accidentally prevent privileged access IP assignments.
-rm -rf /etc/openvpn/privileged_assigned.txt
-touch /etc/openvpn/privileged_assigned.txt
-
-chown openvpn:openvpn /etc/openvpn/*.txt
-
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
 [ -d /dev/net ] ||
