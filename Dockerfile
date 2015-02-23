@@ -32,8 +32,11 @@ COPY config/env.tmpl /etc/confd/templates/env.tmpl
 RUN mkdir /resin-log
 COPY resin-vpn.conf resin-vpn-legacy.conf /etc/supervisor/conf.d/
 
-RUN useradd openvpn
-RUN mkdir -p /var/run/
+ # openvpn group already exists.
+RUN useradd openvpn \
+	&& chgrp openvpn /etc/openvpn \
+	&& chmod 0775 /etc/openvpn \
+	&& mkdir -p /var/run/
 
 COPY resin-vpn-api.conf /etc/supervisor/conf.d/
 COPY config /etc/openvpn

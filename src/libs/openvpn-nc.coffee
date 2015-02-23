@@ -11,6 +11,10 @@ class OpenVPNSet
 		return Promise.map(@vpns, (v) -> v.getStatus(format)).then (vs) ->
 			_.merge({}, vs...)
 
+	execCommand: (command) ->
+		for v in @vpns
+			v.execCommand(command)
+
 class OpenVPN
 	constructor: (@port, @host='localhost') ->
 		connect = =>

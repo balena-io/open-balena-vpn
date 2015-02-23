@@ -5,7 +5,7 @@ if [ -f /etc/openvpn/env ]; then
 fi
 
 URL=https://"${API_HOST:=api.resindev.io}"/services/vpn/auth/"$username"?apikey="$password"
-RESP=$(curl "$URL")
+RESP=$(curl $CURL_EXTRA_FLAGS "$URL")
 
 # Exiting with 0 status code authorises login.
 if [ "$RESP" == "OK" ]; then
