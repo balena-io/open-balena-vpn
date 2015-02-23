@@ -33,10 +33,10 @@ RUN mkdir /resin-log
 COPY resin-vpn.conf resin-vpn-legacy.conf /etc/supervisor/conf.d/
 
  # openvpn group already exists.
-RUN useradd openvpn
-RUN chgrp openvpn /etc/openvpn
-RUN chmod 0775 /etc/openvpn
-RUN mkdir -p /var/run/
+RUN useradd openvpn \
+	&& chgrp openvpn /etc/openvpn \
+	&& chmod 0775 /etc/openvpn \
+	&& mkdir -p /var/run/
 
 COPY resin-vpn-api.conf /etc/supervisor/conf.d/
 COPY config /etc/openvpn
