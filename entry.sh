@@ -36,9 +36,6 @@ iptables -A FORWARD -s $VPN_PRIVILEGED_SUBNET -d 10.2.0.0/16 -m conntrack --ctst
 # Deny everything else.
 iptables -A FORWARD -j DROP
 
-touch /etc/openvpn/ipp.txt
-touch /etc/openvpn/ipp_legacy.txt
-
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
 [ -d /dev/net ] ||
