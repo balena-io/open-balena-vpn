@@ -1,2 +1,4 @@
 .git
 automation
+node_modules
+config/env

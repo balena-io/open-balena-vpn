@@ -8,8 +8,8 @@ _ = require 'lodash'
 { requestQueue } = require './libs/request-queue'
 
 envKeys = [
-	'API_ENDPOINT'
-	'API_KEY'
+	'RESIN_API_HOST'
+	'VPN_SERVICE_API_KEY'
 	'VPN_HOST'
 	'VPN_MANAGEMENT_NEW_PORT'
 	'VPN_MANAGEMENT_PORT'
@@ -71,7 +71,7 @@ app.post '/api/v1/clients/', (req, res) ->
 		return res.sendStatus(400)
 	data = _.pick(req.body, [ 'common_name', 'virtual_address', 'real_address' ])
 	queue.push(
-		url: "#{env.API_ENDPOINT}/services/vpn/client-connect?apikey=#{env.API_KEY}"
+		url: "https://#{env.RESIN_API_HOST}/services/vpn/client-connect?apikey=#{env.VPN_SERVICE_API_KEY}"
 		method: "post"
 		form: data
 	)
@@ -94,7 +94,7 @@ app.delete '/api/v1/clients/', fromLocalHost, (req, res) ->
 		return res.sendStatus(400)
 	data = _.pick(req.body, [ 'common_name', 'virtual_address', 'real_address' ])
 	queue.push(
-		url: "#{env.API_ENDPOINT}/services/vpn/client-disconnect?apikey=#{env.API_KEY}"
+		url: "https://#{env.RESIN_API_HOST}/services/vpn/client-disconnect?apikey=#{env.VPN_SERVICE_API_KEY}"
 		method: "post"
 		form: data
 	)

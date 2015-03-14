@@ -1,0 +1,4 @@
+{{if exists "/resin/vpn/logentries/token"}}
+$template Logentries,"{{getv "/resin/vpn/logentries/token"}} %HOSTNAME% %syslogtag%%msg%\n"
+*.* @@api.logentries.com:10000;Logentries
+{{end}}

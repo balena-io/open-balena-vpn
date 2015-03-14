@@ -4,7 +4,7 @@
   "description": "RESTful VPN api",
   "main": "server.js",
   "scripts": {
-    "test": "docker build -t vpntest . && docker run --rm --tty --privileged --env=VPN_TESTING=1 vpntest /bin/sh -c 'cd /app && npm install && ./node_modules/mocha/bin/mocha'"
+    "test": "docker build -t vpntest . && docker run --rm --tty --privileged --env=VPN_TESTING=1 vpntest /bin/sh -c 'cd /usr/src/app && npm install && ./node_modules/mocha/bin/mocha'"
   },
   "dependencies": {
     "block-queue": "~0.0.2",

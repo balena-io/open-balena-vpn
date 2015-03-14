@@ -11,7 +11,7 @@ CA_ENDPOINT = process.env.CA_ENDPOINT ? 'http://ca.resindev.io:9292/1/certificat
 CA_NAME = process.env.CA_NAME ? 'resin_dev'
 VPN_HOST = process.env.VPN_HOST ? '127.0.0.1'
 VPN_PORT = process.env.VPN_PORT ? 1194
-CA_CERT_PATH = process.env.CA_CERT_PATH ? '/app/test/data/ca.crt'
+CA_CERT_PATH = process.env.CA_CERT_PATH ? '/usr/src/app/test/data/ca.crt'
 
 exports.getSignedCertificate = getSignedCertificate = (uuid, caEndpoint, caName, outputDir) ->
 	csrgen(uuid,
@@ -51,7 +51,7 @@ exports.writeVPNConfiguration = writeVPNConfiguration = (confDir, ca, cert, vpnh
 
 exports.createVPNClient = createVPNClient = (baseDir) ->
 	uuid = crypto.pseudoRandomBytes(31).toString('hex')
-	confDir = "/app/test/data/#{uuid}"
+	confDir = "/usr/src/app/test/data/#{uuid}"
 
 	fs.mkdirAsync(confDir)
 	.then ->
