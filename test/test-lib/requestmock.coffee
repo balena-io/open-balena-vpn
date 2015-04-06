@@ -19,8 +19,11 @@ requestMock =
 			return @defaultHandler
 
 mockery.enable(warnOnUnregistered: false)
-mockery.registerMock 'request', (opts, cb) ->
-	url = opts.url.slice(0, opts.url.indexOf('?'))
+mockery.registerMock 'requestretry', (opts, cb) ->
+	if opts.url.indexOf('?') != -1
+		url = opts.url.slice(0, opts.url.indexOf('?'))
+	else
+		{ url } = opts
 	requestMock.getHandler(url)(opts, cb)
 
 exports.requestMock = requestMock

@@ -3,6 +3,8 @@ bodyParser = require 'body-parser'
 morgan = require 'morgan'
 Netmask = require('netmask').Netmask
 _ = require 'lodash'
+Promise = require 'bluebird'
+request = Promise.promisify(require('requestretry'))
 
 { OpenVPNSet } = require './libs/openvpn-nc'
 { requestQueue } = require './libs/request-queue'
@@ -84,6 +86,28 @@ fromLocalHost = (req, res, next) ->
 		return res.sendStatus(401)
 
 	next()
+
+app.post '/api/v1/auth/', fromLocalHost, (req, res) ->
+	if not req.body.username?
+		return res.sendStatus(400)
+	if not req.body.password?
+		return res.sendStatus(400)
+	username = req.body.username
+	apiKey = req.body.password
+	requestOpts =
+		url: "https://#{env.RESIN_API_HOST}/services/vpn/auth/#{username}"
+		qs: { apiKey }
+		retryDelay: 2000
+	request(requestOpts).get(0)
+	.then (response) ->
+		if response.statusCode == 200
+			res.send('OK')
+		else
+			throw new Error('Authentication failed.')
+	.catch (e) ->
+		console.log('authentication failed', e)
+		res.sendStatus(401)
+	
 
 app.delete '/api/v1/clients/', fromLocalHost, (req, res) ->
 	if not req.body.common_name?

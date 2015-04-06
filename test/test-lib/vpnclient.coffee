@@ -1,65 +1,35 @@
 Promise = require 'bluebird'
-csrgen = Promise.promisify(require('csr-gen'))
 request = Promise.promisifyAll(require('request'))
-crypto = require 'crypto'
 fs = Promise.promisifyAll(require('fs'))
 _ = require 'lodash'
 path = require 'path'
 { spawn } = require 'child_process'
+tmp = Promise.promisifyAll(require('tmp'))
 
-CA_ENDPOINT = process.env.CA_ENDPOINT ? 'http://ca.resindev.io:9292/1/certificate/issue/'
-CA_NAME = process.env.CA_NAME ? 'resin_dev'
-VPN_HOST = process.env.VPN_HOST ? '127.0.0.1'
-VPN_PORT = process.env.VPN_PORT ? 1194
-CA_CERT_PATH = process.env.CA_CERT_PATH ? '/usr/src/app/test/data/ca.crt'
+VPN_HOST = VPN_HOST ? '127.0.0.1'
+VPN_PORT = VPN_PORT ? 443
+CA_CERT_PATH = CA_CERT_PATH ? path.resolve(__dirname, '../data/ca.crt')
 
-exports.getSignedCertificate = getSignedCertificate = (uuid, caEndpoint, caName, outputDir) ->
-	csrgen(uuid,
-		company: 'Rulemotion Ltd'
-		csrName: 'client.csr'
-		keyName: 'client.key'
+writeVPNConfiguration = (confDir, uuid, apiKey) ->
+	authfile = confDir + "/auth-file"
+	Promise.all( [
+		fs.readFileAsync(__dirname + '/openvpn.conf.tmpl', 'utf8')
+		fs.readFileAsync(CA_CERT_PATH)
+		fs.writeFileAsync(authfile, "#{uuid}\n#{apiKey}\n")
+	] )
+	.spread (tmpl, ca) ->
+	       [
+		       fs.writeFileAsync("#{confDir}/client.conf", _.template(tmpl)({ vpnhost: VPN_HOST, vpnport: VPN_PORT, authfile })),
+		       fs.writeFileAsync("#{confDir}/ca.crt", ca),
+	       ]
 
-		outputDir: outputDir
-		email: 'vpn@resin.io'
-		read: true
-		country: ''
-		city: ''
-		state: ''
-		division: ''
-	).then (keys) ->
-		options =
-			url: caEndpoint
-			form:
-				ca: caName
-				profile: 'client'
-				validityPeriod: 31536000
-				'subject[O]': 'Rulemotion Ltd'
-				'subject[CN]': uuid,
-				csr: keys.csr
-		return request.postAsync(options)
-		.spread (res, body) ->
-			return body
 
-exports.writeVPNConfiguration = writeVPNConfiguration = (confDir, ca, cert, vpnhost, vpnport) ->
-	fs.readFileAsync(__dirname + '/openvpn.conf.tmpl', 'utf8')
-	.then (tmpl) ->	
-		Promise.all( [
-			fs.writeFileAsync("#{confDir}/client.conf", _.template(tmpl)({ ca, cert, vpnhost, vpnport })),
-			fs.writeFileAsync("#{confDir}/ca.crt", ca),
-			fs.writeFileAsync("#{confDir}/client.crt", cert)
-		] )
-
-exports.createVPNClient = createVPNClient = (baseDir) ->
-	uuid = crypto.pseudoRandomBytes(31).toString('hex')
-	confDir = "/usr/src/app/test/data/#{uuid}"
+exports.createVPNClient = createVPNClient = (uuid, apiKey) ->
+	confDir = path.resolve(__dirname, "../data/#{uuid}")
 
 	fs.mkdirAsync(confDir)
 	.then ->
-		cert = getSignedCertificate(uuid, CA_ENDPOINT, CA_NAME, confDir)
-		ca = fs.readFileAsync(CA_CERT_PATH, 'utf8')
-		return [ cert, ca ]
-	.spread (cert, ca) ->
-		writeVPNConfiguration(confDir, ca, cert, VPN_HOST, VPN_PORT)
+		writeVPNConfiguration(confDir, uuid, apiKey)
 	.then ->
 		new Promise (resolve, reject) ->
 			openvpn = spawn('openvpn', [ 'client.conf' ], cwd: confDir)
@@ -68,9 +38,12 @@ exports.createVPNClient = createVPNClient = (baseDir) ->
 			openvpn.stdout.on 'data', (data) ->
 				if data.toString().match('Initialization Sequence Completed')
 					resolve(openvpn)
+			openvpn.on 'close', (code) ->
+				reject(new Error('OpenVPN client exited with code ' + code))
 	.then (proc) ->
 		return {
 			uuid: uuid
+			apiKey: apiKey
 			disconnect: ->
 				new Promise (resolve, reject) ->
 					proc.kill()

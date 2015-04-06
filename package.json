@@ -4,7 +4,7 @@
   "description": "RESTful VPN api",
   "main": "server.js",
   "scripts": {
-    "test": "docker build -t vpntest . && docker run --rm --tty --privileged --env=VPN_TESTING=1 vpntest /bin/sh -c 'cd /usr/src/app && npm install && ./node_modules/mocha/bin/mocha'"
+    "test": "RESIN_API_HOST=api.resindev.io VPN_SERVICE_API_KEY=bablah VPN_HOST=127.0.0.1 VPN_MANAGEMENT_NEW_PORT=11195 VPN_MANAGEMENT_PORT=11194 VPN_PRIVILEGED_SUBNET=10.255.255.0/24 VPN_SUBNET=10.0.0.0/8 ./node_modules/mocha/bin/mocha --bail --compilers coffee:coffee-script/register test/app.coffee"
   },
   "dependencies": {
     "block-queue": "~0.0.2",
@@ -17,7 +17,8 @@
     "morgan": "~1.5.1",
     "netmask": "^1.0.5",
     "request": "^2.51.0",
-    "requestretry": "~1.2.1"
+    "requestretry": "~1.2.1",
+    "tmp": "~0.0.25"
   },
   "devDependencies": {
     "chai": "~1.10.0",

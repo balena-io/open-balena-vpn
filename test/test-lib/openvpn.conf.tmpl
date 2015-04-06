@@ -2,10 +2,10 @@ client
 remote <%= vpnhost %> <%= vpnport %>
 resolv-retry infinite
 
-ca ca.crt
-cert client.crt
-key client.key
 remote-cert-tls server
+ca ca.crt
+auth-user-pass <%= authfile %>
+auth-retry nointeract
 
 comp-lzo
 dev tun
