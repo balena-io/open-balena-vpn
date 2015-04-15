@@ -3,13 +3,15 @@ bodyParser = require 'body-parser'
 morgan = require 'morgan'
 Netmask = require('netmask').Netmask
 _ = require 'lodash'
+Promise = require 'bluebird'
+request = Promise.promisify(require('requestretry'))
 
 { OpenVPNSet } = require './libs/openvpn-nc'
 { requestQueue } = require './libs/request-queue'
 
 envKeys = [
-	'API_ENDPOINT'
-	'API_KEY'
+	'RESIN_API_HOST'
+	'VPN_SERVICE_API_KEY'
 	'VPN_HOST'
 	'VPN_MANAGEMENT_NEW_PORT'
 	'VPN_MANAGEMENT_PORT'
@@ -71,7 +73,7 @@ app.post '/api/v1/clients/', (req, res) ->
 		return res.sendStatus(400)
 	data = _.pick(req.body, [ 'common_name', 'virtual_address', 'real_address' ])
 	queue.push(
-		url: "#{env.API_ENDPOINT}/services/vpn/client-connect?apikey=#{env.API_KEY}"
+		url: "https://#{env.RESIN_API_HOST}/services/vpn/client-connect?apikey=#{env.VPN_SERVICE_API_KEY}"
 		method: "post"
 		form: data
 	)
@@ -85,6 +87,28 @@ fromLocalHost = (req, res, next) ->
 
 	next()
 
+app.post '/api/v1/auth/', fromLocalHost, (req, res) ->
+	if not req.body.username?
+		return res.sendStatus(400)
+	if not req.body.password?
+		return res.sendStatus(400)
+	username = req.body.username
+	apiKey = req.body.password
+	requestOpts =
+		url: "https://#{env.RESIN_API_HOST}/services/vpn/auth/#{username}"
+		qs: { apiKey }
+		retryDelay: 2000
+	request(requestOpts).get(0)
+	.then (response) ->
+		if response.statusCode == 200
+			res.send('OK')
+		else
+			throw new Error('Authentication failed.')
+	.catch (e) ->
+		console.log('authentication failed', e)
+		res.sendStatus(401)
+	
+
 app.delete '/api/v1/clients/', fromLocalHost, (req, res) ->
 	if not req.body.common_name?
 		return res.sendStatus(400)
@@ -94,7 +118,7 @@ app.delete '/api/v1/clients/', fromLocalHost, (req, res) ->
 		return res.sendStatus(400)
 	data = _.pick(req.body, [ 'common_name', 'virtual_address', 'real_address' ])
 	queue.push(
-		url: "#{env.API_ENDPOINT}/services/vpn/client-disconnect?apikey=#{env.API_KEY}"
+		url: "https://#{env.RESIN_API_HOST}/services/vpn/client-disconnect?apikey=#{env.VPN_SERVICE_API_KEY}"
 		method: "post"
 		form: data
 	)
