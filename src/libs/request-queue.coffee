@@ -18,8 +18,10 @@ _ = require 'lodash'
 # that are handled by "requestretry" module.
 exports.requestQueue = (queueOpts = {}) ->
 	queue 1, (opts, done) ->
-		_.extend(opts, queueOpts)
+		_.extend(opts, _.pick(queueOpts, 'maxAttempts', 'retryDelay', 'retryStrategy'))
 		requestRetry(opts)
 		.catch (err) ->
-			console.log("Maximum attempts exceeded: ", err)
+			if queueOpts.errorHandler
+				queueOpts.errorHandler(err)
+			throw err
 		.nodeify(done)
