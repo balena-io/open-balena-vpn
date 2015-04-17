@@ -6,7 +6,18 @@ _ = require 'lodash'
 { createVPNClient } = require './test-lib/vpnclient'
 { requestMock } = require './test-lib/requestmock'
 
+resetRequested = false
+requestMock.enable 'https://api.resindev.io/services/vpn/reset-all', (args, cb) ->
+	resetRequested = true
+	cb(null, statusCode: 200, 'OK')
+
 app = require '../src/app'
+
+describe 'init', ->
+	it 'should send a reset-all', ->
+		Promise.delay(1000)
+		.then ->
+			expect(resetRequested).to.be.true
 
 describe '/api/v1/clients/', ->
 	@timeout(100000)
