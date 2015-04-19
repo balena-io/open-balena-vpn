@@ -12,8 +12,7 @@ class OpenVPNSet
 			_.merge({}, vs...)
 
 	execCommand: (command) ->
-		for v in @vpns
-			v.execCommand(command)
+		Promise.map(@vpns, (v) -> v.execCommand(command))
 
 class OpenVPN
 	constructor: (@port, @host='localhost') ->

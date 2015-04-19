@@ -7,7 +7,7 @@ Promise = require 'bluebird'
 request = Promise.promisify(require('requestretry'))
 
 { OpenVPNSet } = require './libs/openvpn-nc'
-{ requestQueue } = require './libs/request-queue'
+clients = require './clients'
 
 envKeys = [
 	'RESIN_API_HOST'
@@ -39,12 +39,7 @@ if !vpnSubnet.contains(env.VPN_PRIVILEGED_SUBNET)
 managementPorts = [ env.VPN_MANAGEMENT_PORT, env.VPN_MANAGEMENT_NEW_PORT ]
 vpn = new OpenVPNSet(managementPorts, env.VPN_HOST)
 
-queue = requestQueue(
-	maxAttempts: 3600
-	retryDelay: 1000
-)
-
-module.exports = app = express()
+module.exports = app = Promise.promisifyAll(express())
 
 notFromVpnClients = (req, res, next) ->
 	if vpnSubnet.contains(req.ip) and !privileged.contains(req.ip)
@@ -72,11 +67,7 @@ app.post '/api/v1/clients/', (req, res) ->
 	if not req.body.real_address?
 		return res.sendStatus(400)
 	data = _.pick(req.body, [ 'common_name', 'virtual_address', 'real_address' ])
-	queue.push(
-		url: "https://#{env.RESIN_API_HOST}/services/vpn/client-connect?apikey=#{env.VPN_SERVICE_API_KEY}"
-		method: "post"
-		form: data
-	)
+	clients.connected(data)
 	res.send('OK')
 
 ## Private endpoints, each of these should use the `fromLocalHost` middleware.
@@ -117,11 +108,7 @@ app.delete '/api/v1/clients/', fromLocalHost, (req, res) ->
 	if not req.body.real_address?
 		return res.sendStatus(400)
 	data = _.pick(req.body, [ 'common_name', 'virtual_address', 'real_address' ])
-	queue.push(
-		url: "https://#{env.RESIN_API_HOST}/services/vpn/client-disconnect?apikey=#{env.VPN_SERVICE_API_KEY}"
-		method: "post"
-		form: data
-	)
+	clients.disconnected(data)
 	res.send('OK')
 
 app.post '/api/v1/privileged/ip', fromLocalHost, (req, res) ->
@@ -152,7 +139,7 @@ app.get '/api/v1/privileged/peer', fromLocalHost, (req, res) ->
 	else
 		res.sendStatus(400)
 
-app.listen(80)
-
-# Now endpoints are established, release VPN hold.
-vpn.execCommand('hold release')
+app.listenAsync(80).then ->
+	clients.resetAll()
+	# Now endpoints are established, release VPN hold.
+	vpn.execCommand('hold release')
