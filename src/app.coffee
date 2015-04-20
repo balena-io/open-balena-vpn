@@ -87,7 +87,8 @@ app.post '/api/v1/auth/', fromLocalHost, (req, res) ->
 	apiKey = req.body.password
 	requestOpts =
 		url: "https://#{env.RESIN_API_HOST}/services/vpn/auth/#{username}"
-		qs: { apiKey }
+		qs:
+			apikey: apiKey
 		retryDelay: 2000
 	request(requestOpts).get(0)
 	.then (response) ->
