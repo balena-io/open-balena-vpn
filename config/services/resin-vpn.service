@@ -1,5 +1,5 @@
 [Unit]
-Description=resin-api
+Description=resin-vpn
 Requires=confd.service openvpn@server.service openvpn@server-legacy.service
 After=confd.service
 
