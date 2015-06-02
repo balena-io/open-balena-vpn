@@ -28,6 +28,7 @@ curl -s -X POST $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -d @- "htt
 	"event": "client-connect",
 	"common_name": "$common_name",
 	"virtual_address": "$ifconfig_pool_remote_ip",
-	"real_address": "$trusted_ip"
+	"real_address": "$trusted_ip",
+	"trusted_port": "$trusted_port"
 }
 EOF
