@@ -66,7 +66,9 @@ app.post '/api/v1/clients/', (req, res) ->
 		return res.sendStatus(400)
 	if not req.body.real_address?
 		return res.sendStatus(400)
-	data = _.pick(req.body, [ 'common_name', 'virtual_address', 'real_address' ])
+	if not req.body.trusted_port?
+		return res.sendStatus(400)
+	data = _.pick(req.body, [ 'common_name', 'virtual_address', 'real_address', 'trusted_port' ])
 	clients.connected(data)
 	res.send('OK')
 
@@ -108,7 +110,9 @@ app.delete '/api/v1/clients/', fromLocalHost, (req, res) ->
 		return res.sendStatus(400)
 	if not req.body.real_address?
 		return res.sendStatus(400)
-	data = _.pick(req.body, [ 'common_name', 'virtual_address', 'real_address' ])
+	if not req.body.trusted_port?
+		return res.sendStatus(400)
+	data = _.pick(req.body, [ 'common_name', 'virtual_address', 'real_address', 'trusted_port' ])
 	clients.disconnected(data)
 	res.send('OK')
 
