@@ -10,6 +10,9 @@
 
 { requestQueue } = require './libs/request-queue'
 
+# `common_name`s to `trusted_port`s map
+activePort = {}
+
 queue = requestQueue(
 	maxAttempts: 3600
 	retryDelay: 1000
@@ -18,12 +21,14 @@ queue = requestQueue(
 
 exports.resetAll = resetAll = ->
 	queue.clear()
+	activePort = {}
 	queue.push(
 		url: "https://#{process.env.RESIN_API_HOST}/services/vpn/reset-all?apikey=#{process.env.VPN_SERVICE_API_KEY}"
 		method: "post"
 	)
 
 exports.connected = (data) ->
+	activePort[data.common_name] = data.trusted_port
 	queue.push(
 		url: "https://#{process.env.RESIN_API_HOST}/services/vpn/client-connect?apikey=#{process.env.VPN_SERVICE_API_KEY}"
 		method: "post"
@@ -31,6 +36,8 @@ exports.connected = (data) ->
 	)
 
 exports.disconnected = (data) ->
+	if activePort[data.common_name] isnt data.trusted_port
+		return
 	queue.push(
 		url: "https://#{process.env.RESIN_API_HOST}/services/vpn/client-disconnect?apikey=#{process.env.VPN_SERVICE_API_KEY}"
 		method: "post"
