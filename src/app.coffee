@@ -151,3 +151,4 @@ app.listenAsync(80).then ->
 	vpn.execCommand('hold release')
 	.catch (e) ->
 		console.error('failed releasing hold', e, e.stack)
+		process.exit(1)

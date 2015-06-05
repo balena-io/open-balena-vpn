@@ -11,6 +11,7 @@ ExecStartPre=/bin/bash -c 'mkdir -p /dev/net; if [ ! -c /dev/net/tun ]; then mkn
 ExecStartPre=/sbin/iptables-restore src/iptables.conf
 ExecStartPre=/usr/bin/env
 ExecStart=/usr/src/app/node_modules/.bin/coffee src/app.coffee
+Restart=on-failure
 
 [Install]
 WantedBy=basic.target
