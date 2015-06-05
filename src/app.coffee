@@ -5,6 +5,8 @@ Netmask = require('netmask').Netmask
 _ = require 'lodash'
 Promise = require 'bluebird'
 request = Promise.promisify(require('requestretry'))
+createProxy = require './libs/proxy'
+device = require './device'
 
 { OpenVPNSet } = require './libs/openvpn-nc'
 clients = require './clients'
@@ -37,6 +39,7 @@ if !vpnSubnet.contains(env.VPN_PRIVILEGED_SUBNET)
 	fatal("Privileged IP subnet/24 #{env.VPN_PRIVILEGED_SUBNET} isn't on the VPN subnet #{env.VPN_SUBNET}")
 
 managementPorts = [ env.VPN_MANAGEMENT_PORT, env.VPN_MANAGEMENT_NEW_PORT ]
+
 vpn = new OpenVPNSet(managementPorts, env.VPN_HOST)
 
 module.exports = app = Promise.promisifyAll(express())
@@ -148,3 +151,8 @@ app.listenAsync(80).then ->
 	clients.resetAll()
 	# Now endpoints are established, release VPN hold.
 	vpn.execCommand('hold release')
+	.catch (e) ->
+		console.error('failed releasing hold', e, e.stack)
+
+proxy = createProxy(_.partialRight(device.isAccessible, vpnSubnet, process.env.VPN_SERVICE_API_KEY))
+proxy.listen(8080)

@@ -16,6 +16,7 @@
     "lodash": "~3.0.0",
     "morgan": "~1.5.1",
     "netmask": "^1.0.5",
+    "pinejs-client-js": "git+ssh://git@bitbucket.org/rulemotion/pinejs-client-js.git#v0.3.0",
     "request": "^2.51.0",
     "requestretry": "~1.2.1",
     "tmp": "~0.0.25"
