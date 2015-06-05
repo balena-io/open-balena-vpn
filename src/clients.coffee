@@ -13,7 +13,7 @@
 # `common_name`s to `trusted_port`s map
 activePort = {}
 
-resetAll = ->
+exports.resetAll = resetAll = ->
 	queue.clear()
 	activePort = {}
 	queue.push(
@@ -26,8 +26,6 @@ queue = requestQueue(
 	retryDelay: 1000
 	errorHandler: resetAll
 )
-
-exports.resetAll = resetAll
 
 exports.connected = (data) ->
 	activePort[data.common_name] = data.trusted_port
