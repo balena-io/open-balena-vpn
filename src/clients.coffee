@@ -13,12 +13,6 @@
 # `common_name`s to `trusted_port`s map
 activePort = {}
 
-queue = requestQueue(
-	maxAttempts: 3600
-	retryDelay: 1000
-	errorHandler: resetAll
-)
-
 exports.resetAll = resetAll = ->
 	queue.clear()
 	activePort = {}
@@ -26,6 +20,12 @@ exports.resetAll = resetAll = ->
 		url: "https://#{process.env.RESIN_API_HOST}/services/vpn/reset-all?apikey=#{process.env.VPN_SERVICE_API_KEY}"
 		method: "post"
 	)
+
+queue = requestQueue(
+	maxAttempts: 3600
+	retryDelay: 1000
+	errorHandler: resetAll
+)
 
 exports.connected = (data) ->
 	activePort[data.common_name] = data.trusted_port
