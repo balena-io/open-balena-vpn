@@ -2,7 +2,7 @@ url = require 'url'
 Promise = require 'bluebird'
 PlatformApi = require('pinejs-client-js/request')
 
-platformEndpoint = url.resolve(process.env.RESIN_API_HOST, '/ewa/')
+platformEndpoint = url.resolve("http://#{process.env.RESIN_API_HOST}", '/ewa/')
 resinApi = new PlatformApi(platformEndpoint)
 
 exports.getDeviceByVPNAddress = getDeviceByVPNAddress = (vpnAddress, apiKey) ->

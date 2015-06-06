@@ -1,4 +1,5 @@
-request = require 'supertest'
+supertest = require 'supertest'
+request = require 'request'
 { expect } = require('chai')
 Promise = require 'bluebird'
 _ = require 'lodash'
@@ -34,14 +35,14 @@ describe '/api/v1/clients/', ->
 	describe 'When no clients are connected', ->
 		it 'should return empty client list', (done) ->
 			Promise.delay(2000).then ->
-				request(app).get('/api/v1/clients/').expect(200, '[]', done)
+				supertest(app).get('/api/v1/clients/').expect(200, '[]', done)
 
 	describe 'When a client connects and disconnects', ->
 		it 'should send the correct data', (done) ->
 			createVPNClient("user1", "pass")
 			.then (client) ->
 				Promise.fromNode (cb) ->
-					request(app).get('/api/v1/clients/')
+					supertest(app).get('/api/v1/clients/')
 					.expect(200)
 					.expect (res) ->
 						clients = res.body
@@ -57,7 +58,7 @@ describe '/api/v1/clients/', ->
 					return client.disconnect()
 			.then ->
 				Promise.fromNode (cb) ->
-					request(app).get('/api/v1/clients/').expect(200, '[]', cb)
+					supertest(app).get('/api/v1/clients/').expect(200, '[]', cb)
 			.nodeify(done)
 
 eventsClient = null
@@ -102,3 +103,33 @@ describe 'VPN Events', ->
 		.nodeify(done)
 
 		@client.disconnect()
+
+describe 'VPN proxy', ->
+	@timeout(10000)
+	before ->
+		requestMock.enable 'https://api.resindev.io/services/vpn/auth/user3', (args, cb) ->
+			console.log('auth args', args)
+			cb(null, statusCode: 200, 'OK')
+
+		requestMock.enable 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
+			console.log('connect args', args)
+			cb(null, statusCode: 200, 'OK')
+		
+		requestMock.enable 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
+			console.log('disconnect args', args)
+			cb(null, statusCode: 200, 'OK')
+
+	it 'should proxy', (done) ->
+		createVPNClient("user3", "pass")
+		.then (client) =>
+			@client = client
+			console.log('client', client)
+			Promise.fromNode (cb) ->
+				request { url: "http://#{client.vpnAddress}:80", proxy: "http://localhost:8080", tunnel: true }, (e, r, data) ->
+					console.log('response', e, data)
+					cb(e, data)
+		.nodeify(done)
+
+# TODO: test accessible
+# TODO: test supervisor connect (even if not accessible)
+# TODO: separate proxy test to a different file

@@ -26,6 +26,7 @@ writeVPNConfiguration = (confDir, uuid, apiKey) ->
 
 exports.createVPNClient = createVPNClient = (uuid, apiKey) ->
 	confDir = path.resolve(__dirname, "../data/#{uuid}")
+	vpnAddress = null
 
 	fs.mkdirAsync(confDir)
 	.then ->
@@ -36,14 +37,29 @@ exports.createVPNClient = createVPNClient = (uuid, apiKey) ->
 
 			# Prefix and log all OpenVPN output
 			openvpn.stdout.on 'data', (data) ->
-				if data.toString().match('Initialization Sequence Completed')
+				data = data.toString()
+				console.log('vpn', data.toString())
+				m = data.match(///
+					PUSH:\ Received\ control\ message:\ '
+						PUSH_REPLY,
+						route\ [0-9.]+\ [0-9.]+,
+						topology\ \w+,
+						ping\ \w+,
+						ping-restart\ \w+,
+						ifconfig\ ([0-9.]+)\ [0-9.]+
+					'
+				///)
+				if m
+					[fullText, vpnAddress] = m
+				if data.match('Initialization Sequence Completed')
 					resolve(openvpn)
 			openvpn.on 'close', (code) ->
 				reject(new Error('OpenVPN client exited with code ' + code))
 	.then (proc) ->
 		return {
-			uuid: uuid
-			apiKey: apiKey
+			uuid,
+			apiKey,
+			vpnAddress,
 			disconnect: ->
 				new Promise (resolve, reject) ->
 					proc.kill()
