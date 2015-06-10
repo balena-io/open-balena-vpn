@@ -1,3 +1,8 @@
+# 2015-06-10
+
+* Fix VPN race condition causing incorrect online/offline state [petrosagg]
+* Use less aggressive keepalive settings [petrosagg]
+
 # 2015-05-13
 
 v0.1.1
