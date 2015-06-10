@@ -9,6 +9,8 @@ COPY . /usr/src/app
 
 COPY config/services/ /etc/systemd/system/
 
-RUN rm -rf /etc/openvpn && ln -s /usr/src/app/openvpn /etc/openvpn
+RUN echo AUTOSTART=none > /etc/default/openvpn \
+	&& rm -rf /etc/openvpn \
+	&& ln -s /usr/src/app/openvpn /etc/openvpn
 
 RUN systemctl enable resin-vpn.service
