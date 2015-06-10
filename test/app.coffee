@@ -1,8 +1,11 @@
 supertest = require 'supertest'
-request = require 'request'
-{ expect } = require('chai')
+chai = require 'chai'
+chai.use(require('chai-as-promised'))
+{ expect } = chai
 Promise = require 'bluebird'
 _ = require 'lodash'
+http = require 'http'
+requestAsync = Promise.promisify(require('request'))
 
 { createVPNClient } = require './test-lib/vpnclient'
 { requestMock } = require './test-lib/requestmock'
@@ -63,7 +66,7 @@ describe '/api/v1/clients/', ->
 
 eventsClient = null
 describe 'VPN Events', ->
-	@timeout(10000)
+	@timeout(100000)
 	before ->
 		requestMock.enable 'https://api.resindev.io/services/vpn/auth/user2', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
@@ -105,31 +108,91 @@ describe 'VPN Events', ->
 		@client.disconnect()
 
 describe 'VPN proxy', ->
-	@timeout(10000)
+	@timeout(100000)
 	before ->
 		requestMock.enable 'https://api.resindev.io/services/vpn/auth/user3', (args, cb) ->
-			console.log('auth args', args)
+			cb(null, statusCode: 200, 'OK')
+
+		requestMock.enable 'https://api.resindev.io/services/vpn/auth/user4', (args, cb) ->
+			cb(null, statusCode: 200, 'OK')
+
+		requestMock.enable 'https://api.resindev.io/services/vpn/auth/user5', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
 		requestMock.enable 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
-			console.log('connect args', args)
 			cb(null, statusCode: 200, 'OK')
 		
 		requestMock.enable 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
-			console.log('disconnect args', args)
 			cb(null, statusCode: 200, 'OK')
+	
 
-	it 'should proxy', (done) ->
-		createVPNClient("user3", "pass")
-		.then (client) =>
-			@client = client
-			console.log('client', client)
+	describe 'web accessible device', ->
+		before ->
+			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
+				cb(null, { statusCode: 200 }, { d: [ { is_web_accessible: 1 } ] })
+
+		it 'should allow port 4200 without authentication', (done) ->
+			server = http.createServer (req, res) ->
+				res.writeHead(200, 'Content-type': 'text/plain')
+				res.end('hello from 4200')
+
 			Promise.fromNode (cb) ->
-				request { url: "http://#{client.vpnAddress}:80", proxy: "http://localhost:8080", tunnel: true }, (e, r, data) ->
-					console.log('response', e, data)
-					cb(e, data)
-		.nodeify(done)
+				server.listen(4200, cb)
+			.then ->
+				createVPNClient("user3", "pass")
+			.then (client) ->
+				requestAsync({ url: "http://#{client.vpnAddress}:4200/test", proxy: "http://localhost:8080", tunnel: true })
+				.spread (response, data) ->
+					expect(response).to.have.property('statusCode').that.equals(200)
+					expect(data).to.equal('hello from 4200')
+				.finally ->
+					client.disconnect()
+			.finally ->
+				Promise.fromNode (cb) ->
+					server.close(cb)
+			.nodeify(done)
 
-# TODO: test accessible
-# TODO: test supervisor connect (even if not accessible)
-# TODO: separate proxy test to a different file
+	describe 'not web accessible device', ->
+		before ->
+			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
+				cb(null, { statusCode: 200 }, { d: [ { is_web_accessible: 0 } ] })
+
+		it 'should not allow port 4200 without authentication', (done) ->
+			server = http.createServer (req, res) ->
+				res.writeHead(200, 'Content-type': 'text/plain')
+				res.end('hello from 4200')
+
+			Promise.fromNode (cb) ->
+				server.listen(4200, cb)
+			.then ->
+				createVPNClient("user4", "pass")
+			.then (client) ->
+				connection = requestAsync({ url: "http://#{client.vpnAddress}:4200/test", proxy: "http://localhost:8080", tunnel: true })
+				.finally ->
+					client.disconnect()
+				expect(connection).to.be.rejected
+			.finally ->
+				Promise.fromNode (cb) ->
+					server.close(cb)
+			.nodeify(done)
+
+		it 'should allow port 4200 with authentication', (done) ->
+			server = http.createServer (req, res) ->
+				res.writeHead(200, 'Content-type': 'text/plain')
+				res.end('hello from 4200')
+
+			Promise.fromNode (cb) ->
+				server.listen(4200, cb)
+			.then ->
+				createVPNClient("user5", "pass")
+			.then (client) ->
+				requestAsync({ url: "http://#{client.vpnAddress}:4200/test", proxy: "http://resin_api:test_api_key@localhost:8080", tunnel: true })
+				.spread (response, data) ->
+					expect(response).to.have.property('statusCode').that.equals(200)
+					expect(data).to.equal('hello from 4200')
+				.finally ->
+					client.disconnect()
+			.finally ->
+				Promise.fromNode (cb) ->
+					server.close(cb)
+			.nodeify(done)

@@ -68,3 +68,4 @@ exports.createVPNClient = createVPNClient = (uuid, apiKey) ->
 		}
 	.catch (err) ->
 		console.log('Error creating VPN client', err)
+		throw new Error(err)

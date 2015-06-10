@@ -2,6 +2,7 @@ http = require 'http'
 net = require 'net'
 url = require 'url'
 Promise = require 'bluebird'
+basicAuthParser = require 'basic-auth-parser'
 
 # Create an HTTP tunneling proxy
 # Based on proxy code from https://nodejs.org/api/http.html
@@ -14,13 +15,18 @@ createProxy = (hostFilter) ->
 		res.end('Method not allowed')
 
 	proxy.on 'connect', (req, cltSocket, head) ->
-		# connect to an origin server
-		srvUrl = url.parse("http://#{req.url}")
 		srvSocket = null
+		Promise.try ->
+			if req.headers['proxy-authorization']?
+				auth = basicAuthParser(req.headers['proxy-authorization'])
+			else
+				auth = null
 
-		hostFilter(srvUrl.hostname)
-		.then (accessible) ->
-			Promise.try ->
+			# connect to an origin server
+			srvUrl = url.parse("http://#{req.url}")
+
+			hostFilter(srvUrl.hostname, srvUrl.port, auth)
+			.then (accessible) ->
 				return cltSocket.end("HTTP/1.1 502 Not Accessible\r\n\r\n") if not accessible
 				srvSocket = net.connect srvUrl.port, srvUrl.hostname, ->
 					cltSocket.write "HTTP/1.1 200 Connection Established\r\n\
@@ -33,8 +39,7 @@ createProxy = (hostFilter) ->
 					srvSocket.on('error', reject)
 					srvSocket.on('end', resolve)
 		.catch (e) ->
-			console.error('proxy error', e, e.stack)
-			srvSocket.end() if srvSocket?
+			srvSocket?.end()
 			cltSocket.end()
 
 	return proxy

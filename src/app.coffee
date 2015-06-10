@@ -11,6 +11,9 @@ device = require './device'
 { OpenVPNSet } = require './libs/openvpn-nc'
 clients = require './clients'
 
+VPN_API_PORT = 80
+VPN_PROXY_PORT = 8080
+
 envKeys = [
 	'RESIN_API_HOST'
 	'VPN_SERVICE_API_KEY'
@@ -147,7 +150,7 @@ app.get '/api/v1/privileged/peer', fromLocalHost, (req, res) ->
 	else
 		res.sendStatus(400)
 
-app.listenAsync(80).then ->
+app.listenAsync(VPN_API_PORT).then ->
 	clients.resetAll()
 	# Now endpoints are established, release VPN hold.
 	vpn.execCommand('hold release')
@@ -155,4 +158,4 @@ app.listenAsync(80).then ->
 		console.error('failed releasing hold', e, e.stack)
 
 proxy = createProxy(_.partialRight(device.isAccessible, vpnSubnet, process.env.VPN_SERVICE_API_KEY))
-proxy.listen(8080)
+proxy.listen(VPN_PROXY_PORT)
