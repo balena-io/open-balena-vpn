@@ -1,5 +1,6 @@
 # 2015-06-10
 
+* Fix reset-all error handler [Aleksis]
 * Fix VPN race condition causing incorrect online/offline state [petrosagg]
 * Use less aggressive keepalive settings [petrosagg]
 
