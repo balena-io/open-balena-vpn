@@ -5,14 +5,15 @@ Netmask = require('netmask').Netmask
 _ = require 'lodash'
 Promise = require 'bluebird'
 request = Promise.promisify(require('requestretry'))
-createProxy = require './libs/proxy'
+url = require 'url'
+{ createProxy, basicAuth } = require './libs/connect-proxy'
 device = require './device'
 
 { OpenVPNSet } = require './libs/openvpn-nc'
 clients = require './clients'
 
 VPN_API_PORT = 80
-VPN_PROXY_PORT = 8080
+VPN_CONNECT_PROXY_PORT = 3128
 
 envKeys = [
 	'RESIN_API_HOST'
@@ -157,5 +158,32 @@ app.listenAsync(VPN_API_PORT).then ->
 	.catch (e) ->
 		console.error('failed releasing hold', e, e.stack)
 
-proxy = createProxy(_.partialRight(device.isAccessible, vpnSubnet, process.env.VPN_SERVICE_API_KEY))
-proxy.listen(VPN_PROXY_PORT)
+connectProxy = createProxy()
+connectProxy.use(basicAuth)
+
+connectProxy.use (req, cltSocket, head, next) ->
+	Promise.try ->
+		{ hostname, port } = url.parse("http://#{req.url}")
+
+		# Check that hostname matches expected UUID.resin format
+		if not /\.resin$/.test(hostname)
+			throw new Error('Invalid hostname: ' + hostname)
+
+		# Get uuid from UUID.resin domain
+		[ uuid ] = req.url.split('.')
+
+		device.isAccessible(uuid, port, req.auth, env.VPN_SERVICE_API_KEY)
+		.then (accessible) ->
+			if not accessible
+				throw new Error('Not accessible: ' + req.url)
+			# Change routing address to actual vpn IP address.
+			device.getVPNAddress(uuid, env.VPN_SERVICE_API_KEY)
+			.then (vpnAddress) ->
+				req.url = vpnAddress + ":" + port
+	.then ->
+		next()
+	.catch (err) ->
+		cltSocket.end("HTTP/1.1 502 Not Accessible\r\n\r\n")
+		next(err)
+
+connectProxy.listen(VPN_CONNECT_PROXY_PORT)

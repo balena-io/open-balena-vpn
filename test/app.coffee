@@ -129,7 +129,7 @@ describe 'VPN proxy', ->
 	describe 'web accessible device', ->
 		before ->
 			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
-				cb(null, { statusCode: 200 }, { d: [ { is_web_accessible: 1 } ] })
+				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 1, vpn_address: 'localhost' } ] })
 
 		it 'should allow port 4200 without authentication', (done) ->
 			server = http.createServer (req, res) ->
@@ -141,7 +141,7 @@ describe 'VPN proxy', ->
 			.then ->
 				createVPNClient("user3", "pass")
 			.then (client) ->
-				requestAsync({ url: "http://#{client.vpnAddress}:4200/test", proxy: "http://localhost:8080", tunnel: true })
+				requestAsync({ url: "http://deadbeef.resin:4200/test", proxy: "http://localhost:3128", tunnel: true })
 				.spread (response, data) ->
 					expect(response).to.have.property('statusCode').that.equals(200)
 					expect(data).to.equal('hello from 4200')
@@ -155,7 +155,7 @@ describe 'VPN proxy', ->
 	describe 'not web accessible device', ->
 		before ->
 			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
-				cb(null, { statusCode: 200 }, { d: [ { is_web_accessible: 0 } ] })
+				cb(null, { statusCode: 200 }, { d: [ { uuid: 'deadbeef', is_web_accessible: 0, vpn_address: 'localhost' } ] })
 
 		it 'should not allow port 4200 without authentication', (done) ->
 			server = http.createServer (req, res) ->
@@ -167,7 +167,7 @@ describe 'VPN proxy', ->
 			.then ->
 				createVPNClient("user4", "pass")
 			.then (client) ->
-				connection = requestAsync({ url: "http://#{client.vpnAddress}:4200/test", proxy: "http://localhost:8080", tunnel: true })
+				connection = requestAsync({ url: "http://deadbeef.resin:4200/test", proxy: "http://localhost:3128", tunnel: true })
 				.finally ->
 					client.disconnect()
 				expect(connection).to.be.rejected
@@ -186,7 +186,7 @@ describe 'VPN proxy', ->
 			.then ->
 				createVPNClient("user5", "pass")
 			.then (client) ->
-				requestAsync({ url: "http://#{client.vpnAddress}:4200/test", proxy: "http://resin_api:test_api_key@localhost:8080", tunnel: true })
+				requestAsync({ url: "http://deadbeef.resin:4200/test", proxy: "http://resin_api:test_api_key@localhost:3128", tunnel: true })
 				.spread (response, data) ->
 					expect(response).to.have.property('statusCode').that.equals(200)
 					expect(data).to.equal('hello from 4200')

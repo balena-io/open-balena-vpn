@@ -9,24 +9,22 @@ resinApi = new PlatformApi(platformEndpoint)
 DEVICE_WEB_PORTS = [ 80, 8080, 4200 ]
 API_USERNAME = 'resin_api'
 
-exports.getDeviceByVPNAddress = getDeviceByVPNAddress = (vpnAddress, apiKey) ->
+exports.getDeviceUUID = getDeviceByUUID = (uuid, apiKey) ->
 	resinApi.get
 		resource: 'device'
 		options:
-			select: [ 'id', 'is_web_accessible', 'vpn_address' ]
+			select: [ 'id', 'uuid', 'is_web_accessible', 'vpn_address' ]
 			filter:
-				vpn_address: vpnAddress
+				uuid: uuid
 		customOptions:
 			apikey: apiKey
-	.then (devices) ->
-		return devices?[0]
+	.get(0)
 
-exports.isAccessible = (vpnAddress, port, auth, vpnSubnet, apiKey) ->
-	Promise.try ->
-		return false unless vpnSubnet.contains(vpnAddress) 
-		return true if auth?.username is API_USERNAME and auth?.password is apiKey
-		return false unless _.contains(DEVICE_WEB_PORTS, parseInt(port))
+exports.isAccessible = Promise.method (uuid, port, auth, apiKey) ->
+	return true if auth?.username is API_USERNAME and auth?.password is apiKey
+	return false unless _.contains(DEVICE_WEB_PORTS, parseInt(port))
 
-		getDeviceByVPNAddress(vpnAddress, apiKey)
-		.then (device) ->
-			return device?.is_web_accessible
+	getDeviceByUUID(uuid, apiKey).get('is_web_accessible')
+
+exports.getVPNAddress = (uuid, apiKey) ->
+	getDeviceByUUID(uuid, apiKey).get('vpn_address')
