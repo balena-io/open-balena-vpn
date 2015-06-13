@@ -146,9 +146,5 @@ app.get '/api/v1/privileged/peer', fromLocalHost, (req, res) ->
 
 app.listenAsync(80).then ->
 	clients.resetAll()
-
 	# Now endpoints are established, release VPN hold.
 	vpn.execCommand('hold release')
-	.catch (e) ->
-		console.error('failed releasing hold', e, e.stack)
-		process.exit(1)
