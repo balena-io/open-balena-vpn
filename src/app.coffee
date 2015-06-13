@@ -12,9 +12,6 @@ device = require './device'
 { OpenVPNSet } = require './libs/openvpn-nc'
 clients = require './clients'
 
-VPN_API_PORT = 80
-VPN_CONNECT_PROXY_PORT = 3128
-
 envKeys = [
 	'RESIN_API_HOST'
 	'VPN_SERVICE_API_KEY'
@@ -23,6 +20,8 @@ envKeys = [
 	'VPN_MANAGEMENT_PORT'
 	'VPN_PRIVILEGED_SUBNET'
 	'VPN_SUBNET'
+	'VPN_API_PORT'
+	'VPN_CONNECT_PROXY_PORT'
 ]
 
 { env } = process
@@ -151,7 +150,7 @@ app.get '/api/v1/privileged/peer', fromLocalHost, (req, res) ->
 	else
 		res.sendStatus(400)
 
-app.listenAsync(VPN_API_PORT).then ->
+app.listenAsync(env.VPN_API_PORT).then ->
 	clients.resetAll()
 	# Now endpoints are established, release VPN hold.
 	vpn.execCommand('hold release')
@@ -186,4 +185,4 @@ connectProxy.use (req, cltSocket, head, next) ->
 		cltSocket.end("HTTP/1.1 502 Not Accessible\r\n\r\n")
 		next(err)
 
-connectProxy.listen(VPN_CONNECT_PROXY_PORT)
+connectProxy.listen(env.VPN_CONNECT_PROXY_PORT)
