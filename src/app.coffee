@@ -166,14 +166,11 @@ tunnel.use (req, cltSocket, head, next) ->
 		if not uuid? or not port?
 			throw new Error('Invalid hostname: ' + hostname)
 
-		device.isAccessible(uuid, port, req.auth, env.VPN_SERVICE_API_KEY)
-		.then (accessible) ->
-			if not accessible
+		device.getDeviceByUUID(uuid,env.VPN_SERVICE_API_KEY)
+		.then (data) ->
+			if not device.isAccesible(data, port, req.auth)
 				throw new Error('Not accessible: ' + req.url)
-			# Change routing address to actual vpn IP address.
-			device.getVPNAddress(uuid, env.VPN_SERVICE_API_KEY)
-			.then (vpnAddress) ->
-				req.url = vpnAddress + ":" + port
+			req.url = data.vpn_address + ":" + port
 	.then ->
 		next()
 	.catch (err) ->
