@@ -6,7 +6,7 @@ _ = require 'lodash'
 Promise = require 'bluebird'
 request = Promise.promisify(require('requestretry'))
 url = require 'url'
-{ createProxy, basicAuth } = require './libs/connect-proxy'
+{ createTunnel, basicAuth } = require './libs/tunnel'
 device = require './device'
 
 { OpenVPNSet } = require './libs/openvpn-nc'
@@ -157,10 +157,10 @@ app.listenAsync(env.VPN_API_PORT).then ->
 	.catch (e) ->
 		console.error('failed releasing hold', e, e.stack)
 
-connectProxy = createProxy()
-connectProxy.use(basicAuth)
+tunnel = createTunnel()
+tunnel.use(basicAuth)
 
-connectProxy.use (req, cltSocket, head, next) ->
+tunnel.use (req, cltSocket, head, next) ->
 	Promise.try ->
 		{ hostname, port } = url.parse("http://#{req.url}")
 
@@ -185,4 +185,4 @@ connectProxy.use (req, cltSocket, head, next) ->
 		cltSocket.end("HTTP/1.1 502 Not Accessible\r\n\r\n")
 		next(err)
 
-connectProxy.listen(env.VPN_CONNECT_PROXY_PORT)
+tunnel.listen(env.VPN_CONNECT_PROXY_PORT)

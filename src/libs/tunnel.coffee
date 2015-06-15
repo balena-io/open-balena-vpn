@@ -7,7 +7,7 @@ MiddlewareHandler = require 'middleware-handler'
 MiddlewareHandler.prototype = Promise.promisifyAll(MiddlewareHandler.prototype)
 
 # Connect an http socket to another tcp server.
-# Based on proxy code from https://nodejs.org/api/http.html
+# Based on tunneling proxy code from https://nodejs.org/api/http.html
 connectSocket = (cltSocket, hostname, port, head) ->
 	srvSocket = net.connect port, hostname, ->
 		cltSocket.write "HTTP/1.1 200 Connection Established\r\n\
@@ -25,7 +25,7 @@ connectSocket = (cltSocket, hostname, port, head) ->
 # Create an http CONNECT tunneling proxy
 # Expressjs-like middleware can be used to change destination (by modifying req.url)
 # or for filtering requests (for example by terminating a socket early.)
-exports.createProxy = createProxy = ->
+exports.createTunnel = createTunnel = ->
 	middleware = new MiddlewareHandler()
 
 	server = http.createServer (req, res) ->
@@ -38,14 +38,14 @@ exports.createProxy = createProxy = ->
 			srvUrl = url.parse("http://#{req.url}")
 			connectSocket(cltSocket, srvUrl.hostname, srvUrl.port, head)
 		.catch (err) ->
-			console.error('connect proxy error', err)
+			console.error('http tunnel error', err)
 			cltSocket.end()
 
-	proxy =
+	tunnel =
 		use: middleware.use.bind(middleware)
 		listen: server.listen.bind(server)
 
-	return proxy
+	return tunnel
 
 # Proxy authorization middleware for http tunnel.
 exports.basicAuth = basicAuth = (req, cltSocket, head, next) ->
