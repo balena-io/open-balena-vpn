@@ -162,14 +162,9 @@ tunnel.use(basicAuth)
 
 tunnel.use (req, cltSocket, head, next) ->
 	Promise.try ->
-		{ hostname, port } = url.parse("http://#{req.url}")
-
-		# Check that hostname matches expected UUID.resin format
-		if not /\.resin$/.test(hostname)
+		[ uuid, port ] = /([a-fA-F0-9]+).resin(?::([0-9]+))?/.match(req.url)[1..]
+		if not uuid? or not port?
 			throw new Error('Invalid hostname: ' + hostname)
-
-		# Get uuid from UUID.resin domain
-		[ uuid ] = req.url.split('.')
 
 		device.isAccessible(uuid, port, req.auth, env.VPN_SERVICE_API_KEY)
 		.then (accessible) ->
