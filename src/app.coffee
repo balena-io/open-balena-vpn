@@ -162,13 +162,15 @@ tunnel.use(basicAuth)
 
 tunnel.use (req, cltSocket, head, next) ->
 	Promise.try ->
-		[ uuid, port ] = /([a-fA-F0-9]+).resin(?::([0-9]+))?/.match(req.url)[1..]
-		if not uuid? or not port?
+		[ uuid, port ] = req.url.match(/^([a-fA-F0-9]+).resin(?::([0-9]+))?$/)[1..]
+		if not uuid?
 			throw new Error('Invalid hostname: ' + hostname)
+		if not port?
+			port = 80
 
-		device.getDeviceByUUID(uuid,env.VPN_SERVICE_API_KEY)
+		device.getDeviceByUUID(uuid, env.VPN_SERVICE_API_KEY)
 		.then (data) ->
-			if not device.isAccesible(data, port, req.auth)
+			if not device.isAccessible(data, port, req.auth)
 				throw new Error('Not accessible: ' + req.url)
 			req.url = data.vpn_address + ":" + port
 	.then ->

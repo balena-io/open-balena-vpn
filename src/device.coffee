@@ -8,7 +8,7 @@ resinApi = new PlatformApi(platformEndpoint)
 
 DEVICE_WEB_PORTS = [ 80, 8080, 4200 ]
 API_USERNAME = 'resin_api'
-API_KEY = env.VPN_SERVICE_API_KEY
+API_KEY = process.env.VPN_SERVICE_API_KEY
 
 exports.getDeviceByUUID = getDeviceByUUID = (uuid, apiKey) ->
 	resinApi.get
@@ -23,7 +23,7 @@ exports.getDeviceByUUID = getDeviceByUUID = (uuid, apiKey) ->
 
 # Given the device model, a port and credentials (an object with username and password)
 # return true if the client is allowed to connect that port of the device.
-exports.isAccessible = Promise.method (device, port, auth) ->
+exports.isAccessible = (device, port, auth) ->
 	isResinApi = auth?.username is API_USERNAME and auth?.password is API_KEY
 	isWebPort = _.contains(DEVICE_WEB_PORTS, parseInt(port))
 	return isResinApi or (device.is_web_accessible and isWebPort)
