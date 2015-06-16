@@ -25,7 +25,6 @@ class OpenVPN
 				conn.on('connect', -> resolve(conn))
 				conn.on('error', reject)
 			.disposer (conn) ->
-				console.log('ending connection')
 				conn.end()
 
 	execCommand: (command) ->
