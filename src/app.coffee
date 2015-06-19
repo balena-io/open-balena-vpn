@@ -5,6 +5,9 @@ Netmask = require('netmask').Netmask
 _ = require 'lodash'
 Promise = require 'bluebird'
 request = Promise.promisify(require('requestretry'))
+url = require 'url'
+{ createTunnel, basicAuth } = require './libs/tunnel'
+device = require './device'
 
 { OpenVPNSet } = require './libs/openvpn-nc'
 clients = require './clients'
@@ -17,6 +20,8 @@ envKeys = [
 	'VPN_MANAGEMENT_PORT'
 	'VPN_PRIVILEGED_SUBNET'
 	'VPN_SUBNET'
+	'VPN_API_PORT'
+	'VPN_CONNECT_PROXY_PORT'
 ]
 
 { env } = process
@@ -37,6 +42,7 @@ if !vpnSubnet.contains(env.VPN_PRIVILEGED_SUBNET)
 	fatal("Privileged IP subnet/24 #{env.VPN_PRIVILEGED_SUBNET} isn't on the VPN subnet #{env.VPN_SUBNET}")
 
 managementPorts = [ env.VPN_MANAGEMENT_PORT, env.VPN_MANAGEMENT_NEW_PORT ]
+
 vpn = new OpenVPNSet(managementPorts, env.VPN_HOST)
 
 module.exports = app = Promise.promisifyAll(express())
@@ -144,7 +150,33 @@ app.get '/api/v1/privileged/peer', fromLocalHost, (req, res) ->
 	else
 		res.sendStatus(400)
 
-app.listenAsync(80).then ->
+app.listenAsync(env.VPN_API_PORT).then ->
 	clients.resetAll()
 	# Now endpoints are established, release VPN hold.
 	vpn.execCommand('hold release')
+	.catch (e) ->
+		console.error('failed releasing hold', e, e.stack)
+
+tunnel = createTunnel()
+tunnel.use(basicAuth)
+
+tunnel.use (req, cltSocket, head, next) ->
+	Promise.try ->
+		[ uuid, port ] = req.url.match(/^([a-fA-F0-9]+).resin(?::([0-9]+))?$/)[1..]
+		if not uuid?
+			throw new Error('Invalid hostname: ' + hostname)
+		if not port?
+			port = 80
+
+		device.getDeviceByUUID(uuid, env.VPN_SERVICE_API_KEY)
+		.then (data) ->
+			if not device.isAccessible(data, port, req.auth)
+				throw new Error('Not accessible: ' + req.url)
+			req.url = data.vpn_address + ":" + port
+	.then ->
+		next()
+	.catch (err) ->
+		cltSocket.end("HTTP/1.1 502 Not Accessible\r\n\r\n")
+		next(err)
+
+tunnel.listen(env.VPN_CONNECT_PROXY_PORT)

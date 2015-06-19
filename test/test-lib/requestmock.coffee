@@ -17,13 +17,16 @@ requestMock =
 			return @handlers[url]
 		else
 			return @defaultHandler
+	register: (opts, cb) ->
+		console.log('requestmock', opts)
+		if opts.url.indexOf('?') != -1
+			url = opts.url.slice(0, opts.url.indexOf('?'))
+		else
+			{ url } = opts
+		requestMock.getHandler(url)(opts, cb)
 
 mockery.enable(warnOnUnregistered: false)
-mockery.registerMock 'requestretry', (opts, cb) ->
-	if opts.url.indexOf('?') != -1
-		url = opts.url.slice(0, opts.url.indexOf('?'))
-	else
-		{ url } = opts
-	requestMock.getHandler(url)(opts, cb)
+mockery.registerMock('requestretry', requestMock.register)
+mockery.registerMock('request', requestMock.register)
 
 exports.requestMock = requestMock
