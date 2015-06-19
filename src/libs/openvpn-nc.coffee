@@ -16,18 +16,28 @@ class OpenVPNSet
 
 class OpenVPN
 	constructor: (@port, @host='localhost') ->
-		connect = =>
-			@conn = new Promise (resolve, reject) =>
-				conn = net.connect(@port, @host)
+
+	getConnection: ->
+		Promise.try =>
+			# net.connect either emits "connect" event on success or "error" event.
+			conn = net.connect(@port, @host)
+			new Promise (resolve, reject) ->
+				conn.on('connect', -> resolve(conn))
 				conn.on('error', reject)
-				conn.on('connect', -> resolve(es.pipeline(conn, es.split('\nEND'))))
-				conn.on('close', connect)
-		connect()
+			.disposer (conn) ->
+				conn.end()
 
 	execCommand: (command) ->
-		@conn.then (conn) ->
-			conn.write(command + '\n')
-			return new Promise((resolve) -> conn.once('data', resolve))
+		Promise.using @getConnection(), (conn) ->
+			# make sure we read stream until the end of command output
+			conn = es.pipeline(conn, es.split('\nEND'))
+			conn.end(command + '\n')
+
+			new Promise (resolve, reject) ->
+				conn.on('data', resolve)
+				conn.on('error', reject)
+				conn.on('close', reject)
+			.timeout(60000)
 
 	getStatus: (format=2) ->
 		@execCommand("status #{format}").then (results) ->
