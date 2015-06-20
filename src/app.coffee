@@ -1,5 +1,6 @@
 express = require 'express'
 bodyParser = require 'body-parser'
+compression = require 'compression'
 morgan = require 'morgan'
 Netmask = require('netmask').Netmask
 _ = require 'lodash'
@@ -8,9 +9,12 @@ request = Promise.promisify(require('requestretry'))
 url = require 'url'
 { createTunnel, basicAuth } = require './libs/tunnel'
 device = require './device'
+vhost = require 'vhost'
 
 { OpenVPNSet } = require './libs/openvpn-nc'
 clients = require './clients'
+
+ALLOWED_PORTS = [ 80, 8080, 4200 ]
 
 envKeys = [
 	'RESIN_API_HOST'
@@ -45,7 +49,7 @@ managementPorts = [ env.VPN_MANAGEMENT_PORT, env.VPN_MANAGEMENT_NEW_PORT ]
 
 vpn = new OpenVPNSet(managementPorts, env.VPN_HOST)
 
-module.exports = app = Promise.promisifyAll(express())
+vpnApi = Promise.promisifyAll(express())
 
 notFromVpnClients = (req, res, next) ->
 	if vpnSubnet.contains(req.ip) and !privileged.contains(req.ip)
@@ -53,11 +57,11 @@ notFromVpnClients = (req, res, next) ->
 
 	next()
 
-app.use(morgan('combined', skip: (req) -> req.url is '/ping'))
-app.use(bodyParser.json())
-app.use(notFromVpnClients)
+vpnApi.use(morgan('combined', skip: (req) -> req.url is '/ping'))
+vpnApi.use(bodyParser.json())
+vpnApi.use(notFromVpnClients)
 
-app.get '/api/v1/clients/', (req, res) ->
+vpnApi.get '/api/v1/clients/', (req, res) ->
 	vpn.getStatus()
 	.then (results) ->
 		res.send(_.values(results.client_list))
@@ -65,7 +69,7 @@ app.get '/api/v1/clients/', (req, res) ->
 		console.error('Error getting VPN client list', error)
 		res.send(500, 'Error getting VPN client list')
 
-app.post '/api/v1/clients/', (req, res) ->
+vpnApi.post '/api/v1/clients/', (req, res) ->
 	if not req.body.common_name?
 		return res.sendStatus(400)
 	if not req.body.virtual_address?
@@ -86,7 +90,7 @@ fromLocalHost = (req, res, next) ->
 
 	next()
 
-app.post '/api/v1/auth/', fromLocalHost, (req, res) ->
+vpnApi.post '/api/v1/auth/', fromLocalHost, (req, res) ->
 	if not req.body.username?
 		console.log('AUTH FAIL: UUID not specified.')
 
@@ -117,7 +121,7 @@ app.post '/api/v1/auth/', fromLocalHost, (req, res) ->
 		res.sendStatus(401)
 
 
-app.delete '/api/v1/clients/', fromLocalHost, (req, res) ->
+vpnApi.delete '/api/v1/clients/', fromLocalHost, (req, res) ->
 	if not req.body.common_name?
 		return res.sendStatus(400)
 	if not req.body.virtual_address?
@@ -130,7 +134,7 @@ app.delete '/api/v1/clients/', fromLocalHost, (req, res) ->
 	clients.disconnected(data)
 	res.send('OK')
 
-app.post '/api/v1/privileged/ip', fromLocalHost, (req, res) ->
+vpnApi.post '/api/v1/privileged/ip', fromLocalHost, (req, res) ->
 	{ common_name } = req.body
 	if not common_name?
 		return res.sendStatus(400)
@@ -140,7 +144,7 @@ app.post '/api/v1/privileged/ip', fromLocalHost, (req, res) ->
 
 	res.send(ip)
 
-app.delete '/api/v1/privileged/ip', fromLocalHost, (req, res) ->
+vpnApi.delete '/api/v1/privileged/ip', fromLocalHost, (req, res) ->
 	{ ip } = req.body
 	return res.sendStatus(400) if not ip?
 
@@ -148,22 +152,15 @@ app.delete '/api/v1/privileged/ip', fromLocalHost, (req, res) ->
 	# We output a message if unassigned ip provided, but this shouldn't be an error.
 	res.send('OK')
 
-app.get '/api/v1/privileged/ip', fromLocalHost, (req, res) ->
+vpnApi.get '/api/v1/privileged/ip', fromLocalHost, (req, res) ->
 	res.send(privileged.list())
 
-app.get '/api/v1/privileged/peer', fromLocalHost, (req, res) ->
+vpnApi.get '/api/v1/privileged/peer', fromLocalHost, (req, res) ->
 	peer = privileged.peer(req.query.ip)
 	if peer?
 		res.send(peer)
 	else
 		res.sendStatus(400)
-
-app.listenAsync(env.VPN_API_PORT).then ->
-	clients.resetAll()
-	# Now endpoints are established, release VPN hold.
-	vpn.execCommand('hold release')
-	.catch (e) ->
-		console.error('failed releasing hold', e, e.stack)
 
 tunnel = createTunnel()
 tunnel.use(basicAuth)
@@ -188,3 +185,56 @@ tunnel.use (req, cltSocket, head, next) ->
 		next(err)
 
 tunnel.listen(env.VPN_CONNECT_PROXY_PORT)
+
+reverseProxy = express()
+
+reverseProxy.set('views', 'src/views')
+reverseProxy.set('view engine', 'jade')
+
+reverseProxy.use (req, res, next) ->
+	if req.protocol is 'https'
+		return next()
+	res.redirect(301, 'https://' + req.host + req.url)
+
+if process.env.NODE_ENV ==  'development'
+	Promise.longStackTraces()
+	# unescape OData queries for readability
+	morgan.token('url', (req) -> decodeURIComponent(req.url))
+
+reverseProxy.use(compression())
+
+logFormat = if reverseProxy.get('env') is 'development' then 'dev' else 'combined'
+reverseProxy.use(morgan(logFormat))
+
+reverseProxy.use (req, res, next) ->
+	req.port = port
+	next()
+
+reverseProxy.all('*', require('./route'))
+
+console.log('going to listen on port', env.VPN_API_PORT)
+apps = {}
+ALLOWED_PORTS.forEach (port) ->
+	app = Promise.promisifyAll(express())
+	apps[port] = vpnApi
+
+	app.use(vhost('localhost', vpnApi))
+	app.use(vhost('vpn.resin.io', vpnApi))
+	app.use(vhost('vpn.resinstaging.io', vpnApi))
+	app.use(vhost('vpn.resindev.io', vpnApi))
+	app.use(vhost('*.resindevice.io', reverseProxy))
+
+	apps[port].listenAsync(port)
+	.then ->
+		console.log('listening on port', port)
+		if port == 80
+			console.log('reset all')
+			clients.resetAll()
+			# Now endpoints are established, release VPN hold.
+			vpn.execCommand('hold release')
+			.catch (e) ->
+			       console.error('failed releasing hold', e, e.stack)
+
+
+
+module.exports = apps[80]

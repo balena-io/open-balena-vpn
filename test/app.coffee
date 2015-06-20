@@ -18,6 +18,7 @@ requestMock.enable 'https://api.resindev.io/services/vpn/reset-all', (args, cb) 
 app = require '../src/app'
 
 describe 'init', ->
+	@timeout(10000)
 	it 'should send a reset-all', ->
 		Promise.delay(1000)
 		.then ->
