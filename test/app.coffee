@@ -128,7 +128,7 @@ describe 'reverse proxy', ->
 	describe 'web accessible device', ->
 		before ->
 			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
-				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 1, vpn_address: 'localhost' } ] })
+				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 1, vpn_address: 'localhost', is_online: 1 } ] })
 
 		it 'should allow port 4200 without authentication', (done) ->
 			server = http.createServer (req, res) ->
@@ -149,6 +149,34 @@ describe 'reverse proxy', ->
 			.finally ->
 				Promise.fromNode (cb) ->
 					server.close(cb)
+			.nodeify(done)
+	describe 'Pretty error pages when', ->
+		it 'does not exist', (done) ->
+			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
+				cb(null, { statusCode: 200 }, { d: [] })
+
+			requestAsync({ url: "http://deadbeef.devices.resindev.io:80/test" })
+			.spread (response, data) ->
+				expect(response).to.have.property('statusCode').that.equals(404)
+				expect(data).to.match(/<title>Resin.io Device Public URLs<\/title>[\s\S]*Device Not Found/)
+			.nodeify(done)
+		it 'is not web accessible', (done) ->
+			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
+				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 0, vpn_address: 'localhost', is_online: 1 } ] })
+
+			requestAsync({ url: "http://deadbeef.devices.resindev.io:80/test" })
+			.spread (response, data) ->
+				expect(response).to.have.property('statusCode').that.equals(403)
+				expect(data).to.match(/<title>Resin.io Device Public URLs<\/title>[\s\S]*Device Public Access Disabled/)
+			.nodeify(done)
+		it 'is offline', (done) ->
+			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
+				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 1, vpn_address: 'localhost', is_online: 0 } ] })
+
+			requestAsync({ url: "http://deadbeef.devices.resindev.io:80/test" })
+			.spread (response, data) ->
+				expect(response).to.have.property('statusCode').that.equals(503)
+				expect(data).to.match(/<title>Resin.io Device Public URLs<\/title>[\s\S]*Device Not Accessible/)
 			.nodeify(done)
 
 describe 'VPN proxy', ->
@@ -173,7 +201,7 @@ describe 'VPN proxy', ->
 	describe 'web accessible device', ->
 		before ->
 			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
-				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 1, vpn_address: 'localhost' } ] })
+				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 1, vpn_address: 'localhost', is_online: 1 } ] })
 
 		it 'should allow port 4200 without authentication', (done) ->
 			server = http.createServer (req, res) ->
@@ -199,7 +227,7 @@ describe 'VPN proxy', ->
 	describe 'not web accessible device', ->
 		before ->
 			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
-				cb(null, { statusCode: 200 }, { d: [ { uuid: 'deadbeef', is_web_accessible: 0, vpn_address: 'localhost' } ] })
+				cb(null, { statusCode: 200 }, { d: [ { uuid: 'deadbeef', is_web_accessible: 0, vpn_address: 'localhost', is_online: 1 } ] })
 
 		it 'should not allow port 4200 without authentication', (done) ->
 			server = http.createServer (req, res) ->

@@ -185,17 +185,33 @@ tunnel.use (req, cltSocket, head, next) ->
 		device.getDeviceByUUID(uuid, env.VPN_SERVICE_API_KEY)
 		.then (data) ->
 			console.log('device data', data)
+			if not data?
+				cltSocket.end('HTTP/1.1 404 Not Found\r\n\r\n')
+				throw new Error('Device not found: ' + uuid)
 			if not device.isAccessible(data, port, req.auth)
-				throw new Error('Not accessible: ' + req.url)
+				cltSocket.end('HTTP/1.1 403 Forbidden\r\n\r\n')
+				throw new Error('Device not accessible: ' + uuid)
+			if not data.vpn_address or not data.is_online
+				cltSocket.end('HTTP/1.1 503 Service Unavailable\r\n\r\n')
+				throw new Error('Device not available: ' + uuid)
 			req.url = data.vpn_address + ":" + port
 			console.log('rewrite url', uuid, req.url)
 	.then ->
 		next()
 	.catch (err) ->
-		cltSocket.end("HTTP/1.1 502 Not Accessible\r\n\r\n")
-		next(err)
+		console.log('tunnel catch', err, err.stack)
+		cltSocket.end('HTTP/1.1 500 Internal Server Error\r\n\r\n')
 
 tunnel.listen(env.VPN_CONNECT_PROXY_PORT)
+
+renderError = (res, statusCode, context = {}) ->
+	res.status(statusCode).render(statusCode, context)
+
+notFromVpnClients = (req, res, next) ->
+	if vpnSubnet.contains(req.ip) and !privileged.contains(req.ip)
+		return res.sendStatus(401)
+
+	next()
 
 ALLOWED_PORTS.forEach (port) ->
 	app = Promise.promisifyAll(express())
@@ -218,21 +234,20 @@ ALLOWED_PORTS.forEach (port) ->
 			return next()
 
 		# target port is same as port requested on proxy
-		# tests have to use a different port because target and proxy are on the same host
-		# and therefore cannot listen on the same port
+		# DEVICE_WEB_PORT is used by tests to always redirect to a specific port
 		port = env.DEVICE_WEB_PORT or req.port
 		deviceUuid = hostMatch[1]
 
 		proxy.webAsync(req, res, { target: "http://#{deviceUuid}.resin:#{port}", agent: tunnelingAgent })
 		.catch (err) ->
-			console.log('proxy error', deviceUuid, err)
-			res.sendStatus(500)
-
-	notFromVpnClients = (req, res, next) ->
-		if vpnSubnet.contains(req.ip) and !privileged.contains(req.ip)
-			return res.sendStatus(401)
-
-		next()
+			# "sutatus" is typo on node-tunnel project
+			statusCode = err.message.match(/sutatusCode=([0-9]+)$/)[1]
+			# if the error was caused when connecting through the tunnel
+			# use the status code to provide a nicer error page.
+			if statusCode
+				renderError(res, statusCode, { port, deviceUuid })
+			else
+				renderError(res, 500, { port, deviceUuid, error: err?.message or err })
 
 	app.use(bodyParser.json())
 	app.use(notFromVpnClients)
