@@ -6,6 +6,7 @@ Promise = require 'bluebird'
 _ = require 'lodash'
 http = require 'http'
 requestAsync = Promise.promisify(require('request'))
+hostile = Promise.promisifyAll(require('hostile'))
 
 { createVPNClient } = require './test-lib/vpnclient'
 { requestMock } = require './test-lib/requestmock'
@@ -15,7 +16,7 @@ requestMock.enable 'https://api.resindev.io/services/vpn/reset-all', (args, cb) 
 	resetRequested = true
 	cb(null, statusCode: 200, 'OK')
 
-app = require '../src/app'
+require '../src/app'
 
 describe 'init', ->
 	@timeout(10000)
@@ -39,14 +40,14 @@ describe '/api/v1/clients/', ->
 	describe 'When no clients are connected', ->
 		it 'should return empty client list', (done) ->
 			Promise.delay(2000).then ->
-				supertest(app).get('/api/v1/clients/').expect(200, '[]', done)
+				supertest('http://localhost').get('/api/v1/clients/').expect(200, '[]', done)
 
 	describe 'When a client connects and disconnects', ->
 		it 'should send the correct data', (done) ->
 			createVPNClient("user1", "pass")
 			.then (client) ->
 				Promise.fromNode (cb) ->
-					supertest(app).get('/api/v1/clients/')
+					supertest('http://localhost').get('/api/v1/clients/')
 					.expect(200)
 					.expect (res) ->
 						clients = res.body
@@ -62,7 +63,7 @@ describe '/api/v1/clients/', ->
 					return client.disconnect()
 			.then ->
 				Promise.fromNode (cb) ->
-					supertest(app).get('/api/v1/clients/').expect(200, '[]', cb)
+					supertest('http://localhost').get('/api/v1/clients/').expect(200, '[]', cb)
 			.nodeify(done)
 
 eventsClient = null
@@ -107,6 +108,48 @@ describe 'VPN Events', ->
 		.nodeify(done)
 
 		@client.disconnect()
+
+describe 'reverse proxy', ->
+	@timeout(100000)
+	before (done) ->
+		requestMock.enable 'https://api.resindev.io/services/vpn/auth/user6', (args, cb) ->
+			cb(null, statusCode: 200, 'OK')
+
+		requestMock.enable 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
+			cb(null, statusCode: 200, 'OK')
+		
+		requestMock.enable 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
+			cb(null, statusCode: 200, 'OK')
+
+		hostile.setAsync('127.0.0.1', 'deadbeef.devices.resindev.io')
+		.nodeify(done)
+	
+
+	describe 'web accessible device', ->
+		before ->
+			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
+				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 1, vpn_address: 'localhost' } ] })
+
+		it 'should allow port 4200 without authentication', (done) ->
+			server = http.createServer (req, res) ->
+				res.writeHead(200, 'Content-type': 'text/plain')
+				res.end('hello from 4200')
+
+			Promise.fromNode (cb) ->
+				server.listen(4200, cb)
+			.then ->
+				createVPNClient("user6", "pass")
+			.then (client) ->
+				requestAsync({ url: "http://deadbeef.devices.resindev.io:80/test" })
+				.spread (response, data) ->
+					expect(response).to.have.property('statusCode').that.equals(200)
+					expect(data).to.equal('hello from 4200')
+				.finally ->
+					client.disconnect()
+			.finally ->
+				Promise.fromNode (cb) ->
+					server.close(cb)
+			.nodeify(done)
 
 describe 'VPN proxy', ->
 	@timeout(100000)
