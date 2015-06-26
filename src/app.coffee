@@ -24,13 +24,9 @@ envKeys = [
 	'DEVICE_URLS_BASE'
 ]
 
-{ env } = process
-
-fatal = (msg) ->
-	console.error(msg)
+for k in envKeys when not process.env[k]?
+	console.error("#{k} env variable is not set.")
 	process.exit(1)
-
-fatal("#{k} env var not set") for k in envKeys when !env[k]
 
 vpnSubnet = new Netmask(process.env.VPN_SUBNET)
 
@@ -43,7 +39,7 @@ vpn = new OpenVPNSet(managementPorts, process.env.VPN_HOST)
 
 api = require('./api')(vpn, vpnSubnet)
 
-deviceTunnel(env.VPN_CONNECT_PROXY_PORT)
+deviceTunnel(process.env.VPN_CONNECT_PROXY_PORT)
 
 ALLOWED_PORTS.forEach (port) ->
 	app = Promise.promisifyAll(express())
