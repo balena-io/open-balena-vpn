@@ -1,13 +1,16 @@
 Promise = require 'bluebird'
 _ = require 'lodash'
 httpProxy = require 'http-proxy'
+tunnel = require 'tunnel'
+
 proxy = Promise.promisifyAll(httpProxy.createProxyServer())
 
-tunnelingAgent = require('tunnel').httpOverHttp( {
+tunnelingAgent = tunnel.httpOverHttp( {
 	proxy:
 		host: 'localhost'
 		port: 3128
 } )
+
 
 renderError = (res, statusCode, context = {}) ->
 	res.status(statusCode).render(statusCode, context)
