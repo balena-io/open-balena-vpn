@@ -1,6 +1,6 @@
 device = require './device'
 Promise = require 'bluebird'
-{ createTunnel, basicAuth } = require './libs/tunnel'
+{ createTunnel, basicAuth } = require 'node-tunnel'
 
 tunnelToDevice = (req, cltSocket, head, next) ->
 	Promise.try ->

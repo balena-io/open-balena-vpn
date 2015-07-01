@@ -7,12 +7,30 @@ _ = require 'lodash'
 http = require 'http'
 requestAsync = Promise.promisify(require('request'))
 hostile = Promise.promisifyAll(require('hostile'))
+path = require 'path'
+vpnClient = require 'openvpn-client'
 
-{ createVPNClient } = require './test-lib/vpnclient'
-{ requestMock } = require './test-lib/requestmock'
+vpnHost = process.env.VPN_HOST ? '127.0.0.1'
+vpnPort = process.env.VPN_PORT ? '443'
+caCertPath = process.env.CA_CERT_PATH ? path.resolve(__dirname, 'data/ca.crt')
+
+vpnClient.defaultOpts = [
+	'--client',
+	'--remote', vpnHost, vpnPort,
+	'--ca', caCertPath,
+	'--dev', 'tun',
+	'--proto', 'tcp-client',
+	'--comp-lzo',
+	'--verb', '3'
+]
+
+requestMock = require('requestmock')()
+mockery = require 'mockery'
+mockery.enable(warnOnUnregistered: false)
+mockery.registerMock('request', requestMock)
 
 resetRequested = false
-requestMock.enable 'https://api.resindev.io/services/vpn/reset-all', (args, cb) ->
+requestMock.post 'https://api.resindev.io/services/vpn/reset-all', (args, cb) ->
 	resetRequested = true
 	cb(null, statusCode: 200, 'OK')
 
@@ -28,13 +46,13 @@ describe 'init', ->
 describe '/api/v1/clients/', ->
 	@timeout(100000)
 	before ->
-		requestMock.enable 'https://api.resindev.io/services/vpn/auth/user1', (args, cb) ->
+		requestMock.get 'https://api.resindev.io/services/vpn/auth/user1', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
-		requestMock.enable 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
+		requestMock.post 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 		
-		requestMock.enable 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
+		requestMock.post 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
 	describe 'When no clients are connected', ->
@@ -44,8 +62,7 @@ describe '/api/v1/clients/', ->
 
 	describe 'When a client connects and disconnects', ->
 		it 'should send the correct data', (done) ->
-			createVPNClient("user1", "pass")
-			.then (client) ->
+			Promise.using vpnClient.connect({ user: "user1", pass: "pass" }), ->
 				Promise.fromNode (cb) ->
 					supertest('http://localhost').get('/api/v1/clients/')
 					.expect(200)
@@ -59,8 +76,6 @@ describe '/api/v1/clients/', ->
 						expect(clients[0]).to.have.property('connected_since_t')
 						return false
 					.end(cb)
-				.then ->
-					return client.disconnect()
 			.then ->
 				Promise.fromNode (cb) ->
 					supertest('http://localhost').get('/api/v1/clients/').expect(200, '[]', cb)
@@ -70,12 +85,12 @@ eventsClient = null
 describe 'VPN Events', ->
 	@timeout(100000)
 	before ->
-		requestMock.enable 'https://api.resindev.io/services/vpn/auth/user2', (args, cb) ->
+		requestMock.get 'https://api.resindev.io/services/vpn/auth/user2', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
 	it 'should send a client-connect event', (done) =>
 		connectEvent = new Promise (resolve, reject) ->
-			requestMock.enable "https://api.resindev.io/services/vpn/client-connect", (opts, res) =>
+			requestMock.post "https://api.resindev.io/services/vpn/client-connect", (opts, res) =>
 				res(null, statusCode: 200, 'OK')
 
 				data = opts.form
@@ -87,14 +102,13 @@ describe 'VPN Events', ->
 			expect(data).to.have.property('real_address').that.match(/^127\.0\.0\.1$/)
 			expect(data).to.have.property('virtual_address').that.match(/^10\.2\.0\.[0-9]+$/)
 
-		spawn = createVPNClient("user2", "pass")
-		.then (client) =>
-			@client = client
+		@client = vpnClient.create()
+		@client.authenticate("user2", "pass")
 
-		Promise.all([ connectEvent, spawn ]).nodeify(done)
+		Promise.all([ connectEvent, @client.connect() ]).nodeify(done)
 	it 'should send a client-disconnect event', (done) =>
 		new Promise (resolve, reject) ->
-			requestMock.enable "https://api.resindev.io/services/vpn/client-disconnect", (opts, res) =>
+			requestMock.post "https://api.resindev.io/services/vpn/client-disconnect", (opts, res) =>
 				res(null, statusCode: 200, 'OK')
 
 				data = opts.form
@@ -112,13 +126,13 @@ describe 'VPN Events', ->
 describe 'reverse proxy', ->
 	@timeout(100000)
 	before (done) ->
-		requestMock.enable 'https://api.resindev.io/services/vpn/auth/user6', (args, cb) ->
+		requestMock.get 'https://api.resindev.io/services/vpn/auth/user6', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
-		requestMock.enable 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
+		requestMock.post 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 		
-		requestMock.enable 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
+		requestMock.post 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
 		hostile.setAsync('127.0.0.1', 'deadbeef.devices.resindev.io')
@@ -127,7 +141,7 @@ describe 'reverse proxy', ->
 
 	describe 'web accessible device', ->
 		before ->
-			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
+			requestMock.get 'https://api.resindev.io/ewa/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 1, vpn_address: 'localhost', is_online: 1 } ] })
 
 		it 'should allow port 4200 without authentication', (done) ->
@@ -135,24 +149,21 @@ describe 'reverse proxy', ->
 				res.writeHead(200, 'Content-type': 'text/plain')
 				res.end('hello from 4200')
 
-			Promise.fromNode (cb) ->
-				server.listen(4200, cb)
-			.then ->
-				createVPNClient("user6", "pass")
-			.then (client) ->
-				requestAsync({ url: "http://deadbeef.devices.resindev.io:80/test" })
-				.spread (response, data) ->
-					expect(response).to.have.property('statusCode').that.equals(200)
-					expect(data).to.equal('hello from 4200')
-				.finally ->
-					client.disconnect()
-			.finally ->
+			Promise.using vpnClient.connect({ user: "user6", pass: "pass" }), ->
 				Promise.fromNode (cb) ->
-					server.close(cb)
+					server.listen(4200, cb)
+				.then ->
+					requestAsync({ url: "http://deadbeef.devices.resindev.io:80/test" })
+					.spread (response, data) ->
+						expect(response).to.have.property('statusCode').that.equals(200)
+						expect(data).to.equal('hello from 4200')
+				.finally ->
+					Promise.fromNode (cb) ->
+						server.close(cb)
 			.nodeify(done)
 	describe 'Pretty error pages when', ->
 		it 'does not exist', (done) ->
-			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
+			requestMock.get 'https://api.resindev.io/ewa/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, { d: [] })
 
 			requestAsync({ url: "http://deadbeef.devices.resindev.io:80/test" })
@@ -161,7 +172,7 @@ describe 'reverse proxy', ->
 				expect(data).to.match(/<title>Resin.io Device Public URLs<\/title>[\s\S]*Device Not Found/)
 			.nodeify(done)
 		it 'is not web accessible', (done) ->
-			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
+			requestMock.get 'https://api.resindev.io/ewa/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 0, vpn_address: 'localhost', is_online: 1 } ] })
 
 			requestAsync({ url: "http://deadbeef.devices.resindev.io:80/test" })
@@ -170,7 +181,7 @@ describe 'reverse proxy', ->
 				expect(data).to.match(/<title>Resin.io Device Public URLs<\/title>[\s\S]*Device Public Access Disabled/)
 			.nodeify(done)
 		it 'is offline', (done) ->
-			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
+			requestMock.get 'https://api.resindev.io/ewa/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 1, vpn_address: 'localhost', is_online: 0 } ] })
 
 			requestAsync({ url: "http://deadbeef.devices.resindev.io:80/test" })
@@ -182,25 +193,25 @@ describe 'reverse proxy', ->
 describe 'VPN proxy', ->
 	@timeout(100000)
 	before ->
-		requestMock.enable 'https://api.resindev.io/services/vpn/auth/user3', (args, cb) ->
+		requestMock.get 'https://api.resindev.io/services/vpn/auth/user3', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
-		requestMock.enable 'https://api.resindev.io/services/vpn/auth/user4', (args, cb) ->
+		requestMock.get 'https://api.resindev.io/services/vpn/auth/user4', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
-		requestMock.enable 'https://api.resindev.io/services/vpn/auth/user5', (args, cb) ->
+		requestMock.get 'https://api.resindev.io/services/vpn/auth/user5', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
-		requestMock.enable 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
+		requestMock.post 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 		
-		requestMock.enable 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
+		requestMock.post 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 	
 
 	describe 'web accessible device', ->
 		before ->
-			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
+			requestMock.get 'https://api.resindev.io/ewa/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 1, vpn_address: 'localhost', is_online: 1 } ] })
 
 		it 'should allow port 4200 without authentication', (done) ->
@@ -208,25 +219,22 @@ describe 'VPN proxy', ->
 				res.writeHead(200, 'Content-type': 'text/plain')
 				res.end('hello from 4200')
 
-			Promise.fromNode (cb) ->
-				server.listen(4200, cb)
-			.then ->
-				createVPNClient("user3", "pass")
-			.then (client) ->
-				requestAsync({ url: "http://deadbeef.resin:4200/test", proxy: "http://localhost:3128", tunnel: true })
-				.spread (response, data) ->
-					expect(response).to.have.property('statusCode').that.equals(200)
-					expect(data).to.equal('hello from 4200')
-				.finally ->
-					client.disconnect()
-			.finally ->
+			Promise.using vpnClient.connect({ user: "user3", pass: "pass" }), ->
 				Promise.fromNode (cb) ->
-					server.close(cb)
+					server.listen(4200, cb)
+				.then ->
+					requestAsync({ url: "http://deadbeef.resin:4200/test", proxy: "http://localhost:3128", tunnel: true })
+					.spread (response, data) ->
+						expect(response).to.have.property('statusCode').that.equals(200)
+						expect(data).to.equal('hello from 4200')
+				.finally ->
+					Promise.fromNode (cb) ->
+						server.close(cb)
 			.nodeify(done)
 
 	describe 'not web accessible device', ->
 		before ->
-			requestMock.enable 'https://api.resindev.io/ewa/device', (args, cb) ->
+			requestMock.get 'https://api.resindev.io/ewa/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, { d: [ { uuid: 'deadbeef', is_web_accessible: 0, vpn_address: 'localhost', is_online: 1 } ] })
 
 		it 'should not allow port 4200 without authentication', (done) ->
@@ -234,18 +242,15 @@ describe 'VPN proxy', ->
 				res.writeHead(200, 'Content-type': 'text/plain')
 				res.end('hello from 4200')
 
-			Promise.fromNode (cb) ->
-				server.listen(4200, cb)
-			.then ->
-				createVPNClient("user4", "pass")
-			.then (client) ->
-				connection = requestAsync({ url: "http://deadbeef.resin:4200/test", proxy: "http://localhost:3128", tunnel: true })
-				.finally ->
-					client.disconnect()
-				expect(connection).to.be.rejected
-			.finally ->
+			Promise.using vpnClient.connect({ user: "user4", pass: "pass" }), ->
 				Promise.fromNode (cb) ->
-					server.close(cb)
+					server.listen(4200, cb)
+				.then ->
+					connection = requestAsync({ url: "http://deadbeef.resin:4200/test", proxy: "http://localhost:3128", tunnel: true })
+					expect(connection).to.be.rejected
+				.finally ->
+					Promise.fromNode (cb) ->
+						server.close(cb)
 			.nodeify(done)
 
 		it 'should allow port 4200 with authentication', (done) ->
@@ -253,18 +258,15 @@ describe 'VPN proxy', ->
 				res.writeHead(200, 'Content-type': 'text/plain')
 				res.end('hello from 4200')
 
-			Promise.fromNode (cb) ->
-				server.listen(4200, cb)
-			.then ->
-				createVPNClient("user5", "pass")
-			.then (client) ->
-				requestAsync({ url: "http://deadbeef.resin:4200/test", proxy: "http://resin_api:test_api_key@localhost:3128", tunnel: true })
-				.spread (response, data) ->
-					expect(response).to.have.property('statusCode').that.equals(200)
-					expect(data).to.equal('hello from 4200')
-				.finally ->
-					client.disconnect()
-			.finally ->
+			Promise.using vpnClient.connect({ user: "user5", pass: "pass" }), ->
 				Promise.fromNode (cb) ->
-					server.close(cb)
+					server.listen(4200, cb)
+				.then ->
+					requestAsync({ url: "http://deadbeef.resin:4200/test", proxy: "http://resin_api:test_api_key@localhost:3128", tunnel: true })
+					.spread (response, data) ->
+						expect(response).to.have.property('statusCode').that.equals(200)
+						expect(data).to.equal('hello from 4200')
+				.finally ->
+					Promise.fromNode (cb) ->
+						server.close(cb)
 			.nodeify(done)
