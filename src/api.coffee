@@ -1,7 +1,7 @@
 Promise = require 'bluebird'
 express = require 'express'
 bodyParser = require 'body-parser'
-request = Promise.promisify(require('requestretry'))
+request = Promise.promisify(require('request'))
 _ = require 'lodash'
 
 clients = require './clients'
@@ -64,7 +64,6 @@ module.exports = (vpn, vpnSubnet) ->
 			url: "https://#{process.env.RESIN_API_HOST}/services/vpn/auth/#{username}"
 			qs:
 				apikey: apiKey
-			retryDelay: 2000
 		request(requestOpts).get(0)
 		.then (response) ->
 			if response.statusCode == 200
