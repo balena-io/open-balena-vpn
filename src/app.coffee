@@ -88,8 +88,12 @@ fromLocalHost = (req, res, next) ->
 
 app.post '/api/v1/auth/', fromLocalHost, (req, res) ->
 	if not req.body.username?
+		console.log('AUTH FAIL: UUID not specified.')
+
 		return res.sendStatus(400)
 	if not req.body.password?
+		console.log('AUTH FAIL: API Key not specified.')
+
 		return res.sendStatus(400)
 	username = req.body.username
 	apiKey = req.body.password
@@ -105,9 +109,13 @@ app.post '/api/v1/auth/', fromLocalHost, (req, res) ->
 		else
 			throw new Error('Authentication failed.')
 	.catch (e) ->
-		console.log('authentication failed', e)
+		console.log('AUTH FAIL: Error:', e)
+		console.log('AUTH FAIL: Stack:', e?.stack)
+		console.log('AUTH FAIL: UUID:', username)
+		console.log('AUTH FAIL: API Key:', apiKey)
+
 		res.sendStatus(401)
-	
+
 
 app.delete '/api/v1/clients/', fromLocalHost, (req, res) ->
 	if not req.body.common_name?
