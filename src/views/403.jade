@@ -1,0 +1,11 @@
+extends layout
+
+block header
+	| Device Public Access Disabled
+
+block content
+	.alert.alert-warning
+		p This <a href="https://resin.io">resin.io</a> device (UUID #{deviceUuid}) does not have Public URL enabled.
+		p
+			| If you are the owner of the device you can enaled this feature on the device page in the
+			| <a href="https://dashboard.resin.io">resin.io dashboard</a>.

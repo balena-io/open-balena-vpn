@@ -38,7 +38,6 @@ exports.createTunnel = createTunnel = ->
 			srvUrl = url.parse("http://#{req.url}")
 			connectSocket(cltSocket, srvUrl.hostname, srvUrl.port, head)
 		.catch (err) ->
-			console.error('http tunnel error', err)
 			cltSocket.end()
 
 	tunnel =

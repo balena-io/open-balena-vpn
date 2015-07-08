@@ -14,7 +14,7 @@ exports.getDeviceByUUID = getDeviceByUUID = (uuid, apiKey) ->
 	resinApi.get
 		resource: 'device'
 		options:
-			select: [ 'id', 'uuid', 'is_web_accessible', 'vpn_address' ]
+			select: [ 'id', 'uuid', 'is_web_accessible', 'vpn_address', 'is_online' ]
 			filter:
 				uuid: uuid
 		customOptions:

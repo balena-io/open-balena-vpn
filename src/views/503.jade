@@ -1,0 +1,9 @@
+extends layout
+
+block header
+	| Device Not Accessible
+
+block content
+	.alert.alert-warning
+		p We can't reach this <a href="https://resin.io">resin.io</a> device (UUID #{deviceUuid}).
+		p It may be switched off or may have connectivity issues.
