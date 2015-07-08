@@ -24,13 +24,13 @@ vpnClient.defaultOpts = [
 	'--verb', '3'
 ]
 
-requestMock = require('requestmock')()
+requestMock = require('requestmock')
 mockery = require 'mockery'
 mockery.enable(warnOnUnregistered: false)
 mockery.registerMock('request', requestMock)
 
 resetRequested = false
-requestMock.post 'https://api.resindev.io/services/vpn/reset-all', (args, cb) ->
+requestMock.register 'post', 'https://api.resindev.io/services/vpn/reset-all', (args, cb) ->
 	resetRequested = true
 	cb(null, statusCode: 200, 'OK')
 
@@ -46,13 +46,13 @@ describe 'init', ->
 describe '/api/v1/clients/', ->
 	@timeout(100000)
 	before ->
-		requestMock.get 'https://api.resindev.io/services/vpn/auth/user1', (args, cb) ->
+		requestMock.register 'get', 'https://api.resindev.io/services/vpn/auth/user1', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
-		requestMock.post 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
+		requestMock.register 'post', 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 		
-		requestMock.post 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
+		requestMock.register 'post', 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
 	describe 'When no clients are connected', ->
@@ -85,12 +85,12 @@ eventsClient = null
 describe 'VPN Events', ->
 	@timeout(100000)
 	before ->
-		requestMock.get 'https://api.resindev.io/services/vpn/auth/user2', (args, cb) ->
+		requestMock.register 'get', 'https://api.resindev.io/services/vpn/auth/user2', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
 	it 'should send a client-connect event', (done) =>
 		connectEvent = new Promise (resolve, reject) ->
-			requestMock.post "https://api.resindev.io/services/vpn/client-connect", (opts, res) =>
+			requestMock.register 'post', "https://api.resindev.io/services/vpn/client-connect", (opts, res) =>
 				res(null, statusCode: 200, 'OK')
 
 				data = opts.form
@@ -108,7 +108,7 @@ describe 'VPN Events', ->
 		Promise.all([ connectEvent, @client.connect() ]).nodeify(done)
 	it 'should send a client-disconnect event', (done) =>
 		new Promise (resolve, reject) ->
-			requestMock.post "https://api.resindev.io/services/vpn/client-disconnect", (opts, res) =>
+			requestMock.register 'post', "https://api.resindev.io/services/vpn/client-disconnect", (opts, res) =>
 				res(null, statusCode: 200, 'OK')
 
 				data = opts.form
@@ -126,13 +126,13 @@ describe 'VPN Events', ->
 describe 'reverse proxy', ->
 	@timeout(100000)
 	before (done) ->
-		requestMock.get 'https://api.resindev.io/services/vpn/auth/user6', (args, cb) ->
+		requestMock.register 'get', 'https://api.resindev.io/services/vpn/auth/user6', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
-		requestMock.post 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
+		requestMock.register 'post', 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 		
-		requestMock.post 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
+		requestMock.register 'post', 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
 		hostile.setAsync('127.0.0.1', 'deadbeef.devices.resindev.io')
@@ -141,7 +141,7 @@ describe 'reverse proxy', ->
 
 	describe 'web accessible device', ->
 		before ->
-			requestMock.get 'https://api.resindev.io/ewa/device', (args, cb) ->
+			requestMock.register 'get', 'https://api.resindev.io/ewa/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 1, vpn_address: 'localhost', is_online: 1 } ] })
 
 		it 'should allow port 4200 without authentication', (done) ->
@@ -163,7 +163,7 @@ describe 'reverse proxy', ->
 			.nodeify(done)
 	describe 'Pretty error pages when', ->
 		it 'does not exist', (done) ->
-			requestMock.get 'https://api.resindev.io/ewa/device', (args, cb) ->
+			requestMock.register 'get', 'https://api.resindev.io/ewa/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, { d: [] })
 
 			requestAsync({ url: "http://deadbeef.devices.resindev.io:80/test" })
@@ -172,7 +172,7 @@ describe 'reverse proxy', ->
 				expect(data).to.match(/<title>Resin.io Device Public URLs<\/title>[\s\S]*Device Not Found/)
 			.nodeify(done)
 		it 'is not web accessible', (done) ->
-			requestMock.get 'https://api.resindev.io/ewa/device', (args, cb) ->
+			requestMock.register 'get', 'https://api.resindev.io/ewa/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 0, vpn_address: 'localhost', is_online: 1 } ] })
 
 			requestAsync({ url: "http://deadbeef.devices.resindev.io:80/test" })
@@ -181,7 +181,7 @@ describe 'reverse proxy', ->
 				expect(data).to.match(/<title>Resin.io Device Public URLs<\/title>[\s\S]*Device Public Access Disabled/)
 			.nodeify(done)
 		it 'is offline', (done) ->
-			requestMock.get 'https://api.resindev.io/ewa/device', (args, cb) ->
+			requestMock.register 'get', 'https://api.resindev.io/ewa/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 1, vpn_address: 'localhost', is_online: 0 } ] })
 
 			requestAsync({ url: "http://deadbeef.devices.resindev.io:80/test" })
@@ -193,25 +193,25 @@ describe 'reverse proxy', ->
 describe 'VPN proxy', ->
 	@timeout(100000)
 	before ->
-		requestMock.get 'https://api.resindev.io/services/vpn/auth/user3', (args, cb) ->
+		requestMock.register 'get', 'https://api.resindev.io/services/vpn/auth/user3', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
-		requestMock.get 'https://api.resindev.io/services/vpn/auth/user4', (args, cb) ->
+		requestMock.register 'get', 'https://api.resindev.io/services/vpn/auth/user4', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
-		requestMock.get 'https://api.resindev.io/services/vpn/auth/user5', (args, cb) ->
+		requestMock.register 'get', 'https://api.resindev.io/services/vpn/auth/user5', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
-		requestMock.post 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
+		requestMock.register 'post', 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 		
-		requestMock.post 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
+		requestMock.register 'post', 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 	
 
 	describe 'web accessible device', ->
 		before ->
-			requestMock.get 'https://api.resindev.io/ewa/device', (args, cb) ->
+			requestMock.register 'get', 'https://api.resindev.io/ewa/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, { d: [ { uuid: "deadbeef", is_web_accessible: 1, vpn_address: 'localhost', is_online: 1 } ] })
 
 		it 'should allow port 4200 without authentication', (done) ->
@@ -234,7 +234,7 @@ describe 'VPN proxy', ->
 
 	describe 'not web accessible device', ->
 		before ->
-			requestMock.get 'https://api.resindev.io/ewa/device', (args, cb) ->
+			requestMock.register 'get', 'https://api.resindev.io/ewa/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, { d: [ { uuid: 'deadbeef', is_web_accessible: 0, vpn_address: 'localhost', is_online: 1 } ] })
 
 		it 'should not allow port 4200 without authentication', (done) ->
