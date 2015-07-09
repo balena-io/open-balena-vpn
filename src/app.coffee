@@ -13,6 +13,7 @@ ALLOWED_PORTS = [ 80, 8080 ]
 
 envKeys = [
 	'RESIN_API_HOST'
+	'RESIN_PROXY_HOST'
 	'VPN_SERVICE_API_KEY'
 	'VPN_HOST'
 	'VPN_MANAGEMENT_NEW_PORT'
@@ -21,7 +22,6 @@ envKeys = [
 	'VPN_SUBNET'
 	'VPN_API_PORT'
 	'VPN_CONNECT_PROXY_PORT'
-	'DEVICE_URLS_BASE'
 ]
 
 for k in envKeys when not process.env[k]?
