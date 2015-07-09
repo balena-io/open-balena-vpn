@@ -16,7 +16,7 @@ renderError = (res, statusCode, context = {}) ->
 	res.status(statusCode).render(statusCode, context)
 
 reverseProxy = (req, res, next) ->
-	hostRegExp = new RegExp("^([a-f0-9]+)\\.#{_.escapeRegExp(process.env.DEVICE_URLS_BASE)}$")
+	hostRegExp = new RegExp("^([a-f0-9]+)\\.#{_.escapeRegExp(process.env.RESIN_PROXY_HOST)}$")
 	hostMatch = req.hostname.match(hostRegExp)
 	if not hostMatch
 		return next()
