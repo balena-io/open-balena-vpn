@@ -8,7 +8,7 @@
 # Reset does not happen by actually resending all the events,
 # the API has a special endpoint that first sets all clients as offline.
 
-{ requestQueue } = require './libs/request-queue'
+requestQueue = require 'requestqueue'
 
 # `common_name`s to `trusted_port`s map
 activePort = {}
