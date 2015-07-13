@@ -21,7 +21,7 @@ tunnelToDevice = (req, cltSocket, head, next) ->
 			if not data.vpn_address or not data.is_online
 				cltSocket.end('HTTP/1.1 503 Service Unavailable\r\n\r\n')
 				throw new Error('Device not available: ' + uuid)
-			req.url = data.vpn_address + ":" + port
+			req.url = data.vpn_address + ':' + port
 	.then ->
 		next()
 	.catch (err) ->

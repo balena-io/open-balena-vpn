@@ -4,7 +4,7 @@
   "description": "RESTful VPN api",
   "main": "server.js",
   "scripts": {
-    "test": "RESIN_API_HOST=api.resindev.io DEVICE_WEB_PORT=4200 RESIN_PROXY_HOST=devices.resindev.io VPN_SERVICE_API_KEY=test_api_key VPN_HOST=127.0.0.1 VPN_MANAGEMENT_NEW_PORT=11195 VPN_MANAGEMENT_PORT=11194 VPN_PRIVILEGED_SUBNET=10.255.255.0/24 VPN_SUBNET=10.0.0.0/8 VPN_API_PORT=80 VPN_CONNECT_PROXY_PORT=3128 ./node_modules/mocha/bin/mocha --bail --compilers coffee:coffee-script/register test/app.coffee"
+    "test": "docker build -t test-resin-vpn . && IMAGE_NAME=test-resin-vpn ./automation/test.sh"
   },
   "dependencies": {
     "basic-auth-parser": "0.0.2",
@@ -32,6 +32,7 @@
   "devDependencies": {
     "chai": "~3.0.0",
     "chai-as-promised": "~5.1.0",
+    "coffeelint": "~1.10.1",
     "csr-gen": "~0.2.1",
     "dockerode": "~2.1.5",
     "hostile": "~1.0.2",

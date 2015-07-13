@@ -6,27 +6,28 @@ _ = require 'lodash'
 
 clients = require './clients'
 
-api = express.Router()
-
 # Require once we know we have sufficient env vars.
 privileged = require './privileged'
 
-module.exports = (vpn, vpnSubnet) ->
-	notFromVpnClients = (req, res, next) ->
+notFromVpnClients = (vpnSubnet) ->
+	return (req, res, next) ->
 		if vpnSubnet.contains(req.ip) and not privileged.contains(req.ip)
 			return res.sendStatus(401)
 
 		next()
 
-	## Private endpoints should use the `fromLocalHost` middleware.
-	fromLocalHost = (req, res, next) ->
-		if req.ip isnt '127.0.0.1'
-			return res.sendStatus(401)
+## Private endpoints should use the `fromLocalHost` middleware.
+fromLocalHost = (req, res, next) ->
+	if req.ip isnt '127.0.0.1'
+		return res.sendStatus(401)
 
-		next()
+	next()
+
+module.exports = (vpn, vpnSubnet) ->
+	api = express.Router()
 
 	api.use(bodyParser.json())
-	api.use(notFromVpnClients)
+	api.use(notFromVpnClients(vpnSubnet))
 
 	api.get '/api/v1/clients/', (req, res) ->
 		vpn.getStatus()
@@ -73,7 +74,6 @@ module.exports = (vpn, vpnSubnet) ->
 		.catch (e) ->
 			console.log('authentication failed', e, e?.stack, username, apiKey)
 			res.sendStatus(401)
-		
 
 	api.delete '/api/v1/clients/', fromLocalHost, (req, res) ->
 		if not req.body.common_name?

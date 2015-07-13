@@ -29,7 +29,7 @@ reverseProxy = (req, res, next) ->
 
 	proxy.webAsync(req, res, { target: "http://#{deviceUuid}.resin:#{port}", agent: tunnelingAgent })
 	.catch (err) ->
-		console.log("proxy error", err, err.stack)
+		console.error('proxy error', err, err.stack)
 		# "sutatus" is typo on node-tunnel project
 		statusCode = err.message.match(/sutatusCode=([0-9]+)$/)?[1]
 		# if the error was caused when connecting through the tunnel

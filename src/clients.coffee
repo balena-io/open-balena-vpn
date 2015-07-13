@@ -18,7 +18,7 @@ exports.resetAll = resetAll = ->
 	activePort = {}
 	queue.push(
 		url: "https://#{process.env.RESIN_API_HOST}/services/vpn/reset-all?apikey=#{process.env.VPN_SERVICE_API_KEY}"
-		method: "post"
+		method: 'post'
 	)
 
 queue = requestQueue(
@@ -31,7 +31,7 @@ exports.connected = (data) ->
 	activePort[data.common_name] = data.trusted_port
 	queue.push(
 		url: "https://#{process.env.RESIN_API_HOST}/services/vpn/client-connect?apikey=#{process.env.VPN_SERVICE_API_KEY}"
-		method: "post"
+		method: 'post'
 		form: data
 	)
 
@@ -40,6 +40,6 @@ exports.disconnected = (data) ->
 		return
 	queue.push(
 		url: "https://#{process.env.RESIN_API_HOST}/services/vpn/client-disconnect?apikey=#{process.env.VPN_SERVICE_API_KEY}"
-		method: "post"
+		method: 'post'
 		form: data
 	)
