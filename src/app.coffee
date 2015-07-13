@@ -65,4 +65,4 @@ ALLOWED_PORTS.forEach (port) ->
 			# Now endpoints are established, release VPN hold.
 			vpn.execCommand('hold release')
 			.catch (e) ->
-			       console.error('failed releasing hold', e, e.stack)
+				console.error('failed releasing hold', e, e.stack)

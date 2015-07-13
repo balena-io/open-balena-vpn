@@ -4,10 +4,10 @@ net = require 'net'
 Promise = require 'bluebird'
 
 class OpenVPNSet
-	constructor: (ports, host='localhost') ->
+	constructor: (ports, host = 'localhost') ->
 		@vpns = _.map(ports, (p) -> new OpenVPN(p, host))
 
-	getStatus: (format=2) ->
+	getStatus: (format = 2) ->
 		return Promise.map(@vpns, (v) -> v.getStatus(format)).then (vs) ->
 			_.merge({}, vs...)
 
@@ -15,7 +15,7 @@ class OpenVPNSet
 		Promise.map(@vpns, (v) -> v.execCommand(command))
 
 class OpenVPN
-	constructor: (@port, @host='localhost') ->
+	constructor: (@port, @host = 'localhost') ->
 
 	getConnection: ->
 		Promise.try =>
@@ -39,7 +39,7 @@ class OpenVPN
 				conn.on('close', reject)
 			.timeout(60000)
 
-	getStatus: (format=2) ->
+	getStatus: (format = 2) ->
 		@execCommand("status #{format}").then (results) ->
 			status =
 				routing_table: {}
