@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-VERSION=$(git describe --always --abbrev=6)
+VERSION=$(git rev-parse --short HEAD)
 ESCAPED_BRANCH_NAME=$(echo $sourceBranch | sed 's/[^a-z0-9A-Z_.-]/-/g')
 
 docker build --tag resin/${JOB_NAME}:${VERSION} .
