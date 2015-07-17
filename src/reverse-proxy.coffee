@@ -31,9 +31,15 @@ reverseProxy = (req, res, next) ->
 	.catch (err) ->
 		console.error('proxy error', err, err.stack)
 		# "sutatus" is typo on node-tunnel project
-		statusCode = err.message.match(/sutatusCode=([0-9]+)$/)?[1]
+		statusCode = parseInt(err.message.match(/sutatusCode=([0-9]+)$/)?[1])
+
 		# if the error was caused when connecting through the tunnel
 		# use the status code to provide a nicer error page.
+
+		if statusCode == 407
+			# translate "Proxy-authorization required" to "Forbidden"
+			statusCode = 403
+
 		if statusCode
 			renderError(res, statusCode, { port, deviceUuid })
 		else
