@@ -1,3 +1,17 @@
+* Always used the short commit hash for tagging. [Petros]
+* Improved test script. [Aleksis]
+* Switched logentries to TLS. [Petros]
+* Switched to using some published modules. [Aleksis]
+* Added VPN reverse proxy. [Aleksis]
+* Report additional data on auth fail. [Lorenzo]
+
+# 2015-07-17
+
+* Changed to support newer resin-base with confd 0.10.0 [Page]
+* Added VPN proxy. [Aleksis]
+* Cleaned up openvpn-nc. [Aleksis]
+* Disable autogeneration of openvpn services. [Petros]
+
 # 2015-06-10
 
 * Fix reset-all error handler [Aleksis]
