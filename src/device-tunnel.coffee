@@ -13,13 +13,13 @@ tunnelToDevice = (req, cltSocket, head, next) ->
 		device.getDeviceByUUID(uuid, process.env.VPN_SERVICE_API_KEY)
 		.then (data) ->
 			if not data?
-				cltSocket.end('HTTP/1.1 404 Not Found\r\n\r\n')
+				cltSocket.end('HTTP/1.0 404 Not Found\r\n\r\n')
 				throw new Error('Device not found: ' + uuid)
 			if not device.isAccessible(data, port, req.auth)
-				cltSocket.end('HTTP/1.1 403 Forbidden\r\n\r\n')
+				cltSocket.end('HTTP/1.0 407 Proxy Authorization Required\r\n\r\n')
 				throw new Error('Device not accessible: ' + uuid)
 			if not data.vpn_address or not data.is_online
-				cltSocket.end('HTTP/1.1 503 Service Unavailable\r\n\r\n')
+				cltSocket.end('HTTP/1.0 503 Service Unavailable\r\n\r\n')
 				throw new Error('Device not available: ' + uuid)
 			req.url = data.vpn_address + ':' + port
 	.then ->
