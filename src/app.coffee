@@ -49,6 +49,9 @@ ALLOWED_PORTS.forEach (port) ->
 
 	app.use(morgan('combined', skip: (req) -> req.url is '/ping'))
 
+	app.get '/ping', (req, res) ->
+		return res.send('OK')
+
 	app.use(compression())
 	app.use (req, res, next) ->
 		req.port = port
