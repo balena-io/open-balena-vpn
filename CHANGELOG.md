@@ -1,3 +1,7 @@
+# 2015-07-26
+
+* Added a /ping endpoint. [Aleksis]
+* Switched to http/1.0 for the reverse proxy - necessary for some nc versions (eg OSX). [Aleksis]
 * Always used the short commit hash for tagging. [Petros]
 * Improved test script. [Aleksis]
 * Switched logentries to TLS. [Petros]
