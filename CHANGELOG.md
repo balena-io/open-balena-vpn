@@ -1,3 +1,5 @@
+* Switched to using a tagged version of resin-base. [Page]
+
 # 2015-07-26
 
 * Added a /ping endpoint. [Aleksis]
