@@ -1,3 +1,4 @@
+* Try to populate the docker cache before building. [Page]
 * Switched to using a tagged version of resin-base. [Page]
 
 # 2015-07-26
