@@ -9,6 +9,7 @@ requestAsync = Promise.promisify(require('request'))
 hostile = Promise.promisifyAll(require('hostile'))
 path = require 'path'
 vpnClient = require 'openvpn-client'
+{ createJwt } = require '@resin/resin-jwt'
 
 vpnHost = process.env.VPN_HOST ? '127.0.0.1'
 vpnPort = process.env.VPN_PORT ? '443'
@@ -55,16 +56,26 @@ describe '/api/v1/clients/', ->
 		requestMock.register 'post', 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
 			cb(null, statusCode: 200, 'OK')
 
+	describe 'Without a web token', ->
+		it 'should respond with 401', (done) ->
+			supertest('http://localhost')
+			.get('/api/v1/clients/')
+			.expect(401, done)
+
 	describe 'When no clients are connected', ->
 		it 'should return empty client list', (done) ->
-			Promise.delay(2000).then ->
-				supertest('http://localhost').get('/api/v1/clients/').expect(200, '[]', done)
+			supertest('http://localhost')
+			.get('/api/v1/clients/')
+			.set('Authorization', 'Bearer ' + createJwt({ service: 'api' }))
+			.expect(200, '[]', done)
 
 	describe 'When a client connects and disconnects', ->
 		it 'should send the correct data', (done) ->
 			Promise.using vpnClient.connect({ user: 'user1', pass: 'pass' }), ->
 				Promise.fromNode (cb) ->
-					supertest('http://localhost').get('/api/v1/clients/')
+					supertest('http://localhost')
+					.get('/api/v1/clients/')
+					.set('Authorization', 'Bearer ' + createJwt({ service: 'api' }))
 					.expect(200)
 					.expect (res) ->
 						clients = res.body
@@ -78,7 +89,10 @@ describe '/api/v1/clients/', ->
 					.end(cb)
 			.then ->
 				Promise.fromNode (cb) ->
-					supertest('http://localhost').get('/api/v1/clients/').expect(200, '[]', cb)
+					supertest('http://localhost')
+					.get('/api/v1/clients/')
+					.set('Authorization', 'Bearer ' + createJwt({ service: 'api' }))
+					.expect(200, '[]', cb)
 			.nodeify(done)
 
 eventsClient = null

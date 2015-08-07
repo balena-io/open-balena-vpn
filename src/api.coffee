@@ -3,18 +3,15 @@ express = require 'express'
 bodyParser = require 'body-parser'
 request = Promise.promisify(require('request'))
 _ = require 'lodash'
+jwt = require '@resin/resin-jwt'
+passport = require 'passport'
+
+passport.use(jwt.strategy())
 
 clients = require './clients'
 
 # Require once we know we have sufficient env vars.
 privileged = require './privileged'
-
-notFromVpnClients = (vpnSubnet) ->
-	return (req, res, next) ->
-		if vpnSubnet.contains(req.ip) and not privileged.contains(req.ip)
-			return res.sendStatus(401)
-
-		next()
 
 ## Private endpoints should use the `fromLocalHost` middleware.
 fromLocalHost = (req, res, next) ->
@@ -26,10 +23,13 @@ fromLocalHost = (req, res, next) ->
 module.exports = (vpn, vpnSubnet) ->
 	api = express.Router()
 
+	api.use(passport.initialize())
 	api.use(bodyParser.json())
-	api.use(notFromVpnClients(vpnSubnet))
+	api.use(jwt.middleware)
 
 	api.get '/api/v1/clients/', (req, res) ->
+		if req.auth?.service isnt 'api'
+			return res.sendStatus(401)
 		vpn.getStatus()
 		.then (results) ->
 			res.send(_.values(results.client_list))
@@ -37,7 +37,7 @@ module.exports = (vpn, vpnSubnet) ->
 			console.error('Error getting VPN client list', error)
 			res.send(500, 'Error getting VPN client list')
 
-	api.post '/api/v1/clients/', (req, res) ->
+	api.post '/api/v1/clients/', fromLocalHost, (req, res) ->
 		if not req.body.common_name?
 			return res.sendStatus(400)
 		if not req.body.virtual_address?
