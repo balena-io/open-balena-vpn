@@ -1,3 +1,8 @@
+* Fixed an rsyslogd infinite restart loop when there is no logentries token. [Page]
+
+# 2015-08-17
+
+* Use JWT to authenticate requests from the API. [Aleksis]
 * Try to populate the docker cache before building. [Page]
 * Switched to using a tagged version of resin-base. [Page]
 
