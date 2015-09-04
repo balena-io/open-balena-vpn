@@ -1,10 +1,12 @@
 device = require './device'
 Promise = require 'bluebird'
 { createTunnel, basicAuth } = require 'node-tunnel'
+logger = require 'winston'
 
 tunnelToDevice = (req, cltSocket, head, next) ->
 	Promise.try ->
 		[ uuid, port ] = req.url.match(/^([a-fA-F0-9]+).resin(?::([0-9]+))?$/)[1..]
+		logger.log('info', 'tunnel requested for', uuid, port)
 		if not uuid?
 			throw new Error('Invalid hostname: ' + hostname)
 		if not port?
@@ -25,11 +27,16 @@ tunnelToDevice = (req, cltSocket, head, next) ->
 	.then ->
 		next()
 	.catch (err) ->
-		console.log('tunnel catch', err, err.stack)
+		logger.log('error', 'tunnel catch', err, err.stack)
 		cltSocket.end('HTTP/1.1 500 Internal Server Error\r\n\r\n')
 
 module.exports = (port) ->
 	tunnel = createTunnel()
 	tunnel.use(basicAuth)
 	tunnel.use(tunnelToDevice)
-	tunnel.listen(port)
+	tunnel.listen port, ->
+		logger.log('info', 'tunnel listening on port', port)
+	tunnel.on 'error', (err) ->
+		logger.log('error', 'failed to connect to device:', err.message ? err, err.stack)
+	tunnel.on 'connect', (hostname, port) ->
+		logger.log('info', 'tunnel opened to', hostname, port)
