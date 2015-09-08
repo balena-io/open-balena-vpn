@@ -6,7 +6,7 @@ logger = require 'winston'
 tunnelToDevice = (req, cltSocket, head, next) ->
 	Promise.try ->
 		[ uuid, port ] = req.url.match(/^([a-fA-F0-9]+).resin(?::([0-9]+))?$/)[1..]
-		logger.log('info', 'tunnel requested for', uuid, port)
+		logger.info('tunnel requested for', uuid, port)
 		if not uuid?
 			throw new Error('Invalid hostname: ' + hostname)
 		if not port?
@@ -27,7 +27,7 @@ tunnelToDevice = (req, cltSocket, head, next) ->
 	.then ->
 		next()
 	.catch (err) ->
-		logger.log('error', 'tunnel catch', err, err.stack)
+		logger.error('tunnel catch', err, err.stack)
 		cltSocket.end('HTTP/1.1 500 Internal Server Error\r\n\r\n')
 
 module.exports = (port) ->
@@ -35,8 +35,8 @@ module.exports = (port) ->
 	tunnel.use(basicAuth)
 	tunnel.use(tunnelToDevice)
 	tunnel.listen port, ->
-		logger.log('info', 'tunnel listening on port', port)
+		logger.info('tunnel listening on port', port)
 	tunnel.on 'error', (err) ->
-		logger.log('error', 'failed to connect to device:', err.message ? err, err.stack)
+		logger.error('failed to connect to device:', err.message ? err, err.stack)
 	tunnel.on 'connect', (hostname, port) ->
-		logger.log('info', 'tunnel opened to', hostname, port)
+		logger.info('tunnel opened to', hostname, port)
