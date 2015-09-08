@@ -1,3 +1,4 @@
+* Added winston logging module and improved logging on tunnel requests.
 * Fixed an rsyslogd infinite restart loop when there is no logentries token. [Page]
 
 # 2015-08-17
