@@ -15,7 +15,8 @@ privileged = require './privileged'
 
 ## Private endpoints should use the `fromLocalHost` middleware.
 fromLocalHost = (req, res, next) ->
-	if req.ip isnt '127.0.0.1'
+	# '::ffff:127.0.0.1' is the ipv4 mapped ipv6 address and ::1 is the ipv6 loopback
+	if req.ip not in [ '127.0.0.1', '::ffff:127.0.0.1', '::1' ]
 		return res.sendStatus(401)
 
 	next()
