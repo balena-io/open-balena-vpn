@@ -1,3 +1,4 @@
+* Allow connecting to devices via uuid rather than ip, using `${uuid}.vpn` [Internal] [Page]
 * Fix the grammar of the proxy error pages. [Page]
 
 # 2015-10-01
