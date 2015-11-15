@@ -1,4 +1,4 @@
-FROM resin/resin-base:9ab7d52
+FROM resin/resin-base:93e5b8d
 
 EXPOSE 80 443 1194
 
