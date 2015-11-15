@@ -1,3 +1,4 @@
+* Updated resin-base to include nodejs v4. [Page]
 * Removed reverse-proxy as it's going to continue living in resin-proxy with fixes. [Internal] [Page]
 
 # 2015-11-12
