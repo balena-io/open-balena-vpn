@@ -11,8 +11,6 @@ trap "cleanup" EXIT
 test_id=$(docker run \
 	--privileged -d \
 	-e RESIN_API_HOST=api.resindev.io \
-	-e DEVICE_WEB_PORT=4200 \
-	-e RESIN_PROXY_HOST=devices.resindev.io \
 	-e VPN_SERVICE_API_KEY=test_api_key \
 	-e VPN_HOST=127.0.0.1 \
 	-e VPN_MANAGEMENT_NEW_PORT=11195 \

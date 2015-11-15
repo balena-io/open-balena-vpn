@@ -1,3 +1,5 @@
+* Removed reverse-proxy as it's going to continue living in resin-proxy with fixes. [Internal] [Page]
+
 # 2015-11-12
 
 * Allow connecting to devices via uuid rather than ip, using `${uuid}.vpn` [Internal] [Page]

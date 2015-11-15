@@ -6,14 +6,10 @@ Netmask = require('netmask').Netmask
 
 { OpenVPNSet } = require './libs/openvpn-nc'
 deviceTunnel = require './device-tunnel'
-reverseProxy = require './reverse-proxy'
 clients = require './clients'
-
-ALLOWED_PORTS = [ 80, 8080 ]
 
 envKeys = [
 	'RESIN_API_HOST'
-	'RESIN_PROXY_HOST'
 	'VPN_SERVICE_API_KEY'
 	'VPN_HOST'
 	'VPN_MANAGEMENT_NEW_PORT'
@@ -41,31 +37,21 @@ api = require('./api')(vpn, vpnSubnet)
 
 deviceTunnel(process.env.VPN_CONNECT_PROXY_PORT)
 
-ALLOWED_PORTS.forEach (port) ->
-	app = Promise.promisifyAll(express())
+app = Promise.promisifyAll(express())
 
-	app.set('views', 'src/views')
-	app.set('view engine', 'jade')
+app.use(morgan('combined', skip: (req) -> req.url is '/ping'))
 
-	app.use(morgan('combined', skip: (req) -> req.url is '/ping'))
+app.get '/ping', (req, res) ->
+	return res.send('OK')
 
-	app.get '/ping', (req, res) ->
-		return res.send('OK')
+app.use(compression())
+app.use(api)
 
-	app.use(compression())
-	app.use (req, res, next) ->
-		req.port = port
-		next()
-	app.use(reverseProxy)
-
-	app.use(api)
-
-	app.listenAsync(port)
-	.then ->
-		console.log('listening on port', port)
-		if port == 80
-			clients.resetAll()
-			# Now endpoints are established, release VPN hold.
-			vpn.execCommand('hold release')
-			.catch (e) ->
-				console.error('failed releasing hold', e, e.stack)
+app.listenAsync(80)
+.then ->
+	console.log('listening on port', 80)
+	clients.resetAll()
+	# Now endpoints are established, release VPN hold.
+	vpn.execCommand('hold release')
+	.catch (e) ->
+		console.error('failed releasing hold', e, e.stack)
