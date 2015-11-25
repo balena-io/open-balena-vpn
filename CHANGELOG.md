@@ -1,5 +1,6 @@
+* Updated the vpn server certificate for another two years, to `Nov 23 16:10:32 2017 GMT` [Internal] [Page]
 * Switched to a purely etcd backed confd. [Internal] [Page]
-* Updated resin-base to include nodejs v4. [Page]
+* Updated resin-base to include nodejs v4. [Internal] [Page]
 * Removed reverse-proxy as it's going to continue living in resin-proxy with fixes. [Internal] [Page]
 
 # 2015-11-12
