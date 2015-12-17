@@ -3,17 +3,6 @@ es = require 'event-stream'
 net = require 'net'
 Promise = require 'bluebird'
 
-class OpenVPNSet
-	constructor: (ports, host = 'localhost') ->
-		@vpns = _.map(ports, (p) -> new OpenVPN(p, host))
-
-	getStatus: (format = 2) ->
-		return Promise.map(@vpns, (v) -> v.getStatus(format)).then (vs) ->
-			_.merge({}, vs...)
-
-	execCommand: (command) ->
-		Promise.map(@vpns, (v) -> v.execCommand(command))
-
 class OpenVPN
 	constructor: (@port, @host = 'localhost') ->
 
@@ -73,4 +62,4 @@ class OpenVPN
 							last_ref_t: data[4]
 			return status
 
-module.exports = { OpenVPN, OpenVPNSet }
+module.exports = { OpenVPN }
