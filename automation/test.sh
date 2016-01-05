@@ -22,4 +22,9 @@ test_id=$(docker run \
 	-e BLUEBIRD_DEBUG=1 \
 	-e JSON_WEB_TOKEN_SECRET=jwtsecret \
 	$IMAGE_NAME)
-docker exec $test_id /bin/sh -c 'npm install && systemctl stop resin-vpn.service && ./node_modules/.bin/coffeelint ./src ./test && ./node_modules/mocha/bin/mocha --bail --compilers coffee:coffee-script/register test/app.coffee'
+docker exec $test_id /bin/sh -c '\
+	npm install \
+	&& systemctl stop resin-vpn.service \
+	&& ./node_modules/.bin/coffeelint ./src ./test \
+	&& echo "127.0.0.1 deadbeef.vpn" >> /etc/hosts \
+	&& ./node_modules/mocha/bin/mocha --bail --compilers coffee:coffee-script/register test/app.coffee'

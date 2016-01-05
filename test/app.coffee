@@ -161,7 +161,6 @@ describe 'VPN proxy', ->
 				cb(null, { statusCode: 200 }, d: [
 					uuid: 'deadbeef'
 					is_web_accessible: 1
-					vpn_address: 'localhost'
 					is_online: 1
 				])
 
@@ -186,7 +185,7 @@ describe 'VPN proxy', ->
 	describe 'not web accessible device', ->
 		before ->
 			requestMock.register 'get', 'https://api.resindev.io/ewa/device', (args, cb) ->
-				cb(null, { statusCode: 200 }, d: [ uuid: 'deadbeef', is_web_accessible: 0, vpn_address: 'localhost', is_online: 1 ])
+				cb(null, { statusCode: 200 }, d: [ uuid: 'deadbeef', is_web_accessible: 0, is_online: 1 ])
 
 		it 'should not allow port 4200 without authentication', (done) ->
 			server = http.createServer (req, res) ->
