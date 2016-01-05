@@ -1,3 +1,5 @@
+* Use the uuid to connect to the device, rather than relying on the api reported vpn_address which may be incorrect. [Internal] [Page]
+
 # 2015-12-01
 
 * Updated the vpn server certificate for another two years, to `Nov 23 16:10:32 2017 GMT` [Internal] [Page]
