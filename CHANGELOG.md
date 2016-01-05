@@ -1,3 +1,5 @@
+# 2015-01-05
+
 * Use the uuid to connect to the device, rather than relying on the api reported vpn_address which may be incorrect. [Internal] [Page]
 
 # 2015-12-01
