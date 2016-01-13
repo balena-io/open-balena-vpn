@@ -15,7 +15,6 @@ activePort = {}
 
 exports.resetAll = resetAll = ->
 	queue.clear()
-	activePort = {}
 	queue.push(
 		url: "https://#{process.env.RESIN_API_HOST}/services/vpn/reset-all?apikey=#{process.env.VPN_SERVICE_API_KEY}"
 		method: 'post'
