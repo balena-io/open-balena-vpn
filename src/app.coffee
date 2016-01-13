@@ -2,7 +2,6 @@ express = require 'express'
 compression = require 'compression'
 morgan = require 'morgan'
 Promise = require 'bluebird'
-Netmask = require('netmask').Netmask
 
 { OpenVPN } = require './libs/openvpn-nc'
 deviceTunnel = require './device-tunnel'
