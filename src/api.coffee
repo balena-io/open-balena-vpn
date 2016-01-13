@@ -10,9 +10,6 @@ passport.use(jwt.strategy())
 
 clients = require './clients'
 
-# Require once we know we have sufficient env vars.
-privileged = require './privileged'
-
 ## Private endpoints should use the `fromLocalHost` middleware.
 fromLocalHost = (req, res, next) ->
 	# '::ffff:127.0.0.1' is the ipv4 mapped ipv6 address and ::1 is the ipv6 loopback
@@ -21,7 +18,7 @@ fromLocalHost = (req, res, next) ->
 
 	next()
 
-module.exports = (vpn, vpnSubnet) ->
+module.exports = (vpn) ->
 	api = express.Router()
 
 	api.use(passport.initialize())
@@ -89,32 +86,5 @@ module.exports = (vpn, vpnSubnet) ->
 		clients.disconnected(data)
 		res.send('OK')
 
-	api.post '/api/v1/privileged/ip', fromLocalHost, (req, res) ->
-		{ common_name } = req.body
-		if not common_name?
-			return res.sendStatus(400)
-
-		ip = privileged.assign(common_name)
-		return res.sendStatus(501) if !ip?
-
-		res.send(ip)
-
-	api.delete '/api/v1/privileged/ip', fromLocalHost, (req, res) ->
-		{ ip } = req.body
-		return res.sendStatus(400) if not ip?
-
-		privileged.unassign(ip)
-		# We output a message if unassigned ip provided, but this shouldn't be an error.
-		res.send('OK')
-
-	api.get '/api/v1/privileged/ip', fromLocalHost, (req, res) ->
-		res.send(privileged.list())
-
-	api.get '/api/v1/privileged/peer', fromLocalHost, (req, res) ->
-		peer = privileged.peer(req.query.ip)
-		if peer?
-			res.send(peer)
-		else
-			res.sendStatus(400)
 
 	return api

@@ -2,9 +2,8 @@ express = require 'express'
 compression = require 'compression'
 morgan = require 'morgan'
 Promise = require 'bluebird'
-Netmask = require('netmask').Netmask
 
-{ OpenVPNSet } = require './libs/openvpn-nc'
+{ OpenVPN } = require './libs/openvpn-nc'
 deviceTunnel = require './device-tunnel'
 clients = require './clients'
 
@@ -12,10 +11,7 @@ envKeys = [
 	'RESIN_API_HOST'
 	'VPN_SERVICE_API_KEY'
 	'VPN_HOST'
-	'VPN_MANAGEMENT_NEW_PORT'
 	'VPN_MANAGEMENT_PORT'
-	'VPN_PRIVILEGED_SUBNET'
-	'VPN_SUBNET'
 	'VPN_API_PORT'
 	'VPN_CONNECT_PROXY_PORT'
 ]
@@ -24,16 +20,9 @@ for k in envKeys when not process.env[k]?
 	console.error("#{k} env variable is not set.")
 	process.exit(1)
 
-vpnSubnet = new Netmask(process.env.VPN_SUBNET)
+vpn = new OpenVPN(process.env.VPN_MANAGEMENT_PORT, process.env.VPN_HOST)
 
-# Basic sanity check.
-if !vpnSubnet.contains(process.env.VPN_PRIVILEGED_SUBNET)
-	fatal("Privileged IP subnet/24 #{process.env.VPN_PRIVILEGED_SUBNET} isn't on the VPN subnet #{process.env.VPN_SUBNET}")
-
-managementPorts = [ process.env.VPN_MANAGEMENT_PORT, process.env.VPN_MANAGEMENT_NEW_PORT ]
-vpn = new OpenVPNSet(managementPorts, process.env.VPN_HOST)
-
-api = require('./api')(vpn, vpnSubnet)
+api = require('./api')(vpn)
 
 deviceTunnel(process.env.VPN_CONNECT_PROXY_PORT)
 
