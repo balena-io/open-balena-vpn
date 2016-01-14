@@ -1,3 +1,4 @@
+* Update pinejs-client to include the escaping fix. [Internal] [Page]
 * Updated to the new resin-base. [Internal] [Page]
 
 # 2015-01-05
