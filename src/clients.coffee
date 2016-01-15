@@ -17,7 +17,7 @@ activePort = {}
 logResponse = (event, uuid) ->
 	logPrefix = if uuid then "#{uuid}: #{event}" else event
 	(err, response, body) ->
-		if err or response >= 400
+		if err or response.statusCode >= 400
 			logger.error(logPrefix, 'fail. status code:', response.statusCode, 'body', body)
 		else
 			logger.info(logPrefix, 'success. status code:', response.statusCode)
