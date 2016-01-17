@@ -25,7 +25,6 @@ logResponse = (event, uuid) ->
 exports.resetAll = resetAll = ->
 	logger.info('reset-all triggered')
 	queue.clear()
-	activePort = {}
 	queue.push(
 		url: "https://#{process.env.RESIN_API_HOST}/services/vpn/reset-all?apikey=#{process.env.VPN_SERVICE_API_KEY}"
 		method: 'post'
