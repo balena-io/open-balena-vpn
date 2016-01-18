@@ -39,8 +39,10 @@ app.use(api)
 app.listenAsync(80)
 .then ->
 	console.log('listening on port', 80)
-	clients.resetAll()
 	# Now endpoints are established, release VPN hold.
 	vpn.execCommand('hold release')
 	.catch (e) ->
 		console.error('failed releasing hold', e, e.stack)
+.delay(process.env.VPN_RESET_DELAY_MS)
+.then ->
+	clients.resetAll()
