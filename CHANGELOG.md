@@ -1,4 +1,7 @@
+# 2016-01-20
+
 * Wait a while after starting VPN to do the reset-all, to reduce the number of devices that appear offline during the mass reconnect. [Internal] [Page]
+* Fixed client events http status code check. [Internal] [Aleksis]
 * Update pinejs-client to include the escaping fix. [Internal] [Page]
 * Updated to the new resin-base. [Internal] [Page]
 
