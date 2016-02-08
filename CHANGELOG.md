@@ -1,3 +1,5 @@
+* Always restart resin-vpn.service if process exits or is killed. [Internal] [Kostas]
+
 # 2016-01-20
 
 * Wait a while after starting VPN to do the reset-all, to reduce the number of devices that appear offline during the mass reconnect. [Internal] [Page]
