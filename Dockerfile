@@ -1,6 +1,6 @@
 FROM resin/resin-closed-base:1
 
-EXPOSE 80 443 1194
+EXPOSE 80 443
 
 ENV LIBNSSS_OPENVPN_VERSION=a447ee2339a9a2170546443fa4f2ba0fcce79857
 RUN git clone https://github.com/goneri/libnss-openvpn.git \
