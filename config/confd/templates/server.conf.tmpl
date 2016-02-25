@@ -33,10 +33,10 @@ auth-user-pass-verify scripts/auth-resin.sh via-env
 mode server
 tls-server
 
-ifconfig 10.2.0.1 10.2.0.2
+ifconfig {{ getv "/resin/vpn/gateway" }} 10.2.0.2
 ifconfig-pool 10.2.0.4 10.2.255.251
 route 10.2.0.0 255.255.0.0
-push "route 10.2.0.1"
+push "route {{ getv "/resin/vpn/gateway" }}"
 
 group nogroup
 user nobody

@@ -2,4 +2,5 @@
 src = "server.conf.tmpl"
 dest = "/etc/openvpn/server.conf"
 keys = [
+  "/resin/vpn/gateway"
 ]
