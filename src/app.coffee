@@ -4,7 +4,7 @@ morgan = require 'morgan'
 Promise = require 'bluebird'
 
 { OpenVPN } = require './libs/openvpn-nc'
-deviceTunnel = require './device-tunnel'
+deviceTunnel = require './connect-proxy/device-tunnel'
 clients = require './clients'
 
 envKeys = [
