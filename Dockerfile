@@ -22,4 +22,4 @@ RUN echo AUTOSTART=none > /etc/default/openvpn \
 	&& rm -rf /etc/openvpn \
 	&& ln -s /usr/src/app/openvpn /etc/openvpn
 
-RUN systemctl enable resin-vpn.service
+RUN systemctl enable resin-vpn.service resin-connect-proxy.service
