@@ -1,5 +1,5 @@
 port 443
-management 0.0.0.0 11195
+management 127.0.0.1 11195
 
 # The API will start the server when its endpoints are available (they are
 # required by auth-resin, client-connect and client-disconnect scripts.)
@@ -21,7 +21,7 @@ persist-key
 persist-tun
 
 dev tun
-proto tcp
+proto tcp-server
 comp-lzo
 keepalive 10 60
 
@@ -30,10 +30,13 @@ client-cert-not-required
 username-as-common-name
 auth-user-pass-verify scripts/auth-resin.sh via-env
 
-server 10.2.0.0 255.255.0.0
-# API route.
-push "route 10.255.255.0 255.255.255.0"
-duplicate-cn
+mode server
+tls-server
+
+ifconfig {{ getv "/resin/vpn/gateway" }} 10.2.0.2
+ifconfig-pool 10.2.0.4 10.2.255.251
+route 10.2.0.0 255.255.0.0
+push "route {{ getv "/resin/vpn/gateway" }}"
 
 group nogroup
 user nobody
