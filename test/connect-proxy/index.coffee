@@ -1,0 +1,2 @@
+describe 'device', ->
+	require './device'

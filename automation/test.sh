@@ -26,7 +26,8 @@ test_id=$(docker run \
 	$IMAGE_NAME)
 docker exec $test_id /bin/sh -c '\
 	npm install \
-	&& systemctl stop resin-vpn.service \
+	&& systemctl stop resin-vpn.service resin-connect-proxy.service \
 	&& ./node_modules/.bin/coffeelint ./src ./test \
 	&& echo "127.0.0.1 deadbeef.vpn" >> /etc/hosts \
+	&& npm run test-unit \
 	&& ./node_modules/mocha/bin/mocha --bail --compilers coffee:coffee-script/register test/app.coffee'
