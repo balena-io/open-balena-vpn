@@ -30,4 +30,4 @@ docker exec $test_id /bin/sh -c '\
 	&& ./node_modules/.bin/coffeelint ./src ./test \
 	&& echo "127.0.0.1 deadbeef.vpn" >> /etc/hosts \
 	&& npm run test-unit \
-	&& ./node_modules/mocha/bin/mocha --bail --compilers coffee:coffee-script/register test/app.coffee'
+	&& ./node_modules/mocha/bin/mocha test/app.coffee'
