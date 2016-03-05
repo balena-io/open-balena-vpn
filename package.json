@@ -35,12 +35,15 @@
     "coffeelint": "~1.10.1",
     "csr-gen": "~0.2.1",
     "dockerode": "~2.1.5",
+    "duplexer2": "^0.1.4",
     "hostile": "~1.0.2",
     "mocha": "~2.1.0",
     "mockery": "~1.4.0",
     "nock": "^7.2.2",
     "openvpn-client": "0.0.2",
     "requestmock": "0.0.9",
+    "sinon": "^1.17.3",
+    "sinon-chai": "^2.8.0",
     "supertest": "~0.15.0"
   }
 }
