@@ -50,7 +50,7 @@ class OpenVPN
 				conn.on('connect', -> resolve(conn))
 				conn.on('error', reject)
 			.disposer (conn) ->
-				conn.end()
+				conn.destroy()
 
 	execCommand: (command) ->
 		Promise.using @getConnection(), (conn) ->
