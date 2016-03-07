@@ -36,6 +36,7 @@ requestMock.register 'post', 'https://api.resindev.io/services/vpn/reset-all', (
 	cb(null, statusCode: 200, 'OK')
 
 require '../src/app'
+require('../src/connect-proxy')(process.env.VPN_CONNECT_PROXY_PORT)
 
 describe 'init', ->
 	@timeout(10000)

@@ -1,0 +1,13 @@
+[Unit]
+Description=resin-connect-proxy
+Requires=confd.service
+After=confd.service
+
+[Service]
+WorkingDirectory=/usr/src/app
+EnvironmentFile=/usr/src/app/config/env
+ExecStart=/usr/src/app/bin/resin-connect-proxy
+Restart=always
+
+[Install]
+WantedBy=basic.target

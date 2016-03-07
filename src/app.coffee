@@ -4,7 +4,6 @@ morgan = require 'morgan'
 Promise = require 'bluebird'
 
 { OpenVPN } = require './libs/openvpn-nc'
-deviceTunnel = require './device-tunnel'
 clients = require './clients'
 
 envKeys = [
@@ -13,7 +12,6 @@ envKeys = [
 	'VPN_HOST'
 	'VPN_MANAGEMENT_PORT'
 	'VPN_API_PORT'
-	'VPN_CONNECT_PROXY_PORT'
 ]
 
 for k in envKeys when not process.env[k]?
@@ -23,8 +21,6 @@ for k in envKeys when not process.env[k]?
 vpn = new OpenVPN(process.env.VPN_MANAGEMENT_PORT, process.env.VPN_HOST)
 
 api = require('./api')(vpn)
-
-deviceTunnel(process.env.VPN_CONNECT_PROXY_PORT)
 
 app = Promise.promisifyAll(express())
 
