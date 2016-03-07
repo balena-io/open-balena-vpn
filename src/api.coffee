@@ -70,7 +70,6 @@ module.exports = (vpn) ->
 			else
 				throw new Error('Authentication failed.')
 		.catch (e) ->
-			console.log('authentication failed', e, e?.stack, username, apiKey)
 			res.sendStatus(401)
 
 	api.delete '/api/v1/clients/', fromLocalHost, (req, res) ->

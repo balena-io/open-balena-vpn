@@ -1,3 +1,4 @@
+* Reduce noise in logs [Internal] [Kostas]
 * Always restart resin-vpn.service if process exits or is killed. [Internal] [Kostas]
 
 # 2016-01-20
