@@ -25,5 +25,5 @@ exports.getDeviceByUUID = getDeviceByUUID = (uuid, apiKey) ->
 # return true if the client is allowed to connect that port of the device.
 exports.isAccessible = (device, port, auth) ->
 	isResinApi = auth?.username is API_USERNAME and auth?.password is API_KEY
-	isWebPort = _.contains(DEVICE_WEB_PORTS, parseInt(port))
+	isWebPort = _.includes(DEVICE_WEB_PORTS, parseInt(port))
 	return isResinApi or (device.is_web_accessible and isWebPort)

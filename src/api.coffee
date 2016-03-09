@@ -1,7 +1,7 @@
 Promise = require 'bluebird'
 express = require 'express'
 bodyParser = require 'body-parser'
-request = Promise.promisify(require('request'))
+request = Promise.promisify(require('request'), multiArgs: true)
 _ = require 'lodash'
 jwt = require '@resin/resin-jwt'
 passport = require 'passport'

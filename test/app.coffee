@@ -3,10 +3,8 @@ chai = require 'chai'
 chai.use(require('chai-as-promised'))
 { expect } = chai
 Promise = require 'bluebird'
-_ = require 'lodash'
 http = require 'http'
-requestAsync = Promise.promisify(require('request'))
-hostile = Promise.promisifyAll(require('hostile'))
+requestAsync = Promise.promisify(require('request'), multiArgs: true)
 path = require 'path'
 vpnClient = require 'openvpn-client'
 { createJwt } = require '@resin/resin-jwt'
