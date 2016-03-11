@@ -61,7 +61,7 @@ class OpenVPN
 			new Promise (resolve, reject) ->
 				conn.on('data', resolve)
 				conn.on('error', reject)
-				conn.on('close', reject)
+				conn.on('close', -> reject(new Error('Connection ended without receiving data')))
 			.timeout(60000)
 
 	getStatus: (format = 2) ->
