@@ -6,7 +6,7 @@ _ = require 'lodash'
 platformEndpoint = url.resolve("https://#{process.env.RESIN_API_HOST}", '/ewa/')
 resinApi = new PlatformApi(platformEndpoint)
 
-DEVICE_WEB_PORTS = [ 80, 8080, 4200 ]
+DEVICE_WEB_PORTS = [ 80, 8080 ]
 API_USERNAME = 'resin_api'
 API_KEY = process.env.VPN_SERVICE_API_KEY
 

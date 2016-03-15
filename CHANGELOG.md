@@ -1,3 +1,4 @@
+* Remove device port 4200 from web access whitelist [External] [Kostas]
 * Updated dependencies [Internal] [Page]
 * Reduce noise in logs [Internal] [Kostas]
 * Always restart resin-vpn.service if process exits or is killed. [Internal] [Kostas]

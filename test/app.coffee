@@ -163,19 +163,19 @@ describe 'VPN proxy', ->
 					is_online: 1
 				])
 
-		it 'should allow port 4200 without authentication', (done) ->
+		it 'should allow port 8080 without authentication', (done) ->
 			server = http.createServer (req, res) ->
 				res.writeHead(200, 'Content-type': 'text/plain')
-				res.end('hello from 4200')
+				res.end('hello from 8080')
 
 			Promise.using vpnClient.connect({ user: 'user3', pass: 'pass' }), ->
 				Promise.fromNode (cb) ->
-					server.listen(4200, cb)
+					server.listen(8080, cb)
 				.then ->
-					requestAsync({ url: 'http://deadbeef.resin:4200/test', proxy: 'http://localhost:3128', tunnel: true })
+					requestAsync({ url: 'http://deadbeef.resin:8080/test', proxy: 'http://localhost:3128', tunnel: true })
 					.spread (response, data) ->
 						expect(response).to.have.property('statusCode').that.equals(200)
-						expect(data).to.equal('hello from 4200')
+						expect(data).to.equal('hello from 8080')
 				.finally ->
 					Promise.fromNode (cb) ->
 						server.close(cb)
@@ -186,39 +186,39 @@ describe 'VPN proxy', ->
 			requestMock.register 'get', 'https://api.resindev.io/ewa/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, d: [ uuid: 'deadbeef', is_web_accessible: 0, is_online: 1 ])
 
-		it 'should not allow port 4200 without authentication', (done) ->
+		it 'should not allow port 8080 without authentication', (done) ->
 			server = http.createServer (req, res) ->
 				res.writeHead(200, 'Content-type': 'text/plain')
-				res.end('hello from 4200')
+				res.end('hello from 8080')
 
 			Promise.using vpnClient.connect({ user: 'user4', pass: 'pass' }), ->
 				Promise.fromNode (cb) ->
-					server.listen(4200, cb)
+					server.listen(8080, cb)
 				.then ->
-					connection = requestAsync({ url: 'http://deadbeef.resin:4200/test', proxy: 'http://localhost:3128', tunnel: true })
+					connection = requestAsync({ url: 'http://deadbeef.resin:8080/test', proxy: 'http://localhost:3128', tunnel: true })
 					expect(connection).to.be.rejected
 				.finally ->
 					Promise.fromNode (cb) ->
 						server.close(cb)
 			.nodeify(done)
 
-		it 'should allow port 4200 with authentication', (done) ->
+		it 'should allow port 8080 with authentication', (done) ->
 			server = http.createServer (req, res) ->
 				res.writeHead(200, 'Content-type': 'text/plain')
-				res.end('hello from 4200')
+				res.end('hello from 8080')
 
 			Promise.using vpnClient.connect({ user: 'user5', pass: 'pass' }), ->
 				Promise.fromNode (cb) ->
-					server.listen(4200, cb)
+					server.listen(8080, cb)
 				.then ->
 					requestOpts =
-						url: 'http://deadbeef.resin:4200/test'
+						url: 'http://deadbeef.resin:8080/test'
 						proxy: 'http://resin_api:test_api_key@localhost:3128'
 						tunnel: true
 					requestAsync(requestOpts)
 					.spread (response, data) ->
 						expect(response).to.have.property('statusCode').that.equals(200)
-						expect(data).to.equal('hello from 4200')
+						expect(data).to.equal('hello from 8080')
 				.finally ->
 					Promise.fromNode (cb) ->
 						server.close(cb)
