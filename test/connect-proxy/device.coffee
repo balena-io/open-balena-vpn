@@ -90,13 +90,6 @@ describe 'isAccessible()', ->
 		access = isAccessible(@mockDevice, 8080, null)
 		expect(access).to.be.true
 
-	it 'should allow access on port 4200', ->
-		@mockDevice.is_web_accessible = true
-		access = isAccessible(@mockDevice, 4200, null)
-		expect(access).to.be.true
-# 	isResinApi = auth?.username is API_USERNAME and auth?.password is API_KEY
-
-
 # exports.isAccessible = (device, port, auth) ->
 # 	isResinApi = auth?.username is API_USERNAME and auth?.password is API_KEY
 # 	isWebPort = _.contains(DEVICE_WEB_PORTS, parseInt(port))
