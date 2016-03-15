@@ -67,7 +67,7 @@ describe 'isAccessible()', ->
 			username: 'resin_api'
 			password: process.env.VPN_SERVICE_API_KEY
 
-		access = isAccessible(@mockDevice, 22, auth)
+		access = isAccessible(@mockDevice, 22222, auth)
 		expect(access).to.be.true
 
 	it 'should disallow access when device is inaccessible', ->
