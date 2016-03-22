@@ -4,6 +4,7 @@
   "description": "RESTful VPN api",
   "main": "server.js",
   "scripts": {
+    "pretest-unit": "resin-lint src/ test/",
     "test-unit": "mocha test/index.coffee",
     "test": "docker build -t test-resin-vpn . && IMAGE_NAME=test-resin-vpn ./automation/test.sh"
   },
@@ -32,13 +33,13 @@
   "devDependencies": {
     "chai": "^3.0.0",
     "chai-as-promised": "^5.1.0",
-    "coffeelint": "^1.10.1",
     "duplexer2": "^0.1.4",
     "mocha": "^2.1.0",
     "mockery": "~1.4.0",
     "nock": "^7.2.2",
     "openvpn-client": "0.0.2",
     "requestmock": "0.0.9",
+    "resin-lint": "^1.2.1",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
     "supertest": "~0.15.0"
