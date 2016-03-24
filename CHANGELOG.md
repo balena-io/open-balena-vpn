@@ -1,3 +1,4 @@
+* Use resin-lint [Internal] [Kostas]
 * Remove device port 4200 from web access whitelist [External] [Kostas]
 * Updated dependencies [Internal] [Page]
 * Reduce noise in logs [Internal] [Kostas]
