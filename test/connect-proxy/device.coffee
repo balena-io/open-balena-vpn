@@ -9,8 +9,6 @@ expect = chai.expect
 
 nock.disableNetConnect()
 
-process.env.VPN_SERVICE_API_KEY = 'test-vpn-service-api-key'
-
 { getDeviceByUUID, isAccessible } = require '../../src/connect-proxy/device'
 
 beforeEach ->
@@ -73,6 +71,19 @@ describe 'isAccessible()', ->
 	it 'should disallow access when device is inaccessible', ->
 		@mockDevice.is_web_accessible = false
 		access = isAccessible(@mockDevice, 80, null)
+		expect(access).to.be.false
+
+	it 'should allow access for the proxy on port 22222', ->
+		auth =
+			username: 'resin_proxy'
+			password: process.env.PROXY_SERVICE_API_KEY
+
+		access = isAccessible(@mockDevice, 22222, auth)
+		expect(access).to.be.true
+
+	it 'should disallow unauthorized access on port 22222', ->
+		@mockDevice.is_web_accessible = true
+		access = isAccessible(@mockDevice, 22222, null)
 		expect(access).to.be.false
 
 	it 'should disallow access when port is not allowed', ->
