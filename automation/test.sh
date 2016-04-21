@@ -16,6 +16,7 @@ test_id=$(docker run \
 	-e RESIN_API_HOST=api.resindev.io \
 	-e RESIN_VPN_GATEWAY=10.2.0.1 \
 	-e VPN_SERVICE_API_KEY=test_api_key \
+	-e PROXY_SERVICE_API_KEY=test_proxy_key \
 	-e VPN_HOST=127.0.0.1 \
 	-e VPN_MANAGEMENT_PORT=11195 \
 	-e VPN_API_PORT=80 \
