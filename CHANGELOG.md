@@ -1,3 +1,5 @@
+# 2016-04-27
+
 * Whitelist device port 22222 for proxy api key [External] [Kostas]
 * Remove legacy activePort so that resin-vpn can safely be restarted. [Internal] [Aleksis]
 * Use resin-lint [Internal] [Kostas]
