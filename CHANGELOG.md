@@ -1,3 +1,7 @@
+# 2016-05-11
+
+* Use forked libnss-openvpn to fix leaked file descriptors. [Internal] [Aleksis]
+
 # 2016-04-27
 
 * Whitelist device port 22222 for proxy api key [External] [Kostas]
