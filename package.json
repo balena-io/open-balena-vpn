@@ -28,6 +28,7 @@
     "requestqueue": "0.0.2",
     "requestretry": "^1.2.1",
     "tmp": "~0.0.25",
+    "typed-error": "^0.1.0",
     "winston": "^2.0.0"
   },
   "devDependencies": {

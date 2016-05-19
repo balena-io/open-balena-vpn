@@ -1,3 +1,5 @@
+* Improved tunneling error logging [Internal] [Kostas]
+
 # 2016-05-11
 
 * Use forked libnss-openvpn to fix leaked file descriptors. [Internal] [Aleksis]
