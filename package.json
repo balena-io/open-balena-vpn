@@ -21,7 +21,7 @@
     "lodash": "^4.0.0",
     "middleware-handler": "~0.2.0",
     "morgan": "^1.5.1",
-    "node-tunnel": "0.1.1",
+    "node-tunnel": "0.2.2",
     "passport": "~0.2.2",
     "pinejs-client": "^2.1.1",
     "request": "^2.51.0",
