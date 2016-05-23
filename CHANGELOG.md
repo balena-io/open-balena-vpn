@@ -1,3 +1,4 @@
+* Update to node-tunnel@0.2.2 - Fix eternal FIN-WAIT-2 by dropping support for half-closed connections [External][Kostas]
 * Improved tunneling error logging [Internal] [Kostas]
 
 # 2016-05-11
