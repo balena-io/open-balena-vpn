@@ -1,5 +1,14 @@
 #!/bin/bash
 
+cost_per_gb=0.09 # Upto 10TB AWS data usage costs
+scale_a_week_to_month=4.285 #30/7
+outbound_data_fraction=0.5 #The share of the outbound data in the total data usage.
+
+if [ -z "$LOG_DURATION" ]; then
+    echo "Checking Bandwidth for last 7 days as LOG_DURATION variable isnt present"
+    LOG_DURATION=7
+fi
+
 if [ -z "$RESIN_AUTH_TOKEN" ]; then
     echo "Need to set RESIN_AUTH_TOKEN"
     exit 1
@@ -15,7 +24,7 @@ if [ -z "$USER" ]; then
     exit 1
 fi
 
-curl --silent "https://api.resin.io/ewa/device?\$select=uuid&\$filter=user/username%20eq%20%27$USER%27" \
+curl --silent "https://api.resin.io/v1/device?\$select=uuid&\$filter=user/username%20eq%20%27$USER%27" \
     -H "Authorization: Bearer $RESIN_AUTH_TOKEN" > tmp_dev_list.json
 device_no=$(cat tmp_dev_list.json | jq '.[] | length')
 echo "Total devices: $device_no"
@@ -27,7 +36,7 @@ for (( c=0; c<$device_no; c++ ))
 do
     printf $c.
     uuid=$(cat tmp_dev_list.json | jq -r .d[$c].uuid)
-    start=$(date --date='-7 day' +%s%3N)
+    start=$(date --date="-${LOG_DURATION} day" +%s%3N)
     end=$(date +%s%3N)
     curl -G --silent https://pull.logentries.com/$LOGENTRIES_KEY/hosts/resin-vpn/syslog/ \
         -d start=$start -d end=$end \
@@ -36,6 +45,6 @@ done
 echo "Finished pulling logs"
 data_usage=$(cat bw.log | awk 'NF' | awk '{print $8}' | awk -F "=" '{print $2}' | sed 's|/0||g' |  awk '{s+=$1}END{print s/(1024*1024*1024)}')
 echo "Data usage of $USER in last 7 days: $data_usage GB"
-cost=$(echo $data_usage | awk '{printf "%.2f \n", $1*0.09*.5*4.28}')
+cost=$(echo $data_usage $cost_per_gb $scale_a_week_to_month $outbound_data_fraction | awk '{printf "%.2f \n", $1*$2*$3*$4}')
 echo "Approximate cost assuming half the data coming in is billed: USD $cost per month"
 echo "AWS charges only transfer out"
