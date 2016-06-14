@@ -1,3 +1,5 @@
+* Added bw_by_user.sh script for calculating the bandwidth used by user's devices on VPN [Internal] [Praneeth]
+
 # 2016-06-01
 
 * Update to node-tunnel@0.2.2 - Fix eternal FIN-WAIT-2 by dropping support for half-closed connections [External][Kostas]
