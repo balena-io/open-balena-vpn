@@ -1,5 +1,4 @@
 url = require 'url'
-Promise = require 'bluebird'
 PlatformApi = require('pinejs-client/request')
 _ = require 'lodash'
 
@@ -14,7 +13,7 @@ DEVICE_SSH_PORT = 22222
 PROXY_USERNAME = 'resin_proxy'
 PROXY_KEY = process.env.PROXY_SERVICE_API_KEY
 
-exports.getDeviceByUUID = getDeviceByUUID = (uuid, apiKey) ->
+exports.getDeviceByUUID = (uuid, apiKey) ->
 	resinApi.get
 		resource: 'device'
 		options:

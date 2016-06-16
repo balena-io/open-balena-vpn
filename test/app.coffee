@@ -94,7 +94,6 @@ describe '/api/v1/clients/', ->
 					.expect(200, '[]', cb)
 			.nodeify(done)
 
-eventsClient = null
 describe 'VPN Events', ->
 	@timeout(100000)
 	before ->
