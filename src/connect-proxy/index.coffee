@@ -11,7 +11,7 @@ tunnelToDevice = (req, cltSocket, head, next) ->
 		[ uuid, port ] = req.url.match(/^([a-fA-F0-9]+).resin(?::([0-9]+))?$/)[1..]
 		logger.info('tunnel requested for', uuid, port)
 		if not uuid?
-			throw new Error('Invalid hostname: ' + hostname)
+			throw new Error('Invalid hostname: ' + req.url)
 		if not port?
 			port = 80
 

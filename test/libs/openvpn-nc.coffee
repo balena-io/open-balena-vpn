@@ -148,7 +148,7 @@ describe 'OpenVPN', ->
 			net.connect.restore()
 
 		it 'should open a connection to localhost:11195', ->
-			connPromise = @vpn.getConnection()
+			@vpn.getConnection()
 
 			expect(net.connect).to.have.been.calledOnce
 			expect(net.connect).to.have.been.calledWithExactly(11195, 'localhost')
@@ -255,11 +255,11 @@ describe 'OpenVPN', ->
 			expect(@vpn.getStatus()).to.be.an.instanceOf(Promise)
 
 		it 'should run the "status" management command with a default parameter of 2', ->
-			status = @vpn.getStatus()
+			@vpn.getStatus()
 			expect(@vpn.execCommand).to.have.been.calledWithExactly('status 2')
 
 		it 'should run the "status" management command with the specified format type', ->
-			status = @vpn.getStatus(5)
+			@vpn.getStatus(5)
 			expect(@vpn.execCommand).to.have.been.calledWithExactly('status 5')
 
 		it 'should resolve to the currently connected clients', ->
