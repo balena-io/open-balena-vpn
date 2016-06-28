@@ -1,3 +1,6 @@
+# 2016-06-28
+
+* Fix unused and undefined variables [Internal] [Kostas]
 * Added bw_by_user.sh script for calculating the bandwidth used by user's devices on VPN [Internal] [Praneeth]
 
 # 2016-06-01
