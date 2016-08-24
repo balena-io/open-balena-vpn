@@ -1,3 +1,5 @@
+* Increased max clients to 32768 [Internal] [Page]
+
 # 2016-06-28
 
 * Fix unused and undefined variables [Internal] [Kostas]
