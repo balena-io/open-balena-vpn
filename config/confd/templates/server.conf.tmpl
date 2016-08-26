@@ -25,6 +25,9 @@ proto tcp-server
 comp-lzo
 keepalive 10 60
 
+# Increase the max clients from the default of 1024
+max-clients 32768
+
 # Allow authorisation via username/password.
 client-cert-not-required
 username-as-common-name
