@@ -1,3 +1,5 @@
+* Defined timeouts on all requests, to help with hung connections. [Internal] [Page]
+* Decreased amount of times to retry a request, so it doesn't retry essentially forever. [Internal] [Page]
 * Increased max clients to 32768 [Internal] [Page]
 
 # 2016-06-28

@@ -61,6 +61,7 @@ module.exports = (vpn) ->
 		apiKey = req.body.password
 		requestOpts =
 			url: "https://#{process.env.RESIN_API_HOST}/services/vpn/auth/#{username}"
+			timeout: 30000
 			qs:
 				apikey: apiKey
 		request(requestOpts).get(0)
