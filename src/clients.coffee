@@ -25,11 +25,12 @@ exports.resetAll = resetAll = ->
 	queue.push(
 		url: "https://#{process.env.RESIN_API_HOST}/services/vpn/reset-all?apikey=#{process.env.VPN_SERVICE_API_KEY}"
 		method: 'post'
+		timeout: 120000
 		callback: logResponse('reset-all')
 	)
 
 queue = requestQueue(
-	maxAttempts: 3600
+	maxAttempts: 5
 	retryDelay: 1000
 	errorHandler: resetAll
 )
@@ -39,6 +40,7 @@ exports.connected = (data) ->
 	queue.push(
 		url: "https://#{process.env.RESIN_API_HOST}/services/vpn/client-connect?apikey=#{process.env.VPN_SERVICE_API_KEY}"
 		method: 'post'
+		timeout: 10000
 		form: data
 		callback: logResponse('client-connect', data.common_name)
 	)
@@ -48,6 +50,7 @@ exports.disconnected = (data) ->
 	queue.push(
 		url: "https://#{process.env.RESIN_API_HOST}/services/vpn/client-disconnect?apikey=#{process.env.VPN_SERVICE_API_KEY}"
 		method: 'post'
+		timeout: 10000
 		form: data
 		callback: logResponse('client-disconnect', data.common_name)
 	)
