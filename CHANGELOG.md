@@ -1,3 +1,5 @@
+* Fixed a `TypeError: Cannot read property 'statusCode' of undefined` error. [Internal] [Page]
+
 # 2016-10-10
 
 * Defined timeouts on all requests, to help with hung connections. [Internal] [Page]
