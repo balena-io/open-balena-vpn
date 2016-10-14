@@ -25,7 +25,7 @@
     "passport": "~0.2.2",
     "pinejs-client": "^2.1.1",
     "request": "^2.51.0",
-    "requestqueue": "0.0.2",
+    "requestqueue": "0.0.3",
     "requestretry": "^1.2.1",
     "tmp": "~0.0.25",
     "typed-error": "^0.1.0",
