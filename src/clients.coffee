@@ -9,9 +9,29 @@
 # the API has a special endpoint that first sets all clients as offline.
 
 Promise = require 'bluebird'
-postAsync = Promise.promisify(require('request').post, multiArgs: true)
 logger = require 'winston'
 _ = require 'lodash'
+
+getPostWorker = do ->
+	genericPool = require 'generic-pool'
+	postAsync = Promise.promisify(require('request').post, multiArgs: true)
+
+	factory =
+		create: Promise.method ->
+			# wrap the postAsync function to make each worker we create distinguishable to the pool
+			return -> postAsync(arguments...)
+		destroy: Promise.method ->
+
+	opts =
+		max: process.env.MAX_API_POST_WORKERS
+		idleTimeoutMillis: Infinity
+
+	postPool = genericPool.createPool(factory, opts)
+
+	return ->
+		Promise.resolve(postPool.acquire())
+		.disposer (postAsync) ->
+			postPool.release(postAsync)
 
 logResponse = (event, uuid) ->
 	logPrefix = if uuid then "#{uuid}: #{event}" else event
@@ -24,10 +44,11 @@ logResponse = (event, uuid) ->
 
 exports.resetAll = ->
 	logger.info('reset-all triggered')
-	postAsync(
-		url: "https://#{process.env.RESIN_API_HOST}/services/vpn/reset-all?apikey=#{process.env.VPN_SERVICE_API_KEY}"
-		timeout: 300000
-	)
+	Promise.using getPostWorker(), (postAsync) ->
+		postAsync(
+			url: "https://#{process.env.RESIN_API_HOST}/services/vpn/reset-all?apikey=#{process.env.VPN_SERVICE_API_KEY}"
+			timeout: 300000
+		)
 
 setDeviceState = do ->
 	deviceStates = {}
@@ -39,11 +60,12 @@ setDeviceState = do ->
 				# If the states match then we don't have to do anything
 				return
 			eventType = if targetState.connected then 'connect' else 'disconnect'
-			postAsync(
-				url: "https://#{process.env.RESIN_API_HOST}/services/vpn/client-#{eventType}?apikey=#{process.env.VPN_SERVICE_API_KEY}"
-				timeout: 60000
-				form: targetState
-			)
+			Promise.using getPostWorker(), (postAsync) ->
+				postAsync(
+					url: "https://#{process.env.RESIN_API_HOST}/services/vpn/client-#{eventType}?apikey=#{process.env.VPN_SERVICE_API_KEY}"
+					timeout: 60000
+					form: targetState
+				)
 			.spread (response) ->
 				if response.statusCode != 200
 					throw new Error("Status code was '#{response.statusCode}', expected '200'")
