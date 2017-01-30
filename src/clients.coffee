@@ -33,15 +33,6 @@ getPostWorker = do ->
 		.disposer (postAsync) ->
 			postPool.release(postAsync)
 
-logResponse = (event, uuid) ->
-	logPrefix = if uuid then "#{uuid}: #{event}" else event
-	(err, response, body) ->
-		statusCode = response?.statusCode ? 599
-		if err or statusCode >= 400
-			logger.error(logPrefix, 'fail. status code:', statusCode, 'body', body)
-		else
-			logger.info(logPrefix, 'success. status code:', statusCode)
-
 exports.resetAll = ->
 	logger.info('reset-all triggered')
 	Promise.using getPostWorker(), (postAsync) ->
