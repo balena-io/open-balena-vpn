@@ -12,26 +12,7 @@ Promise = require 'bluebird'
 logger = require 'winston'
 _ = require 'lodash'
 
-getPostWorker = do ->
-	genericPool = require 'generic-pool'
-	postAsync = Promise.promisify(require('request').post, multiArgs: true)
-
-	factory =
-		create: Promise.method ->
-			# wrap the postAsync function to make each worker we create distinguishable to the pool
-			return -> postAsync(arguments...)
-		destroy: Promise.method ->
-
-	opts =
-		max: process.env.MAX_API_POST_WORKERS
-		idleTimeoutMillis: Infinity
-
-	postPool = genericPool.createPool(factory, opts)
-
-	return ->
-		Promise.resolve(postPool.acquire())
-		.disposer (postAsync) ->
-			postPool.release(postAsync)
+{ getPostWorker } = require './libs/post-pool'
 
 exports.resetAll = ->
 	logger.info('reset-all triggered')
