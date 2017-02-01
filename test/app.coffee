@@ -111,7 +111,7 @@ describe 'VPN Events', ->
 				resolve(data)
 		.then (data) ->
 			expect(data).to.have.property('common_name').that.equals('user2')
-			expect(data).to.have.property('real_address').that.match(/^127\.0\.0\.1$/)
+			expect(data).to.not.have.property('real_address')
 			expect(data).to.have.property('virtual_address').that.match(/^10\.2\.0\.[0-9]+$/)
 
 		@client = vpnClient.create()
@@ -129,8 +129,8 @@ describe 'VPN Events', ->
 				resolve(data)
 		.then (data) ->
 			expect(data).to.have.property('common_name').that.equals('user2')
-			expect(data).to.have.property('real_address').that.match(/^127\.0\.0\.1$/)
-			expect(data).to.have.property('virtual_address').that.match(/^10\.2\.0\.[0-9]+$/)
+			expect(data).to.not.have.property('real_address')
+			expect(data).to.not.have.property('virtual_address')
 		.nodeify(done)
 
 		@client.disconnect()

@@ -18,6 +18,7 @@
     "compression": "^1.5.0",
     "event-stream": "^3.1.7",
     "express": "^4.10.6",
+    "generic-pool": "^3.1.6",
     "lodash": "^4.0.0",
     "middleware-handler": "~0.2.0",
     "morgan": "^1.5.1",
@@ -25,8 +26,6 @@
     "passport": "~0.2.2",
     "pinejs-client": "^2.1.1",
     "request": "^2.51.0",
-    "requestqueue": "0.0.3",
-    "requestretry": "^1.2.1",
     "tmp": "~0.0.25",
     "typed-error": "^0.1.0",
     "winston": "^2.0.0"

@@ -1,3 +1,5 @@
+* Changed the queuing logic so that it is per device, and will only send the latest state. [Internal] [Page]
+* Removed reset-all when updating device state fails, just retry until it succeeds. [Internal] [Page]
 * Fixed a `TypeError: Cannot read property 'statusCode' of undefined` error. [Internal] [Page]
 
 # 2016-10-10
