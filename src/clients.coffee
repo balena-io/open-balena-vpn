@@ -13,14 +13,7 @@ logger = require 'winston'
 _ = require 'lodash'
 
 { getPostWorker } = require './libs/post-pool'
-
-exports.resetAll = ->
-	logger.info('reset-all triggered')
-	Promise.using getPostWorker(), (postAsync) ->
-		postAsync(
-			url: "https://#{process.env.RESIN_API_HOST}/services/vpn/reset-all?apikey=#{process.env.VPN_SERVICE_API_KEY}"
-			timeout: 300000
-		)
+{ getId } = require './service'
 
 REQUEST_TIMEOUT = 60000
 
@@ -38,7 +31,7 @@ setDeviceState = do ->
 				postAsync(
 					url: "https://#{process.env.RESIN_API_HOST}/services/vpn/client-#{eventType}?apikey=#{process.env.VPN_SERVICE_API_KEY}"
 					timeout: REQUEST_TIMEOUT
-					form: targetState
+					form: _.extend({ service_id: getId() }, targetState)
 				)
 			.timeout(REQUEST_TIMEOUT)
 			.spread (response) ->
