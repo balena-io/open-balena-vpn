@@ -16,7 +16,7 @@ beforeEach ->
 		id: 1234
 		uuid: 'deadbeef'
 		is_web_accessible: false
-		is_online: false
+		is_connected_to_vpn: false
 		__metadata:
 			uri: '/resin/device(1234)'
 			type: ''
@@ -24,9 +24,9 @@ beforeEach ->
 describe 'getDeviceByUUID()', ->
 	beforeEach ->
 		nock("https://#{process.env.RESIN_API_HOST}:443")
-		.get('/ewa/device')
+		.get('/v2/device')
 		.query(
-			$select: 'id,uuid,is_web_accessible,is_online'
+			$select: 'id,uuid,is_web_accessible,is_connected_to_vpn'
 			$filter: "uuid eq 'deadbeef'"
 			apikey: 'test-api-key'
 		)

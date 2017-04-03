@@ -187,11 +187,11 @@ describe 'VPN proxy', ->
 
 	describe 'web accessible device', ->
 		before ->
-			requestMock.register 'get', 'https://api.resindev.io/ewa/device', (args, cb) ->
+			requestMock.register 'get', 'https://api.resindev.io/v2/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, d: [
 					uuid: 'deadbeef'
 					is_web_accessible: 1
-					is_online: 1
+					is_connected_to_vpn: 1
 				])
 
 		it 'should allow port 8080 without authentication', (done) ->
@@ -214,8 +214,8 @@ describe 'VPN proxy', ->
 
 	describe 'not web accessible device', ->
 		before ->
-			requestMock.register 'get', 'https://api.resindev.io/ewa/device', (args, cb) ->
-				cb(null, { statusCode: 200 }, d: [ uuid: 'deadbeef', is_web_accessible: 0, is_online: 1 ])
+			requestMock.register 'get', 'https://api.resindev.io/v2/device', (args, cb) ->
+				cb(null, { statusCode: 200 }, d: [ uuid: 'deadbeef', is_web_accessible: 0, is_connected_to_vpn: 1 ])
 
 		it 'should not allow port 8080 without authentication', (done) ->
 			server = http.createServer (req, res) ->
