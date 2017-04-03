@@ -4,9 +4,13 @@
   "description": "RESTful VPN api",
   "main": "server.js",
   "scripts": {
-    "pretest-unit": "resin-lint src/ test/",
+    "lint": "resin-lint src/ test/",
+    "pretest-unit": "npm run lint",
     "test-unit": "mocha test/index.coffee",
-    "test": "docker build -t test-resin-vpn . && IMAGE_NAME=test-resin-vpn ./automation/test.sh"
+    "test": "docker build -t test-resin-vpn . && IMAGE_NAME=test-resin-vpn ./automation/test.sh",
+
+    "precommit": "npm run lint",
+    "prepush": "npm run test-unit -- --reporter landing"
   },
   "dependencies": {
     "@resin/resin-jwt": "0.0.1",
@@ -34,6 +38,7 @@
     "chai": "^3.0.0",
     "chai-as-promised": "^5.1.0",
     "duplexer2": "^0.1.4",
+    "husky": "^0.13.3",
     "mocha": "^2.1.0",
     "mockery": "~1.4.0",
     "nock": "^7.2.2",
