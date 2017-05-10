@@ -22,6 +22,8 @@ exports.resetAll = ->
 			timeout: 300000
 		)
 
+REQUEST_TIMEOUT = 60000
+
 setDeviceState = do ->
 	deviceStates = {}
 	applyState = (uuid) ->
@@ -35,9 +37,10 @@ setDeviceState = do ->
 			Promise.using getPostWorker(), (postAsync) ->
 				postAsync(
 					url: "https://#{process.env.RESIN_API_HOST}/services/vpn/client-#{eventType}?apikey=#{process.env.VPN_SERVICE_API_KEY}"
-					timeout: 60000
+					timeout: REQUEST_TIMEOUT
 					form: targetState
 				)
+			.timeout(REQUEST_TIMEOUT)
 			.spread (response) ->
 				if response.statusCode != 200
 					throw new Error("Status code was '#{response.statusCode}', expected '200'")
