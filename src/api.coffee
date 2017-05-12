@@ -3,10 +3,13 @@ express = require 'express'
 bodyParser = require 'body-parser'
 request = Promise.promisify(require('request'), multiArgs: true)
 _ = require 'lodash'
-jwt = require '@resin/resin-jwt'
 passport = require 'passport'
+BearerStrategy = require 'passport-http-bearer'
 
-passport.use(jwt.strategy())
+passport.use new BearerStrategy (token, done) ->
+	if token is process.env.API_SERVICE_API_KEY
+		return done(null, true)
+	done(null, false)
 
 clients = require './clients'
 
@@ -23,11 +26,8 @@ module.exports = (vpn) ->
 
 	api.use(passport.initialize())
 	api.use(bodyParser.json())
-	api.use(jwt.middleware)
 
-	api.get '/api/v1/clients/', (req, res) ->
-		if req.auth?.service isnt 'api'
-			return res.sendStatus(401)
+	api.get '/api/v1/clients/', passport.authenticate('bearer', session: false), (req, res) ->
 		vpn.getStatus()
 		.then (results) ->
 			res.send(_.values(results.client_list))

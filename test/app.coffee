@@ -7,7 +7,6 @@ http = require 'http'
 requestAsync = Promise.promisify(require('request'), multiArgs: true)
 path = require 'path'
 vpnClient = require 'openvpn-client'
-{ createJwt } = require '@resin/resin-jwt'
 
 vpnHost = process.env.VPN_HOST ? '127.0.0.1'
 vpnPort = process.env.VPN_PORT ? '443'
@@ -65,7 +64,7 @@ describe '/api/v1/clients/', ->
 		it 'should return empty client list', (done) ->
 			supertest('http://localhost')
 			.get('/api/v1/clients/')
-			.set('Authorization', 'Bearer ' + createJwt({ service: 'api' }))
+			.set('Authorization', "Bearer #{process.env.API_SERVICE_API_KEY}")
 			.expect(200, '[]', done)
 
 	describe 'When a client connects and disconnects', ->
@@ -74,7 +73,7 @@ describe '/api/v1/clients/', ->
 				Promise.fromNode (cb) ->
 					supertest('http://localhost')
 					.get('/api/v1/clients/')
-					.set('Authorization', 'Bearer ' + createJwt({ service: 'api' }))
+					.set('Authorization', "Bearer #{process.env.API_SERVICE_API_KEY}")
 					.expect(200)
 					.expect (res) ->
 						clients = res.body
@@ -90,7 +89,7 @@ describe '/api/v1/clients/', ->
 				Promise.fromNode (cb) ->
 					supertest('http://localhost')
 					.get('/api/v1/clients/')
-					.set('Authorization', 'Bearer ' + createJwt({ service: 'api' }))
+					.set('Authorization', "Bearer #{process.env.API_SERVICE_API_KEY}")
 					.expect(200, '[]', cb)
 			.nodeify(done)
 
