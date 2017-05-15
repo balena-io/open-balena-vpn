@@ -81,7 +81,7 @@ describe 'VPN Events', ->
 		.then (data) ->
 			expect(data).to.have.property('common_name').that.equals('user2')
 			expect(data).to.not.have.property('real_address')
-			expect(data).to.have.property('virtual_address').that.match(/^10\.2\.0\.[0-9]+$/)
+			expect(data).to.have.property('virtual_address').that.match(/^10\.2[45][0-9]\.[0-9]+\.[0-9]+$/)
 
 		@client = vpnClient.create()
 		@client.authenticate('user2', 'pass')

@@ -1,52 +1,109 @@
 require 'ts-node/register'
+_ = require('lodash')
+cluster = require('cluster')
+os = require('os')
+forever = require('forever-monitor')
 express = require 'express'
 compression = require 'compression'
 morgan = require 'morgan'
 Promise = require 'bluebird'
 
-{ OpenVPN } = require './libs/openvpn-nc'
 service = require './service'
-{ Raven, captureException } = require './errors'
+{ Raven } = require './errors'
 { VERSION } = require './utils'
+{ Netmask } = require './utils/netmask'
 
 envKeys = [
 	'RESIN_API_HOST'
 	'VPN_SERVICE_API_KEY'
 	'VPN_HOST'
-	'VPN_MANAGEMENT_PORT'
-	'VPN_API_PORT'
+	'VPN_API_BASE_PORT'
+
+	'VPN_BASE_SUBNET'
+	'VPN_BASE_PORT'
+	'VPN_BASE_MANAGEMENT_PORT'
+	'VPN_INSTANCE_COUNT'
+	'VPN_INSTANCE_SUBNET_BITMASK'
 ]
 
 for k in envKeys when not process.env[k]?
 	console.error("#{k} env variable is not set.")
 	process.exit(1)
 
-vpn = new OpenVPN(process.env.VPN_MANAGEMENT_PORT, process.env.VPN_HOST)
+RESIN_VPN_GATEWAY = process.env.RESIN_VPN_GATEWAY
 
-api = require('./api')(vpn)
+getInstanceSubnet = (instanceId) ->
+	[ netBase, netMask ] = process.env.VPN_BASE_SUBNET.split('/')
+	splitMask = process.env.VPN_INSTANCE_SUBNET_BITMASK
+	net = new Netmask(netBase, netMask)
+	return net.split(splitMask)[instanceId - 1]
 
-app = Promise.promisifyAll(express())
+VPN_BASE_PORT = parseInt(process.env.VPN_BASE_PORT)
+VPN_BASE_MANAGEMENT_PORT = parseInt(process.env.VPN_BASE_MANAGEMENT_PORT)
+VPN_API_BASE_PORT = parseInt(process.env.VPN_API_BASE_PORT)
 
-app.use(Raven.requestHandler())
+nWorkers = parseInt(process.env.VPN_INSTANCE_COUNT)
+if isNaN(nWorkers) or nWorkers == 0
+	nWorkers = os.cpus().length
 
-app.use(morgan('combined', skip: (req) -> req.url is '/ping'))
+if cluster.isMaster
+	console.log("resin-vpn@#{VERSION} master process started with pid #{process.pid}")
+	if nWorkers > 1
+		console.log("spawning #{nWorkers} workers")
+		_.times nWorkers, (i) ->
+			instanceId = i + 1
+			restartWorker = (code, signal) ->
+				if signal?
+					console.error("worker-#{instanceId} killed with signal #{signal}")
+				if code?
+					console.error("worker-#{instanceId} exited with code #{code}")
+				cluster.fork(VPN_INSTANCE_ID: instanceId).on('exit', restartWorker)
+			restartWorker()
 
-app.get '/ping', (req, res) ->
-	return res.send('OK')
+if cluster.isWorker or nWorkers == 1
+	instanceId = parseInt(process.env.VPN_INSTANCE_ID) or 1
+	console.log("resin-vpn@#{VERSION} worker-#{instanceId} process started with pid #{process.pid}")
 
-app.use(compression())
-app.use(api)
+	vpnPort = VPN_BASE_PORT + instanceId
+	mgtPort = VPN_BASE_MANAGEMENT_PORT + instanceId
+	apiPort = VPN_API_BASE_PORT + instanceId
 
-app.use(Raven.errorHandler())
+	subnet = getInstanceSubnet(instanceId)
+	gateway = RESIN_VPN_GATEWAY or subnet.first
+	command = [
+		'/usr/sbin/openvpn'
+		'--status', "/run/openvpn/server-#{instanceId}.status", '10'
+		'--cd', '/etc/openvpn'
+		'--config', '/etc/openvpn/server.conf'
+		'--dev', "tun#{instanceId}"
+		'--port', vpnPort
+		'--management', '127.0.0.1', mgtPort
+		'--ifconfig', gateway, subnet.second
+		'--ifconfig-pool', subnet.third, subnet.last
+		'--route', subnet.base, subnet.mask
+		'--push', "route #{gateway}"
+		'--auth-user-pass-verify', "scripts/auth-resin.sh #{instanceId}", 'via-env'
+		'--client-connect', "scripts/client-connect.sh #{instanceId}"
+		'--client-disconnect', "scripts/client-disconnect.sh #{instanceId}"]
+	new forever.Monitor command,
+		uid: "openvpn_#{instanceId}"
+		env: process.env
+		max: 10
+		spinSleepTime: 1000
+	.on('exit', -> process.exit(2))
+	.start()
 
-service.register()
-.then ->
-	app.listenAsync(80)
-.then ->
-	console.log("resin-vpn@#{VERSION} listening on port 80")
-	# Now endpoints are established, release VPN hold.
-	vpn.execCommand('hold release')
-	.catch (err) ->
-		captureException(err, 'Failed releasing hold')
-.then ->
-	service.scheduleHeartbeat()
+	api = require('./api')()
+	app = Promise.promisifyAll(express())
+	app.use(Raven.requestHandler())
+	app.use(morgan('combined', skip: (req) -> req.url is '/ping'))
+	app.get('/ping', (req, res) -> res.send('OK'))
+	app.use(compression())
+	app.use(api)
+	app.use(Raven.errorHandler())
+
+	service.register()
+	.then ->
+		console.log("worker-#{instanceId} listening on port #{apiPort}")
+		app.listenAsync(apiPort)
+	.then(service.scheduleHeartbeat)

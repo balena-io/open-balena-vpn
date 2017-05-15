@@ -4,27 +4,25 @@ EXPOSE 80 443
 
 RUN echo deb http://deb.debian.org/debian jessie-backports main > /etc/apt/sources.list.d/backports.list \
 	&& apt-get update -qq \
-	&& apt-get install -qy openssl openvpn -t jessie-backports --no-install-recommends \
-	&& apt-get clean && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/backports.list
+	&& apt-get install -qy openssl openvpn haproxy sipcalc -t jessie-backports --no-install-recommends \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/backports.list /etc/haproxy/*
 
-ENV LIBNSSS_OPENVPN_VERSION=964ef26430878978ac0bfb379454fe05e52686b7
-RUN git clone https://github.com/resin-io-modules/libnss-openvpn.git \
-	&& cd libnss-openvpn \
-	&& git checkout ${LIBNSSS_OPENVPN_VERSION} \
-	&& sed --in-place 's|OPENVPN_STATUS_FILE "/var/run/openvpn.server.status"|OPENVPN_STATUS_FILE "/var/run/openvpn/server.status"|' libnss_openvpn.c \
-	&& make \
-	&& make install \
-	&& sed --in-place --regexp-extended 's|(hosts:.*)|\1 openvpn|' /etc/nsswitch.conf
+ENV LIBNSS_OPENVPN_VERSION 59d24ac3a392772cbdb05f4f47f425a741cd7f77
+RUN tmp="$(mktemp -d)" set -x \
+	&& git clone -q https://github.com/resin-io-modules/libnss-openvpn.git "${tmp}" \
+	&& cd "${tmp}" \
+	&& git -C "${tmp}" checkout -q ${LIBNSS_OPENVPN_VERSION} \
+	&& make -C "${tmp}" -j "$(nproc)" \
+	&& make -C "${tmp}" install \
+	&& sed --in-place --regexp-extended 's|(hosts:.*)|\1 openvpn|' /etc/nsswitch.conf \
+	&& rm -rf "${tmp}"
+
+RUN echo "AUTOSTART=none" > /etc/default/openvpn \
+	&& rm -rf /etc/openvpn && ln -s /usr/src/app/openvpn /etc/openvpn
 
 COPY package.json /usr/src/app/
 RUN npm install --unsafe-perm --production && npm cache clean
-
 COPY . /usr/src/app
 
-COPY config/services/ /etc/systemd/system/
-
-RUN echo AUTOSTART=none > /etc/default/openvpn \
-	&& rm -rf /etc/openvpn \
-	&& ln -s /usr/src/app/openvpn /etc/openvpn
-
+COPY config/services /etc/systemd/system
 RUN systemctl enable resin-vpn.service resin-connect-proxy.service
