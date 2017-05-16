@@ -7,7 +7,10 @@ http = require 'http'
 requestAsync = Promise.promisify(require('request'), multiArgs: true)
 path = require 'path'
 vpnClient = require 'openvpn-client'
-{ createJwt } = require '@resin/resin-jwt'
+jsonwebtoken = require 'jsonwebtoken'
+
+createJwt = (payload, secret = process.env.JSON_WEB_TOKEN_SECRET) ->
+	jsonwebtoken.sign(payload, secret)
 
 vpnHost = process.env.VPN_HOST ? '127.0.0.1'
 vpnPort = process.env.VPN_PORT ? '443'
@@ -62,7 +65,14 @@ describe '/api/v1/clients/', ->
 			.expect(401, done)
 
 	describe 'When no clients are connected', ->
-		it 'should return empty client list', (done) ->
+		it 'should return empty client list with api key-based API service authentication', (done) ->
+			supertest('http://localhost')
+			.get('/api/v1/clients/')
+			.set('Authorization', "Bearer #{process.env.API_SERVICE_API_KEY}")
+			.expect(200, '[]', done)
+
+	describe 'When no clients are connected', ->
+		it 'should return empty client list with JWT-based API service authentication', (done) ->
 			supertest('http://localhost')
 			.get('/api/v1/clients/')
 			.set('Authorization', 'Bearer ' + createJwt({ service: 'api' }))
@@ -74,7 +84,7 @@ describe '/api/v1/clients/', ->
 				Promise.fromNode (cb) ->
 					supertest('http://localhost')
 					.get('/api/v1/clients/')
-					.set('Authorization', 'Bearer ' + createJwt({ service: 'api' }))
+					.set('Authorization', "Bearer #{process.env.API_SERVICE_API_KEY}")
 					.expect(200)
 					.expect (res) ->
 						clients = res.body
@@ -90,7 +100,7 @@ describe '/api/v1/clients/', ->
 				Promise.fromNode (cb) ->
 					supertest('http://localhost')
 					.get('/api/v1/clients/')
-					.set('Authorization', 'Bearer ' + createJwt({ service: 'api' }))
+					.set('Authorization', "Bearer #{process.env.API_SERVICE_API_KEY}")
 					.expect(200, '[]', cb)
 			.nodeify(done)
 

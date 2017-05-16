@@ -3,10 +3,27 @@ express = require 'express'
 bodyParser = require 'body-parser'
 request = Promise.promisify(require('request'), multiArgs: true)
 _ = require 'lodash'
-jwt = require '@resin/resin-jwt'
 passport = require 'passport'
+BearerStrategy = require 'passport-http-bearer'
+JWTStrategy = require('passport-jwt').Strategy
+ExtractJwt = require('passport-jwt').ExtractJwt
 
-passport.use(jwt.strategy())
+passport.use new JWTStrategy
+	secretOrKey: process.env.JSON_WEB_TOKEN_SECRET
+	jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer')
+	(jwtPayload, done) ->
+		if not jwtPayload?
+			return done(null, false)
+
+		# jwt should have a service property with value 'api'
+		if jwtPayload.service is 'api'
+			return done(null, true)
+		done(null, false)
+
+passport.use new BearerStrategy (token, done) ->
+	if token is process.env.API_SERVICE_API_KEY
+		return done(null, true)
+	done(null, false)
 
 clients = require './clients'
 
@@ -23,11 +40,8 @@ module.exports = (vpn) ->
 
 	api.use(passport.initialize())
 	api.use(bodyParser.json())
-	api.use(jwt.middleware)
 
-	api.get '/api/v1/clients/', (req, res) ->
-		if req.auth?.service isnt 'api'
-			return res.sendStatus(401)
+	api.get '/api/v1/clients/', passport.authenticate(['jwt', 'bearer'], session: false), (req, res) ->
 		vpn.getStatus()
 		.then (results) ->
 			res.send(_.values(results.client_list))

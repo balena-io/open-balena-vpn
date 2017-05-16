@@ -1,6 +1,6 @@
 {
   "name": "resin-vpn-server",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "description": "RESTful VPN api",
   "main": "server.js",
   "scripts": {
@@ -12,7 +12,6 @@
     "prepush": "npm run test-unit -- --reporter landing"
   },
   "dependencies": {
-    "@resin/resin-jwt": "0.0.1",
     "basic-auth-parser": "0.0.2",
     "block-queue": "~0.0.2",
     "bluebird": "^3.0.0",
@@ -22,11 +21,14 @@
     "event-stream": "^3.1.7",
     "express": "^4.10.6",
     "generic-pool": "^3.1.6",
+    "jsonwebtoken": "^7.4.0",
     "lodash": "^4.0.0",
     "middleware-handler": "~0.2.0",
     "morgan": "^1.5.1",
     "node-tunnel": "0.2.2",
     "passport": "~0.2.2",
+    "passport-http-bearer": "^1.0.1",
+    "passport-jwt": "^2.2.1",
     "pinejs-client": "^2.1.1",
     "request": "^2.51.0",
     "tmp": "~0.0.25",
