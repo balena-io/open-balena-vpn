@@ -8,6 +8,8 @@ BearerStrategy = require 'passport-http-bearer'
 JWTStrategy = require('passport-jwt').Strategy
 ExtractJwt = require('passport-jwt').ExtractJwt
 
+{ captureException } = require './errors'
+
 passport.use new JWTStrategy
 	secretOrKey: process.env.JSON_WEB_TOKEN_SECRET
 	jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer')
@@ -45,8 +47,8 @@ module.exports = (vpn) ->
 		vpn.getStatus()
 		.then (results) ->
 			res.send(_.values(results.client_list))
-		.catch (error) ->
-			console.error('Error getting VPN client list', error)
+		.catch (err) ->
+			captureException(err, 'Error getting VPN client list')
 			res.send(500, 'Error getting VPN client list')
 
 	api.post '/api/v1/clients/', fromLocalHost, (req, res) ->
@@ -83,8 +85,9 @@ module.exports = (vpn) ->
 			if response.statusCode == 200
 				res.send('OK')
 			else
-				throw new Error('Authentication failed.')
-		.catch (e) ->
+				res.sendStatus(401)
+		.catch (err) ->
+			captureException(err, 'Proxy Auth Error')
 			res.sendStatus(401)
 
 	api.delete '/api/v1/clients/', fromLocalHost, (req, res) ->

@@ -1,5 +1,6 @@
 Promise = require 'bluebird'
 logger = require 'winston'
+{ captureException } = require './errors'
 { resinApi, apiKey } = require './utils'
 
 INTERVAL = 10e3
@@ -19,7 +20,7 @@ exports.register = ->
 		logger.info('Registered as a service instance, received ID', id)
 		serviceId = id
 	.catch (err) ->
-		logger.error('Failed to register on API:', err.message)
+		captureException(err, 'Failed to register with API', tags: service_id: serviceId)
 		# Retry until it works
 		Promise.delay(INTERVAL).then(exports.register)
 
@@ -42,4 +43,4 @@ exports.sendHeartbeat = ->
 	.then ->
 		logger.info('Sent a successful heartbeat request to the API')
 	.catch (err) ->
-		logger.error('Failed to send a heartbeat with id', serviceId, 'to the API:', err.message)
+		captureException(err, 'Failed to send a heartbeat to the API', tags: service_id: serviceId)

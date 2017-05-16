@@ -6,6 +6,7 @@ Promise = require 'bluebird'
 
 { OpenVPN } = require './libs/openvpn-nc'
 service = require './service'
+{ Raven, captureException } = require './errors'
 
 envKeys = [
 	'RESIN_API_HOST'
@@ -25,6 +26,8 @@ api = require('./api')(vpn)
 
 app = Promise.promisifyAll(express())
 
+app.use(Raven.requestHandler())
+
 app.use(morgan('combined', skip: (req) -> req.url is '/ping'))
 
 app.get '/ping', (req, res) ->
@@ -33,6 +36,8 @@ app.get '/ping', (req, res) ->
 app.use(compression())
 app.use(api)
 
+app.use(Raven.errorHandler())
+
 service.register()
 .then ->
 	app.listenAsync(80)
@@ -40,7 +45,7 @@ service.register()
 	console.log('listening on port', 80)
 	# Now endpoints are established, release VPN hold.
 	vpn.execCommand('hold release')
-	.catch (e) ->
-		console.error('failed releasing hold', e, e.stack)
+	.catch (err) ->
+		captureException(err, 'Failed releasing hold')
 .then ->
 	service.scheduleHeartbeat()

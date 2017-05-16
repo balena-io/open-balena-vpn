@@ -12,6 +12,7 @@ Promise = require 'bluebird'
 logger = require 'winston'
 _ = require 'lodash'
 
+{ captureException } = require './errors'
 { getPostWorker } = require './libs/post-pool'
 { getId } = require './service'
 
@@ -41,7 +42,7 @@ setDeviceState = do ->
 				deviceStates[uuid].currentState = targetState
 				logger.info("Successfully updated state for '#{uuid}'")
 			.catch (err) ->
-				logger.error("Error updating state for '#{uuid}':", err, err.stack)
+				captureException(err, 'Error updating state', user: uuid: uuid)
 				# Add a 60 second delay in case of failure to avoid a crazy flood
 				Promise.delay(60000)
 				.then ->

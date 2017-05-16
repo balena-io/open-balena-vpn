@@ -32,6 +32,7 @@
     "passport-http-bearer": "^1.0.1",
     "passport-jwt": "^2.2.1",
     "pinejs-client": "^2.1.1",
+    "raven": "^2.2.1",
     "request": "^2.51.0",
     "tmp": "~0.0.25",
     "ts-node": "^3.3.0",
