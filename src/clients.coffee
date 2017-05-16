@@ -54,6 +54,13 @@ setDeviceState = do ->
 				.then ->
 					# Trigger another apply, to retry the failed update
 					applyState(uuid)
+					# Since we are recursing and this function always extends
+					# the promise chain (deviceStates[uuid].promise.then ->..)
+					# we need to return undefined to make this promise resolve
+					# and let it continue with the recursion. If we just
+					# returned applyState() instead, the whole thing would
+					# deadlock
+					return
 
 	return (state) ->
 		uuid = state.common_name
