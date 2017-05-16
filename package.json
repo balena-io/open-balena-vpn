@@ -1,6 +1,6 @@
 {
   "name": "resin-vpn-server",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "RESTful VPN api",
   "main": "server.js",
   "scripts": {
@@ -8,7 +8,6 @@
     "pretest-unit": "npm run lint",
     "test-unit": "mocha test/index.coffee",
     "test": "docker build -t test-resin-vpn . && IMAGE_NAME=test-resin-vpn ./automation/test.sh",
-    "precommit": "npm run lint",
     "prepush": "npm run test-unit -- --reporter landing"
   },
   "dependencies": {
