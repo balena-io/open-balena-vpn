@@ -1,0 +1,40 @@
+---
+version: 2
+jobs:
+  build:
+    docker:
+      - image: library/docker:1.12.6
+    working_directory: /tmp/build
+    environment:
+      DOCKER_USERNAME: travisciresin
+      DOCKER_EMAIL: accounts+travisci+docker@resin.io
+      DOCKER_IMAGE: resin/resin-vpn
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: |
+          docker info
+          docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" -e="${DOCKER_EMAIL}"
+      - run:
+          name: Build
+          command: |
+            set -x
+            docker pull ${DOCKER_IMAGE}:${CIRCLE_BRANCH} || \
+              docker pull ${DOCKER_IMAGE}:master || true
+            docker build --rm=false --pull --tag ${DOCKER_IMAGE}:${CIRCLE_SHA1} .
+      - run:
+          name: Test
+          command: IMAGE_NAME="${DOCKER_IMAGE}:${CIRCLE_SHA1}" ./automation/test.sh
+      - deploy:
+          name: Deploy
+          command: |
+            docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" -e="${DOCKER_EMAIL}"
+            set -x
+            docker tag ${DOCKER_IMAGE}:${CIRCLE_SHA1} ${DOCKER_IMAGE}:${CIRCLE_BRANCH}
+            docker push ${DOCKER_IMAGE}:${CIRCLE_SHA1}
+            docker push ${DOCKER_IMAGE}:${CIRCLE_BRANCH}
+
+            if [ "${CIRCLE_TAG}" != "" ]; then
+              docker tag ${DOCKER_IMAGE}:${CIRCLE_SHA1} ${DOCKER_IMAGE}:${CIRCLE_TAG}
+              docker push ${DOCKER_IMAGE}:${CIRCLE_TAG}
+            fi
