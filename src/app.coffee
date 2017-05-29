@@ -4,6 +4,7 @@ morgan = require 'morgan'
 Promise = require 'bluebird'
 
 { OpenVPN } = require './libs/openvpn-nc'
+service = require './service'
 clients = require './clients'
 
 envKeys = [
@@ -32,13 +33,14 @@ app.get '/ping', (req, res) ->
 app.use(compression())
 app.use(api)
 
-app.listenAsync(80)
+service.register()
+.then ->
+	app.listenAsync(80)
 .then ->
 	console.log('listening on port', 80)
 	# Now endpoints are established, release VPN hold.
 	vpn.execCommand('hold release')
 	.catch (e) ->
 		console.error('failed releasing hold', e, e.stack)
-.delay(process.env.VPN_RESET_DELAY_MS)
 .then ->
-	clients.resetAll()
+	service.scheduleHeartbeat()

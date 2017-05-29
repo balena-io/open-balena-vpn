@@ -1,9 +1,5 @@
-url = require 'url'
-PlatformApi = require('pinejs-client/request')
 _ = require 'lodash'
-
-platformEndpoint = url.resolve("https://#{process.env.RESIN_API_HOST}", '/ewa/')
-resinApi = new PlatformApi(platformEndpoint)
+utils = require '../utils'
 
 DEVICE_WEB_PORTS = [ 80, 8080 ]
 API_USERNAME = 'resin_api'
@@ -14,10 +10,10 @@ PROXY_USERNAME = 'resin_proxy'
 PROXY_KEY = process.env.PROXY_SERVICE_API_KEY
 
 exports.getDeviceByUUID = (uuid, apiKey) ->
-	resinApi.get
+	utils.resinApi.get
 		resource: 'device'
 		options:
-			select: [ 'id', 'uuid', 'is_web_accessible', 'is_online' ]
+			select: [ 'id', 'uuid', 'is_web_accessible', 'is_connected_to_vpn' ]
 			filter:
 				uuid: uuid
 		customOptions:

@@ -31,20 +31,42 @@ mockery = require 'mockery'
 mockery.enable(warnOnUnregistered: false)
 mockery.registerMock('request', requestMock)
 
-resetRequested = false
-requestMock.register 'post', 'https://api.resindev.io/services/vpn/reset-all', (args, cb) ->
-	resetRequested = true
-	cb(null, statusCode: 200, 'OK')
+describe 'service', ->
+	ID = 10
+	service = require '../src/service'
 
-require '../src/app'
+	describe 'getId()', ->
+		before ->
+			requestMock.register 'post', 'https://api.resindev.io/v2/service_instance', (req, cb) ->
+				cb(null, { statusCode: 200 }, id: ID)
+
+		it 'should return null when service was not registered', ->
+			expect(service.getId()).to.be.null
+
+		it 'should initiaize the app', (done) ->
+			require '../src/app'
+			# Give it some time to initialize and call the mock
+			setTimeout(done, 50)
+
+		it 'should return the service id once registered on the api', ->
+			expect(service.getId()).to.equal(ID)
+
+	describe 'sendHeartbeat()', ->
+		called = 0
+		isAlive = null
+
+		before ->
+			requestMock.register 'patch', "https://api.resindev.io/v2/service_instance(#{ID})", (req, cb) ->
+				called++
+				isAlive = req?.body?.is_alive
+				cb(null, statusCode: 200, 'OK')
+
+		it 'should trigger a patch request on service_instance using PineJS', ->
+			service.sendHeartbeat()
+			expect(called).to.equal(1)
+			expect(isAlive).to.be.true
+
 require('../src/connect-proxy')(process.env.VPN_CONNECT_PROXY_PORT)
-
-describe 'init', ->
-	@timeout(10000)
-	it 'should send a reset-all', ->
-		Promise.delay(1000)
-		.then ->
-			expect(resetRequested).to.be.true
 
 describe '/api/v1/clients/', ->
 	@timeout(100000)
@@ -165,11 +187,11 @@ describe 'VPN proxy', ->
 
 	describe 'web accessible device', ->
 		before ->
-			requestMock.register 'get', 'https://api.resindev.io/ewa/device', (args, cb) ->
+			requestMock.register 'get', 'https://api.resindev.io/v2/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, d: [
 					uuid: 'deadbeef'
 					is_web_accessible: 1
-					is_online: 1
+					is_connected_to_vpn: 1
 				])
 
 		it 'should allow port 8080 without authentication', (done) ->
@@ -192,8 +214,8 @@ describe 'VPN proxy', ->
 
 	describe 'not web accessible device', ->
 		before ->
-			requestMock.register 'get', 'https://api.resindev.io/ewa/device', (args, cb) ->
-				cb(null, { statusCode: 200 }, d: [ uuid: 'deadbeef', is_web_accessible: 0, is_online: 1 ])
+			requestMock.register 'get', 'https://api.resindev.io/v2/device', (args, cb) ->
+				cb(null, { statusCode: 200 }, d: [ uuid: 'deadbeef', is_web_accessible: 0, is_connected_to_vpn: 1 ])
 
 		it 'should not allow port 8080 without authentication', (done) ->
 			server = http.createServer (req, res) ->
