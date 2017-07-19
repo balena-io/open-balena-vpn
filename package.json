@@ -1,6 +1,6 @@
 {
   "name": "resin-vpn-server",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "RESTful VPN api",
   "main": "server.js",
   "scripts": {
@@ -44,7 +44,7 @@
     "nock": "^7.2.2",
     "openvpn-client": "0.0.2",
     "requestmock": "0.0.9",
-    "resin-lint": "^1.2.1",
+    "resin-lint": "^1.4.2",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
     "supertest": "~0.15.0"

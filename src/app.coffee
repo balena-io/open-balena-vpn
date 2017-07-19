@@ -5,7 +5,6 @@ Promise = require 'bluebird'
 
 { OpenVPN } = require './libs/openvpn-nc'
 service = require './service'
-clients = require './clients'
 
 envKeys = [
 	'RESIN_API_HOST'
