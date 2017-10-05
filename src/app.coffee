@@ -1,3 +1,4 @@
+require 'ts-node/register'
 express = require 'express'
 compression = require 'compression'
 morgan = require 'morgan'
