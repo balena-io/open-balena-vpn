@@ -1,6 +1,6 @@
 {
   "name": "resin-vpn-server",
-  "version": "2.0.4",
+  "version": "2.1.0",
   "description": "RESTful VPN api",
   "main": "server.js",
   "scripts": {
@@ -11,6 +11,9 @@
     "prepush": "npm run test-unit -- --reporter landing"
   },
   "dependencies": {
+    "@types/bluebird": "^3.5.14",
+    "@types/generic-pool": "^3.1.0",
+    "@types/request": "^2.0.4",
     "basic-auth-parser": "0.0.2",
     "block-queue": "~0.0.2",
     "bluebird": "^3.0.0",
@@ -31,7 +34,9 @@
     "pinejs-client": "^2.1.1",
     "request": "^2.51.0",
     "tmp": "~0.0.25",
+    "ts-node": "^3.3.0",
     "typed-error": "^0.1.0",
+    "typescript": "^2.5.3",
     "winston": "^2.0.0"
   },
   "devDependencies": {
