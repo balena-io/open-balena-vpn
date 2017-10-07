@@ -2,10 +2,8 @@
 
 process.title = 'resin-connect-proxy'
 
-fs   = require 'fs'
+require 'ts-node/register'
 path = require 'path'
-
-src  = path.join(__dirname, '../src')
 
 envKeys = [
 	'VPN_CONNECT_PROXY_PORT'
@@ -17,6 +15,7 @@ for k in envKeys when not process.env[k]?
 
 port = process.env.VPN_CONNECT_PROXY_PORT
 
+src  = path.join(__dirname, '../src')
 require(src + '/connect-proxy')(port)
 
 # -*- mode: coffee -*-
