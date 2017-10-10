@@ -2,13 +2,13 @@ device = require './device'
 Promise = require 'bluebird'
 { createTunnel, basicAuth } = require 'node-tunnel'
 logger = require 'winston'
-TypedError = require 'typed-error'
 
-class HandledTunnelingError extends TypedError
+{ captureException, Raven, HandledTunnelingError } = require '../errors'
 
 tunnelToDevice = (req, cltSocket, head, next) ->
 	Promise.try ->
 		[ uuid, port ] = req.url.match(/^([a-fA-F0-9]+).resin(?::([0-9]+))?$/)[1..]
+		Raven.setContext(user: uuid: uuid)
 		logger.info('tunnel requested for', uuid, port)
 		if not uuid?
 			throw new Error('Invalid hostname: ' + req.url)
@@ -30,9 +30,9 @@ tunnelToDevice = (req, cltSocket, head, next) ->
 	.then ->
 		next()
 	.catch HandledTunnelingError, (err) ->
-		logger.error('tunneling error ', err?.message ? err)
+		captureException(err, 'tunneling error')
 	.catch (err) ->
-		logger.error('tunnel catch', err, err.stack)
+		captureException(err, 'tunnel catch')
 		cltSocket.end('HTTP/1.1 500 Internal Server Error\r\n\r\n')
 
 module.exports = (port) ->
@@ -42,6 +42,6 @@ module.exports = (port) ->
 	tunnel.listen port, ->
 		logger.info('tunnel listening on port', port)
 	tunnel.on 'error', (err) ->
-		logger.error('failed to connect to device:', err.message ? err, err.stack)
+		captureException(err, 'failed to connect to device')
 	tunnel.on 'connect', (hostname, port) ->
 		logger.info('tunnel opened to', hostname, port)
