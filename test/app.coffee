@@ -1,4 +1,3 @@
-supertest = require 'supertest'
 chai = require 'chai'
 chai.use(require('chai-as-promised'))
 { expect } = chai
@@ -7,10 +6,6 @@ http = require 'http'
 requestAsync = Promise.promisify(require('request'), multiArgs: true)
 path = require 'path'
 vpnClient = require 'openvpn-client'
-jsonwebtoken = require 'jsonwebtoken'
-
-createJwt = (payload, secret = process.env.JSON_WEB_TOKEN_SECRET) ->
-	jsonwebtoken.sign(payload, secret)
 
 vpnHost = process.env.VPN_HOST ? '127.0.0.1'
 vpnPort = process.env.VPN_PORT ? '443'
@@ -67,64 +62,6 @@ describe 'service', ->
 			expect(isAlive).to.be.true
 
 require('../src/connect-proxy')(process.env.VPN_CONNECT_PROXY_PORT)
-
-describe '/api/v1/clients/', ->
-	@timeout(100000)
-	before ->
-		requestMock.register 'get', 'https://api.resindev.io/services/vpn/auth/user1', (args, cb) ->
-			cb(null, statusCode: 200, 'OK')
-
-		requestMock.register 'post', 'https://api.resindev.io/services/vpn/client-connect', (args, cb) ->
-			cb(null, statusCode: 200, 'OK')
-
-		requestMock.register 'post', 'https://api.resindev.io/services/vpn/client-disconnect', (args, cb) ->
-			cb(null, statusCode: 200, 'OK')
-
-	describe 'Without a web token', ->
-		it 'should respond with 401', (done) ->
-			supertest('http://localhost')
-			.get('/api/v1/clients/')
-			.expect(401, done)
-
-	describe 'When no clients are connected', ->
-		it 'should return empty client list with api key-based API service authentication', (done) ->
-			supertest('http://localhost')
-			.get('/api/v1/clients/')
-			.set('Authorization', "Bearer #{process.env.API_SERVICE_API_KEY}")
-			.expect(200, '[]', done)
-
-	describe 'When no clients are connected', ->
-		it 'should return empty client list with JWT-based API service authentication', (done) ->
-			supertest('http://localhost')
-			.get('/api/v1/clients/')
-			.set('Authorization', 'Bearer ' + createJwt({ service: 'api' }))
-			.expect(200, '[]', done)
-
-	describe 'When a client connects and disconnects', ->
-		it 'should send the correct data', (done) ->
-			Promise.using vpnClient.connect({ user: 'user1', pass: 'pass' }), ->
-				Promise.fromNode (cb) ->
-					supertest('http://localhost')
-					.get('/api/v1/clients/')
-					.set('Authorization', "Bearer #{process.env.API_SERVICE_API_KEY}")
-					.expect(200)
-					.expect (res) ->
-						clients = res.body
-						expect(clients).to.be.instanceof(Array)
-						expect(clients[0]).to.have.property('common_name').that.equals('user1')
-						expect(clients[0]).to.have.property('real_address').that.match(/^127\.0\.0\.1:[0-9]+$/)
-						expect(clients[0]).to.have.property('virtual_address').that.match(/^10\.2\.0\.[0-9]+$/)
-						expect(clients[0]).to.have.property('connected_since')
-						expect(clients[0]).to.have.property('connected_since_t')
-						return false
-					.end(cb)
-			.then ->
-				Promise.fromNode (cb) ->
-					supertest('http://localhost')
-					.get('/api/v1/clients/')
-					.set('Authorization', "Bearer #{process.env.API_SERVICE_API_KEY}")
-					.expect(200, '[]', cb)
-			.nodeify(done)
 
 describe 'VPN Events', ->
 	@timeout(100000)

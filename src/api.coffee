@@ -3,30 +3,8 @@ express = require 'express'
 bodyParser = require 'body-parser'
 request = Promise.promisify(require('request'), multiArgs: true)
 _ = require 'lodash'
-passport = require 'passport'
-BearerStrategy = require 'passport-http-bearer'
-JWTStrategy = require('passport-jwt').Strategy
-ExtractJwt = require('passport-jwt').ExtractJwt
 
 { captureException } = require './errors'
-
-passport.use new JWTStrategy
-	secretOrKey: process.env.JSON_WEB_TOKEN_SECRET
-	jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('Bearer')
-	(jwtPayload, done) ->
-		if not jwtPayload?
-			return done(null, false)
-
-		# jwt should have a service property with value 'api'
-		if jwtPayload.service is 'api'
-			return done(null, true)
-		done(null, false)
-
-passport.use new BearerStrategy (token, done) ->
-	if token is process.env.API_SERVICE_API_KEY
-		return done(null, true)
-	done(null, false)
-
 clients = require './clients'
 
 ## Private endpoints should use the `fromLocalHost` middleware.
@@ -40,16 +18,7 @@ fromLocalHost = (req, res, next) ->
 module.exports = (vpn) ->
 	api = express.Router()
 
-	api.use(passport.initialize())
 	api.use(bodyParser.json())
-
-	api.get '/api/v1/clients/', passport.authenticate(['jwt', 'bearer'], session: false), (req, res) ->
-		vpn.getStatus()
-		.then (results) ->
-			res.send(_.values(results.client_list))
-		.catch (err) ->
-			captureException(err, 'Error getting VPN client list')
-			res.send(500, 'Error getting VPN client list')
 
 	api.post '/api/v1/clients/', fromLocalHost, (req, res) ->
 		if not req.body.common_name?

@@ -1,6 +1,6 @@
 {
   "name": "resin-vpn-server",
-  "version": "2.1.1",
+  "version": "3.0.0",
   "description": "RESTful VPN api",
   "main": "server.js",
   "scripts": {
@@ -25,14 +25,10 @@
     "event-stream": "^3.1.7",
     "express": "^4.10.6",
     "generic-pool": "^3.1.6",
-    "jsonwebtoken": "^7.4.0",
     "lodash": "^4.0.0",
     "middleware-handler": "~0.2.0",
     "morgan": "^1.5.1",
     "node-tunnel": "0.2.2",
-    "passport": "~0.2.2",
-    "passport-http-bearer": "^1.0.1",
-    "passport-jwt": "^2.2.1",
     "pinejs-client": "^2.1.1",
     "raven": "^2.2.1",
     "request": "^2.51.0",
@@ -53,7 +49,6 @@
     "requestmock": "0.0.9",
     "resin-lint": "^1.4.2",
     "sinon": "^1.17.3",
-    "sinon-chai": "^2.8.0",
-    "supertest": "~0.15.0"
+    "sinon-chai": "^2.8.0"
   }
 }
