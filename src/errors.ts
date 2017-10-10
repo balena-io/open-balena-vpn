@@ -19,7 +19,7 @@ export const captureException = (err: Error, message?: string, options?: _Raven.
 		options.extra = options.extra || {};
 		options.extra.message = message;
 	}
-	return _Raven.captureException(err, options);
+	return Raven.captureException(err, options);
 };
 
 export class HandledTunnelingError extends Error {}
