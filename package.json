@@ -1,10 +1,11 @@
 {
   "name": "resin-vpn-server",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "RESTful VPN api",
   "main": "server.js",
   "scripts": {
-    "lint": "resin-lint src/ test/",
+    "lint": "resin-lint src/ test/ && tslint --project .",
+    "lintfix": "tslint --fix --project .",
     "pretest-unit": "npm run lint",
     "test-unit": "mocha test/index.coffee",
     "test": "docker build -t test-resin-vpn . && IMAGE_NAME=test-resin-vpn ./automation/test.sh",
@@ -49,6 +50,7 @@
     "requestmock": "0.0.9",
     "resin-lint": "^1.4.2",
     "sinon": "^1.17.3",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "tslint": "^5.7.0"
   }
 }
