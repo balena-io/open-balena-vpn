@@ -1,0 +1,7 @@
+authorityKeyIdentifier = keyid,issuer:always
+basicConstraints       = CA:FALSE
+extendedKeyUsage       = serverAuth
+keyUsage               = digitalSignature, keyEncipherment
+nsCertType             = server
+nsComment              = "Resin.io OpenVPN connection certificate"
+subjectKeyIdentifier   = hash
