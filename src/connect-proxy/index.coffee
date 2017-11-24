@@ -30,7 +30,7 @@ tunnelToDevice = (req, cltSocket, head, next) ->
 	.then ->
 		next()
 	.catch HandledTunnelingError, (err) ->
-		captureException(err, 'tunneling error')
+		console.error('tunneling error', err?.message or err, err.stack)
 	.catch (err) ->
 		captureException(err, 'tunnel catch')
 		cltSocket.end('HTTP/1.1 500 Internal Server Error\r\n\r\n')
