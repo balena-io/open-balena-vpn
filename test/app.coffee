@@ -61,7 +61,7 @@ describe 'service', ->
 			expect(called).to.equal(1)
 			expect(isAlive).to.be.true
 
-require('../src/connect-proxy')(process.env.VPN_CONNECT_PROXY_PORT)
+require('../src/connect-proxy/app')
 
 describe 'VPN Events', ->
 	@timeout(100000)

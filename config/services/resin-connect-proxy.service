@@ -6,7 +6,7 @@ After=confd.service
 [Service]
 WorkingDirectory=/usr/src/app
 EnvironmentFile=/usr/src/app/config/env
-ExecStart=/usr/src/app/bin/resin-connect-proxy
+ExecStart=/usr/src/app/node_modules/.bin/ts-node src/connect-proxy/app.ts
 Restart=always
 
 [Install]
