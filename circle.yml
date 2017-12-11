@@ -26,7 +26,7 @@ jobs:
           name: Test
           command: IMAGE_NAME="${DOCKER_IMAGE}:${CIRCLE_SHA1}" ./automation/test.sh
       - deploy:
-          name: Deploy
+          name: Push
           command: |
             docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD" -e="${DOCKER_EMAIL}"
             set -x
@@ -45,3 +45,15 @@ jobs:
               docker tag ${DOCKER_IMAGE}:${CIRCLE_SHA1} ${DOCKER_IMAGE}:${tag}
               docker push ${DOCKER_IMAGE}:${tag}
             fi
+      - deploy:
+          name: Deploy to Staging
+          command: |
+            [[ "${CIRCLE_BRANCH}" == "master" ]] || exit 0
+            curl --silent \
+              --request POST \
+              --user ${JENKINS_USER}:${JENKINS_TOKEN} \
+              --data-urlencode "action=deploy" \
+              --data-urlencode "component=vpn" \
+              --data-urlencode "environment=staging" \
+              --dump-header /dev/stdout \
+              "https://jenkins.dev.resin.io/job/resin-deploy/buildWithParameters"
