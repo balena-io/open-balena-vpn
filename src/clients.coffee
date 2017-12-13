@@ -34,7 +34,7 @@ setDeviceState = do ->
 					timeout: REQUEST_TIMEOUT
 					form: _.extend({ service_id: getId() }, targetState)
 				)
-			.timeout(REQUEST_TIMEOUT)
+				.timeout(REQUEST_TIMEOUT)
 			.spread (response) ->
 				if response.statusCode != 200
 					throw new Error("Status code was '#{response.statusCode}', expected '200'")
