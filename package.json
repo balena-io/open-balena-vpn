@@ -4,8 +4,8 @@
   "description": "RESTful VPN api",
   "main": "server.js",
   "scripts": {
-    "lint": "resin-lint src/ test/ && tslint --project .",
-    "lintfix": "tslint --fix --project .",
+    "lint": "resin-lint src/ test/ && tslint --format stylish --project . --exclude 'node_modules/**/*.ts'",
+    "lintfix": "tslint --fix --format stylish --project . --exclude 'node_modules/**/*.ts'",
     "pretest-unit": "npm run lint",
     "test-unit": "mocha test/index.coffee",
     "test": "docker build -t test-resin-vpn . && IMAGE_NAME=test-resin-vpn ./automation/test.sh",
@@ -35,6 +35,7 @@
     "request": "^2.51.0",
     "tmp": "~0.0.25",
     "ts-node": "^3.3.0",
+    "typed-error": "^2.0.0",
     "typescript": "^2.5.3",
     "winston": "^2.0.0"
   },
