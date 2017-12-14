@@ -1,4 +1,5 @@
 import * as _Raven from 'raven';
+import TypedError = require('typed-error');
 
 export const Raven = _Raven;
 
@@ -18,4 +19,4 @@ export const captureException = (err: Error, message?: string, options?: _Raven.
 	return Raven.captureException(err, options);
 };
 
-export class HandledTunnelingError extends Error {}
+export class HandledTunnelingError extends TypedError {}
