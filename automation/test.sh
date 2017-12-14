@@ -18,6 +18,7 @@ test_id=$(docker run --privileged -d \
 	-e VPN_HOST=127.0.0.1 \
 	-e VPN_MANAGEMENT_PORT=11195 \
 	-e VPN_API_PORT=80 \
+	-e VPN_CONNECT_INSTANCE_COUNT=1 \
 	-e VPN_CONNECT_PROXY_PORT=3128 \
 	-e BLUEBIRD_DEBUG=1 \
 	-e API_SERVICE_API_KEY=test_api_service_key \
