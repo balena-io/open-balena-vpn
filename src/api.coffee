@@ -36,12 +36,12 @@ module.exports = (vpn) ->
 	api.post '/api/v1/auth/', fromLocalHost, (req, res) ->
 		if not req.body.username?
 			console.log('AUTH FAIL: UUID not specified.')
-
 			return res.sendStatus(400)
+
 		if not req.body.password?
 			console.log('AUTH FAIL: API Key not specified.')
-
 			return res.sendStatus(400)
+
 		username = req.body.username
 		apiKey = req.body.password
 		requestOpts =
@@ -54,6 +54,7 @@ module.exports = (vpn) ->
 			if response.statusCode == 200
 				res.send('OK')
 			else
+				console.log("AUTH FAIL: API Authentication failed for #{username}")
 				res.sendStatus(401)
 		.catch (err) ->
 			captureException(err, 'Proxy Auth Error')
