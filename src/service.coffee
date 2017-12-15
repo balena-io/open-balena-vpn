@@ -40,7 +40,5 @@ exports.sendHeartbeat = ->
 			is_alive: true
 		customOptions:
 			apikey: apiKey
-	.then ->
-		logger.info('Sent a successful heartbeat request to the API')
 	.catch (err) ->
 		captureException(err, 'Failed to send a heartbeat to the API', tags: service_id: serviceId)
