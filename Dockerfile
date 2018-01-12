@@ -2,6 +2,11 @@ FROM resin/resin-base:v2.9.2
 
 EXPOSE 80 443
 
+RUN echo deb http://deb.debian.org/debian jessie-backports main > /etc/apt/sources.list.d/backports.list \
+	&& apt-get update -qq \
+	&& apt-get install -qy openssl openvpn -t jessie-backports --no-install-recommends \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/backports.list
+
 ENV LIBNSSS_OPENVPN_VERSION=964ef26430878978ac0bfb379454fe05e52686b7
 RUN git clone https://github.com/resin-io-modules/libnss-openvpn.git \
 	&& cd libnss-openvpn \
