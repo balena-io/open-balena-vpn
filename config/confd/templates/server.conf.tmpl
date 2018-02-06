@@ -23,7 +23,7 @@ persist-tun
 dev tun
 proto tcp-server
 comp-lzo
-keepalive 10 60
+keepalive {{ getenv "VPN_KEEPALIVE_FREQUENCY" "10" }} {{ getenv "VPN_KEEPALIVE_TIMEOUT" "60" }}
 
 # Increase the max clients from the default of 1024
 max-clients 32768
