@@ -40,7 +40,11 @@ setDeviceState = do ->
 					throw new Error("Status code was '#{response.statusCode}', expected '200'")
 				# Update the current state on success
 				deviceStates[uuid].currentState = targetState
-				logger.info("Successfully updated state for '#{uuid}'")
+				stateMsg = "common_name=#{targetState.common_name} connected=#{targetState.connected}"
+				if targetState.virtual_address?
+					stateMsg = "#{stateMsg} virtual_address=#{targetState.virtual_address}"
+				logger.info(targetState)
+				logger.info("Successfully updated state for #{uuid}: #{stateMsg}")
 			.catch (err) ->
 				captureException(err, 'Error updating state', user: uuid: uuid)
 				# Add a 60 second delay in case of failure to avoid a crazy flood
