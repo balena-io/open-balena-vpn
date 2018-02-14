@@ -7,6 +7,7 @@ Promise = require 'bluebird'
 { OpenVPN } = require './libs/openvpn-nc'
 service = require './service'
 { Raven, captureException } = require './errors'
+{ VERSION } = require './utils'
 
 envKeys = [
 	'RESIN_API_HOST'
@@ -42,7 +43,7 @@ service.register()
 .then ->
 	app.listenAsync(80)
 .then ->
-	console.log('listening on port', 80)
+	console.log("resin-vpn@#{VERSION} listening on port 80")
 	# Now endpoints are established, release VPN hold.
 	vpn.execCommand('hold release')
 	.catch (err) ->
