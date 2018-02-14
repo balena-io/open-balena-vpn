@@ -1,11 +1,13 @@
 import * as _Raven from 'raven';
 import TypedError = require('typed-error');
 
+import { VERSION } from './utils';
+
 export const Raven = _Raven;
 
 Raven.config(process.env.SENTRY_DSN || false, {
 	captureUnhandledRejections: true,
-	release: process.env.npm_package_version,
+	release: VERSION,
 	environment: process.env.NODE_ENV,
 }).install();
 

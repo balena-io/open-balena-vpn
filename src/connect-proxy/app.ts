@@ -6,6 +6,7 @@ import * as os from 'os';
 import * as logger from 'winston';
 
 import { captureException, HandledTunnelingError, Raven } from '../errors';
+import { VERSION } from '../utils';
 import * as device from './device';
 
 [
@@ -70,7 +71,7 @@ const tunnelToDevice: Middleware = (req, cltSocket, _head, next) =>
 	});
 
 if (cluster.isMaster) {
-	console.log(`proxy master process started with pid ${process.pid}`);
+	console.log(`connect-proxy@${VERSION} master process started with pid ${process.pid}`);
 	if (VPN_CONNECT_INSTANCE_COUNT > 1) {
 		console.log(`spawning ${VPN_CONNECT_INSTANCE_COUNT} proxy worker processes`);
 		// spawn worker processes
@@ -83,7 +84,7 @@ if (cluster.isMaster) {
 }
 
 if (cluster.isWorker || VPN_CONNECT_INSTANCE_COUNT === 1) {
-	console.log(`proxy worker process started with pid ${process.pid}`);
+	console.log(`connect-proxy@${VERSION} worker process started with pid ${process.pid}`);
 	const tunnel = new Tunnel();
 	tunnel.use(tunnelToDevice);
 	tunnel.listen(VPN_CONNECT_PROXY_PORT, () => logger.info('tunnel listening on port', VPN_CONNECT_PROXY_PORT));
