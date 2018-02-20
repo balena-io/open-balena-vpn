@@ -3,7 +3,8 @@ logger = require 'winston'
 { captureException } = require './errors'
 { resinApi, apiKey } = require './utils'
 
-INTERVAL = 10e3
+# 10s
+INTERVAL = 10 * 1000
 
 serviceId = null
 exports.getId = -> serviceId

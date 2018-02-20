@@ -15,7 +15,7 @@ fromLocalHost = (req, res, next) ->
 
 	next()
 
-module.exports = (vpn) ->
+module.exports = ->
 	api = express.Router()
 
 	api.use(bodyParser.json())
@@ -72,6 +72,5 @@ module.exports = (vpn) ->
 		data = _.pick(req.body, [ 'common_name', 'virtual_address', 'real_address', 'trusted_port' ])
 		clients.disconnected(data)
 		res.send('OK')
-
 
 	return api

@@ -1,0 +1,18 @@
+global
+	nbproc {{getenv "NPROC"}}
+	user haproxy
+	group haproxy
+	log /dev/log local0
+	log /dev/log local1 notice
+
+defaults
+	mode tcp
+	timeout connect 5000
+	timeout client 50000
+	timeout server 50000
+
+frontend tcp-443
+	bind ipv4@:443 name port443
+	default_backend vpn_cluster
+
+backend vpn_cluster

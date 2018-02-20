@@ -1,17 +1,6 @@
-port 443
-management 127.0.0.1 11195
-
-# The API will start the server when its endpoints are available (they are
-# required by auth-resin, client-connect and client-disconnect scripts.)
-management-hold
-
 ca ca.crt
 key server.key
 cert server.crt
-
-script-security 3 # Level 3 for username/password auth see below.
-client-connect scripts/client-connect.sh
-client-disconnect scripts/client-disconnect.sh
 
 dh dh1024.pem
 # We don't care about windows compatability, just assign individual IP addresses.
@@ -20,7 +9,6 @@ ifconfig-pool-linear
 persist-key
 persist-tun
 
-dev tun
 proto tcp-server
 comp-lzo
 keepalive {{ getenv "VPN_KEEPALIVE_FREQUENCY" "10" }} {{ getenv "VPN_KEEPALIVE_TIMEOUT" "60" }}
@@ -29,17 +17,12 @@ keepalive {{ getenv "VPN_KEEPALIVE_FREQUENCY" "10" }} {{ getenv "VPN_KEEPALIVE_T
 max-clients 32768
 
 # Allow authorisation via username/password.
+script-security 3 # Level 3 for username/password auth
 client-cert-not-required
 username-as-common-name
-auth-user-pass-verify scripts/auth-resin.sh via-env
 
 mode server
 tls-server
-
-ifconfig {{ getv "/resin/vpn/gateway" }} 10.2.0.2
-ifconfig-pool 10.2.0.4 10.2.255.251
-route 10.2.0.0 255.255.0.0
-push "route {{ getv "/resin/vpn/gateway" }}"
 
 group nogroup
 user nobody
