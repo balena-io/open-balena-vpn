@@ -19,6 +19,9 @@ export class Netmask extends netmask.Netmask {
 		if (mask < this.bitmask) {
 			throw new Error(`Cannot split /${this.bitmask} into /${mask}!`);
 		}
+		if (mask > 29) {
+			throw new Error(`Mask /${mask} is too small, 3 usable addresses are required.`);
+		}
 		let net = new Netmask(this.base, mask);
 		const subnets = [];
 		while (true) {
@@ -26,8 +29,13 @@ export class Netmask extends netmask.Netmask {
 				break;
 			}
 			subnets.push(net);
-			net = net.next() as Netmask;
+			net = net.next();
 		}
 		return subnets;
+	}
+
+	// Override netmask.Netmask.next so it returns a Netmask (as opposed to netmask.Netmask) object
+	next(count: number = 1): Netmask {
+		return new Netmask(netmask.long2ip(this.netLong + (this.size * count)), this.bitmask);
 	}
 }

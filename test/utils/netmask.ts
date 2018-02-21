@@ -28,6 +28,18 @@ describe('Netmask', () => {
 			expect(() => net.split(11)).to.throw(Error, 'Cannot split /12 into /11!');
 		});
 
+		it('should refuse if mask >= 30', () => {
+			expect(() => net.split(30)).to.throw(Error, 'Mask /30 is too small, 3 usable addresses are required.');
+		});
+
+		it('should return array of Netmask instances', () => {
+			for (let subnet of net.split(20)) {
+				expect(subnet).to.be.instanceOf(netmask.Netmask);
+				expect(subnet).to.have.property('second');
+				expect(subnet).to.have.property('third');
+			}
+		});
+
 		it('should allow when split == mask', () => {
 			const subnets = net.split(12);
 			expect(subnets).to.have.property('length').that.equals(1);
@@ -38,6 +50,8 @@ describe('Netmask', () => {
 		it('should return non-overlapping subnets', () => {
 			const subnets = net.split(13);
 			expect(subnets).to.have.property('length').that.equals(2);
+			expect(subnets[0]).to.have.property('base').that.equals('10.240.0.0');
+			expect(subnets[0]).to.have.property('bitmask').that.equals(13);
 			expect(subnets[1]).to.have.property('base').that.equals('10.248.0.0');
 			expect(subnets[1]).to.have.property('bitmask').that.equals(13);
 		});
