@@ -41,8 +41,10 @@
           "arrays": "always",
           "functions": "ignore",
           "typeLiterals": "ignore"
-        }
+        },
+        "esSpecCompliant": true
       }
-    ]
+    ],
+    "prefer-for-of": true
   }
 }
