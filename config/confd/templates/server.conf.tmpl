@@ -4,21 +4,21 @@ cert server.crt
 
 dh dh1024.pem
 # We don't care about windows compatability, just assign individual IP addresses.
-ifconfig-pool-linear
+topology p2p
 
 persist-key
 persist-tun
 
 proto tcp-server
-comp-lzo
+compress
 keepalive {{ getenv "VPN_KEEPALIVE_FREQUENCY" "10" }} {{ getenv "VPN_KEEPALIVE_TIMEOUT" "60" }}
 
-# Increase the max clients from the default of 1024
+# Increase the max clients from the default of 1024 (hard limit applied by subnet/pool config)
 max-clients 32768
 
 # Allow authorisation via username/password.
 script-security 3 # Level 3 for username/password auth
-client-cert-not-required
+verify-client-cert none
 username-as-common-name
 
 mode server
