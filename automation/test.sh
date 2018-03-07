@@ -10,6 +10,7 @@ trap cleanup EXIT
 
 test_id=$(docker run --privileged -d \
 	-e RESIN_API_HOST=api.resindev.io \
+	-e HAPROXY_ACCEPT_PROXY=false \
 	-e VPN_INSTANCE_COUNT=1 \
 	-e VPN_BASE_SUBNET=10.240.0.0/12 \
 	-e VPN_INSTANCE_SUBNET_BITMASK=20 \
