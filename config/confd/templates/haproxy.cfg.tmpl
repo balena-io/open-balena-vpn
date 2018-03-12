@@ -3,16 +3,17 @@ global
 	user haproxy
 	group haproxy
 	log /dev/log local0
-	log /dev/log local1 notice
 
 defaults
 	mode tcp
+	log global
+	log-format "%ft->%b/%s %ci:%cp->%bi:%bp"
 	timeout connect 5000
 	timeout client 50000
 	timeout server 50000
 
 frontend tcp-443
-	bind ipv4@:443 name port443
+	bind ipv4@:443 name port443 {{if ne (getenv "HAPROXY_ACCEPT_PROXY") "false"}}accept-proxy{{end}}
 	default_backend vpn_cluster
 
 backend vpn_cluster
