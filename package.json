@@ -39,7 +39,7 @@
     "raven": "^2.2.1",
     "request": "^2.51.0",
     "tmp": "~0.0.25",
-    "ts-node": "^3.3.0",
+    "ts-node": "^5.0.1",
     "typed-error": "^2.0.0",
     "typescript": "^2.5.3",
     "winston": "^2.0.0"
