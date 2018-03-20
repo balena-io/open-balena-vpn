@@ -1,4 +1,4 @@
-FROM resin/resin-base:v2.9.2
+FROM resin/resin-base:v3.3.0
 
 EXPOSE 80 443
 
@@ -20,8 +20,8 @@ RUN tmp="$(mktemp -d)" set -x \
 RUN echo "AUTOSTART=none" > /etc/default/openvpn \
 	&& rm -rf /etc/openvpn && ln -s /usr/src/app/openvpn /etc/openvpn
 
-COPY package.json /usr/src/app/
-RUN npm install --unsafe-perm --production && npm cache clean
+COPY package.json package-lock.json /usr/src/app/
+RUN npm install --unsafe-perm --production && npm cache clean --force 2>/dev/null
 COPY . /usr/src/app
 
 COPY config/services /etc/systemd/system
