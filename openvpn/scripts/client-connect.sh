@@ -8,7 +8,7 @@ if [ -f /usr/src/app/config/env ]; then
 fi
 API_PORT=$((VPN_API_BASE_PORT + VPN_INSTANCE_ID))
 
-curl -s -X POST $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -d @- "http://127.0.0.1:${API_PORT}/api/v1/clients" <<-EOF || true
+curl -s -X POST $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -d @- "http://127.0.0.1:${API_PORT}/api/v1/clients" >/dev/null <<-EOF || true
 {
 	"event": "client-connect",
 	"common_name": "$common_name",

@@ -1,3 +1,6 @@
 [template]
 src = "haproxy.cfg.tmpl"
-dest = "/etc/haproxy/haproxy.base"
+dest = "/etc/haproxy/haproxy.cfg"
+keys = [
+  "/resin/vpn/port",
+]

@@ -1,19 +1,37 @@
 global
-	nbproc {{getenv "NPROC"}}
+	master-worker
+	maxconn "${HAPROXY_MAXCONN}"
 	user haproxy
 	group haproxy
 	log /dev/log local0
+	stats socket /var/run/haproxy.sock mode 600 level admin
 
 defaults
 	mode tcp
 	log global
-	log-format "%ft->%b/%s %ci:%cp->%bi:%bp"
-	timeout connect 5000
-	timeout client 50000
-	timeout server 50000
+	option dontlognull
+	option logasap
+	option splice-auto
+	option tcp-smart-accept
+	option tcp-smart-connect
+	timeout connect 10s
+	timeout client "${VPN_KEEPALIVE_TIMEOUT}s"
+	timeout server "${VPN_KEEPALIVE_TIMEOUT}s"
 
-frontend tcp-443
-	bind ipv4@:443 name port443 {{if ne (getenv "HAPROXY_ACCEPT_PROXY") "false"}}accept-proxy{{end}}
-	default_backend vpn_cluster
+frontend health-80
+	mode http
+	option httplog
+	bind ipv4@:80
+	acl vpn_dead nbsrv(vpn-cluster) lt 1
+	monitor-uri /ping
+	monitor fail if vpn_dead
 
-backend vpn_cluster
+frontend tcp-{{getv "/resin/vpn/port"}}
+	bind ipv4@:{{getv "/resin/vpn/port"}} {{if ne (getenv "HAPROXY_ACCEPT_PROXY") "false"}}accept-proxy{{end}}
+	# Routing <client-ip:port>@<frontend> to <backend>/<server>:<port> [Conns Queues Times]
+	log-format "Routing %ci:%cp@%ft to %b/%s:%bp [C:%bc/%sc Q:%bq/%sq T:%Tw/%Tc]"
+	default_backend vpn-cluster
+
+backend vpn-cluster
+	balance leastconn
+	server-template vpn "1-${VPN_INSTANCE_COUNT}" 127.0.0.1:10000 check disabled
