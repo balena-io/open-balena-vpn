@@ -7,7 +7,7 @@ RUN echo deb http://deb.debian.org/debian jessie-backports main > /etc/apt/sourc
 	&& apt-get install -qy openssl openvpn haproxy sipcalc -t jessie-backports --no-install-recommends \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/backports.list /etc/haproxy/*
 
-ENV LIBNSS_OPENVPN_VERSION 59d24ac3a392772cbdb05f4f47f425a741cd7f77
+ENV LIBNSS_OPENVPN_VERSION 22feb11322182f6fd79f85cd014b65b6c40b7b47
 RUN tmp="$(mktemp -d)" set -x \
 	&& git clone -q https://github.com/resin-io-modules/libnss-openvpn.git "${tmp}" \
 	&& cd "${tmp}" \
