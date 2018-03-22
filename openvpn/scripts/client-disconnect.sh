@@ -16,7 +16,7 @@ fi
 
 # TODO: Perhaps privileged clients shouldn't be unregistered below?
 
-curl -s -X DELETE $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -d @- "http://127.0.0.1:${API_PORT}/api/v1/clients" <<-EOF || true
+curl -s -X DELETE $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -d @- "http://127.0.0.1:${API_PORT}/api/v1/clients" >/dev/null <<-EOF || true
 {
 	"event": "client-disconnect",
 	"common_name": "$common_name",

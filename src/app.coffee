@@ -68,6 +68,7 @@ if cluster.isWorker or nWorkers == 1
 	mgtPort = VPN_BASE_MANAGEMENT_PORT + instanceId
 	apiPort = VPN_API_BASE_PORT + instanceId
 
+	# prepare openvpn instance
 	subnet = getInstanceSubnet(instanceId)
 	gateway = RESIN_VPN_GATEWAY or subnet.first
 	command = [
@@ -85,14 +86,14 @@ if cluster.isWorker or nWorkers == 1
 		'--auth-user-pass-verify', "scripts/auth-resin.sh #{instanceId}", 'via-env'
 		'--client-connect', "scripts/client-connect.sh #{instanceId}"
 		'--client-disconnect', "scripts/client-disconnect.sh #{instanceId}"]
-	new forever.Monitor command,
+	openvpn = new forever.Monitor command,
 		uid: "openvpn_#{instanceId}"
 		env: process.env
 		max: 10
 		spinSleepTime: 1000
 	.on('exit', -> process.exit(2))
-	.start()
 
+	# create api instance
 	api = require('./api')()
 	app = Promise.promisifyAll(express())
 	app.use(Raven.requestHandler())
@@ -102,8 +103,19 @@ if cluster.isWorker or nWorkers == 1
 	app.use(api)
 	app.use(Raven.errorHandler())
 
+	# register as a service instance and start services
 	service.register()
-	.then ->
+	.tap ->
+		# start api service
 		console.log("worker-#{instanceId} listening on port #{apiPort}")
 		app.listenAsync(apiPort)
-	.then(service.scheduleHeartbeat)
+	.tap ->
+		# start openvpn instance
+		openvpn.start()
+	.tap ->
+		# update haproxy configuration
+		haproxy = require('net').createConnection '/var/run/haproxy.sock', ->
+			haproxy.on('error', -> process.exit(1))
+			preamble = "set server vpn-cluster/vpn#{instanceId}"
+			haproxy.write("#{preamble} addr 127.0.0.1 port #{vpnPort}\r\n#{preamble} state ready\r\n", -> haproxy.destroy())
+	.tap(service.scheduleHeartbeat)

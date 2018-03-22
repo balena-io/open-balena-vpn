@@ -1,15 +1,18 @@
 #!/usr/bin/env sh
-set -exu
+set -eu
 
 cleanup() {
 	exit_code=$?
-	test -n "${test_id}" && docker rm -f "${test_id}"
+	test -n "${test_id}" && docker rm -f "${test_id}" >/dev/null
 	exit $exit_code
 }
 trap cleanup EXIT
 
 test_id=$(docker run --privileged -d \
 	-e RESIN_API_HOST=api.resindev.io \
+	-e RESIN_VPN_PORT=443 \
+	-e HAPROXY_MAXCONN=10 \
+	-e VPN_KEEPALIVE_TIMEOUT=30 \
 	-e HAPROXY_ACCEPT_PROXY=false \
 	-e VPN_INSTANCE_COUNT=1 \
 	-e VPN_BASE_SUBNET=10.240.0.0/12 \
@@ -22,21 +25,20 @@ test_id=$(docker run --privileged -d \
 	-e VPN_CONNECT_PROXY_PORT=3128 \
 	-e VPN_SERVICE_API_KEY=test_api_key \
 	-e PROXY_SERVICE_API_KEY=test_proxy_key \
-	-e BLUEBIRD_DEBUG=1 \
 	-e API_SERVICE_API_KEY=test_api_service_key \
+	-e BLUEBIRD_DEBUG=1 \
 	"${IMAGE_NAME}")
 
 docker exec "${test_id}" /bin/sh -ec '
-	while ! systemctl status basic.target >/dev/null 2>&1; do echo "Waiting for systemd..." && sleep 1; done
+	echo -n "Waiting for systemd... "
+	while ! systemctl status basic.target >/dev/null 2>&1; do sleep 1; done
+	echo "ok"
 	systemctl stop confd.service
-	mkdir -p /etc/systemd/system/confd.service.d
-	echo "[Service]\nExecStart=\nExecStart=-/usr/local/bin/confd -onetime -confdir=/etc/confd -backend env" > /etc/systemd/system/confd.service.d/env-backend.conf
-	systemctl daemon-reload
+	echo "[Service]\nType=oneshot\nExecStart=\nExecStart=-/usr/local/bin/confd -onetime -confdir=/etc/confd -backend env -log-level debug\nRemainAfterExit=yes" > /etc/systemd/system/confd.service.d/env-backend.conf
 	ln -fs /etc/docker.env /usr/src/app/config/env
 	echo "127.0.0.1 deadbeef.vpn" >> /etc/hosts
-	systemctl stop resin-connect-proxy.service
+	systemctl daemon-reload
 	systemctl start haproxy.service
 	npm install
-	npm run lint
 	npm run test-unit
 	./node_modules/mocha/bin/mocha test/app.coffee'

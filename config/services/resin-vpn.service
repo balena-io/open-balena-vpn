@@ -1,6 +1,6 @@
 [Unit]
 Description=resin-vpn
-Requires=confd.service
+Requires=confd.service haproxy.service
 After=confd.service
 
 [Service]
