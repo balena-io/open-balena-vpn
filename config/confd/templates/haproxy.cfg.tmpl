@@ -1,6 +1,16 @@
+{{- /* Global Settings */ -}}
+{{ $maxconn := getenv "VPN_HAPROXY_MAXCONN" "10000" -}}
+{{ $timeout := getenv "VPN_HAPROXY_TIMEOUT" (getenv "VPN_KEEPALIVE_TIMEOUT" "60") -}}
+{{- /* VPN Settings */ -}}
+{{ $vpnPort := getv "/resin/vpn/port" -}}
+{{- /* bindOpts = "accept-proxy" unless VPN_HAPROXY_ACCEPT_PROXY == 'false' */ -}}
+{{ $bindOpt := (or (and (ne (getenv "VPN_HAPROXY_ACCEPT_PROXY") "false") "accept-proxy") "") -}}
+{{- /* servers = getenv(VPN_INSTANCE_COUNT, default=getenv(NPROC) if production else 1) */ -}}
+{{ $servers := (getenv "VPN_INSTANCE_COUNT" (or (and (eq (getv "/resin/vpn/production") "true") (getenv "NPROC")) "1")) -}}
+
 global
 	master-worker
-	maxconn "${HAPROXY_MAXCONN}"
+	maxconn {{$maxconn}}
 	user haproxy
 	group haproxy
 	log /dev/log local0
@@ -8,6 +18,7 @@ global
 
 defaults
 	mode tcp
+	maxconn {{$maxconn}}
 	log global
 	option dontlognull
 	option logasap
@@ -15,8 +26,8 @@ defaults
 	option tcp-smart-accept
 	option tcp-smart-connect
 	timeout connect 10s
-	timeout client "${VPN_KEEPALIVE_TIMEOUT}s"
-	timeout server "${VPN_KEEPALIVE_TIMEOUT}s"
+	timeout client {{$timeout}}s
+	timeout server {{$timeout}}s
 
 frontend health-80
 	mode http
@@ -26,12 +37,12 @@ frontend health-80
 	monitor-uri /ping
 	monitor fail if vpn_dead
 
-frontend tcp-{{getv "/resin/vpn/port"}}
-	bind ipv4@:{{getv "/resin/vpn/port"}} {{if ne (getenv "HAPROXY_ACCEPT_PROXY") "false"}}accept-proxy{{end}}
+frontend tcp-{{$vpnPort}}
+	bind ipv4@:{{$vpnPort}} {{$bindOpt}}
 	# Routing <client-ip:port>@<frontend> to <backend>/<server>:<port> [Conns Queues Times]
 	log-format "Routing %ci:%cp@%ft to %b/%s:%bp [C:%bc/%sc Q:%bq/%sq T:%Tw/%Tc]"
 	default_backend vpn-cluster
 
 backend vpn-cluster
 	balance leastconn
-	server-template vpn "1-${VPN_INSTANCE_COUNT}" 127.0.0.1:10000 check disabled
+	server-template vpn 1-{{$servers}} 127.0.0.1:10000 check disabled

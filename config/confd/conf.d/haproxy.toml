@@ -3,4 +3,5 @@ src = "haproxy.cfg.tmpl"
 dest = "/etc/haproxy/haproxy.cfg"
 keys = [
   "/resin/vpn/port",
+  "/resin/vpn/production",
 ]
