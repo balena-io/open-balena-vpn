@@ -4,7 +4,7 @@
 {{- /* VPN Settings */ -}}
 {{ $vpnPort := getv "/resin/vpn/port" -}}
 {{- /* bindOpts = "accept-proxy" unless VPN_HAPROXY_ACCEPT_PROXY == 'false' */ -}}
-{{ $bindOpt := (or (and (ne (getenv "VPN_HAPROXY_ACCEPT_PROXY") "false") "accept-proxy") "") -}}
+{{ $bindOpt := (or (and (eq (getv "/resin/vpn/haproxy/useproxyprotocol" "false") "true") "accept-proxy") "") -}}
 {{- /* servers = getenv(VPN_INSTANCE_COUNT, default=getenv(NPROC) if production else 1) */ -}}
 {{ $servers := (getenv "VPN_INSTANCE_COUNT" (or (and (eq (getv "/resin/vpn/production") "true") (getenv "NPROC")) "1")) -}}
 
