@@ -33,6 +33,7 @@ frontend health-80
 	mode http
 	option httplog
 	bind ipv4@:80
+	bind ipv4@:81 accept-proxy
 	acl vpn_dead nbsrv(vpn-cluster) lt 1
 	monitor-uri /ping
 	monitor fail if vpn_dead
