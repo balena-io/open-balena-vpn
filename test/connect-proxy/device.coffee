@@ -24,7 +24,7 @@ beforeEach ->
 describe 'getDeviceByUUID()', ->
 	beforeEach ->
 		nock("https://#{process.env.RESIN_API_HOST}:443")
-		.get('/v2/device')
+		.get('/v4/device')
 		.query(
 			$select: 'id,uuid,is_web_accessible,is_connected_to_vpn'
 			$filter: "uuid eq 'deadbeef'"
