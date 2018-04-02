@@ -32,7 +32,7 @@ describe 'service', ->
 
 	describe 'getId()', ->
 		before ->
-			requestMock.register 'post', 'https://api.resindev.io/v2/service_instance', (req, cb) ->
+			requestMock.register 'post', 'https://api.resindev.io/v4/service_instance', (req, cb) ->
 				cb(null, { statusCode: 200 }, id: ID)
 
 		it 'should return null when service was not registered', ->
@@ -51,7 +51,7 @@ describe 'service', ->
 		isAlive = null
 
 		before ->
-			requestMock.register 'patch', "https://api.resindev.io/v2/service_instance(#{ID})", (req, cb) ->
+			requestMock.register 'patch', "https://api.resindev.io/v4/service_instance(#{ID})", (req, cb) ->
 				called++
 				isAlive = req?.body?.is_alive
 				cb(null, statusCode: 200, 'OK')
@@ -124,7 +124,7 @@ describe 'VPN proxy', ->
 
 	describe 'web accessible device', ->
 		before ->
-			requestMock.register 'get', 'https://api.resindev.io/v2/device', (args, cb) ->
+			requestMock.register 'get', 'https://api.resindev.io/v4/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, d: [
 					uuid: 'deadbeef'
 					is_web_accessible: 1
@@ -151,7 +151,7 @@ describe 'VPN proxy', ->
 
 	describe 'not web accessible device', ->
 		before ->
-			requestMock.register 'get', 'https://api.resindev.io/v2/device', (args, cb) ->
+			requestMock.register 'get', 'https://api.resindev.io/v4/device', (args, cb) ->
 				cb(null, { statusCode: 200 }, d: [ uuid: 'deadbeef', is_web_accessible: 0, is_connected_to_vpn: 1 ])
 
 		it 'should not allow port 8080 without authentication', (done) ->
