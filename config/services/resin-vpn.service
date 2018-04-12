@@ -1,16 +1,12 @@
 [Unit]
 Description=resin-vpn
-Requires=confd.service haproxy.service
-After=confd.service
+Requires=confd.service haproxy.service balena-root-ca.service
+After=confd.service balena-root-ca.service
 
 [Service]
 WorkingDirectory=/usr/src/app
 EnvironmentFile=/usr/src/app/config/env
 ExecStartPre=/bin/bash -c 'mkdir -p /dev/net; if [ ! -c /dev/net/tun ]; then mknod /dev/net/tun c 10 200; fi'
-# Retrieve the environment variables present in the container via the root PID. If they
-# contain a RESIN_ROOT_CA var and value, decode it and store it in /tmp/resin-root-ca/resinRootCA.pem
-# which will be used by the Node process. Then add to the system trusted CA store.
-ExecStartPre=/bin/bash -c 'for e in $(tr "\000" "\n" < /proc/1/environ); do name=$(echo $e | cut -f1 -d=); value=$(echo $e | cut -f2 -d=); if [ $name == "RESIN_ROOT_CA" ]; then mkdir -p /tmp/resin-root-ca; echo $value | base64 -d > /tmp/resin-root-ca/resinRootCA.pem; cp /tmp/resin-root-ca/resinRootCA.pem /usr/local/share/ca-certificates/resinRootCA.crt; update-ca-certificates; fi; done'
 ExecStart=/usr/src/app/node_modules/.bin/coffee src/app.coffee
 Restart=always
 
