@@ -1,0 +1,4 @@
+[template]
+src = "server.conf.tmpl"
+dest = "/etc/openvpn/server.conf"
+keys = []

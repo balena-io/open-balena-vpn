@@ -1,0 +1,7 @@
+{{if getenv "LOGENTRIES_TOKEN"}}
+$template Logentries,"{{getenv "LOGENTRIES_TOKEN"}} %HOSTNAME% %syslogtag%%msg%\n"
+*.* @@data.logentries.com:443;Logentries
+{{else}}
+# Send logs to /dev/null when there's no logentries token, to stop an rsyslogd infinite restart loop.
+*.* | /dev/null
+{{end}}
