@@ -1,3 +1,14 @@
 [template]
 src = "haproxy.cfg.tmpl"
-dest = "/etc/haproxy/haproxy.base"
+dest = "/etc/haproxy/haproxy.cfg"
+keys = [
+  "BALENA_VPN_PORT",
+  "NPROC",
+  "PRODUCTION_MODE",
+  "VPN_HAPROXY_ACCEPT_PROXY",
+  "VPN_HAPROXY_MAXCONN",
+  "VPN_HAPROXY_TIMEOUT",
+  "VPN_HAPROXY_USEPROXYPROTOCOL",
+  "VPN_INSTANCE_COUNT",
+  "VPN_KEEPALIVE_TIMEOUT"
+]
