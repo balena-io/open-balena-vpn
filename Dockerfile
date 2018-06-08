@@ -7,7 +7,7 @@ RUN echo deb http://deb.debian.org/debian jessie-backports main > /etc/apt/sourc
 	&& echo deb http://haproxy.debian.net jessie-backports-1.8 main > /etc/apt/sources.list.d/haproxy.list \
 	&& apt-get update -qq \
 	&& apt-get install -qy openssl openvpn haproxy=1.8.* sipcalc socat -t jessie-backports --no-install-recommends \
-	&& apt-get clean && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/*
+	&& apt-get clean && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf
 
 ENV LIBNSS_OPENVPN_VERSION 22feb11322182f6fd79f85cd014b65b6c40b7b47
 RUN tmp="$(mktemp -d)" set -x \
