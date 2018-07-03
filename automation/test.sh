@@ -9,6 +9,8 @@ cleanup() {
 trap cleanup EXIT
 
 test_id=$(docker run --privileged -d \
+	--tmpfs /run \
+	--tmpfs /sys/fs/cgroup \
 	-e RESIN_VPN_PRODUCTION=false \
 	-e RESIN_API_HOST=api.resindev.io \
 	-e RESIN_VPN_PORT=443 \
