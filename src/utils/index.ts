@@ -6,3 +6,4 @@ export const apiKey = process.env.VPN_SERVICE_API_KEY;
 export const VERSION = pkg.version;
 
 export { Netmask } from './netmask';
+export { request } from './request';

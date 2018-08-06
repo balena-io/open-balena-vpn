@@ -12,9 +12,8 @@ test_id=$(docker run --privileged -d \
 	--tmpfs /run \
 	--tmpfs /sys/fs/cgroup \
 	-e RESIN_VPN_PRODUCTION=false \
-	-e RESIN_API_HOST=api.resindev.io \
+	-e RESIN_API_HOST=api.resin.test \
 	-e RESIN_VPN_PORT=443 \
-	-e VPN_INSTANCE_COUNT=1 \
 	-e VPN_BASE_SUBNET=10.240.0.0/12 \
 	-e VPN_INSTANCE_SUBNET_BITMASK=20 \
 	-e VPN_BASE_PORT=10000 \
@@ -41,4 +40,4 @@ docker exec "${test_id}" /bin/sh -ec '
 	systemctl start haproxy.service
 	npm install
 	npm run test-unit
-	./node_modules/mocha/bin/mocha test/app.coffee'
+	./node_modules/mocha/bin/mocha test/app.ts'

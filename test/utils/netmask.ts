@@ -33,7 +33,7 @@ describe('Netmask', () => {
 		});
 
 		it('should return array of Netmask instances', () => {
-			for (let subnet of net.split(20)) {
+			for (const subnet of net.split(20)) {
 				expect(subnet).to.be.instanceOf(netmask.Netmask);
 				expect(subnet).to.have.property('second');
 				expect(subnet).to.have.property('third');

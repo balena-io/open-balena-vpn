@@ -1,5 +1,5 @@
 import * as _Raven from 'raven';
-import TypedError = require('typed-error');
+import { TypedError } from 'typed-error';
 
 import { VERSION } from './utils';
 
@@ -22,3 +22,4 @@ export const captureException = (err: Error, message?: string, options?: _Raven.
 };
 
 export class HandledTunnelingError extends TypedError {}
+export class ServiceRegistrationError extends TypedError {}

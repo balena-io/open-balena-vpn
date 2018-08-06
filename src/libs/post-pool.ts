@@ -1,18 +1,21 @@
 import * as Promise from 'bluebird';
 import * as genericPool from 'generic-pool';
 import * as _ from 'lodash';
-import { post } from 'request';
-const postAsync = Promise.promisify(post, { multiArgs: true });
 
-const createFunc = () => {
-	// wrap the postAsync function to make each worker we create distinguishable to the pool
-	return function() {
+import { request } from '../utils';
+
+const postAsync = request.post;
+type PostAsyncFn = typeof postAsync;
+
+// wrap the postAsync function to make each worker we create distinguishable to the pool
+const $createFunc = (): PostAsyncFn =>
+	function() {
 		return postAsync.apply(null, arguments);
-	} as typeof postAsync;
-};
+	} as PostAsyncFn;
+const createFunc = Promise.method($createFunc) as () => Promise<PostAsyncFn>;
 
-const factory: genericPool.Factory<typeof postAsync> = {
-	create: Promise.method(createFunc) as () => Promise<typeof postAsync>,
+const factory: genericPool.Factory<PostAsyncFn> = {
+	create: createFunc,
 	destroy: Promise.method(_.noop),
 };
 
@@ -28,10 +31,6 @@ const opts = {
 
 const postPool = genericPool.createPool(factory, opts);
 
-
-export const getPostWorker = () => {
-	return Promise.resolve(postPool.acquire())
-	.disposer((postAsync) => {
-		postPool.release(postAsync);
-	});
-};
+export const getPostWorker = (): Promise.Disposer<PostAsyncFn> =>
+	Promise.resolve(postPool.acquire())
+	.disposer((worker) => postPool.release(worker));

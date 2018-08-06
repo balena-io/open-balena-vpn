@@ -2,16 +2,19 @@
 	"compilerOptions": {
 		"module": "commonjs",
 		"target": "es2017",
-		"noImplicitAny": true,
+		"strict": true,
+		"noErrorTruncation": true,
 		"noUnusedParameters": true,
 		"noUnusedLocals": true,
 		"preserveConstEnums": true,
-		"removeComments": true,
-		"sourceMap": true,
-		"strictNullChecks": true
+		"allowJs": false
 	},
 	"include": [
 		"src/**/*.ts",
+		"test/**/*.ts",
 		"typings/**/*.d.ts"
+	],
+	"exclude": [
+		"node_modules"
 	]
 }
