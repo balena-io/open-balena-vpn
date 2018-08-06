@@ -82,7 +82,6 @@ const worker = (instanceId: number) => {
 	});
 
 	const app = Promise.promisifyAll(express()) as AsyncApplication;
-	app.use(Raven.requestHandler());
 	app.get('/ping', (_req, res) => res.send('OK'));
 	app.use(morgan('combined'));
 	app.use(compression());

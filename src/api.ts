@@ -64,7 +64,7 @@ const apiFactory = () => {
 			}
 		})
 		.catch((err) => {
-			captureException(err, 'Proxy Auth Error');
+			captureException(err, 'Proxy Auth Error', { req });
 			res.sendStatus(401);
 		});
 	});
