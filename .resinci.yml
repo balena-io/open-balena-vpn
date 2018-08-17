@@ -1,4 +1,5 @@
 ---
+reviewers: 1
 docker:
   builds:
     - path: .

@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# Copyright (C) 2016 Resin.io Ltd.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 cost_per_gb=0.09 # Upto 10TB AWS data usage costs
 scale_a_week_to_month=4.285 #30/7
 outbound_data_fraction=0.5 #The share of the outbound data in the total data usage.
