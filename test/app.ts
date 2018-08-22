@@ -34,7 +34,7 @@ import vpnWorker from '../src/worker';
 
 const vpnHost = process.env.VPN_HOST || '127.0.0.1';
 const vpnPort = process.env.VPN_PORT || '443';
-const caCertPath = process.env.CA_CERT_PATH || path.resolve(__dirname, 'data/ca.crt');
+const caCertPath = process.env.CA_CERT_PATH || path.resolve(__dirname, '../openvpn/ca.crt');
 const RESIN_API_HOST = process.env.RESIN_API_HOST!;
 const VPN_SERVICE_API_KEY = process.env.VPN_SERVICE_API_KEY!;
 const VPN_CONNECT_PROXY_PORT = process.env.VPN_CONNECT_PROXY_PORT!;
