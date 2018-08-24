@@ -81,7 +81,7 @@ const worker = (instanceId: number) => {
 		process.exit(2);
 	});
 
-	const app = Promise.promisifyAll(express()) as AsyncApplication;
+	const app = Promise.promisifyAll(express()) as any as AsyncApplication;
 	app.get('/ping', (_req, res) => res.send('OK'));
 	app.use(morgan('combined'));
 	app.use(compression());

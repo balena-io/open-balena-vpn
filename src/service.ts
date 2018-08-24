@@ -11,7 +11,7 @@ export class ServiceInstance {
 	public register(): Promise<this> {
 		return resinApi.post({
 			resource: 'service_instance',
-			customOptions: {
+			options: {
 				apikey: apiKey,
 			},
 		})
@@ -50,7 +50,7 @@ export class ServiceInstance {
 					// Just indicate being online, api handles the timestamp with hooks
 					is_alive: true,
 				},
-				customOptions: {
+				options: {
 					apikey: apiKey,
 				},
 			}))

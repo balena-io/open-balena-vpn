@@ -37,10 +37,15 @@ export const getDeviceByUUID = (uuid: string, apiKey: string): Promise<DeviceInf
 			$filter: {
 				uuid,
 			},
-		},
-		customOptions: {
 			apikey: apiKey,
-		}}).get(0);
+		},
+	})
+	.then((devices) => {
+		if (!_.isArray(devices)) {
+			throw new Error('Invalid device lookup response');
+		}
+		return devices[0] as DeviceInfo;
+	});
 
 // Given the device model, a port and credentials (an object with username and password)
 // return true if the client is allowed to connect that port of the device.

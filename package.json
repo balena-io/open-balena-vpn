@@ -15,7 +15,7 @@
     "prepush": "npm run lint"
   },
   "dependencies": {
-    "@types/bluebird": "3.5.16",
+    "@types/bluebird": "^3.5.23",
     "@types/body-parser": "^1.17.0",
     "@types/compression": "^0.0.36",
     "@types/express": "^4.16.0",
@@ -41,13 +41,14 @@
     "morgan": "^1.5.1",
     "netmask": "^1.0.6",
     "node-tunnel": "^1.4.0",
-    "pinejs-client": "^4.2.3",
+    "pinejs-client-request": "^5.1.0",
     "pjson": "^1.0.9",
     "raven": "^2.6.3",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "tmp": "~0.0.25",
     "ts-node": "^6.2.0",
+    "tslint": "^5.11.0",
     "typed-error": "^3.0.0",
     "typescript": "^3.0.1",
     "winston": "^3.0.0"
@@ -63,7 +64,6 @@
     "mocha": "^2.1.0",
     "nock": "^9.6.1",
     "openvpn-client": "0.0.2",
-    "resin-lint": "^1.5.7",
-    "tslint": "^5.11.0"
+    "resin-lint": "^1.5.7"
   }
 }
