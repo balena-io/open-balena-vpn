@@ -7,7 +7,8 @@
 		"noUnusedParameters": true,
 		"noUnusedLocals": true,
 		"preserveConstEnums": true,
-		"allowJs": false
+		"allowJs": false,
+		"skipLibCheck": true
 	},
 	"include": [
 		"src/**/*.ts",

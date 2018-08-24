@@ -117,7 +117,7 @@ describe('VPN proxy', function() {
 			(_req, res) => {
 				res.writeHead(200, {'Content-type': 'text/plain'});
 				res.end('hello from 8080');
-			})) as HttpServerAsync;
+			})) as any as HttpServerAsync;
 
 		return Promise.using(vpnClient.connect(credentials, vpnDefaultOpts), () =>
 			server.listenAsync(8080)
