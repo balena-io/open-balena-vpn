@@ -56,12 +56,12 @@
   "devDependencies": {
     "@types/chai": "^4.1.4",
     "@types/chai-as-promised": "^7.1.0",
-    "@types/mocha": "^2.2.43",
+    "@types/mocha": "^5.2.5",
     "@types/nock": "^9.3.0",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "husky": "^0.14.3",
-    "mocha": "^2.1.0",
+    "mocha": "^5.2.0",
     "nock": "^9.6.1",
     "openvpn-client": "0.0.2",
     "resin-lint": "^1.5.7"
