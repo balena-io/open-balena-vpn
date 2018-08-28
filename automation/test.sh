@@ -40,4 +40,4 @@ docker exec "${test_id}" /bin/sh -ec '
 	systemctl start haproxy.service
 	npm install
 	npm run test-unit
-	./node_modules/mocha/bin/mocha test/app.ts'
+	npx mocha test/app.ts'
