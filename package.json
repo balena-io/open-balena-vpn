@@ -1,6 +1,6 @@
 {
   "name": "resin-vpn-server",
-  "version": "7.0.3",
+  "version": "7.0.4",
   "description": "RESTful VPN api",
   "main": "server.js",
   "scripts": {
