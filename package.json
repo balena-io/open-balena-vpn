@@ -1,10 +1,9 @@
 {
   "name": "resin-vpn-server",
   "private": true,
-  "version": "7.0.5",
+  "version": "7.1.0",
   "description": "RESTful VPN api",
   "license": "AGPL-3.0",
-  "private": true,
   "main": "server.js",
   "scripts": {
     "lint": "resin-lint --typescript src/ test/ && tslint --fix --format stylish --project .",
