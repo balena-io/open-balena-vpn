@@ -48,7 +48,8 @@ jobs:
       - deploy:
           name: Deploy to Staging
           command: |
-            [[ "${CIRCLE_BRANCH}" == "master" ]] || exit 0
+            [ "${CIRCLE_BRANCH}" = "master" ] || exit 0
+            [ "$(git log -1 --pretty=format:'%an')" = "Resin CI" ] || exit 0
             curl --silent \
               --request POST \
               --user ${JENKINS_USER}:${JENKINS_TOKEN} \
