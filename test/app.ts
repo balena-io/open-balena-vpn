@@ -164,7 +164,11 @@ describe('VPN proxy', function() {
 				$filter: "uuid eq 'deadbeef'",
 				apikey: VPN_SERVICE_API_KEY,
 			})
-			.reply(200, { d: [ { uuid: 'deadbeef', is_web_accessible: 1, is_connected_to_vpn: 1 } ] });
+			.reply(200, { d: [ { id: 1, uuid: 'deadbeef', is_web_accessible: 1, is_connected_to_vpn: 1 } ] });
+
+			nock(`https://${RESIN_API_HOST}`)
+			.post('/v4/device(1)/canAccess', '{"action":"tunnel-8080"}')
+			.reply(200, { d: [ { id: 1, uuid: 'deadbeef', is_web_accessible: 1, is_connected_to_vpn: 1 } ] });
 		});
 
 		it('should allow port 8080 without authentication', () =>
@@ -185,15 +189,26 @@ describe('VPN proxy', function() {
 				$filter: "uuid eq 'deadbeef'",
 				apikey: VPN_SERVICE_API_KEY,
 			})
-			.reply(200, { d: [ { uuid: 'deadbeef', is_web_accessible: 0, is_connected_to_vpn: 1 } ] });
+			.reply(200, { d: [ { id: 2, uuid: 'deadbeef', is_web_accessible: 0, is_connected_to_vpn: 1 } ] });
 		});
 
-		it('should not allow port 8080 without authentication', () =>
-			vpnTest({ user: 'user4', pass: 'pass' }, () =>
-				expect(request({ url: 'http://deadbeef.resin:8080/test', proxy: 'http://localhost:3128', tunnel: true })).to.eventually.be.rejected));
+		it('should not allow port 8080 without authentication', () => {
+			nock(`https://${RESIN_API_HOST}`)
+			.post('/v4/device(2)/canAccess', '{"action":"tunnel-8080"}')
+			.reply(200, () => {
+				return { d: [] };
+			});
 
-		it('should allow port 8080 with authentication', () =>
-			vpnTest({user: 'user5', pass: 'pass'}, () =>
+			return vpnTest({ user: 'user4', pass: 'pass' }, () =>
+				expect(request({ url: 'http://deadbeef.resin:8080/test', proxy: 'http://localhost:3128', tunnel: true })).to.eventually.be.rejected);
+		});
+
+		it('should allow port 8080 with authentication', () => {
+			nock(`https://${RESIN_API_HOST}`)
+			.post('/v4/device(2)/canAccess', '{"action":"tunnel-8080"}')
+			.reply(200, { d: [ { id: 2, uuid: 'deadbeef', is_web_accessible: 0, is_connected_to_vpn: 1 } ] });
+
+			return vpnTest({ user: 'user5', pass: 'pass' }, () =>
 				request({
 					url: 'http://deadbeef.resin:8080/test',
 					proxy: 'http://resin_api:test_api_key@localhost:3128',
@@ -202,6 +217,7 @@ describe('VPN proxy', function() {
 				.then((response) => {
 					expect(response).to.have.property('statusCode').that.equals(200);
 					expect(response).to.have.property('body').that.equals('hello from 8080');
-				})));
+				}));
+		});
 	});
 });
