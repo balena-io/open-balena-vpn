@@ -1,4 +1,4 @@
-FROM resin/resin-base:v4.2.1
+FROM resin/resin-base:v4.3.0
 
 EXPOSE 80 443
 
