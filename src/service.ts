@@ -79,7 +79,7 @@ export class ServiceInstance {
 	}
 
 	public wrap(func: () => void): Promise<this> {
-		return this.register().tap(func).tap(() => this.scheduleHeartbeat);
+		return this.register().tap(func).bind(this).tap(this.scheduleHeartbeat);
 	}
 
 	public getId(): string {
