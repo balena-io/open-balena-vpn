@@ -6,15 +6,14 @@
   "license": "AGPL-3.0",
   "main": "server.js",
   "scripts": {
-    "lint": "resin-lint --typescript src/ test/ && tslint --fix --format stylish --project .",
+    "lint": "resin-lint --no-prettier --typescript src/ test/ && tslint --fix --format stylish --project .",
     "lintfix": "tslint --fix --format stylish --project .",
     "check": "tsc --pretty --noEmit --diagnostics --project ./tsconfig.json",
     "check-dev": "tsc --pretty --noEmit --diagnostics --project ./tsconfig.dev.json",
     "lintfull": "npm run lint && npm run check-dev",
     "pretest-unit": "npm run lintfull",
     "test-unit": "mocha test/index.ts",
-    "test": "docker build -t test-resin-vpn . && IMAGE_NAME=test-resin-vpn ./automation/test.sh",
-    "prepush": "npm run lint"
+    "test": "docker build -t test-resin-vpn . && IMAGE_NAME=test-resin-vpn ./automation/test.sh"
   },
   "dependencies": {
     "@types/bluebird": "^3.5.24",
@@ -34,38 +33,43 @@
     "bluebird": "^3.5.2",
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
-    "event-stream": "^3.1.7",
+    "event-stream": "^4.0.1",
     "express": "^4.10.6",
     "forever-monitor": "^1.7.1",
     "generic-pool": "^3.1.6",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "middleware-handler": "~0.2.0",
-    "morgan": "^1.5.1",
+    "morgan": "^1.9.1",
     "netmask": "^1.0.6",
-    "node-tunnel": "^1.4.0",
+    "node-tunnel": "^2.0.0",
     "pinejs-client-request": "^5.1.0",
     "pjson": "^1.0.9",
-    "raven": "^2.6.3",
+    "raven": "^2.6.4",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
-    "tmp": "~0.0.25",
+    "tmp": "^0.0.33",
     "ts-node": "^6.2.0",
     "tslint": "^5.11.0",
     "typed-error": "^3.0.0",
-    "typescript": "^3.0.3",
-    "winston": "^3.0.0"
+    "typescript": "^3.1.1",
+    "winston": "^3.1.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.1.4",
+    "@types/chai": "^4.1.6",
     "@types/chai-as-promised": "^7.1.0",
     "@types/mocha": "^5.2.5",
     "@types/nock": "^9.3.0",
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "husky": "^0.14.3",
+    "husky": "^1.1.1",
     "mocha": "^5.2.0",
-    "nock": "^9.6.1",
+    "nock": "^10.0.0",
     "openvpn-client": "0.0.2",
-    "resin-lint": "^1.5.7"
+    "resin-lint": "^2.0.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run lint"
+    }
   }
 }
