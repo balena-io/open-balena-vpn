@@ -41,7 +41,7 @@
     "middleware-handler": "~0.2.0",
     "morgan": "^1.9.1",
     "netmask": "^1.0.6",
-    "node-tunnel": "^1.4.0",
+    "node-tunnel": "^2.0.0",
     "pinejs-client-request": "^5.1.0",
     "pjson": "^1.0.9",
     "raven": "^2.6.4",
