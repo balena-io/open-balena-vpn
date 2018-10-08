@@ -21,8 +21,9 @@ import * as _ from 'lodash';
 import * as utils from '../utils';
 
 [
-	'VPN_SERVICE_API_KEY',
+	'API_SERVICE_API_KEY',
 	'PROXY_SERVICE_API_KEY',
+	'VPN_SERVICE_API_KEY',
 ]
 	.filter((key) => process.env[key] == null)
 	.forEach((key, idx, keys) => {
@@ -35,7 +36,8 @@ import * as utils from '../utils';
 const DEVICE_WEB_PORTS = [ 80, 8080 ];
 const DEVICE_SSH_PORT = 22222;
 const API_USERNAME = 'resin_api';
-const API_KEY = process.env.VPN_SERVICE_API_KEY!;
+const API_KEY = process.env.API_SERVICE_API_KEY!;
+const VPN_KEY = process.env.VPN_SERVICE_API_KEY!;
 const PROXY_USERNAME = 'resin_proxy';
 const PROXY_KEY = process.env.PROXY_SERVICE_API_KEY!;
 
@@ -67,7 +69,7 @@ export const getDeviceByUUID = (uuid: string, apiKey: string): Promise<DeviceInf
 // Given the device model, a port and credentials (an object with username and password)
 // return true if the client is allowed to connect that port of the device.
 export const isAccessible = (device: DeviceInfo, port: string, auth?: {username?: string; password?: string}): boolean => {
-	const isResinApi = auth != null && auth.username === API_USERNAME && auth.password === API_KEY;
+	const isResinApi = auth != null && auth.username === API_USERNAME && (auth.password === API_KEY || auth.password === VPN_KEY);
 	const isResinSSHProxy = auth != null && auth.username === PROXY_USERNAME && auth.password === PROXY_KEY && parseInt(port, 10) === DEVICE_SSH_PORT;
 	const isWebPort = _.includes(DEVICE_WEB_PORTS, parseInt(port, 10));
 	return isResinApi || isResinSSHProxy || (device.is_web_accessible && isWebPort);

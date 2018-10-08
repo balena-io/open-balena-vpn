@@ -37,9 +37,9 @@ test_id=$(docker run --privileged -d \
 	-e VPN_HOST=127.0.0.1 \
 	-e VPN_CONNECT_INSTANCE_COUNT=1 \
 	-e VPN_CONNECT_PROXY_PORT=3128 \
-	-e VPN_SERVICE_API_KEY=test_api_key \
+	-e API_SERVICE_API_KEY=test_api_key \
 	-e PROXY_SERVICE_API_KEY=test_proxy_key \
-	-e API_SERVICE_API_KEY=test_api_service_key \
+	-e VPN_SERVICE_API_KEY=test_vpn_key \
 	-e BLUEBIRD_DEBUG=1 \
 	"${IMAGE_NAME}")
 
