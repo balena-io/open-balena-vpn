@@ -71,16 +71,30 @@ describe('getDeviceByUUID()', function() {
 
 describe('isAccessible()', () => {
 	it('should allow access for the api on port 80', function() {
-		const access = isAccessible(this.mockDevice, '80', getAuth('resin_api', process.env.VPN_SERVICE_API_KEY!));
+		const access = isAccessible(this.mockDevice, '80', getAuth('resin_api', process.env.API_SERVICE_API_KEY!));
 		expect(access).to.equal(true);
 	});
 
 	it('should allow access for the api on port 22', function() {
-		const access = isAccessible(this.mockDevice, '22', getAuth('resin_api', process.env.VPN_SERVICE_API_KEY!));
+		const access = isAccessible(this.mockDevice, '22', getAuth('resin_api', process.env.API_SERVICE_API_KEY!));
 		expect(access).to.equal(true);
 	});
 
 	it('should allow access for the api on port 22222', function() {
+		const access = isAccessible(this.mockDevice, '22222', getAuth('resin_api', process.env.API_SERVICE_API_KEY!));
+		expect(access).to.equal(true);
+	});
+	it('should allow access for the api (using vpn key) on port 80', function() {
+		const access = isAccessible(this.mockDevice, '80', getAuth('resin_api', process.env.VPN_SERVICE_API_KEY!));
+		expect(access).to.equal(true);
+	});
+
+	it('should allow access for the api (using vpn key) on port 22', function() {
+		const access = isAccessible(this.mockDevice, '22', getAuth('resin_api', process.env.VPN_SERVICE_API_KEY!));
+		expect(access).to.equal(true);
+	});
+
+	it('should allow access for the api (using vpn key) on port 22222', function() {
 		const access = isAccessible(this.mockDevice, '22222', getAuth('resin_api', process.env.VPN_SERVICE_API_KEY!));
 		expect(access).to.equal(true);
 	});
