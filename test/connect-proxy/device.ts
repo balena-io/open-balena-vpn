@@ -20,7 +20,7 @@ import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as nock from 'nock';
 
-import { getDeviceByUUID, isAccessible } from '../../src/connect-proxy/device';
+import { getDeviceByUUID } from '../../src/connect-proxy/device';
 
 const { expect } = chai;
 nock.disableNetConnect();
@@ -41,8 +41,6 @@ beforeEach(function() {
 		},
 	};
 });
-
-const getAuth = (username: string, password: string) => ({username, password});
 
 describe('getDeviceByUUID()', function() {
 	beforeEach(function() {
@@ -66,71 +64,5 @@ describe('getDeviceByUUID()', function() {
 	it('should resolve to the device requested', function() {
 		const device = getDeviceByUUID('deadbeef', 'test-api-key');
 		expect(device).to.eventually.deep.equal(this.mockDevice);
-	});
-});
-
-describe('isAccessible()', () => {
-	it('should allow access for the api on port 80', function() {
-		const access = isAccessible(this.mockDevice, '80', getAuth('resin_api', process.env.API_SERVICE_API_KEY!));
-		expect(access).to.equal(true);
-	});
-
-	it('should allow access for the api on port 22', function() {
-		const access = isAccessible(this.mockDevice, '22', getAuth('resin_api', process.env.API_SERVICE_API_KEY!));
-		expect(access).to.equal(true);
-	});
-
-	it('should allow access for the api on port 22222', function() {
-		const access = isAccessible(this.mockDevice, '22222', getAuth('resin_api', process.env.API_SERVICE_API_KEY!));
-		expect(access).to.equal(true);
-	});
-	it('should allow access for the api (using vpn key) on port 80', function() {
-		const access = isAccessible(this.mockDevice, '80', getAuth('resin_api', process.env.VPN_SERVICE_API_KEY!));
-		expect(access).to.equal(true);
-	});
-
-	it('should allow access for the api (using vpn key) on port 22', function() {
-		const access = isAccessible(this.mockDevice, '22', getAuth('resin_api', process.env.VPN_SERVICE_API_KEY!));
-		expect(access).to.equal(true);
-	});
-
-	it('should allow access for the api (using vpn key) on port 22222', function() {
-		const access = isAccessible(this.mockDevice, '22222', getAuth('resin_api', process.env.VPN_SERVICE_API_KEY!));
-		expect(access).to.equal(true);
-	});
-
-	it('should disallow access when device is inaccessible', function() {
-		this.mockDevice.is_web_accessible = false;
-		const access = isAccessible(this.mockDevice, '80');
-		expect(access).to.equal(false);
-	});
-
-	it('should allow access for the proxy on port 22222', function() {
-		const access = isAccessible(this.mockDevice, '22222', getAuth('resin_proxy', process.env.PROXY_SERVICE_API_KEY!));
-		expect(access).to.equal(true);
-	});
-
-	it('should disallow unauthorized access on port 22222', function() {
-		this.mockDevice.is_web_accessible = true;
-		const access = isAccessible(this.mockDevice, '22222');
-		expect(access).to.equal(false);
-	});
-
-	it('should disallow access when port is not allowed', function() {
-		this.mockDevice.is_web_accessible = true;
-		const access = isAccessible(this.mockDevice, '22');
-		expect(access).to.equal(false);
-	});
-
-	it('should allow access on port 80', function() {
-		this.mockDevice.is_web_accessible = true;
-		const access = isAccessible(this.mockDevice, '80');
-		expect(access).to.equal(true);
-	});
-
-	it('should allow access on port 8080', function() {
-		this.mockDevice.is_web_accessible = true;
-		const access = isAccessible(this.mockDevice, '8080');
-		expect(access).to.equal(true);
 	});
 });

@@ -47,24 +47,31 @@ const tunnelToDevice: Middleware = (req, cltSocket, _head, next) =>
 		}
 		const [ , uuid, port = '80' ] = match;
 		Raven.setContext({user: {uuid}});
-		logger.info('tunnel requested for', uuid, port);
+		logger.info(`tunnel requested for ${uuid}:${port}`);
 
+		// we need to use VPN_SERVICE_API_KEY here as this could be an unauthenticated request (public url)
 		return device.getDeviceByUUID(uuid, VPN_SERVICE_API_KEY)
-		.then((data) => {
+		.tap((data) => {
 			if (data == null) {
 				cltSocket.end('HTTP/1.0 404 Not Found\r\n\r\n');
 				throw new HandledTunnelingError(`Device not found: ${uuid}`);
 			}
-			if (!device.isAccessible(data, port, req.auth)) {
-				cltSocket.end('HTTP/1.0 407 Proxy Authorization Required\r\n\r\n');
-				throw new HandledTunnelingError(`Device not accessible: ${uuid}`);
-			}
-			if (!data.is_connected_to_vpn) {
-				cltSocket.end('HTTP/1.0 503 Service Unavailable\r\n\r\n');
-				throw new HandledTunnelingError(`Device not available: ${uuid}`);
-			}
-			req.url = `${uuid}.vpn:${port}`;
-		});
+		})
+		.tap((data) =>
+			device.canAccessDevice(data, parseInt(port, 10), req.auth)
+			.tap((isAllowed) => {
+				if (!isAllowed) {
+					cltSocket.end('HTTP/1.0 407 Proxy Authorization Required\r\n\r\n');
+					throw new HandledTunnelingError(`Device not accessible: ${uuid}`);
+				}
+			})
+			.tap(() => {
+				if (!data.is_connected_to_vpn) {
+					cltSocket.end('HTTP/1.0 503 Service Unavailable\r\n\r\n');
+					throw new HandledTunnelingError(`Device not available: ${uuid}`);
+				}
+			}))
+		.tap(() => req.url = `${uuid}.vpn:${port}`);
 	})
 	.then(() => next())
 	.catch(HandledTunnelingError, (err: HandledTunnelingError) => {
