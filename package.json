@@ -1,5 +1,5 @@
 {
-  "name": "resin-vpn-server",
+  "name": "open-balena-vpn",
   "private": true,
   "version": "7.7.0",
   "description": "RESTful VPN api",
@@ -13,7 +13,7 @@
     "lintfull": "npm run lint && npm run check-dev",
     "pretest-unit": "npm run lintfull",
     "test-unit": "mocha test/index.ts",
-    "test": "docker build -t test-resin-vpn . && IMAGE_NAME=test-resin-vpn ./automation/test.sh"
+    "test": "docker build -t test-balena-vpn . && IMAGE_NAME=test-balena-vpn ./automation/test.sh"
   },
   "dependencies": {
     "@types/bluebird": "^3.5.24",

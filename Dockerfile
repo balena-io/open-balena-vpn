@@ -28,4 +28,4 @@ COPY . /usr/src/app
 RUN npm run check
 
 COPY config/services /etc/systemd/system
-RUN systemctl enable resin-vpn.service resin-connect-proxy.service
+RUN systemctl enable open-balena-vpn.service open-balena-connect-proxy.service

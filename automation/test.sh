@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# Copyright (C) 2015 Resin.io Ltd.
+# Copyright (C) 2015 Balena Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
@@ -27,7 +27,7 @@ test_id=$(docker run --privileged -d \
 	--tmpfs /run \
 	--tmpfs /sys/fs/cgroup \
 	-e RESIN_VPN_PRODUCTION=false \
-	-e RESIN_API_HOST=api.resin.test \
+	-e RESIN_API_HOST=api.balena.test \
 	-e RESIN_VPN_PORT=443 \
 	-e VPN_BASE_SUBNET=10.240.0.0/12 \
 	-e VPN_INSTANCE_SUBNET_BITMASK=20 \

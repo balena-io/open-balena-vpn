@@ -1,4 +1,6 @@
-# Copyright (C) 2015 Resin.io Ltd.
+#!/bin/bash
+
+# Copyright (C) 2015 Balena Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
@@ -13,19 +15,17 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-[Unit]
-Description=resin-vpn
-Requires=confd.service haproxy.service balena-root-ca.service
-After=confd.service balena-root-ca.service
+VPN_INSTANCE_ID=$1
+if [ -f /usr/src/app/config/env ]; then
+	source /usr/src/app/config/env
+fi
+API_PORT=$((VPN_API_BASE_PORT + VPN_INSTANCE_ID))
 
-[Service]
-StandardOutput=journal+console
-StandardError=journal+console
-WorkingDirectory=/usr/src/app
-EnvironmentFile=/usr/src/app/config/env
-ExecStartPre=/bin/bash -c 'mkdir -p /dev/net; if [ ! -c /dev/net/tun ]; then mknod /dev/net/tun c 10 200; fi'
-ExecStart=/usr/src/app/node_modules/.bin/ts-node src/app.ts
-Restart=always
+RESP=$(curl -s $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -X POST -d '{ "username": "'$username'", "password": "'$password'"}' http://127.0.0.1:${API_PORT}/api/v1/auth/)
 
-[Install]
-WantedBy=basic.target
+# Exiting with 0 status code authorises login.
+if [ "$RESP" = "OK" ]; then
+	exit 0
+else
+	exit 1
+fi

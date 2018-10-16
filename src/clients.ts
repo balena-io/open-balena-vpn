@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2018 Resin.io Ltd.
+	Copyright (C) 2018 Balena Ltd.
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-// Notify the resin API about openVPN client events
+// Notify the API about openVPN client events
 // like client connect and client disconnect
 //
 // The requests to API are sent through a request queue

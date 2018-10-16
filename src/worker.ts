@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2018 Resin.io Ltd.
+	Copyright (C) 2018 Balena Ltd.
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -83,7 +83,7 @@ const worker = (instanceId: number) => {
 		'--ifconfig-pool', subnet.third, subnet.last,
 		'--route', subnet.base, subnet.mask,
 		'--push', `route ${gateway}`,
-		'--auth-user-pass-verify', `scripts/auth-resin.sh ${instanceId}`, 'via-env',
+		'--auth-user-pass-verify', `scripts/auth.sh ${instanceId}`, 'via-env',
 		'--client-connect', `scripts/client-connect.sh ${instanceId}`,
 		'--client-disconnect', `scripts/client-disconnect.sh ${instanceId}`];
 	const openvpn = new forever.Monitor(command, {
@@ -107,7 +107,7 @@ const worker = (instanceId: number) => {
 	app.use(Raven.errorHandler());
 
 	return app.listenAsync(apiPort)
-	.tap(() => logger.info(`resin-vpn worker-${instanceId} listening on port ${apiPort}`))
+	.tap(() => logger.info(`open-balena-vpn worker-${instanceId} listening on port ${apiPort}`))
 	.tap(() => openvpn.start())
 	.tap(() => net.createConnection('/var/run/haproxy.sock', function(this: net.Socket) {
 		this.on('error', (err) => {
