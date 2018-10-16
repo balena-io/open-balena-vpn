@@ -99,6 +99,7 @@ const worker = (instanceId: number) => {
 	});
 
 	const app = Promise.promisifyAll(express()) as any as AsyncApplication;
+	app.disable('x-powered-by');
 	app.get('/ping', (_req, res) => res.send('OK'));
 	app.use(morgan('combined'));
 	app.use(compression());
