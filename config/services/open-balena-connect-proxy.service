@@ -25,7 +25,7 @@ WorkingDirectory=/usr/src/app
 EnvironmentFile=/usr/src/app/config/env
 ExecStart=/usr/src/app/node_modules/.bin/ts-node src/connect-proxy/app.ts
 Restart=always
-SyslogIdentifier=open-balena-connect-proxy
+SyslogIdentifier=balena-proxy
 
 [Install]
 WantedBy=basic.target

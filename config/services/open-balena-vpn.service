@@ -26,7 +26,7 @@ EnvironmentFile=/usr/src/app/config/env
 ExecStartPre=/bin/bash -c 'mkdir -p /dev/net; if [ ! -c /dev/net/tun ]; then mknod /dev/net/tun c 10 200; fi'
 ExecStart=/usr/src/app/node_modules/.bin/ts-node src/app.ts
 Restart=always
-SyslogIdentifier=open-balena-vpn
+SyslogIdentifier=balena-vpn
 
 [Install]
 WantedBy=basic.target
