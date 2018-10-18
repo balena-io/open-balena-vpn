@@ -28,9 +28,7 @@ export class ServiceInstance {
 	public register(): Promise<this> {
 		return resinApi.post({
 			resource: 'service_instance',
-			options: {
-				apikey: apiKey,
-			},
+			passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
 		})
 		.then(({ id }: { id?: string }) => {
 			if (id == null) {
@@ -67,9 +65,7 @@ export class ServiceInstance {
 					// Just indicate being online, api handles the timestamp with hooks
 					is_alive: true,
 				},
-				options: {
-					apikey: apiKey,
-				},
+				passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
 			}))
 		.return(true)
 		.catch((err) => {

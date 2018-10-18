@@ -35,8 +35,8 @@ export const getDeviceByUUID = (uuid: string, apiKey: string): Promise<DeviceInf
 			$filter: {
 				uuid,
 			},
-			apikey: apiKey,
 		},
+		passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
 	})
 	.then((devices) => {
 		if (!_.isArray(devices)) {

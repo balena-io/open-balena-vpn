@@ -36,7 +36,6 @@ const vpnHost = process.env.VPN_HOST || '127.0.0.1';
 const vpnPort = process.env.VPN_PORT || '443';
 const caCertPath = process.env.CA_CERT_PATH || path.resolve(__dirname, '../openvpn/ca.crt');
 const RESIN_API_HOST = process.env.RESIN_API_HOST!;
-const VPN_SERVICE_API_KEY = process.env.VPN_SERVICE_API_KEY!;
 const VPN_CONNECT_PROXY_PORT = process.env.VPN_CONNECT_PROXY_PORT!;
 
 const vpnDefaultOpts = [
@@ -64,7 +63,6 @@ describe('vpn worker', function() {
 	before(() => {
 		nock(`https://${RESIN_API_HOST}`)
 		.post('/v4/service_instance')
-		.query({ apikey: VPN_SERVICE_API_KEY })
 		.reply(200, { id: _.random(1, 1024) });
 	});
 
@@ -85,7 +83,6 @@ describe('VPN Events', function() {
 		new Promise<string>((resolve) => {
 			nock(`https://${process.env.RESIN_API_HOST}`)
 			.post(`/services/vpn/client-${name}`, /common_name=user2/g)
-			.query({apikey: VPN_SERVICE_API_KEY})
 			.reply(200,(_uri: string, body: any) => {
 				resolve(body);
 				return 'OK';
@@ -95,7 +92,6 @@ describe('VPN Events', function() {
 	before(() => {
 		nock(`https://${RESIN_API_HOST}`)
 		.get('/services/vpn/auth/user2')
-		.query({ apikey: 'pass' })
 		.reply(200, 'OK');
 	});
 
@@ -146,11 +142,9 @@ describe('VPN proxy', function() {
 		nock(`https://${RESIN_API_HOST}`)
 
 		.get(/\/services\/vpn\/auth\/user[345]/)
-		.query({apikey: 'pass'})
 		.reply(200, 'OK')
 
 		.post(/\/services\/vpn\/client-(?:dis)?connect/, /common_name=user[345]/g)
-		.query({apikey: VPN_SERVICE_API_KEY})
 		.times(2)
 		.reply(200, 'OK');
 	});
@@ -162,7 +156,6 @@ describe('VPN proxy', function() {
 			.query({
 				$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
 				$filter: "uuid eq 'deadbeef'",
-				apikey: VPN_SERVICE_API_KEY,
 			})
 			.reply(200, { d: [ { id: 1, uuid: 'deadbeef', is_web_accessible: 1, is_connected_to_vpn: 1 } ] });
 
@@ -187,7 +180,6 @@ describe('VPN proxy', function() {
 			.query({
 				$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
 				$filter: "uuid eq 'deadbeef'",
-				apikey: VPN_SERVICE_API_KEY,
 			})
 			.reply(200, { d: [ { id: 2, uuid: 'deadbeef', is_web_accessible: 0, is_connected_to_vpn: 1 } ] });
 		});

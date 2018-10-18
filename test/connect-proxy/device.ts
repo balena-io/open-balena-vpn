@@ -25,6 +25,9 @@ import { getDeviceByUUID } from '../../src/connect-proxy/device';
 const { expect } = chai;
 nock.disableNetConnect();
 
+const RESIN_API_HOST = process.env.RESIN_API_HOST!;
+const VPN_SERVICE_API_KEY = process.env.VPN_SERVICE_API_KEY!;
+
 before(() => {
 	chai.use(chaiAsPromised);
 });
@@ -44,12 +47,11 @@ beforeEach(function() {
 
 describe('getDeviceByUUID()', function() {
 	beforeEach(function() {
-		nock(`https://${process.env.RESIN_API_HOST}:443`)
+		nock(`https://${RESIN_API_HOST}`)
 		.get('/v4/device')
 		.query({
 			$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
 			$filter: "uuid eq 'deadbeef'",
-			apikey: 'test-api-key',
 		})
 		.reply(200, {d: [ this.mockDevice ]});
 	});
@@ -57,12 +59,12 @@ describe('getDeviceByUUID()', function() {
 	afterEach(() => nock.cleanAll());
 
 	it('should return a promise', () => {
-		const device = getDeviceByUUID('deadbeef', 'test-api-key');
+		const device = getDeviceByUUID('deadbeef', VPN_SERVICE_API_KEY);
 		expect(device).to.be.an.instanceOf(Promise);
 	});
 
 	it('should resolve to the device requested', function() {
-		const device = getDeviceByUUID('deadbeef', 'test-api-key');
+		const device = getDeviceByUUID('deadbeef', VPN_SERVICE_API_KEY);
 		expect(device).to.eventually.deep.equal(this.mockDevice);
 	});
 });
