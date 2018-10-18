@@ -19,6 +19,8 @@ Requires=confd.service
 After=confd.service
 
 [Service]
+StandardOutput=journal+console
+StandardError=journal+console
 WorkingDirectory=/usr/src/app
 EnvironmentFile=/usr/src/app/config/env
 ExecStart=/usr/src/app/node_modules/.bin/ts-node src/connect-proxy/app.ts
