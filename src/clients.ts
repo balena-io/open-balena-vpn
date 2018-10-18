@@ -33,9 +33,9 @@ import * as logger from 'winston';
 import { captureException } from './errors';
 import { getPostWorker } from './libs/post-pool';
 import { service } from './service';
+import { apiKey } from './utils';
 
 const RESIN_API_HOST = process.env.RESIN_API_HOST!;
-const VPN_SERVICE_API_KEY = process.env.VPN_SERVICE_API_KEY!;
 const REQUEST_TIMEOUT = 60000;
 
 interface DeviceStateTracker {
@@ -65,9 +65,10 @@ const setDeviceState = (() => {
 			const eventType = targetState.connected ? 'connect' : 'disconnect';
 			return Promise.using(getPostWorker(), (requestPost) =>
 				requestPost({
-					url: `https://${RESIN_API_HOST}/services/vpn/client-${eventType}?apikey=${VPN_SERVICE_API_KEY}`,
+					url: `https://${RESIN_API_HOST}/services/vpn/client-${eventType}`,
 					timeout: REQUEST_TIMEOUT,
 					form: _.extend({service_id: service.getId()}, targetState),
+					headers: {Authorization: `Bearer ${apiKey}`},
 				})
 				.promise()
 				.timeout(REQUEST_TIMEOUT))

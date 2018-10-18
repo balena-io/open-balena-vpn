@@ -70,7 +70,7 @@ const apiFactory = () => {
 		request({
 			url: `https://${RESIN_API_HOST}/services/vpn/auth/${req.body.username}`,
 			timeout: 30000,
-			qs: { apikey: req.body.password },
+			headers: { Authorization: `Bearer ${req.body.password}` },
 		})
 		.then((response) => {
 			if (response.statusCode === 200) {

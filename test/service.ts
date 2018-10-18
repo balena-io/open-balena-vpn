@@ -21,7 +21,6 @@ import * as nock from 'nock';
 import { service } from '../src/service';
 
 const RESIN_API_HOST = process.env.RESIN_API_HOST!;
-const VPN_SERVICE_API_KEY = process.env.VPN_SERVICE_API_KEY!;
 
 const { expect } = chai;
 
@@ -31,7 +30,6 @@ describe('id', () => {
 	before(() => {
 		nock(`https://${RESIN_API_HOST}`)
 		.post('/v4/service_instance')
-		.query({apikey: VPN_SERVICE_API_KEY})
 		.reply(200, { id: serviceId });
 	});
 
@@ -54,7 +52,6 @@ describe('sendHeartbeat()', () => {
 	before(() => {
 		nock(`https://${RESIN_API_HOST}`)
 		.patch(`/v4/service_instance(${serviceId})`)
-		.query({ apikey: VPN_SERVICE_API_KEY })
 		.reply(200, (_uri: string, body: any) => {
 			called++;
 			isAlive = body.is_alive;
