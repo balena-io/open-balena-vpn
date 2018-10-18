@@ -24,7 +24,7 @@ import * as net from 'net';
 
 import apiFactory from './api';
 import { captureException, Raven } from './errors';
-import { Netmask } from './utils';
+import { logger, Netmask } from './utils';
 
 interface AsyncApplication extends express.Application {
 	listenAsync(port: number): Promise<ReturnType<express.Application['listen']>>;
@@ -43,7 +43,7 @@ interface AsyncApplication extends express.Application {
 ]
 	.filter((key) => process.env[key] == null)
 	.forEach((key, idx, keys) => {
-		console.error(`${key} env variable is not set.`);
+		logger.error(`${key} env variable is not set.`);
 		if (idx === (keys.length - 1)) {
 			process.exit(1);
 		}
@@ -63,7 +63,7 @@ const getInstanceSubnet = (instanceId: number) => {
 };
 
 const worker = (instanceId: number) => {
-	console.log(`worker-${instanceId} process started with pid ${process.pid}`);
+	logger.info(`worker-${instanceId} process started with pid ${process.pid}`);
 
 	const vpnPort = VPN_BASE_PORT + instanceId;
 	const mgtPort = VPN_BASE_MANAGEMENT_PORT + instanceId;
@@ -93,7 +93,7 @@ const worker = (instanceId: number) => {
 		spinSleepTime: 1000,
 	})
 	.on('exit', (err) => {
-		console.error('OpenVPN error:', err.message);
+		logger.error('OpenVPN error:', err.message);
 		captureException(err, 'OpenVPN Error');
 		process.exit(2);
 	});
@@ -107,11 +107,11 @@ const worker = (instanceId: number) => {
 	app.use(Raven.errorHandler());
 
 	return app.listenAsync(apiPort)
-	.tap(() => console.log(`resin-vpn worker-${instanceId} listening on port ${apiPort}`))
+	.tap(() => logger.info(`resin-vpn worker-${instanceId} listening on port ${apiPort}`))
 	.tap(() => openvpn.start())
 	.tap(() => net.createConnection('/var/run/haproxy.sock', function(this: net.Socket) {
 		this.on('error', (err) => {
-			console.error('Error connecting to haproxy socket:', err.message);
+			logger.error('Error connecting to haproxy socket:', err.message);
 			process.exit(1);
 		});
 		const preamble = `set server vpn-cluster/vpn${instanceId}`;

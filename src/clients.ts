@@ -28,12 +28,11 @@
 import * as Promise from 'bluebird';
 import { IncomingMessage } from 'http';
 import * as _ from 'lodash';
-import * as logger from 'winston';
 
 import { captureException } from './errors';
 import { getPostWorker } from './libs/post-pool';
 import { service } from './service';
-import { apiKey } from './utils';
+import { apiKey, logger } from './utils';
 
 const RESIN_API_HOST = process.env.RESIN_API_HOST!;
 const REQUEST_TIMEOUT = 60000;

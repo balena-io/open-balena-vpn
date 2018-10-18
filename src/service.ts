@@ -16,9 +16,8 @@
 */
 
 import * as Promise from 'bluebird';
-import * as logger from 'winston';
 import { captureException, ServiceRegistrationError } from './errors';
-import { apiKey, resinApi } from './utils';
+import { apiKey, logger, resinApi } from './utils';
 
 export class ServiceInstance {
 	private _id: string | null = null;

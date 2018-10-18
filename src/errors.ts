@@ -18,7 +18,7 @@
 import * as _Raven from 'raven';
 import { TypedError } from 'typed-error';
 
-import { VERSION } from './utils';
+import { logger, VERSION } from './utils';
 
 export const Raven = _Raven;
 
@@ -29,7 +29,7 @@ Raven.config(process.env.SENTRY_DSN || false, {
 }).install();
 
 export const captureException = (err: Error, message?: string, options?: _Raven.CaptureOptions): string => {
-	console.error(message, (err.message ? err.message : err), err.stack);
+	logger.error(message || '', (err.message ? err.message : err), err.stack);
 	options = options || {};
 	if (message) {
 		options.extra = options.extra || {};

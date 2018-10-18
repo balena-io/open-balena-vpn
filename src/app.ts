@@ -20,7 +20,7 @@ import * as _ from 'lodash';
 import * as os from 'os';
 
 import { service } from './service';
-import { VERSION } from './utils';
+import { logger, VERSION } from './utils';
 import worker from './worker';
 
 [
@@ -28,7 +28,7 @@ import worker from './worker';
 ]
 	.filter((key) => process.env[key] == null)
 	.forEach((key, idx, keys) => {
-		console.error(`${key} env variable is not set.`);
+		logger.error(`${key} env variable is not set.`);
 		if (idx === (keys.length - 1)) {
 			process.exit(1);
 		}
@@ -37,17 +37,17 @@ import worker from './worker';
 const VPN_INSTANCE_COUNT = parseInt(process.env.VPN_INSTANCE_COUNT!, 10) || os.cpus().length;
 
 if (cluster.isMaster) {
-	console.log(`resin-vpn@${VERSION} master process started with pid ${process.pid}`);
+	logger.info(`resin-vpn@${VERSION} master process started with pid ${process.pid}`);
 	if (VPN_INSTANCE_COUNT > 1) {
-		console.log(`spawning ${VPN_INSTANCE_COUNT} workers`);
+		logger.info(`spawning ${VPN_INSTANCE_COUNT} workers`);
 		_.times(VPN_INSTANCE_COUNT, (i) => {
 			const instanceId = i + 1;
 			const restartWorker = (code?: number, signal?: string) => {
 				if (signal != null) {
-					console.error(`resin-vpn worker-${instanceId} killed with signal ${signal}`);
+					logger.error(`resin-vpn worker-${instanceId} killed with signal ${signal}`);
 				}
 				if (code != null) {
-					console.error(`resin-vpn worker-${instanceId} exited with code ${code}`);
+					logger.error(`resin-vpn worker-${instanceId} exited with code ${code}`);
 				}
 				cluster.fork({VPN_INSTANCE_ID: instanceId}).on('exit', restartWorker);
 			};
