@@ -18,6 +18,7 @@
 import { PinejsClientCoreFactory, PinejsClientRequest } from 'pinejs-client-request';
 export { PinejsClientCoreFactory } from 'pinejs-client-request';
 import * as pkg from 'pjson';
+import * as winston from 'winston';
 
 export type AnyObject = PinejsClientCoreFactory.AnyObject;
 
@@ -25,5 +26,8 @@ export const resinApi = new PinejsClientRequest(`https://${process.env.RESIN_API
 export const apiKey = process.env.VPN_SERVICE_API_KEY;
 export const VERSION = pkg.version;
 
+winston.add(new winston.transports.Console({format: winston.format.simple()}));
+
 export { Netmask } from './netmask';
 export { request } from './request';
+export { winston as logger };

@@ -17,9 +17,10 @@
 
 import * as Promise from 'bluebird';
 import { Middleware, Tunnel } from 'node-tunnel';
-import * as logger from 'winston';
 
 import { captureException, HandledTunnelingError, Raven } from '../errors';
+import { logger } from '../utils';
+
 import * as device from './device';
 
 [
@@ -27,7 +28,7 @@ import * as device from './device';
 ]
 	.filter((key) => process.env[key] == null)
 	.forEach((key, idx, keys) => {
-		console.error(`${key} env variable is not set.`);
+		logger.error(`${key} env variable is not set.`);
 		if (idx === (keys.length - 1)) {
 			process.exit(1);
 		}
@@ -75,7 +76,7 @@ const tunnelToDevice: Middleware = (req, cltSocket, _head, next) =>
 	})
 	.then(() => next())
 	.catch(HandledTunnelingError, (err: HandledTunnelingError) => {
-		console.error('Tunneling Error -', err.message);
+		logger.error('Tunneling Error -', err.message);
 	})
 	.catch((err: Error) => {
 		captureException(err, 'tunnel catch', { req });
@@ -83,12 +84,12 @@ const tunnelToDevice: Middleware = (req, cltSocket, _head, next) =>
 	});
 
 const worker = (port: string) => {
-	console.log(`connect-proxy worker process started with pid ${process.pid}`);
+	logger.info(`connect-proxy worker process started with pid ${process.pid}`);
 	const tunnel = new Tunnel();
 	tunnel.use(tunnelToDevice);
 	tunnel.listen(port, () => logger.info('tunnel listening on port', port));
 	tunnel.on('connect', (hostname, port) => logger.info('tunnel opened to', hostname, port));
-	tunnel.on('error', (err) => console.error('failed to connect to device', err.message || err, err.stack));
+	tunnel.on('error', (err) => logger.error('failed to connect to device', err.message || err, err.stack));
 	return tunnel;
 };
 export default worker;

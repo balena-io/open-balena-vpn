@@ -21,7 +21,7 @@ import * as _ from 'lodash';
 
 import * as clients from './clients';
 import { captureException } from './errors';
-import { request } from './utils';
+import { logger, request } from './utils';
 
 const RESIN_API_HOST = process.env.RESIN_API_HOST!;
 
@@ -58,12 +58,12 @@ const apiFactory = () => {
 
 	api.post('/api/v1/auth/', fromLocalHost, function(req, res) {
 		if (req.body.username == null) {
-			console.log('AUTH FAIL: UUID not specified.');
+			logger.info('AUTH FAIL: UUID not specified.');
 			return res.sendStatus(400);
 		}
 
 		if (req.body.password == null) {
-			console.log('AUTH FAIL: API Key not specified.');
+			logger.info('AUTH FAIL: API Key not specified.');
 			return res.sendStatus(400);
 		}
 
@@ -76,7 +76,7 @@ const apiFactory = () => {
 			if (response.statusCode === 200) {
 				return res.send('OK');
 			} else {
-				console.log(`AUTH FAIL: API Authentication failed for ${req.body.username}`);
+				logger.info(`AUTH FAIL: API Authentication failed for ${req.body.username}`);
 				return res.sendStatus(401);
 			}
 		})
