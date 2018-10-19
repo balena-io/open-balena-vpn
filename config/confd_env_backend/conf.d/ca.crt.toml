@@ -2,5 +2,5 @@
 src = "ca.crt.tmpl"
 dest = "/usr/src/app/openvpn/ca.crt"
 keys = [
-  "VPN_CA"
+  "VPN_OPENVPN_CA_CRT"
 ]
