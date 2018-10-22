@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2018 Resin.io Ltd.
+	Copyright (C) 2018 Balena Ltd.
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -164,7 +164,15 @@ describe('VPN proxy', function() {
 			.reply(200, { d: [ { id: 1, uuid: 'deadbeef', is_web_accessible: 1, is_connected_to_vpn: 1 } ] });
 		});
 
-		it('should allow port 8080 without authentication', () =>
+		it('should allow port 8080 without authentication (.balena)', () =>
+			vpnTest({ user: 'user3', pass: 'pass' }, () =>
+				request({ url: 'http://deadbeef.balena:8080/test', proxy: 'http://localhost:3128', tunnel: true })
+				.then((response) => {
+					expect(response).to.have.property('statusCode').that.equals(200);
+					expect(response).to.have.property('body').that.equals('hello from 8080');
+				})));
+
+		it('should allow port 8080 without authentication (.resin)', () =>
 			vpnTest({ user: 'user3', pass: 'pass' }, () =>
 				request({ url: 'http://deadbeef.resin:8080/test', proxy: 'http://localhost:3128', tunnel: true })
 				.then((response) => {
@@ -192,7 +200,7 @@ describe('VPN proxy', function() {
 			});
 
 			return vpnTest({ user: 'user4', pass: 'pass' }, () =>
-				expect(request({ url: 'http://deadbeef.resin:8080/test', proxy: 'http://localhost:3128', tunnel: true })).to.eventually.be.rejected);
+				expect(request({ url: 'http://deadbeef.balena:8080/test', proxy: 'http://localhost:3128', tunnel: true })).to.eventually.be.rejected);
 		});
 
 		it('should allow port 8080 with authentication', () => {
@@ -202,7 +210,7 @@ describe('VPN proxy', function() {
 
 			return vpnTest({ user: 'user5', pass: 'pass' }, () =>
 				request({
-					url: 'http://deadbeef.resin:8080/test',
+					url: 'http://deadbeef.balena:8080/test',
 					proxy: 'http://resin_api:test_api_key@localhost:3128',
 					tunnel: true,
 				})

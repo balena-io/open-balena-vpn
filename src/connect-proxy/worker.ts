@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2017 Resin.io Ltd.
+	Copyright (C) 2017 Balena Ltd.
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -42,7 +42,7 @@ const tunnelToDevice: Middleware = (req, cltSocket, _head, next) =>
 			throw new Error('Bad Request');
 		}
 
-		const match = req.url.match(/^([a-fA-F0-9]+).resin(?::([0-9]+))?$/);
+		const match = req.url.match(/^([a-fA-F0-9]+).(?:resin|balena)(?::([0-9]+))?$/);
 		if (match == null) {
 			throw new Error(`Invalid hostname: ${req.url}`);
 		}

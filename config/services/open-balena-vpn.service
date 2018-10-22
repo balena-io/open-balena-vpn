@@ -1,4 +1,4 @@
-# Copyright (C) 2015 Resin.io Ltd.
+# Copyright (C) 2015 Balena Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
@@ -14,7 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 [Unit]
-Description=resin-vpn
+Description=open-balena-vpn
 Requires=confd.service haproxy.service balena-root-ca.service
 After=confd.service balena-root-ca.service
 
@@ -26,6 +26,7 @@ EnvironmentFile=/usr/src/app/config/env
 ExecStartPre=/bin/bash -c 'mkdir -p /dev/net; if [ ! -c /dev/net/tun ]; then mknod /dev/net/tun c 10 200; fi'
 ExecStart=/usr/src/app/node_modules/.bin/ts-node src/app.ts
 Restart=always
+SyslogIdentifier=balena-vpn
 
 [Install]
 WantedBy=basic.target

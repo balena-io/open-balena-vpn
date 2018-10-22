@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright (C) 2015 Resin.io Ltd.
+# Copyright (C) 2015 Balena Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published

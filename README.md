@@ -1,17 +1,18 @@
-# Resin VPN
+# Open Balena VPN
 
 ## Description
 
-Resin VPN augments an OpenVPN server with the following components/features:
+Open Balena VPN augments an OpenVPN server with the
+following components/features:
 
-* `resin-connect-proxy` is a http connect proxy that
+* `open-balena-connect-proxy` is a http connect proxy that
   handles connections through the vpn to services on connected devices, used by
-  external services such as `resin-proxy`
-* `resin-vpn` which consists of an internal API for handling
+  external services.
+* `open-balena-vpn` which consists of an internal API for handling
   authentication and tracking device state, and spawns openvpn server instances
 * haproxy used for balancing new connections between openvpn instances
 * [libnss-openvpn](http://github.com/resin-io-modules/libnss-openvpn) is used to
-  handle dns lookups of devices for connections via `resin-connect-proxy`
+  handle dns lookups of devices for connections via `open-balena-connect-proxy`
 
 ## Networking
 
@@ -50,19 +51,19 @@ allowing for lookup of connected device VPN addresses via uuid.
 ## Client Authentication
 
 VPN client authentication is initially handled by a simple script which uses
-`curl` to pass the username and password (device UUID and Resin API key) to the
-internal `resin-vpn` API, which in turn makes a request to `resin-api` and
-ultimately decides the fate of the client.
+`curl` to pass the username and password (device UUID and Balena API key) to the
+internal `open-balena-vpn` API, which in turn makes a request to
+`open-balena-api` and ultimately decides the fate of the client.
 
 ## Client State
 
-Client state is tracked via [openvpn scripts](https://github.com/resin-io/resin-vpn/tree/master/openvpn/scripts)
+Client state is tracked via [openvpn scripts](https://github.com/resin-io/open-balena-vpn/tree/master/openvpn/scripts)
 executed on connect/disconnect events which in turn use `curl` to hit
-the relevant internal [api endpoints](https://github.com/resin-io/resin-vpn/blob/master/src/api.coffee).
+the relevant internal [api endpoints](https://github.com/resin-io/open-balena-vpn/blob/master/src/api.ts).
 
 ## Accessing Clients
 
-Connections to devices can be established via `resin-connect-proxy` which
+Connections to devices can be established via `open-balena-connect-proxy` which
 exposes a HTTP CONNECT Proxy server allowing for access to devices via a
 hostname in the format `{deviceUUID}.resin:{port}`. The destination port
 is limited based on the requesting user and device configuration. The
