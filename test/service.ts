@@ -20,7 +20,7 @@ import * as nock from 'nock';
 
 import { service } from '../src/service';
 
-const RESIN_API_HOST = process.env.RESIN_API_HOST!;
+const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 
 const { expect } = chai;
 
@@ -28,7 +28,7 @@ const serviceId = 10;
 
 describe('id', () => {
 	before(() => {
-		nock(`https://${RESIN_API_HOST}`)
+		nock(`https://${BALENA_API_HOST}`)
 		.post('/v4/service_instance')
 		.reply(200, { id: serviceId });
 	});
@@ -50,7 +50,7 @@ describe('sendHeartbeat()', () => {
 	let isAlive = false;
 
 	before(() => {
-		nock(`https://${RESIN_API_HOST}`)
+		nock(`https://${BALENA_API_HOST}`)
 		.patch(`/v4/service_instance(${serviceId})`)
 		.reply(200, (_uri: string, body: any) => {
 			called++;

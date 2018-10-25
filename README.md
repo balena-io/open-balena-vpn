@@ -18,7 +18,7 @@ following components/features:
 
 Networking is configured by a number of environmental variables:
 
-* `RESIN_VPN_GATEWAY` (*optional*) dictates the server end of the p2p connection
+* `BALENA_VPN_GATEWAY` (*optional*) dictates the server end of the p2p connection
 * `VPN_BASE_SUBNET` in CIDR notation is the entire subnet used for all servers
 * `VPN_INSTANCE_SUBNET_BITMASK` is the VLSM to split `VPN_BASE_SUBNET` into
 * `VPN_BASE_PORT`, `VPN_BASE_MANAGEMENT_PORT` and `VPN_API_BASE_PORT`
@@ -27,7 +27,7 @@ Given a base subnet of `10.240.0.0/12` and a per-instance VLSM of `20` a server
 the first instance subnet would be `10.240.0.0/20` and the second would be
 `10.240.16.0/20`, and so forth up to `10.255.240.0/20` for the 256th instance.
 
-If `RESIN_VPN_GATEWAY` is not defined then the first usable address of the
+If `BALENA_VPN_GATEWAY` is not defined then the first usable address of the
 instance subnet will be used in its place. This address, and the second usable
 address, are used to facilitate the virtual p2p connections by openvpn.
 

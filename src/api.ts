@@ -23,7 +23,7 @@ import * as clients from './clients';
 import { captureException } from './errors';
 import { logger, request } from './utils';
 
-const RESIN_API_HOST = process.env.RESIN_API_HOST!;
+const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 
 // Private endpoints should use the `fromLocalHost` middleware.
 const fromLocalHost: express.RequestHandler = (req, res, next) => {
@@ -68,7 +68,7 @@ const apiFactory = () => {
 		}
 
 		request({
-			url: `https://${RESIN_API_HOST}/services/vpn/auth/${req.body.username}`,
+			url: `https://${BALENA_API_HOST}/services/vpn/auth/${req.body.username}`,
 			timeout: 30000,
 			headers: { Authorization: `Bearer ${req.body.password}` },
 		})
