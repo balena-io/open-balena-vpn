@@ -79,7 +79,7 @@ const tunnelToDevice: Middleware = (req, cltSocket, _head, next) =>
 		logger.error('Tunneling Error -', err.message);
 	})
 	.catch((err: Error) => {
-		captureException(err, 'tunnel catch', { req });
+		captureException(err, `error establishing tunnel to ${req.url}`, { req });
 		cltSocket.end('HTTP/1.1 500 Internal Server Error\r\n\r\n');
 	});
 

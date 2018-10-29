@@ -35,7 +35,7 @@ import vpnWorker from '../src/worker';
 const vpnHost = process.env.VPN_HOST || '127.0.0.1';
 const vpnPort = process.env.VPN_PORT || '443';
 const caCertPath = process.env.CA_CERT_PATH || path.resolve(__dirname, '../openvpn/ca.crt');
-const RESIN_API_HOST = process.env.RESIN_API_HOST!;
+const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const VPN_CONNECT_PROXY_PORT = process.env.VPN_CONNECT_PROXY_PORT!;
 
 const vpnDefaultOpts = [
@@ -61,7 +61,7 @@ describe('vpn worker', function() {
 	this.timeout(10 * 1000);
 
 	before(() => {
-		nock(`https://${RESIN_API_HOST}`)
+		nock(`https://${BALENA_API_HOST}`)
 		.post('/v4/service_instance')
 		.reply(200, { id: _.random(1, 1024) });
 	});
@@ -81,7 +81,7 @@ describe('VPN Events', function() {
 
 	const getEvent = (name: string) =>
 		new Promise<string>((resolve) => {
-			nock(`https://${process.env.RESIN_API_HOST}`)
+			nock(`https://${process.env.BALENA_API_HOST}`)
 			.post(`/services/vpn/client-${name}`, /common_name=user2/g)
 			.reply(200,(_uri: string, body: any) => {
 				resolve(body);
@@ -90,7 +90,7 @@ describe('VPN Events', function() {
 		});
 
 	before(() => {
-		nock(`https://${RESIN_API_HOST}`)
+		nock(`https://${BALENA_API_HOST}`)
 		.get('/services/vpn/auth/user2')
 		.reply(200, 'OK');
 	});
@@ -139,7 +139,7 @@ describe('VPN proxy', function() {
 	};
 
 	beforeEach(() => {
-		nock(`https://${RESIN_API_HOST}`)
+		nock(`https://${BALENA_API_HOST}`)
 
 		.get(/\/services\/vpn\/auth\/user[345]/)
 		.reply(200, 'OK')
@@ -151,7 +151,7 @@ describe('VPN proxy', function() {
 
 	describe('web accessible device', () => {
 		beforeEach(() => {
-			nock(`https://${RESIN_API_HOST}`)
+			nock(`https://${BALENA_API_HOST}`)
 			.get('/v4/device')
 			.query({
 				$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
@@ -159,7 +159,7 @@ describe('VPN proxy', function() {
 			})
 			.reply(200, { d: [ { id: 1, uuid: 'deadbeef', is_web_accessible: 1, is_connected_to_vpn: 1 } ] });
 
-			nock(`https://${RESIN_API_HOST}`)
+			nock(`https://${BALENA_API_HOST}`)
 			.post('/v4/device(1)/canAccess', '{"action":"tunnel-8080"}')
 			.reply(200, { d: [ { id: 1, uuid: 'deadbeef', is_web_accessible: 1, is_connected_to_vpn: 1 } ] });
 		});
@@ -183,7 +183,7 @@ describe('VPN proxy', function() {
 
 	describe('not web accessible device', () => {
 		beforeEach(() => {
-			nock(`https://${RESIN_API_HOST}`)
+			nock(`https://${BALENA_API_HOST}`)
 			.get('/v4/device')
 			.query({
 				$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
@@ -193,7 +193,7 @@ describe('VPN proxy', function() {
 		});
 
 		it('should not allow port 8080 without authentication', () => {
-			nock(`https://${RESIN_API_HOST}`)
+			nock(`https://${BALENA_API_HOST}`)
 			.post('/v4/device(2)/canAccess', '{"action":"tunnel-8080"}')
 			.reply(200, () => {
 				return { d: [] };
@@ -204,14 +204,14 @@ describe('VPN proxy', function() {
 		});
 
 		it('should allow port 8080 with authentication', () => {
-			nock(`https://${RESIN_API_HOST}`)
+			nock(`https://${BALENA_API_HOST}`)
 			.post('/v4/device(2)/canAccess', '{"action":"tunnel-8080"}')
 			.reply(200, { d: [ { id: 2, uuid: 'deadbeef', is_web_accessible: 0, is_connected_to_vpn: 1 } ] });
 
 			return vpnTest({ user: 'user5', pass: 'pass' }, () =>
 				request({
 					url: 'http://deadbeef.balena:8080/test',
-					proxy: 'http://resin_api:test_api_key@localhost:3128',
+					proxy: 'http://BALENA_api:test_api_key@localhost:3128',
 					tunnel: true,
 				})
 				.then((response) => {

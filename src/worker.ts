@@ -31,7 +31,7 @@ interface AsyncApplication extends express.Application {
 }
 
 [
-	'RESIN_API_HOST',
+	'BALENA_API_HOST',
 	'VPN_SERVICE_API_KEY',
 	'VPN_HOST',
 	'VPN_API_BASE_PORT',
@@ -49,7 +49,7 @@ interface AsyncApplication extends express.Application {
 		}
 	});
 
-const RESIN_VPN_GATEWAY = process.env.RESIN_VPN_GATEWAY;
+const BALENA_VPN_GATEWAY = process.env.BALENA_VPN_GATEWAY;
 const VPN_BASE_SUBNET = process.env.VPN_BASE_SUBNET!;
 const VPN_INSTANCE_SUBNET_BITMASK = parseInt(process.env.VPN_INSTANCE_SUBNET_BITMASK!, 10);
 const VPN_BASE_PORT = parseInt(process.env.VPN_BASE_PORT!, 10);
@@ -70,7 +70,7 @@ const worker = (instanceId: number) => {
 	const apiPort = VPN_API_BASE_PORT + instanceId;
 
 	const subnet = getInstanceSubnet(instanceId);
-	const gateway = RESIN_VPN_GATEWAY || subnet.first;
+	const gateway = BALENA_VPN_GATEWAY || subnet.first;
 	const command = [
 		'/usr/sbin/openvpn',
 		'--status', `/run/openvpn/server-${instanceId}.status`, '10',

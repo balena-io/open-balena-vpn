@@ -25,7 +25,7 @@ import { getDeviceByUUID } from '../../src/connect-proxy/device';
 const { expect } = chai;
 nock.disableNetConnect();
 
-const RESIN_API_HOST = process.env.RESIN_API_HOST!;
+const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const VPN_SERVICE_API_KEY = process.env.VPN_SERVICE_API_KEY!;
 
 before(() => {
@@ -47,7 +47,7 @@ beforeEach(function() {
 
 describe('getDeviceByUUID()', function() {
 	beforeEach(function() {
-		nock(`https://${RESIN_API_HOST}`)
+		nock(`https://${BALENA_API_HOST}`)
 		.get('/v4/device')
 		.query({
 			$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
