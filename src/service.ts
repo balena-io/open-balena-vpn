@@ -17,7 +17,7 @@
 
 import * as Promise from 'bluebird';
 import { captureException, ServiceRegistrationError } from './errors';
-import { apiKey, logger, resinApi } from './utils';
+import { apiKey, balenaApi, logger } from './utils';
 
 export class ServiceInstance {
 	private _id: string | null = null;
@@ -25,7 +25,7 @@ export class ServiceInstance {
 	constructor(private interval: number = 10 * 1000) {}
 
 	public register(): Promise<this> {
-		return resinApi.post({
+		return balenaApi.post({
 			resource: 'service_instance',
 			passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
 		})
@@ -57,7 +57,7 @@ export class ServiceInstance {
 
 	public sendHeartbeat(): Promise<boolean> {
 		return Promise.try(() =>
-			resinApi.patch({
+			balenaApi.patch({
 				resource: 'service_instance',
 				id: this.getId(),
 				body: {

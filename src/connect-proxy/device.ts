@@ -28,7 +28,7 @@ export interface DeviceInfo {
 }
 
 export const getDeviceByUUID = (uuid: string, apiKey: string): Promise<DeviceInfo> =>
-	utils.resinApi.get({
+	utils.balenaApi.get({
 		resource: 'device',
 		options: {
 			$select: [ 'id', 'uuid', 'is_web_accessible', 'is_connected_to_vpn' ],
@@ -50,7 +50,7 @@ export const canAccessDevice = (device: DeviceInfo, port: number, auth?: {userna
 	if (auth != null && auth.password != null) {
 		headers.Authorization = `Bearer ${auth.password}`;
 	}
-	return utils.resinApi.post({
+	return utils.balenaApi.post({
 		resource: 'device',
 		id: device.id,
 		passthrough: { headers },
