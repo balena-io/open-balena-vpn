@@ -31,5 +31,8 @@ declare module 'openvpn-client' {
 	}
 
 	export const create: (vpnOpts?: VpnOpts) => OpenVPNClient;
-	export const connect: (auth?: {user: string, pass: string}, vpnOpts?: VpnOpts) => OpenVPNClient;
+	export const connect: (
+		auth?: { user: string; pass: string },
+		vpnOpts?: VpnOpts,
+	) => OpenVPNClient;
 }

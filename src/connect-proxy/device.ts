@@ -27,38 +27,49 @@ export interface DeviceInfo {
 	is_connected_to_vpn: boolean;
 }
 
-export const getDeviceByUUID = (uuid: string, apiKey: string): Promise<DeviceInfo> =>
-	utils.balenaApi.get({
-		resource: 'device',
-		options: {
-			$select: [ 'id', 'uuid', 'is_web_accessible', 'is_connected_to_vpn' ],
-			$filter: {
-				uuid,
+export const getDeviceByUUID = (
+	uuid: string,
+	apiKey: string,
+): Promise<DeviceInfo> =>
+	utils.balenaApi
+		.get({
+			resource: 'device',
+			options: {
+				$select: ['id', 'uuid', 'is_web_accessible', 'is_connected_to_vpn'],
+				$filter: {
+					uuid,
+				},
 			},
-		},
-		passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
-	})
-	.then((devices) => {
-		if (!_.isArray(devices)) {
-			throw new Error('Invalid device lookup response');
-		}
-		return devices[0] as DeviceInfo;
-	});
+			passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
+		})
+		.then(devices => {
+			if (!_.isArray(devices)) {
+				throw new Error('Invalid device lookup response');
+			}
+			return devices[0] as DeviceInfo;
+		});
 
-export const canAccessDevice = (device: DeviceInfo, port: number, auth?: {username?: string, password?: string}): Promise<boolean> => {
-	const headers: {Authorization?: string} = {};
+export const canAccessDevice = (
+	device: DeviceInfo,
+	port: number,
+	auth?: { username?: string; password?: string },
+): Promise<boolean> => {
+	const headers: { Authorization?: string } = {};
 	if (auth != null && auth.password != null) {
 		headers.Authorization = `Bearer ${auth.password}`;
 	}
-	return utils.balenaApi.post({
-		resource: 'device',
-		id: device.id,
-		passthrough: { headers },
-		body: {
-			action: `tunnel-${port}`,
-		},
-		url: `device(${device.id})/canAccess`,
-	})
-	.then(({ d }: { d?: Array<{ id: number }> }) =>
-		_.isArray(d) && d.length === 1 && d[ 0 ].id === device.id);
+	return utils.balenaApi
+		.post({
+			resource: 'device',
+			id: device.id,
+			passthrough: { headers },
+			body: {
+				action: `tunnel-${port}`,
+			},
+			url: `device(${device.id})/canAccess`,
+		})
+		.then(
+			({ d }: { d?: Array<{ id: number }> }) =>
+				_.isArray(d) && d.length === 1 && d[0].id === device.id,
+		);
 };
