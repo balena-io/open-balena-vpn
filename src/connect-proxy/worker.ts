@@ -81,7 +81,7 @@ const tunnelToDevice: Middleware = (req, cltSocket, _head, next) =>
 	})
 		.then(() => next())
 		.catch(HandledTunnelingError, (err: HandledTunnelingError) => {
-			logger.error('Tunneling Error -', err.message);
+			logger.error(`Tunneling Error - ${err.message}`);
 		})
 		.catch((err: Error) => {
 			captureException(err, `error establishing tunnel to ${req.url}`, { req });
@@ -92,12 +92,14 @@ const worker = (port: string) => {
 	logger.info(`connect-proxy worker process started with pid ${process.pid}`);
 	const tunnel = new Tunnel();
 	tunnel.use(tunnelToDevice);
-	tunnel.listen(port, () => logger.info('tunnel listening on port', port));
+	tunnel.listen(port, () => logger.info(`tunnel listening on port ${port}`));
 	tunnel.on('connect', (hostname, port) =>
-		logger.info('tunnel opened to', hostname, port),
+		logger.info(`tunnel opened to ${hostname}:${port}`),
 	);
 	tunnel.on('error', err =>
-		logger.error('failed to connect to device', err.message || err, err.stack),
+		logger.error(
+			`failed to connect to device ${err.message || err} ${err.stack}`,
+		),
 	);
 	return tunnel;
 };

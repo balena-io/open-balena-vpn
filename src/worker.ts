@@ -118,7 +118,7 @@ const worker = (instanceId: number) => {
 		max: 10,
 		spinSleepTime: 1000,
 	}).on('exit', err => {
-		logger.error('OpenVPN error:', err.message);
+		logger.error(`OpenVPN error: ${err.message}`);
 		captureException(err, 'OpenVPN Error');
 		process.exit(2);
 	});
@@ -142,7 +142,7 @@ const worker = (instanceId: number) => {
 		.tap(() =>
 			net.createConnection('/var/run/haproxy.sock', function(this: net.Socket) {
 				this.on('error', err => {
-					logger.error('Error connecting to haproxy socket:', err.message);
+					logger.error(`Error connecting to haproxy socket: ${err.message}`);
 					process.exit(1);
 				});
 				const preamble = `set server vpn-cluster/vpn${instanceId}`;

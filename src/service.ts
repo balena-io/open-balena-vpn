@@ -37,7 +37,7 @@ export class ServiceInstance {
 					);
 				}
 				this.id = id;
-				logger.info('Registered as a service instance, received ID', id);
+				logger.info(`Registered as a service instance, received ID ${id}`);
 				return this;
 			})
 			.catch(err => {
