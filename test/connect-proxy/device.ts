@@ -48,7 +48,7 @@ beforeEach(function() {
 describe('getDeviceByUUID()', function() {
 	beforeEach(function() {
 		nock(`https://${BALENA_API_HOST}`)
-		.get('/v4/device')
+		.get('/v5/device')
 		.query({
 			$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
 			$filter: "uuid eq 'deadbeef'",

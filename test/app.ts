@@ -62,7 +62,7 @@ describe('vpn worker', function() {
 
 	before(() => {
 		nock(`https://${BALENA_API_HOST}`)
-		.post('/v4/service_instance')
+		.post('/v5/service_instance')
 		.reply(200, { id: _.random(1, 1024) });
 	});
 
@@ -152,7 +152,7 @@ describe('VPN proxy', function() {
 	describe('web accessible device', () => {
 		beforeEach(() => {
 			nock(`https://${BALENA_API_HOST}`)
-			.get('/v4/device')
+			.get('/v5/device')
 			.query({
 				$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
 				$filter: "uuid eq 'deadbeef'",
@@ -160,7 +160,7 @@ describe('VPN proxy', function() {
 			.reply(200, { d: [ { id: 1, uuid: 'deadbeef', is_web_accessible: 1, is_connected_to_vpn: 1 } ] });
 
 			nock(`https://${BALENA_API_HOST}`)
-			.post('/v4/device(1)/canAccess', '{"action":"tunnel-8080"}')
+			.post('/v5/device(1)/canAccess', '{"action":"tunnel-8080"}')
 			.reply(200, { d: [ { id: 1, uuid: 'deadbeef', is_web_accessible: 1, is_connected_to_vpn: 1 } ] });
 		});
 
@@ -184,7 +184,7 @@ describe('VPN proxy', function() {
 	describe('not web accessible device', () => {
 		beforeEach(() => {
 			nock(`https://${BALENA_API_HOST}`)
-			.get('/v4/device')
+			.get('/v5/device')
 			.query({
 				$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
 				$filter: "uuid eq 'deadbeef'",
@@ -194,7 +194,7 @@ describe('VPN proxy', function() {
 
 		it('should not allow port 8080 without authentication', () => {
 			nock(`https://${BALENA_API_HOST}`)
-			.post('/v4/device(2)/canAccess', '{"action":"tunnel-8080"}')
+			.post('/v5/device(2)/canAccess', '{"action":"tunnel-8080"}')
 			.reply(200, () => {
 				return { d: [] };
 			});
@@ -205,7 +205,7 @@ describe('VPN proxy', function() {
 
 		it('should allow port 8080 with authentication', () => {
 			nock(`https://${BALENA_API_HOST}`)
-			.post('/v4/device(2)/canAccess', '{"action":"tunnel-8080"}')
+			.post('/v5/device(2)/canAccess', '{"action":"tunnel-8080"}')
 			.reply(200, { d: [ { id: 2, uuid: 'deadbeef', is_web_accessible: 0, is_connected_to_vpn: 1 } ] });
 
 			return vpnTest({ user: 'user5', pass: 'pass' }, () =>
