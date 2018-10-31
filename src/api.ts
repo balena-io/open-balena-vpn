@@ -28,7 +28,7 @@ const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 // Private endpoints should use the `fromLocalHost` middleware.
 const fromLocalHost: express.RequestHandler = (req, res, next) => {
 	// '::ffff:127.0.0.1' is the ipv4 mapped ipv6 address and ::1 is the ipv6 loopback
-	if (![ '127.0.0.1', '::ffff:127.0.0.1', '::1' ].includes(req.ip)) {
+	if (!['127.0.0.1', '::ffff:127.0.0.1', '::1'].includes(req.ip)) {
 		return res.sendStatus(401);
 	}
 
@@ -72,18 +72,20 @@ const apiFactory = () => {
 			timeout: 30000,
 			headers: { Authorization: `Bearer ${req.body.password}` },
 		})
-		.then((response) => {
-			if (response.statusCode === 200) {
-				return res.send('OK');
-			} else {
-				logger.info(`AUTH FAIL: API Authentication failed for ${req.body.username}`);
-				return res.sendStatus(401);
-			}
-		})
-		.catch((err) => {
-			captureException(err, 'Proxy Auth Error', { req });
-			res.sendStatus(401);
-		});
+			.then(response => {
+				if (response.statusCode === 200) {
+					return res.send('OK');
+				} else {
+					logger.info(
+						`AUTH FAIL: API Authentication failed for ${req.body.username}`,
+					);
+					return res.sendStatus(401);
+				}
+			})
+			.catch(err => {
+				captureException(err, 'Proxy Auth Error', { req });
+				res.sendStatus(401);
+			});
 	});
 
 	api.delete('/api/v1/clients/', fromLocalHost, (req, res) => {

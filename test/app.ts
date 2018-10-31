@@ -34,18 +34,25 @@ import vpnWorker from '../src/worker';
 
 const vpnHost = process.env.VPN_HOST || '127.0.0.1';
 const vpnPort = process.env.VPN_PORT || '443';
-const caCertPath = process.env.CA_CERT_PATH || path.resolve(__dirname, '../openvpn/ca.crt');
+const caCertPath =
+	process.env.CA_CERT_PATH || path.resolve(__dirname, '../openvpn/ca.crt');
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const VPN_CONNECT_PROXY_PORT = process.env.VPN_CONNECT_PROXY_PORT!;
 
 const vpnDefaultOpts = [
 	'--client',
-	'--remote', vpnHost, vpnPort,
-	'--ca', caCertPath,
-	'--dev', 'tun',
-	'--proto', 'tcp-client',
+	'--remote',
+	vpnHost,
+	vpnPort,
+	'--ca',
+	caCertPath,
+	'--dev',
+	'tun',
+	'--proto',
+	'tcp-client',
 	'--comp-lzo',
-	'--verb', '3',
+	'--verb',
+	'3',
 ];
 
 interface HttpServerAsync {
@@ -62,8 +69,8 @@ describe('vpn worker', function() {
 
 	before(() => {
 		nock(`https://${BALENA_API_HOST}`)
-		.post('/v4/service_instance')
-		.reply(200, { id: _.random(1, 1024) });
+			.post('/v5/service_instance')
+			.reply(200, { id: _.random(1, 1024) });
 	});
 
 	it('should resolve true when ready', () =>
@@ -73,35 +80,37 @@ describe('vpn worker', function() {
 describe('tunnel worker', () =>
 	it('should startup successfully', () => {
 		tunnelWorker(VPN_CONNECT_PROXY_PORT);
-	})
-);
+	}));
 
 describe('VPN Events', function() {
 	this.timeout(30 * 1000);
 
 	const getEvent = (name: string) =>
-		new Promise<string>((resolve) => {
+		new Promise<string>(resolve => {
 			nock(`https://${process.env.BALENA_API_HOST}`)
-			.post(`/services/vpn/client-${name}`, /common_name=user2/g)
-			.reply(200,(_uri: string, body: any) => {
-				resolve(body);
-				return 'OK';
-			});
+				.post(`/services/vpn/client-${name}`, /common_name=user2/g)
+				.reply(200, (_uri: string, body: any) => {
+					resolve(body);
+					return 'OK';
+				});
 		});
 
 	before(() => {
 		nock(`https://${BALENA_API_HOST}`)
-		.get('/services/vpn/auth/user2')
-		.reply(200, 'OK');
+			.get('/services/vpn/auth/user2')
+			.reply(200, 'OK');
 	});
 
 	it('should send a client-connect event', function() {
-		const connectEvent = getEvent('connect')
-		.then((body) => {
+		const connectEvent = getEvent('connect').then(body => {
 			const data = querystring.parse(body);
-			expect(data).to.have.property('common_name').that.equals('user2');
+			expect(data)
+				.to.have.property('common_name')
+				.that.equals('user2');
 			expect(data).to.not.have.property('real_address');
-			expect(data).to.have.property('virtual_address').that.match(/^10\.2[45][0-9]\.[0-9]+\.[0-9]+$/);
+			expect(data)
+				.to.have.property('virtual_address')
+				.that.match(/^10\.2[45][0-9]\.[0-9]+\.[0-9]+$/);
 		});
 
 		this.client = vpnClient.create(vpnDefaultOpts);
@@ -110,10 +119,11 @@ describe('VPN Events', function() {
 	});
 
 	it('should send a client-disconnect event', function() {
-		const disconnectEvent = getEvent('disconnect')
-		.then((body) => {
+		const disconnectEvent = getEvent('disconnect').then(body => {
 			const data = querystring.parse(body);
-			expect(data).to.have.property('common_name').that.equals('user2');
+			expect(data)
+				.to.have.property('common_name')
+				.that.equals('user2');
 			expect(data).to.not.have.property('real_address');
 			expect(data).to.not.have.property('virtual_address');
 		});
@@ -125,99 +135,174 @@ describe('VPN Events', function() {
 describe('VPN proxy', function() {
 	this.timeout(30 * 1000);
 
-	const vpnTest = (credentials: {user: string, pass: string}, func: () => any): Promise<HttpServerAsync> => {
-		const server = Promise.promisifyAll(http.createServer(
-			(_req, res) => {
-				res.writeHead(200, {'Content-type': 'text/plain'});
+	const vpnTest = (
+		credentials: { user: string; pass: string },
+		func: () => any,
+	): Promise<HttpServerAsync> => {
+		const server = (Promise.promisifyAll(
+			http.createServer((_req, res) => {
+				res.writeHead(200, { 'Content-type': 'text/plain' });
 				res.end('hello from 8080');
-			})) as any as HttpServerAsync;
+			}),
+		) as any) as HttpServerAsync;
 
-		return Promise.using(vpnClient.connect(credentials, vpnDefaultOpts), () =>
-			server.listenAsync(8080)
-			.tap(() => func())
-			.tap(() => server.closeAsync()));
+		return Promise.using(
+			vpnClient.connect(
+				credentials,
+				vpnDefaultOpts,
+			),
+			() =>
+				server
+					.listenAsync(8080)
+					.tap(() => func())
+					.tap(() => server.closeAsync()),
+		);
 	};
 
 	beforeEach(() => {
 		nock(`https://${BALENA_API_HOST}`)
+			.get(/\/services\/vpn\/auth\/user[345]/)
+			.reply(200, 'OK')
 
-		.get(/\/services\/vpn\/auth\/user[345]/)
-		.reply(200, 'OK')
-
-		.post(/\/services\/vpn\/client-(?:dis)?connect/, /common_name=user[345]/g)
-		.times(2)
-		.reply(200, 'OK');
+			.post(/\/services\/vpn\/client-(?:dis)?connect/, /common_name=user[345]/g)
+			.times(2)
+			.reply(200, 'OK');
 	});
 
 	describe('web accessible device', () => {
 		beforeEach(() => {
 			nock(`https://${BALENA_API_HOST}`)
-			.get('/v4/device')
-			.query({
-				$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
-				$filter: "uuid eq 'deadbeef'",
-			})
-			.reply(200, { d: [ { id: 1, uuid: 'deadbeef', is_web_accessible: 1, is_connected_to_vpn: 1 } ] });
+				.get('/v5/device')
+				.query({
+					$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
+					$filter: "uuid eq 'deadbeef'",
+				})
+				.reply(200, {
+					d: [
+						{
+							id: 1,
+							uuid: 'deadbeef',
+							is_web_accessible: 1,
+							is_connected_to_vpn: 1,
+						},
+					],
+				});
 
 			nock(`https://${BALENA_API_HOST}`)
-			.post('/v4/device(1)/canAccess', '{"action":"tunnel-8080"}')
-			.reply(200, { d: [ { id: 1, uuid: 'deadbeef', is_web_accessible: 1, is_connected_to_vpn: 1 } ] });
+				.post('/v5/device(1)/canAccess', '{"action":"tunnel-8080"}')
+				.reply(200, {
+					d: [
+						{
+							id: 1,
+							uuid: 'deadbeef',
+							is_web_accessible: 1,
+							is_connected_to_vpn: 1,
+						},
+					],
+				});
 		});
 
 		it('should allow port 8080 without authentication (.balena)', () =>
 			vpnTest({ user: 'user3', pass: 'pass' }, () =>
-				request({ url: 'http://deadbeef.balena:8080/test', proxy: 'http://localhost:3128', tunnel: true })
-				.then((response) => {
-					expect(response).to.have.property('statusCode').that.equals(200);
-					expect(response).to.have.property('body').that.equals('hello from 8080');
-				})));
+				request({
+					url: 'http://deadbeef.balena:8080/test',
+					proxy: 'http://localhost:3128',
+					tunnel: true,
+				}).then(response => {
+					expect(response)
+						.to.have.property('statusCode')
+						.that.equals(200);
+					expect(response)
+						.to.have.property('body')
+						.that.equals('hello from 8080');
+				}),
+			));
 
 		it('should allow port 8080 without authentication (.resin)', () =>
 			vpnTest({ user: 'user3', pass: 'pass' }, () =>
-				request({ url: 'http://deadbeef.resin:8080/test', proxy: 'http://localhost:3128', tunnel: true })
-				.then((response) => {
-					expect(response).to.have.property('statusCode').that.equals(200);
-					expect(response).to.have.property('body').that.equals('hello from 8080');
-				})));
+				request({
+					url: 'http://deadbeef.resin:8080/test',
+					proxy: 'http://localhost:3128',
+					tunnel: true,
+				}).then(response => {
+					expect(response)
+						.to.have.property('statusCode')
+						.that.equals(200);
+					expect(response)
+						.to.have.property('body')
+						.that.equals('hello from 8080');
+				}),
+			));
 	});
 
 	describe('not web accessible device', () => {
 		beforeEach(() => {
 			nock(`https://${BALENA_API_HOST}`)
-			.get('/v4/device')
-			.query({
-				$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
-				$filter: "uuid eq 'deadbeef'",
-			})
-			.reply(200, { d: [ { id: 2, uuid: 'deadbeef', is_web_accessible: 0, is_connected_to_vpn: 1 } ] });
+				.get('/v5/device')
+				.query({
+					$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
+					$filter: "uuid eq 'deadbeef'",
+				})
+				.reply(200, {
+					d: [
+						{
+							id: 2,
+							uuid: 'deadbeef',
+							is_web_accessible: 0,
+							is_connected_to_vpn: 1,
+						},
+					],
+				});
 		});
 
 		it('should not allow port 8080 without authentication', () => {
 			nock(`https://${BALENA_API_HOST}`)
-			.post('/v4/device(2)/canAccess', '{"action":"tunnel-8080"}')
-			.reply(200, () => {
-				return { d: [] };
-			});
+				.post('/v5/device(2)/canAccess', '{"action":"tunnel-8080"}')
+				.reply(200, () => {
+					return { d: [] };
+				});
 
-			return vpnTest({ user: 'user4', pass: 'pass' }, () =>
-				expect(request({ url: 'http://deadbeef.balena:8080/test', proxy: 'http://localhost:3128', tunnel: true })).to.eventually.be.rejected);
+			return vpnTest(
+				{ user: 'user4', pass: 'pass' },
+				() =>
+					expect(
+						request({
+							url: 'http://deadbeef.balena:8080/test',
+							proxy: 'http://localhost:3128',
+							tunnel: true,
+						}),
+					).to.eventually.be.rejected,
+			);
 		});
 
 		it('should allow port 8080 with authentication', () => {
 			nock(`https://${BALENA_API_HOST}`)
-			.post('/v4/device(2)/canAccess', '{"action":"tunnel-8080"}')
-			.reply(200, { d: [ { id: 2, uuid: 'deadbeef', is_web_accessible: 0, is_connected_to_vpn: 1 } ] });
+				.post('/v5/device(2)/canAccess', '{"action":"tunnel-8080"}')
+				.reply(200, {
+					d: [
+						{
+							id: 2,
+							uuid: 'deadbeef',
+							is_web_accessible: 0,
+							is_connected_to_vpn: 1,
+						},
+					],
+				});
 
 			return vpnTest({ user: 'user5', pass: 'pass' }, () =>
 				request({
 					url: 'http://deadbeef.balena:8080/test',
 					proxy: 'http://BALENA_api:test_api_key@localhost:3128',
 					tunnel: true,
-				})
-				.then((response) => {
-					expect(response).to.have.property('statusCode').that.equals(200);
-					expect(response).to.have.property('body').that.equals('hello from 8080');
-				}));
+				}).then(response => {
+					expect(response)
+						.to.have.property('statusCode')
+						.that.equals(200);
+					expect(response)
+						.to.have.property('body')
+						.that.equals('hello from 8080');
+				}),
+			);
 		});
 	});
 });

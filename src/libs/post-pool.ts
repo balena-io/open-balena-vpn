@@ -49,5 +49,6 @@ const opts = {
 const postPool = genericPool.createPool(factory, opts);
 
 export const getPostWorker = (): Promise.Disposer<PostAsyncFn> =>
-	Promise.resolve(postPool.acquire())
-	.disposer((worker) => postPool.release(worker));
+	Promise.resolve(postPool.acquire()).disposer(worker =>
+		postPool.release(worker),
+	);

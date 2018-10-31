@@ -11,7 +11,7 @@ RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/d
 
 ENV LIBNSS_OPENVPN_VERSION 22feb11322182f6fd79f85cd014b65b6c40b7b47
 RUN tmp="$(mktemp -d)" set -x \
-	&& git clone -q https://github.com/resin-io-modules/libnss-openvpn.git "${tmp}" \
+	&& git clone -q https://github.com/balena-io-modules/libnss-openvpn.git "${tmp}" \
 	&& cd "${tmp}" \
 	&& git -C "${tmp}" checkout -q ${LIBNSS_OPENVPN_VERSION} \
 	&& make -C "${tmp}" -j "$(nproc)" \

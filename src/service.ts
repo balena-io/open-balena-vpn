@@ -17,7 +17,7 @@
 
 import * as Promise from 'bluebird';
 import { captureException, ServiceRegistrationError } from './errors';
-import { apiKey, logger, resinApi } from './utils';
+import { apiKey, balenaApi, logger } from './utils';
 
 export class ServiceInstance {
 	private _id: string | null = null;
@@ -25,39 +25,41 @@ export class ServiceInstance {
 	constructor(private interval: number = 10 * 1000) {}
 
 	public register(): Promise<this> {
-		return resinApi.post({
-			resource: 'service_instance',
-			passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
-		})
-		.then(({ id }: { id?: string }) => {
-			if (id == null) {
-				throw new ServiceRegistrationError('No service ID received on response');
-			}
-			this.id = id;
-			logger.info('Registered as a service instance, received ID', id);
-			return this;
-		})
-		.catch((err) => {
-			captureException(err, 'Failed to register with API');
-			// Retry until it works
-			return Promise
-			.delay(this.interval)
-			.then(() => this.register());
-		});
+		return balenaApi
+			.post({
+				resource: 'service_instance',
+				passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
+			})
+			.then(({ id }: { id?: string }) => {
+				if (id == null) {
+					throw new ServiceRegistrationError(
+						'No service ID received on response',
+					);
+				}
+				this.id = id;
+				logger.info(`Registered as a service instance, received ID ${id}`);
+				return this;
+			})
+			.catch(err => {
+				captureException(err, 'Failed to register with API');
+				// Retry until it works
+				return Promise.delay(this.interval).then(() => this.register());
+			});
 	}
 
 	public scheduleHeartbeat(): Promise<boolean> {
-		return Promise
-		.delay(this.interval)
-		.bind(this)
-		.then(this.sendHeartbeat)
-		// Whether it worked or not, keep sending at the same interval
-		.finally(this.scheduleHeartbeat);
+		return (
+			Promise.delay(this.interval)
+				.bind(this)
+				.then(this.sendHeartbeat)
+				// Whether it worked or not, keep sending at the same interval
+				.finally(this.scheduleHeartbeat)
+		);
 	}
 
 	public sendHeartbeat(): Promise<boolean> {
 		return Promise.try(() =>
-			resinApi.patch({
+			balenaApi.patch({
 				resource: 'service_instance',
 				id: this.getId(),
 				body: {
@@ -65,16 +67,22 @@ export class ServiceInstance {
 					is_alive: true,
 				},
 				passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
-			}))
-		.return(true)
-		.catch((err) => {
-			captureException(err, 'Failed to send a heartbeat to the API', { tags: { service_id: this.getId() } });
-			return false;
-		});
+			}),
+		)
+			.return(true)
+			.catch(err => {
+				captureException(err, 'Failed to send a heartbeat to the API', {
+					tags: { service_id: this.getId() },
+				});
+				return false;
+			});
 	}
 
 	public wrap(func: () => void): Promise<this> {
-		return this.register().tap(func).bind(this).tap(this.scheduleHeartbeat);
+		return this.register()
+			.tap(func)
+			.bind(this)
+			.tap(this.scheduleHeartbeat);
 	}
 
 	public getId(): string {

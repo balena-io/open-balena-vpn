@@ -1,9 +1,8 @@
 <!-- You can remove tags that do not apply. -->
-Change-Type: major|minor|patch <!-- The change type of this PR -->
-Connects-To: # <!-- waffle convention to track a PR's status through its connected, open issue -->
-HQ: <url> <!-- Refer to open HQ ticket or spec in resin-io/hq -->
+Change-type: major|minor|patch <!-- The change type of this PR -->
+Connects-to: # <!-- waffle convention to track a PR's status through its connected, open issue -->
 See: <url> <!-- Refer to any external resource, like a PR, document or discussion -->
-Depends-On: <url> <!-- This change depends on a PR to get merged/deployed first -->
+Depends-on: <url> <!-- This change depends on a PR to get merged/deployed first -->
 
 ---
 ##### Contributor checklist

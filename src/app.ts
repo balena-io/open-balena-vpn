@@ -23,33 +23,38 @@ import { service } from './service';
 import { logger, VERSION } from './utils';
 import worker from './worker';
 
-[
-	'VPN_INSTANCE_COUNT',
-]
-	.filter((key) => process.env[key] == null)
+['VPN_INSTANCE_COUNT']
+	.filter(key => process.env[key] == null)
 	.forEach((key, idx, keys) => {
 		logger.error(`${key} env variable is not set.`);
-		if (idx === (keys.length - 1)) {
+		if (idx === keys.length - 1) {
 			process.exit(1);
 		}
 	});
 
-const VPN_INSTANCE_COUNT = parseInt(process.env.VPN_INSTANCE_COUNT!, 10) || os.cpus().length;
+const VPN_INSTANCE_COUNT =
+	parseInt(process.env.VPN_INSTANCE_COUNT!, 10) || os.cpus().length;
 
 if (cluster.isMaster) {
-	logger.info(`open-balena-vpn@${VERSION} master process started with pid ${process.pid}`);
+	logger.info(
+		`open-balena-vpn@${VERSION} master process started with pid ${process.pid}`,
+	);
 	if (VPN_INSTANCE_COUNT > 1) {
 		logger.info(`spawning ${VPN_INSTANCE_COUNT} workers`);
-		_.times(VPN_INSTANCE_COUNT, (i) => {
+		_.times(VPN_INSTANCE_COUNT, i => {
 			const instanceId = i + 1;
 			const restartWorker = (code?: number, signal?: string) => {
 				if (signal != null) {
-					logger.error(`open-balena-vpn worker-${instanceId} killed with signal ${signal}`);
+					logger.error(
+						`open-balena-vpn worker-${instanceId} killed with signal ${signal}`,
+					);
 				}
 				if (code != null) {
-					logger.error(`open-balena-vpn worker-${instanceId} exited with code ${code}`);
+					logger.error(
+						`open-balena-vpn worker-${instanceId} exited with code ${code}`,
+					);
 				}
-				cluster.fork({VPN_INSTANCE_ID: instanceId}).on('exit', restartWorker);
+				cluster.fork({ VPN_INSTANCE_ID: instanceId }).on('exit', restartWorker);
 			};
 			restartWorker();
 		});

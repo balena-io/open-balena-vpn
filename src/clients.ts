@@ -50,7 +50,7 @@ export interface DeviceState {
 }
 
 const setDeviceState = (() => {
-	const deviceStates: {[key: string]: DeviceStateTracker} = {};
+	const deviceStates: { [key: string]: DeviceStateTracker } = {};
 
 	const applyState = (uuid: string) => {
 		deviceStates[uuid].promise = deviceStates[uuid].promise.then(() => {
@@ -62,44 +62,50 @@ const setDeviceState = (() => {
 			}
 
 			const eventType = targetState.connected ? 'connect' : 'disconnect';
-			return Promise.using(getPostWorker(), (requestPost) =>
+			return Promise.using(getPostWorker(), requestPost =>
 				requestPost({
 					url: `https://${BALENA_API_HOST}/services/vpn/client-${eventType}`,
 					timeout: REQUEST_TIMEOUT,
-					form: _.extend({service_id: service.getId()}, targetState),
-					headers: {Authorization: `Bearer ${apiKey}`},
+					form: _.extend({ service_id: service.getId() }, targetState),
+					headers: { Authorization: `Bearer ${apiKey}` },
 				})
-				.promise()
-				.timeout(REQUEST_TIMEOUT))
-			.then((response: IncomingMessage) => {
-				if (response.statusCode !== 200) {
-					throw new Error(`Status code was '${response.statusCode}', expected '200'`);
-				}
-				// Update the current state on success
-				deviceStates[uuid].currentState = targetState;
-				// Log updated state
-				let stateMsg = `common_name=${targetState.common_name} connected=${targetState.connected}`;
-				if (targetState.virtual_address != null) {
-					stateMsg = `${stateMsg} virtual_address=${targetState.virtual_address}`;
-				}
-				logger.info(`Successfully updated state for ${uuid}: ${stateMsg}`);
-			})
-			.catch((err) => {
-				captureException(err, 'Error updating state', {user: {uuid}});
-				// Add a 60 second delay in case of failure to avoid a crazy flood
-				return Promise.delay(60000)
-				.then(() => {
-					// Trigger another apply, to retry the failed update
-					applyState(uuid);
-					// Since we are recursing and this function always extends
-					// the promise chain (deviceStates[uuid].promise.then ->..)
-					// we need to return undefined to make this promise resolve
-					// and let it continue with the recursion. If we just
-					// returned applyState() instead, the whole thing would
-					// deadlock
-					return null;
+					.promise()
+					.timeout(REQUEST_TIMEOUT),
+			)
+				.then((response: IncomingMessage) => {
+					if (response.statusCode !== 200) {
+						throw new Error(
+							`Status code was '${response.statusCode}', expected '200'`,
+						);
+					}
+					// Update the current state on success
+					deviceStates[uuid].currentState = targetState;
+					// Log updated state
+					let stateMsg = `common_name=${targetState.common_name} connected=${
+						targetState.connected
+					}`;
+					if (targetState.virtual_address != null) {
+						stateMsg = `${stateMsg} virtual_address=${
+							targetState.virtual_address
+						}`;
+					}
+					logger.info(`Successfully updated state for ${uuid}: ${stateMsg}`);
+				})
+				.catch(err => {
+					captureException(err, 'Error updating state', { user: { uuid } });
+					// Add a 60 second delay in case of failure to avoid a crazy flood
+					return Promise.delay(60000).then(() => {
+						// Trigger another apply, to retry the failed update
+						applyState(uuid);
+						// Since we are recursing and this function always extends
+						// the promise chain (deviceStates[uuid].promise.then ->..)
+						// we need to return undefined to make this promise resolve
+						// and let it continue with the recursion. If we just
+						// returned applyState() instead, the whole thing would
+						// deadlock
+						return null;
+					});
 				});
-			});
 		});
 	};
 
