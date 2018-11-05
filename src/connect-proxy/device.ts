@@ -23,7 +23,6 @@ import * as utils from '../utils';
 export interface DeviceInfo {
 	id: number;
 	uuid: string;
-	is_web_accessible: boolean;
 	is_connected_to_vpn: boolean;
 }
 
@@ -35,7 +34,7 @@ export const getDeviceByUUID = (
 		.get({
 			resource: 'device',
 			options: {
-				$select: ['id', 'uuid', 'is_web_accessible', 'is_connected_to_vpn'],
+				$select: ['id', 'uuid', 'is_connected_to_vpn'],
 				$filter: {
 					uuid,
 				},

@@ -174,7 +174,7 @@ describe('VPN proxy', function() {
 			nock(`https://${BALENA_API_HOST}`)
 				.get('/v5/device')
 				.query({
-					$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
+					$select: 'id,uuid,is_connected_to_vpn',
 					$filter: "uuid eq 'deadbeef'",
 				})
 				.reply(200, {
@@ -182,7 +182,6 @@ describe('VPN proxy', function() {
 						{
 							id: 1,
 							uuid: 'deadbeef',
-							is_web_accessible: 1,
 							is_connected_to_vpn: 1,
 						},
 					],
@@ -195,7 +194,6 @@ describe('VPN proxy', function() {
 						{
 							id: 1,
 							uuid: 'deadbeef',
-							is_web_accessible: 1,
 							is_connected_to_vpn: 1,
 						},
 					],
@@ -240,7 +238,7 @@ describe('VPN proxy', function() {
 			nock(`https://${BALENA_API_HOST}`)
 				.get('/v5/device')
 				.query({
-					$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
+					$select: 'id,uuid,is_connected_to_vpn',
 					$filter: "uuid eq 'deadbeef'",
 				})
 				.reply(200, {
@@ -248,7 +246,6 @@ describe('VPN proxy', function() {
 						{
 							id: 2,
 							uuid: 'deadbeef',
-							is_web_accessible: 0,
 							is_connected_to_vpn: 1,
 						},
 					],
@@ -283,7 +280,6 @@ describe('VPN proxy', function() {
 						{
 							id: 2,
 							uuid: 'deadbeef',
-							is_web_accessible: 0,
 							is_connected_to_vpn: 1,
 						},
 					],
