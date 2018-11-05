@@ -16,8 +16,11 @@
 */
 
 import * as Promise from 'bluebird';
+
 import { captureException, ServiceRegistrationError } from './errors';
 import { apiKey, balenaApi, logger } from './utils';
+
+const { BALENA_VPN_EXTERNAL_IP } = process.env;
 
 export class ServiceInstance {
 	private _id: string | null = null;
@@ -25,8 +28,13 @@ export class ServiceInstance {
 	constructor(private interval: number = 10 * 1000) {}
 
 	public register(): Promise<this> {
+		const body: { ip_address?: string } = {};
+		if (BALENA_VPN_EXTERNAL_IP != null) {
+			body.ip_address = BALENA_VPN_EXTERNAL_IP;
+		}
 		return balenaApi
 			.post({
+				body,
 				resource: 'service_instance',
 				passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
 			})
