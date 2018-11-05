@@ -15,21 +15,19 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	PinejsClientCoreFactory,
-	PinejsClientRequest,
-} from 'pinejs-client-request';
-export { PinejsClientCoreFactory } from 'pinejs-client-request';
-import * as pkg from 'pjson';
 import * as winston from 'winston';
 
-export type AnyObject = PinejsClientCoreFactory.AnyObject;
+import { PinejsClientRequest } from 'pinejs-client-request';
+export { PinejsClientCoreFactory } from 'pinejs-client-request';
+
+export { version as VERSION } from '../../package.json';
+
+export { captureException } from './errors';
 
 export const balenaApi = new PinejsClientRequest(
 	`https://${process.env.BALENA_API_HOST}/v5/`,
 );
 export const apiKey = process.env.VPN_SERVICE_API_KEY;
-export const VERSION = pkg.version;
 
 const consoleTransport = new winston.transports.Console({
 	format: winston.format.simple(),
@@ -39,6 +37,3 @@ export const logger = winston.createLogger({
 	exceptionHandlers: [consoleTransport],
 	exitOnError: false,
 });
-
-export { Netmask } from './netmask';
-export { request } from './request';

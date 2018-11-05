@@ -15,9 +15,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as rp from 'request-promise';
-
-export const request = rp.defaults({
-	resolveWithFullResponse: true,
-	simple: false,
-});
+import * as clients from './clients';
+export { clients };
+export { Netmask } from './netmask';
+export { getPostWorker, request } from './request';
+export { service } from './service';

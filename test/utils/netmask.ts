@@ -18,7 +18,7 @@
 import { expect } from 'chai';
 import 'mocha';
 
-import * as netmask from '../../src/utils/netmask';
+import * as netmask from '../../src/vpn-api/utils/netmask';
 
 const net = new netmask.Netmask('10.240.0.0', 12);
 

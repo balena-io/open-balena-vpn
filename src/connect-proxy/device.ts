@@ -19,7 +19,7 @@ import * as Promise from 'bluebird';
 import * as _ from 'lodash';
 
 import * as utils from '../utils';
-import { APIError, captureException } from '../errors';
+import { APIError, captureException } from '../utils/errors';
 
 const authHeader = (auth?: Buffer): { Authorization?: string } => {
 	const headers: { Authorization?: string } = {};

@@ -19,9 +19,9 @@ import * as bodyParser from 'body-parser';
 import * as express from 'express';
 import * as _ from 'lodash';
 
-import * as clients from './clients';
-import { captureException } from './errors';
-import { logger, request } from './utils';
+import { captureException, logger } from '../utils';
+
+import { clients, request } from './utils';
 
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 

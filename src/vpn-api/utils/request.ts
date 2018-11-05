@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2017 Balena Ltd.
+	Copyright (C) 2018 Balena Ltd.
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -18,8 +18,12 @@
 import * as Promise from 'bluebird';
 import * as genericPool from 'generic-pool';
 import * as _ from 'lodash';
+import * as rp from 'request-promise';
 
-import { request } from '../utils';
+export const request = rp.defaults({
+	resolveWithFullResponse: true,
+	simple: false,
+});
 
 const postAsync = request.post;
 type PostAsyncFn = typeof postAsync;

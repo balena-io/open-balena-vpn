@@ -14,7 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 [Unit]
-Description=open-balena-vpn
+Description=open-balena-vpn-api
 Requires=confd.service haproxy.service balena-root-ca.service
 After=confd.service balena-root-ca.service
 
@@ -24,9 +24,9 @@ StandardError=journal+console
 WorkingDirectory=/usr/src/app
 EnvironmentFile=/usr/src/app/config/env
 ExecStartPre=/bin/bash -c 'mkdir -p /dev/net; if [ ! -c /dev/net/tun ]; then mknod /dev/net/tun c 10 200; fi'
-ExecStart=/usr/src/app/node_modules/.bin/ts-node src/app.ts
+ExecStart=/usr/src/app/bin/balena-vpn-api
 Restart=always
-SyslogIdentifier=balena-vpn
+SyslogIdentifier=balena-vpn-api
 
 [Install]
 WantedBy=basic.target

@@ -4,12 +4,12 @@
   "version": "8.3.1",
   "description": "RESTful VPN api",
   "license": "AGPL-3.0",
-  "main": "server.js",
   "scripts": {
+    "build": "tsc --project .",
     "check": "tsc --pretty --noEmit --diagnostics --project ./tsconfig.json",
     "check:dev": "tsc --pretty --noEmit --diagnostics --project ./tsconfig.dev.json",
     "lint": "resin-lint --typescript src/ test/ typings/",
-    "lint:fix": "prettier --config ./node_modules/resin-lint/config/.prettierrc --write {src,test,typings}/*.ts {src,test,typings}/**/*.ts",
+    "lint:fix": "prettier --config ./node_modules/resin-lint/config/.prettierrc --write \"{src,test,typings}/**/*.ts\"",
     "pretest-unit": "npm run lint",
     "test-unit": "mocha test/index.ts",
     "test": "docker build -t test-balena-vpn . && IMAGE_NAME=test-balena-vpn ./automation/test.sh"
@@ -42,12 +42,10 @@
     "netmask": "^1.0.6",
     "node-tunnel": "^2.1.0",
     "pinejs-client-request": "^5.1.0",
-    "pjson": "^1.0.9",
     "raven": "^2.6.4",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
     "tmp": "^0.0.33",
-    "ts-node": "^6.2.0",
     "typed-error": "^3.0.1",
     "typescript": "^3.1.4",
     "winston": "^3.1.0"
@@ -64,7 +62,8 @@
     "mocha": "^5.2.0",
     "nock": "^10.0.1",
     "openvpn-client": "0.0.2",
-    "resin-lint": "^2.0.1"
+    "resin-lint": "^2.0.1",
+    "ts-node": "^6.2.0"
   },
   "husky": {
     "hooks": {

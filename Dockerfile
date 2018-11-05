@@ -25,7 +25,7 @@ RUN echo "AUTOSTART=none" > /etc/default/openvpn \
 COPY package.json package-lock.json /usr/src/app/
 RUN npm install --unsafe-perm --production && npm cache clean --force 2>/dev/null
 COPY . /usr/src/app
-RUN npm run check
+RUN npm run build
 
 COPY config/services /etc/systemd/system
-RUN systemctl enable open-balena-vpn.service open-balena-connect-proxy.service
+RUN systemctl enable open-balena-vpn-api.service open-balena-connect-proxy.service

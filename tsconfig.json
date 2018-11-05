@@ -4,11 +4,17 @@
 		"target": "es2017",
 		"strict": true,
 		"noErrorTruncation": true,
+		"noImplicitAny": true,
 		"noUnusedParameters": true,
 		"noUnusedLocals": true,
 		"preserveConstEnums": true,
 		"allowJs": false,
-		"skipLibCheck": true
+		"removeComments": true,
+		"sourceMap": true,
+		"strictNullChecks": true,
+		"skipLibCheck": true,
+		"resolveJsonModule": true,
+		"outDir": "build/"
 	},
 	"include": [
 		"src/**/*.ts",
