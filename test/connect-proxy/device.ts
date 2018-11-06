@@ -36,7 +36,6 @@ beforeEach(function() {
 	this.mockDevice = {
 		id: 1234,
 		uuid: 'deadbeef',
-		is_web_accessible: false,
 		is_connected_to_vpn: false,
 		__metadata: {
 			uri: '/resin/device(1234)',
@@ -50,7 +49,7 @@ describe('getDeviceByUUID()', function() {
 		nock(`https://${BALENA_API_HOST}`)
 			.get('/v5/device')
 			.query({
-				$select: 'id,uuid,is_web_accessible,is_connected_to_vpn',
+				$select: 'id,uuid,is_connected_to_vpn',
 				$filter: "uuid eq 'deadbeef'",
 			})
 			.reply(200, { d: [this.mockDevice] });
