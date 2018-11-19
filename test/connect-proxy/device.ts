@@ -26,7 +26,7 @@ const { expect } = chai;
 nock.disableNetConnect();
 
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
-const VPN_SERVICE_API_KEY = process.env.VPN_SERVICE_API_KEY!;
+const VPN_SERVICE_API_KEY = Buffer.from(process.env.VPN_SERVICE_API_KEY!);
 
 before(() => {
 	chai.use(chaiAsPromised);

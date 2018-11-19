@@ -15,10 +15,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import * as dns from 'dns';
 import * as Promise from 'bluebird';
-import { Middleware, Tunnel } from 'node-tunnel';
+import * as _ from 'lodash';
+import * as net from 'net';
+import * as nodeTunnel from 'node-tunnel';
 
-import { captureException, HandledTunnelingError, Raven } from '../errors';
+import { captureException, HandledTunnelingError } from '../errors';
 import { logger } from '../utils';
 
 import * as device from './device';
@@ -32,25 +35,40 @@ import * as device from './device';
 		}
 	});
 
-const VPN_SERVICE_API_KEY = process.env.VPN_SERVICE_API_KEY!;
+const VPN_SERVICE_API_KEY = Buffer.from(process.env.VPN_SERVICE_API_KEY!);
 
-const tunnelToDevice: Middleware = (req, cltSocket, _head, next) =>
+const lookupAsync = Promise.promisify(dns.lookup);
+
+const parseRequest = (req: nodeTunnel.Request) => {
+	if (req.url == null) {
+		throw new Error('Bad Request');
+	}
+
+	const match = req.url.match(
+		/^([a-fA-F0-9]+)\.(balena|resin|vpn)(?::([0-9]+))?$/,
+	);
+	if (match == null) {
+		throw new Error(`Invalid hostname: ${req.url}`);
+	}
+	const [, uuid, tld, port = '80'] = match;
+	if (tld === 'resin') {
+		logger.warn(`'.resin' tld is deprecated, use '.balena'`);
+	}
+
+	let auth = undefined;
+	if (req.auth != null && req.auth.password != null) {
+		auth = Buffer.from(req.auth.password);
+	}
+
+	return { uuid, port: parseInt(port, 10), auth };
+};
+
+const tunnelToDevice: nodeTunnel.Middleware = (req, cltSocket, _head, next) =>
 	Promise.try(() => {
-		if (req.url == null) {
-			throw new Error('Bad Request');
-		}
+		const { uuid, port, auth } = parseRequest(req);
+		logger.info(`tunnel requested to device ${uuid} on port ${port}`);
 
-		const match = req.url.match(
-			/^([a-fA-F0-9]+).(?:resin|balena)(?::([0-9]+))?$/,
-		);
-		if (match == null) {
-			throw new Error(`Invalid hostname: ${req.url}`);
-		}
-		const [, uuid, port = '80'] = match;
-		Raven.setContext({ user: { uuid } });
-		logger.info(`tunnel requested for ${uuid}:${port}`);
-
-		// we need to use VPN_SERVICE_API_KEY here as this could be an unauthenticated request (public url)
+		// we need to use VPN_SERVICE_API_KEY here as this could be an unauthenticated request
 		return device
 			.getDeviceByUUID(uuid, VPN_SERVICE_API_KEY)
 			.tap(data => {
@@ -61,7 +79,7 @@ const tunnelToDevice: Middleware = (req, cltSocket, _head, next) =>
 			})
 			.tap(data =>
 				device
-					.canAccessDevice(data, parseInt(port, 10), req.auth)
+					.canAccessDevice(data, port, auth)
 					.tap(isAllowed => {
 						if (!isAllowed) {
 							cltSocket.end(
@@ -88,14 +106,139 @@ const tunnelToDevice: Middleware = (req, cltSocket, _head, next) =>
 			cltSocket.end('HTTP/1.1 500 Internal Server Error\r\n\r\n');
 		});
 
+class Tunnel extends nodeTunnel.Tunnel {
+	connect(
+		port: number,
+		host: string,
+		client: net.Socket,
+		req: nodeTunnel.Request,
+	) {
+		return Promise.try(() => parseRequest(req))
+			.tapCatch(err => client.end(err.message))
+			.then(({ uuid, auth }) =>
+				lookupAsync(`${uuid}.vpn`)
+					.then(() => {
+						logger.info(`connecting to ${host}:${port}`);
+						return super
+							.connect(
+								port,
+								host,
+								client,
+								req,
+							)
+							.tap(socket => {
+								socket.on('close', () =>
+									logger.info(
+										`connection to device ${uuid} on port ${port} closed`,
+									),
+								);
+								logger.info(`tunnel opened to device ${uuid} on port ${port}`);
+							});
+					})
+					.catch(() => {
+						return device
+							.getDeviceVpnHost(uuid, auth)
+							.then(vpnHost => {
+								logger.info(
+									`forwarding tunnel request for ${uuid}:${port} via ${vpnHost}`,
+								);
+								return forwardRequest(vpnHost, uuid, port, auth);
+							})
+							.tapCatch(err => client.end(err.message));
+					}),
+			);
+	}
+}
+
+const forwardRequest = (
+	vpnHost: string,
+	uuid: string,
+	port: number,
+	proxyAuth?: Buffer,
+): Promise<net.Socket> =>
+	new Promise((resolve, reject) => {
+		let tunnelProxyResponse = '';
+		const socket: net.Socket = net.connect(
+			3128,
+			vpnHost,
+			() => {
+				socket.write(`CONNECT ${uuid}.balena:${port} HTTP/1.0\r\n`);
+				if (proxyAuth != null) {
+					socket.write(
+						`Proxy-Authorization: Basic ${proxyAuth.toString('base64')}\r\n`,
+					);
+				}
+				socket.write('\r\n\r\n');
+			},
+		);
+
+		const earlyEnd = () => {
+			logger.error(
+				`Could not connect to device ${uuid} on port ${port}: tunneling socket closed prematurely.`,
+			);
+			reject(
+				new Error(
+					`Could not connect to device ${uuid} on port ${port}: tunneling socket closed prematurely.`,
+				),
+			);
+		};
+		const earlyError = (err: Error) => {
+			let errMsg = 'Could not connect to VPN tunnel';
+			if (err != null && err.message) {
+				errMsg += `: ${err.message}`;
+			}
+			captureException(err, errMsg);
+			reject(new Error(errMsg));
+		};
+		const proxyData = (chunk: Buffer) => {
+			if (chunk != null) {
+				tunnelProxyResponse += chunk.toString();
+			}
+
+			// read 'data' chunks until full HTTP status line has been read
+			if (!_.includes(tunnelProxyResponse, '\r\n\r\n')) {
+				return;
+			}
+			socket.removeListener('data', proxyData);
+			socket.removeListener('end', earlyEnd);
+			socket.removeListener('error', earlyError);
+
+			// RFC2616: Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
+			let httpStatusLine = tunnelProxyResponse.split('\r\n')[0];
+			const httpStatusCode = parseInt(httpStatusLine.split(' ')[1], 10);
+
+			if (httpStatusCode !== 200) {
+				logger.error(
+					`Could not connect to ${uuid}:${port} - ${httpStatusLine}`,
+				);
+				return reject(
+					new Error(`Could not connect to ${uuid}:${port} - ${httpStatusLine}`),
+				);
+			}
+
+			// one proxied socket, ready to go!
+			logger.info(
+				`tunnel opened to device ${uuid} on port ${port} via ${vpnHost}`,
+			);
+			socket.on('close', () =>
+				logger.info(
+					`connection to device ${uuid} on port ${port} via ${vpnHost} closed`,
+				),
+			);
+			resolve(socket);
+		};
+
+		socket
+			.on('end', earlyEnd)
+			.on('error', earlyError)
+			.on('data', proxyData);
+	});
+
 const worker = (port: string) => {
 	logger.info(`connect-proxy worker process started with pid ${process.pid}`);
 	const tunnel = new Tunnel();
 	tunnel.use(tunnelToDevice);
 	tunnel.listen(port, () => logger.info(`tunnel listening on port ${port}`));
-	tunnel.on('connect', (hostname, port) =>
-		logger.info(`tunnel opened to ${hostname}:${port}`),
-	);
 	tunnel.on('error', err =>
 		logger.error(
 			`failed to connect to device ${err.message || err} ${err.stack}`,
