@@ -21,7 +21,7 @@ import * as _ from 'lodash';
 import * as net from 'net';
 import * as nodeTunnel from 'node-tunnel';
 
-import { captureException, HandledTunnelingError } from '../errors';
+import * as errors from '../errors';
 import { logger } from '../utils';
 
 import * as device from './device';
@@ -41,14 +41,14 @@ const lookupAsync = Promise.promisify(dns.lookup);
 
 const parseRequest = (req: nodeTunnel.Request) => {
 	if (req.url == null) {
-		throw new Error('Bad Request');
+		throw new errors.BadRequestError();
 	}
 
 	const match = req.url.match(
 		/^([a-fA-F0-9]+)\.(balena|resin|vpn)(?::([0-9]+))?$/,
 	);
 	if (match == null) {
-		throw new Error(`Invalid hostname: ${req.url}`);
+		throw new errors.InvalidHostnameError(`invalid hostname: ${req.url}`);
 	}
 	const [, uuid, tld, port = '80'] = match;
 	if (tld === 'resin') {
@@ -74,7 +74,7 @@ const tunnelToDevice: nodeTunnel.Middleware = (req, cltSocket, _head, next) =>
 			.tap(data => {
 				if (data == null) {
 					cltSocket.end('HTTP/1.0 404 Not Found\r\n\r\n');
-					throw new HandledTunnelingError(`Device not found: ${uuid}`);
+					throw new errors.HandledTunnelingError(`device not found: ${uuid}`);
 				}
 			})
 			.tap(data =>
@@ -85,25 +85,45 @@ const tunnelToDevice: nodeTunnel.Middleware = (req, cltSocket, _head, next) =>
 							cltSocket.end(
 								'HTTP/1.0 407 Proxy Authorization Required\r\n\r\n',
 							);
-							throw new HandledTunnelingError(`Device not accessible: ${uuid}`);
+							throw new errors.HandledTunnelingError(
+								`device not accessible: ${uuid}`,
+							);
 						}
 					})
 					.tap(() => {
 						if (!data.is_connected_to_vpn) {
 							cltSocket.end('HTTP/1.0 503 Service Unavailable\r\n\r\n');
-							throw new HandledTunnelingError(`Device not available: ${uuid}`);
+							throw new errors.HandledTunnelingError(
+								`device not available: ${uuid}`,
+							);
 						}
 					}),
 			)
 			.tap(() => (req.url = `${uuid}.vpn:${port}`));
 	})
 		.then(() => next())
-		.catch(HandledTunnelingError, (err: HandledTunnelingError) => {
-			logger.error(`Tunneling Error - ${err.message}`);
+		.catch(errors.APIError, err => {
+			logger.error(`Invalid Response from API (${err.message})`);
+			cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
 		})
+		.catch(errors.BadRequestError, () =>
+			cltSocket.end('HTTP/1.0 400 Bad Request\r\n\r\n'),
+		)
+		.catch(errors.HandledTunnelingError, err =>
+			logger.error(`Tunneling Error (${err.message})`),
+		)
+		.catch(errors.InvalidHostnameError, () =>
+			cltSocket.end('HTTP/1.0 403 Forbidden\r\n\r\n'),
+		)
 		.catch((err: Error) => {
-			captureException(err, `error establishing tunnel to ${req.url}`, { req });
-			cltSocket.end('HTTP/1.1 500 Internal Server Error\r\n\r\n');
+			errors.captureException(
+				err,
+				`unexpected error establishing tunnel to ${req.url} (${err.message})`,
+				{
+					req,
+				},
+			);
+			cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
 		});
 
 class Tunnel extends nodeTunnel.Tunnel {
@@ -113,40 +133,55 @@ class Tunnel extends nodeTunnel.Tunnel {
 		client: net.Socket,
 		req: nodeTunnel.Request,
 	) {
-		return Promise.try(() => parseRequest(req))
-			.tapCatch(err => client.end(err.message))
-			.then(({ uuid, auth }) =>
-				lookupAsync(`${uuid}.vpn`)
-					.then(() => {
-						logger.info(`connecting to ${host}:${port}`);
-						return super
-							.connect(
-								port,
-								host,
-								client,
-								req,
-							)
-							.tap(socket => {
-								socket.on('close', () =>
-									logger.info(
-										`connection to device ${uuid} on port ${port} closed`,
-									),
-								);
-								logger.info(`tunnel opened to device ${uuid} on port ${port}`);
-							});
-					})
-					.catch(() => {
-						return device
-							.getDeviceVpnHost(uuid, auth)
-							.then(vpnHost => {
+		return Promise.try(() => parseRequest(req)).then(({ uuid, auth }) =>
+			lookupAsync(`${uuid}.vpn`)
+				.then(() => {
+					logger.info(`connecting to ${host}:${port}`);
+					return super
+						.connect(
+							port,
+							host,
+							client,
+							req,
+						)
+						.tap(socket => {
+							socket.on('close', () =>
 								logger.info(
-									`forwarding tunnel request for ${uuid}:${port} via ${vpnHost}`,
-								);
-								return forwardRequest(vpnHost, uuid, port, auth);
-							})
-							.tapCatch(err => client.end(err.message));
-					}),
-			);
+									`connection to device ${uuid} on port ${port} closed`,
+								),
+							);
+							logger.info(`tunnel opened to device ${uuid} on port ${port}`);
+						});
+				})
+				.catch(() => {
+					return device
+						.getDeviceVpnHost(uuid, auth)
+						.catch(errors.APIError, err => {
+							logger.error(
+								`error connecting to device ${uuid} on port ${port} (${
+									err.message
+								})`,
+							);
+							throw new errors.HandledTunnelingError(err.message);
+						})
+						.then(vpnHost => {
+							logger.info(
+								`forwarding tunnel request for ${uuid}:${port} via ${vpnHost}`,
+							);
+							return forwardRequest(vpnHost, uuid, port, auth).catch(
+								errors.RemoteTunnellingError,
+								err => {
+									logger.error(
+										`error forwarding request for ${uuid}:${port} (${
+											err.message
+										})`,
+									);
+									throw new errors.HandledTunnelingError(err.message);
+								},
+							);
+						});
+				}),
+		);
 	}
 }
 
@@ -173,22 +208,19 @@ const forwardRequest = (
 		);
 
 		const earlyEnd = () => {
-			logger.error(
-				`Could not connect to device ${uuid} on port ${port}: tunneling socket closed prematurely.`,
-			);
 			reject(
-				new Error(
-					`Could not connect to device ${uuid} on port ${port}: tunneling socket closed prematurely.`,
+				new errors.RemoteTunnellingError(
+					`could not connect to device ${uuid} on port ${port}: tunneling socket closed prematurely.`,
 				),
 			);
 		};
 		const earlyError = (err: Error) => {
-			let errMsg = 'Could not connect to VPN tunnel';
+			let errMsg = 'could not connect to vpn tunnel';
 			if (err != null && err.message) {
 				errMsg += `: ${err.message}`;
 			}
-			captureException(err, errMsg);
-			reject(new Error(errMsg));
+			errors.captureException(err, errMsg);
+			reject(new errors.RemoteTunnellingError(errMsg));
 		};
 		const proxyData = (chunk: Buffer) => {
 			if (chunk != null) {
@@ -208,11 +240,10 @@ const forwardRequest = (
 			const httpStatusCode = parseInt(httpStatusLine.split(' ')[1], 10);
 
 			if (httpStatusCode !== 200) {
-				logger.error(
-					`Could not connect to ${uuid}:${port} - ${httpStatusLine}`,
-				);
 				return reject(
-					new Error(`Could not connect to ${uuid}:${port} - ${httpStatusLine}`),
+					new errors.RemoteTunnellingError(
+						`could not connect to ${uuid}:${port}: ${httpStatusLine}`,
+					),
 				);
 			}
 
@@ -239,11 +270,15 @@ const worker = (port: string) => {
 	const tunnel = new Tunnel();
 	tunnel.use(tunnelToDevice);
 	tunnel.listen(port, () => logger.info(`tunnel listening on port ${port}`));
-	tunnel.on('error', err =>
-		logger.error(
-			`failed to connect to device ${err.message || err} ${err.stack}`,
-		),
-	);
+	tunnel.on('error', err => {
+		// errors thrown in `Tunnel.connect` will appear here
+		if (!(err instanceof errors.HandledTunnelingError)) {
+			logger.error(
+				`failed to connect to device (${err.message || err})\n${err.stack}`,
+			);
+			errors.captureException(err);
+		}
+	});
 	return tunnel;
 };
 export default worker;

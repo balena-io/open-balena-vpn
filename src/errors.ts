@@ -18,7 +18,7 @@
 import * as _Raven from 'raven';
 import { TypedError } from 'typed-error';
 
-import { logger, VERSION } from './utils';
+import { VERSION } from './utils';
 
 export const Raven = _Raven;
 
@@ -33,7 +33,6 @@ export const captureException = (
 	message?: string,
 	options?: _Raven.CaptureOptions,
 ): string => {
-	logger.error(message || '', err.message ? err.message : err, err.stack);
 	options = options || {};
 	if (message) {
 		options.extra = options.extra || {};
@@ -42,5 +41,9 @@ export const captureException = (
 	return Raven.captureException(err, options);
 };
 
+export class APIError extends TypedError {}
+export class BadRequestError extends TypedError {}
 export class HandledTunnelingError extends TypedError {}
+export class RemoteTunnellingError extends TypedError {}
 export class ServiceRegistrationError extends TypedError {}
+export class InvalidHostnameError extends TypedError {}

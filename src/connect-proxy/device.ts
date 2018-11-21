@@ -19,7 +19,7 @@ import * as Promise from 'bluebird';
 import * as _ from 'lodash';
 
 import * as utils from '../utils';
-import { captureException } from '../errors';
+import { APIError, captureException } from '../errors';
 
 const authHeader = (auth?: Buffer): { Authorization?: string } => {
 	const headers: { Authorization?: string } = {};
@@ -52,16 +52,20 @@ export const getDeviceByUUID = (
 		})
 		.then(devices => {
 			if (!_.isArray(devices)) {
-				throw new Error('Invalid device lookup response');
+				throw new Error('invalid api response');
 			}
 			return devices[0] as DeviceInfo;
+		})
+		.catch(err => {
+			captureException(err, err.message);
+			throw new APIError(err.message);
 		});
 
 export const canAccessDevice = (
 	device: DeviceInfo,
 	port: number,
 	auth?: Buffer,
-): Promise<boolean> =>
+) =>
 	utils.balenaApi
 		.post({
 			resource: 'device',
@@ -75,7 +79,8 @@ export const canAccessDevice = (
 		.then(
 			({ d }: { d?: Array<{ id: number }> }) =>
 				_.isArray(d) && d.length === 1 && d[0].id === device.id,
-		);
+		)
+		.catchReturn(false);
 
 export const getDeviceVpnHost = (
 	uuid: string,
@@ -97,12 +102,15 @@ export const getDeviceVpnHost = (
 			},
 			passthrough: { headers: authHeader(auth) },
 		})
-		// FIXME: any!
-		.then(([device]: any) => {
-			if (device) {
-				return device.ip_address;
-			}
-		})
+		.then(
+			(devices): string => {
+				if (!_.isArray(devices)) {
+					throw new Error('invalid api response');
+				}
+				return devices[0].ip_address;
+			},
+		)
 		.catch(err => {
-			captureException(err, 'Invalid response from api');
+			captureException(err, err.message);
+			throw new APIError(`cannot find device vpn host (${err.message})`);
 		});

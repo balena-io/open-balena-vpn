@@ -31,10 +31,14 @@ export const balenaApi = new PinejsClientRequest(
 export const apiKey = process.env.VPN_SERVICE_API_KEY;
 export const VERSION = pkg.version;
 
-winston.add(
-	new winston.transports.Console({ format: winston.format.simple() }),
-);
+const consoleTransport = new winston.transports.Console({
+	format: winston.format.simple(),
+});
+export const logger = winston.createLogger({
+	transports: [consoleTransport],
+	exceptionHandlers: [consoleTransport],
+	exitOnError: false,
+});
 
 export { Netmask } from './netmask';
 export { request } from './request';
-export { winston as logger };
