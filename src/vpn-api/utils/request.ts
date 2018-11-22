@@ -29,10 +29,8 @@ const postAsync = request.post;
 type PostAsyncFn = typeof postAsync;
 
 // wrap the postAsync function to make each worker we create distinguishable to the pool
-const $createFunc = (): PostAsyncFn =>
-	function() {
-		return postAsync.apply(null, arguments);
-	} as PostAsyncFn;
+const $createFunc = () => (...args: Parameters<PostAsyncFn>) =>
+	postAsync(...args);
 const createFunc = Promise.method($createFunc) as () => Promise<PostAsyncFn>;
 
 const factory: genericPool.Factory<PostAsyncFn> = {
