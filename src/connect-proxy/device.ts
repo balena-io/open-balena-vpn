@@ -19,6 +19,15 @@ import * as Promise from 'bluebird';
 import * as _ from 'lodash';
 
 import * as utils from '../utils';
+import { APIError, captureException } from '../errors';
+
+const authHeader = (auth?: Buffer): { Authorization?: string } => {
+	const headers: { Authorization?: string } = {};
+	if (auth != null) {
+		headers.Authorization = `Bearer ${auth.toString()}`;
+	}
+	return headers;
+};
 
 export interface DeviceInfo {
 	id: number;
@@ -28,7 +37,7 @@ export interface DeviceInfo {
 
 export const getDeviceByUUID = (
 	uuid: string,
-	apiKey: string,
+	auth?: Buffer,
 ): Promise<DeviceInfo> =>
 	utils.balenaApi
 		.get({
@@ -39,29 +48,29 @@ export const getDeviceByUUID = (
 					uuid,
 				},
 			},
-			passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
+			passthrough: { headers: authHeader(auth) },
 		})
 		.then(devices => {
 			if (!_.isArray(devices)) {
-				throw new Error('Invalid device lookup response');
+				throw new Error('invalid api response');
 			}
 			return devices[0] as DeviceInfo;
+		})
+		.catch(err => {
+			captureException(err, err.message);
+			throw new APIError(err.message);
 		});
 
 export const canAccessDevice = (
 	device: DeviceInfo,
 	port: number,
-	auth?: { username?: string; password?: string },
-): Promise<boolean> => {
-	const headers: { Authorization?: string } = {};
-	if (auth != null && auth.password != null) {
-		headers.Authorization = `Bearer ${auth.password}`;
-	}
-	return utils.balenaApi
+	auth?: Buffer,
+) =>
+	utils.balenaApi
 		.post({
 			resource: 'device',
 			id: device.id,
-			passthrough: { headers },
+			passthrough: { headers: authHeader(auth) },
 			body: {
 				action: `tunnel-${port}`,
 			},
@@ -70,5 +79,38 @@ export const canAccessDevice = (
 		.then(
 			({ d }: { d?: Array<{ id: number }> }) =>
 				_.isArray(d) && d.length === 1 && d[0].id === device.id,
-		);
-};
+		)
+		.catchReturn(false);
+
+export const getDeviceVpnHost = (
+	uuid: string,
+	auth?: Buffer,
+): Promise<string> =>
+	utils.balenaApi
+		.get({
+			resource: 'service_instance',
+			options: {
+				$select: 'ip_address',
+				$filter: {
+					manages__device: {
+						$any: {
+							$alias: 'd',
+							$expr: { d: { uuid } },
+						},
+					},
+				},
+			},
+			passthrough: { headers: authHeader(auth) },
+		})
+		.then(
+			(devices): string => {
+				if (!_.isArray(devices)) {
+					throw new Error('invalid api response');
+				}
+				return devices[0].ip_address;
+			},
+		)
+		.catch(err => {
+			captureException(err, err.message);
+			throw new APIError(`cannot find device vpn host (${err.message})`);
+		});
