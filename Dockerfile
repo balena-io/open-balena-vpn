@@ -1,4 +1,4 @@
-FROM balena/open-balena-base:v5.0.1
+FROM balena/open-balena-base:v5.0.1 as base
 
 EXPOSE 80 443 3128
 
@@ -23,9 +23,18 @@ RUN echo "AUTOSTART=none" > /etc/default/openvpn \
 	&& rm -rf /etc/openvpn && ln -s /usr/src/app/openvpn /etc/openvpn
 
 COPY package.json package-lock.json /usr/src/app/
-RUN npm install --unsafe-perm --production && npm cache clean --force 2>/dev/null
+RUN npm ci --unsafe-perm --production && npm cache clean --force 2>/dev/null
 COPY . /usr/src/app
-RUN npm run build
 
 COPY config/services /etc/systemd/system
 RUN systemctl enable open-balena-vpn-api.service open-balena-connect-proxy.service
+
+# build test image
+FROM base as test
+RUN npm ci && npm cache clean --force 2>/dev/null
+ENV BALENA_API_HOST api.balena.test
+RUN npm run check && npm run test-unit
+
+# build and export production image
+FROM base as main
+RUN npm run build
