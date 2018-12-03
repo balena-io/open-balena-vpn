@@ -1,4 +1,4 @@
-FROM balena/open-balena-base:v5.0.0
+FROM balena/open-balena-base:v5.0.1
 
 EXPOSE 80 443 3128
 
