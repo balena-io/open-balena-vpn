@@ -21,8 +21,8 @@ import * as _ from 'lodash';
 import * as net from 'net';
 import * as nodeTunnel from 'node-tunnel';
 
-import * as errors from '../errors';
-import { logger } from '../utils';
+import { captureException, logger } from '../utils';
+import * as errors from '../utils/errors';
 
 import * as device from './device';
 
@@ -116,7 +116,7 @@ const tunnelToDevice: nodeTunnel.Middleware = (req, cltSocket, _head, next) =>
 			cltSocket.end('HTTP/1.0 403 Forbidden\r\n\r\n'),
 		)
 		.catch((err: Error) => {
-			errors.captureException(
+			captureException(
 				err,
 				`unexpected error establishing tunnel to ${req.url} (${err.message})`,
 				{
@@ -219,7 +219,7 @@ const forwardRequest = (
 			if (err != null && err.message) {
 				errMsg += `: ${err.message}`;
 			}
-			errors.captureException(err, errMsg);
+			captureException(err, errMsg);
 			reject(new errors.RemoteTunnellingError(errMsg));
 		};
 		const proxyData = (chunk: Buffer) => {
@@ -276,7 +276,7 @@ const worker = (port: string) => {
 			logger.error(
 				`failed to connect to device (${err.message || err})\n${err.stack}`,
 			);
-			errors.captureException(err);
+			captureException(err);
 		}
 	});
 	return tunnel;

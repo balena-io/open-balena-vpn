@@ -16,10 +16,11 @@
 */
 
 import * as Promise from 'bluebird';
-import { captureException, ServiceRegistrationError } from './errors';
-import { apiKey, balenaApi, logger } from './utils';
 
-export class ServiceInstance {
+import { apiKey, balenaApi, captureException, logger } from '../../utils';
+import { ServiceRegistrationError } from '../../utils/errors';
+
+class ServiceInstance {
 	private _id: string | null = null;
 
 	constructor(private interval: number = 10 * 1000) {}

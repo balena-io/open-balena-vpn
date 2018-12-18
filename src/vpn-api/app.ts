@@ -19,8 +19,9 @@ import * as cluster from 'cluster';
 import * as _ from 'lodash';
 import * as os from 'os';
 
-import { service } from './service';
-import { logger, VERSION } from './utils';
+import { logger, VERSION } from '../utils';
+
+import { service } from './utils';
 import worker from './worker';
 
 ['VPN_INSTANCE_COUNT']

@@ -1,14 +1,21 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es2017",
-		"strict": true,
-		"noErrorTruncation": true,
-		"noUnusedParameters": true,
-		"noUnusedLocals": true,
-		"preserveConstEnums": true,
 		"allowJs": false,
-		"skipLibCheck": true
+		"forceConsistentCasingInFileNames": true,
+		"module": "commonjs",
+		"noErrorTruncation": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"outDir": "build/",
+		"preserveConstEnums": true,
+		"removeComments": true,
+		"resolveJsonModule": true,
+		"sourceMap": true,
+		"strict": true,
+		"skipLibCheck": true,
+		"strictNullChecks": true,
+		"target": "es2018"
 	},
 	"include": [
 		"src/**/*.ts",

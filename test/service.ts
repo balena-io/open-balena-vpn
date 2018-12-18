@@ -18,7 +18,7 @@
 import * as chai from 'chai';
 import * as nock from 'nock';
 
-import { service } from '../src/service';
+import { service } from '../src/vpn-api/utils';
 
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 

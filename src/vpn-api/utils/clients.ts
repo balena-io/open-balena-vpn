@@ -29,10 +29,10 @@ import * as Promise from 'bluebird';
 import { IncomingMessage } from 'http';
 import * as _ from 'lodash';
 
-import { captureException } from './errors';
-import { getPostWorker } from './libs/post-pool';
+import { apiKey, captureException, logger } from '../../utils';
+
+import { getPostWorker } from './request';
 import { service } from './service';
-import { apiKey, logger } from './utils';
 
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const REQUEST_TIMEOUT = 60000;
@@ -92,7 +92,9 @@ const setDeviceState = (() => {
 					logger.info(`Successfully updated state for ${uuid}: ${stateMsg}`);
 				})
 				.catch(err => {
-					captureException(err, 'Error updating state', { user: { uuid } });
+					captureException(err, 'Error updating state', {
+						user: { uuid },
+					});
 					// Add a 60 second delay in case of failure to avoid a crazy flood
 					return Promise.delay(60000).then(() => {
 						// Trigger another apply, to retry the failed update

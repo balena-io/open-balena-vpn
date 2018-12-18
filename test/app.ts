@@ -28,9 +28,8 @@ import * as querystring from 'querystring';
 const { expect } = chai;
 
 import tunnelWorker from '../src/connect-proxy/worker';
-import { service } from '../src/service';
-import { request } from '../src/utils';
-import vpnWorker from '../src/worker';
+import { request, service } from '../src/vpn-api/utils';
+import vpnWorker from '../src/vpn-api/worker';
 
 const vpnHost = process.env.VPN_HOST || '127.0.0.1';
 const vpnPort = process.env.VPN_PORT || '443';

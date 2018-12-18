@@ -22,9 +22,11 @@ import * as forever from 'forever-monitor';
 import * as morgan from 'morgan';
 import * as net from 'net';
 
+import { captureException, logger } from '../utils';
+import { Raven } from '../utils/errors';
+
 import apiFactory from './api';
-import { captureException, Raven } from './errors';
-import { logger, Netmask } from './utils';
+import { Netmask } from './utils';
 
 interface AsyncApplication extends express.Application {
 	listenAsync(port: number): Promise<ReturnType<express.Application['listen']>>;

@@ -23,9 +23,9 @@ StandardOutput=journal+console
 StandardError=journal+console
 WorkingDirectory=/usr/src/app
 EnvironmentFile=/usr/src/app/config/env
-ExecStart=/usr/src/app/node_modules/.bin/ts-node src/connect-proxy/app.ts
+ExecStart=/usr/src/app/bin/balena-connect-proxy
 Restart=always
-SyslogIdentifier=balena-proxy
+SyslogIdentifier=balena-connect-proxy
 
 [Install]
 WantedBy=basic.target
