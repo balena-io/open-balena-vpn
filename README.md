@@ -2,7 +2,7 @@
 
 ## Description
 
-openBalena VPN augments an OpenVPN server with the following components/features:
+OpenBalena VPN augments an OpenVPN server with the following components/features:
 
 * `open-balena-connect-proxy` is a http connect proxy that
   handles connections through the vpn to services on connected devices, used by
