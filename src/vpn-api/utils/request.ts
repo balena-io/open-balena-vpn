@@ -15,42 +15,22 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Promise from 'bluebird';
-import * as genericPool from 'generic-pool';
 import * as _ from 'lodash';
 import * as rp from 'request-promise';
+import { Agent } from 'https';
 
 export const request = rp.defaults({
 	resolveWithFullResponse: true,
 	simple: false,
 });
 
-const postAsync = request.post;
-type PostAsyncFn = typeof postAsync;
-
-// wrap the postAsync function to make each worker we create distinguishable to the pool
-const $createFunc = () => (...args: Parameters<PostAsyncFn>) =>
-	postAsync(...args);
-const createFunc = Promise.method($createFunc) as () => Promise<PostAsyncFn>;
-
-const factory: genericPool.Factory<PostAsyncFn> = {
-	create: createFunc,
-	destroy: Promise.method(_.noop),
-};
-
-let max: number | undefined;
+let maxSockets = 20;
 const { MAX_API_POST_WORKERS } = process.env;
 if (MAX_API_POST_WORKERS != null) {
-	max = parseInt(MAX_API_POST_WORKERS, 10);
+	maxSockets = parseInt(MAX_API_POST_WORKERS, 10);
 }
-const opts = {
-	max,
-	idleTimeoutMillis: Infinity,
-};
 
-const postPool = genericPool.createPool(factory, opts);
-
-export const getPostWorker = (): Promise.Disposer<PostAsyncFn> =>
-	Promise.resolve(postPool.acquire()).disposer(worker =>
-		postPool.release(worker),
-	);
+const pool = new Agent({
+	maxSockets,
+});
+export const pooledPostAsync = request.defaults({ pool }).post;
