@@ -31,7 +31,7 @@ import * as _ from 'lodash';
 
 import { apiKey, captureException, logger } from '../../utils';
 
-import { getPostWorker } from './request';
+import { pooledPostAsync } from './request';
 import { service } from './service';
 
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
@@ -62,16 +62,14 @@ const setDeviceState = (() => {
 			}
 
 			const eventType = targetState.connected ? 'connect' : 'disconnect';
-			return Promise.using(getPostWorker(), requestPost =>
-				requestPost({
-					url: `https://${BALENA_API_HOST}/services/vpn/client-${eventType}`,
-					timeout: REQUEST_TIMEOUT,
-					form: _.extend({ service_id: service.getId() }, targetState),
-					headers: { Authorization: `Bearer ${apiKey}` },
-				})
-					.promise()
-					.timeout(REQUEST_TIMEOUT),
-			)
+			return pooledPostAsync({
+				url: `https://${BALENA_API_HOST}/services/vpn/client-${eventType}`,
+				timeout: REQUEST_TIMEOUT,
+				form: _.extend({ service_id: service.getId() }, targetState),
+				headers: { Authorization: `Bearer ${apiKey}` },
+			})
+				.promise()
+				.timeout(REQUEST_TIMEOUT)
 				.then((response: IncomingMessage) => {
 					if (response.statusCode !== 200) {
 						throw new Error(

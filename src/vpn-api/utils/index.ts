@@ -18,5 +18,5 @@
 import * as clients from './clients';
 export { clients };
 export { Netmask } from './netmask';
-export { getPostWorker, request } from './request';
+export { request } from './request';
 export { service } from './service';
