@@ -26,7 +26,6 @@
     "@types/node": "^10.12.29",
     "@types/raven": "^2.5.3",
     "@types/request-promise": "^4.1.42",
-    "@types/winston": "^2.4.4",
     "basic-auth-parser": "0.0.2",
     "block-queue": "~0.0.2",
     "bluebird": "^3.5.3",
@@ -43,11 +42,11 @@
     "pinejs-client-request": "^5.1.0",
     "raven": "^2.6.4",
     "request": "^2.88.0",
-    "request-promise": "^4.2.2",
+    "request-promise": "^4.2.4",
     "tmp": "^0.0.33",
     "typed-error": "^3.0.2",
     "typescript": "^3.3.3333",
-    "winston": "^3.1.0"
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
