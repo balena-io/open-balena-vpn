@@ -145,16 +145,11 @@ describe('VPN proxy', function() {
 			}),
 		) as any) as HttpServerAsync;
 
-		return Promise.using(
-			vpnClient.connect(
-				credentials,
-				vpnDefaultOpts,
-			),
-			() =>
-				server
-					.listenAsync(8080)
-					.tap(() => func())
-					.tap(() => server.closeAsync()),
+		return Promise.using(vpnClient.connect(credentials, vpnDefaultOpts), () =>
+			server
+				.listenAsync(8080)
+				.tap(() => func())
+				.tap(() => server.closeAsync()),
 		);
 	};
 

@@ -66,8 +66,8 @@ const VPN_API_BASE_PORT = parseInt(process.env.VPN_API_BASE_PORT!, 10);
 
 const getInstanceSubnet = (instanceId: number) => {
 	const [netBase, netMask] = VPN_BASE_SUBNET.split('/');
-	const net = new Netmask(netBase, parseInt(netMask, 10));
-	return net.split(VPN_INSTANCE_SUBNET_BITMASK)[instanceId - 1];
+	const network = new Netmask(netBase, parseInt(netMask, 10));
+	return network.split(VPN_INSTANCE_SUBNET_BITMASK)[instanceId - 1];
 };
 
 const worker = (instanceId: number) => {

@@ -15,8 +15,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as dns from 'dns';
 import * as Promise from 'bluebird';
+import * as dns from 'dns';
 import * as _ from 'lodash';
 import * as net from 'net';
 import * as nodeTunnel from 'node-tunnel';
@@ -55,7 +55,7 @@ const parseRequest = (req: nodeTunnel.Request) => {
 		logger.warn(`'.resin' tld is deprecated, use '.balena'`);
 	}
 
-	let auth = undefined;
+	let auth;
 	if (req.auth != null && req.auth.password != null) {
 		auth = Buffer.from(req.auth.password);
 	}
@@ -127,7 +127,7 @@ const tunnelToDevice: nodeTunnel.Middleware = (req, cltSocket, _head, next) =>
 		});
 
 class Tunnel extends nodeTunnel.Tunnel {
-	connect(
+	public connect(
 		port: number,
 		host: string,
 		client: net.Socket,
@@ -137,21 +137,14 @@ class Tunnel extends nodeTunnel.Tunnel {
 			lookupAsync(`${uuid}.vpn`)
 				.then(() => {
 					logger.info(`connecting to ${host}:${port}`);
-					return super
-						.connect(
-							port,
-							host,
-							client,
-							req,
-						)
-						.tap(socket => {
-							socket.on('close', () =>
-								logger.info(
-									`connection to device ${uuid} on port ${port} closed`,
-								),
-							);
-							logger.info(`tunnel opened to device ${uuid} on port ${port}`);
-						});
+					return super.connect(port, host, client, req).tap(socket => {
+						socket.on('close', () =>
+							logger.info(
+								`connection to device ${uuid} on port ${port} closed`,
+							),
+						);
+						logger.info(`tunnel opened to device ${uuid} on port ${port}`);
+					});
 				})
 				.catch(() => {
 					return device
@@ -193,19 +186,15 @@ const forwardRequest = (
 ): Promise<net.Socket> =>
 	new Promise((resolve, reject) => {
 		let tunnelProxyResponse = '';
-		const socket: net.Socket = net.connect(
-			3128,
-			vpnHost,
-			() => {
-				socket.write(`CONNECT ${uuid}.balena:${port} HTTP/1.0\r\n`);
-				if (proxyAuth != null) {
-					socket.write(
-						`Proxy-Authorization: Basic ${proxyAuth.toString('base64')}\r\n`,
-					);
-				}
-				socket.write('\r\n\r\n');
-			},
-		);
+		const socket: net.Socket = net.connect(3128, vpnHost, () => {
+			socket.write(`CONNECT ${uuid}.balena:${port} HTTP/1.0\r\n`);
+			if (proxyAuth != null) {
+				socket.write(
+					`Proxy-Authorization: Basic ${proxyAuth.toString('base64')}\r\n`,
+				);
+			}
+			socket.write('\r\n\r\n');
+		});
 
 		const earlyEnd = () => {
 			reject(
@@ -236,7 +225,7 @@ const forwardRequest = (
 			socket.removeListener('error', earlyError);
 
 			// RFC2616: Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
-			let httpStatusLine = tunnelProxyResponse.split('\r\n')[0];
+			const httpStatusLine = tunnelProxyResponse.split('\r\n')[0];
 			const httpStatusCode = parseInt(httpStatusLine.split(' ')[1], 10);
 
 			if (httpStatusCode !== 200) {

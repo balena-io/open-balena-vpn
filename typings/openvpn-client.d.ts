@@ -21,13 +21,13 @@ declare module 'openvpn-client' {
 	export class OpenVPNClient {
 		constructor(vpnOpts?: VpnOpts);
 
-		authenticate(user: string, pass: string): void;
-		connect(callback: () => void): Promise<any>;
-		disconnect(): Promise<void>;
+		public authenticate(user: string, pass: string): void;
+		public connect(callback: () => void): Promise<any>;
+		public disconnect(): Promise<void>;
 
-		on(event: 'data', callback: (data: Buffer) => void): this;
-		on(event: 'connect', callback: () => void): this;
-		on(event: 'disconnect', callback: (code: number) => void): this;
+		public on(event: 'data', callback: (data: Buffer) => void): this;
+		public on(event: 'connect', callback: () => void): this;
+		public on(event: 'disconnect', callback: (code: number) => void): this;
 	}
 
 	export const create: (vpnOpts?: VpnOpts) => OpenVPNClient;

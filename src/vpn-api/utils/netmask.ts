@@ -19,9 +19,9 @@ import * as netmask from 'netmask';
 
 export class Netmask extends netmask.Netmask {
 	// The second usable address of the block
-	second: string;
+	public second: string;
 	// The third usable address of the block
-	third: string;
+	public third: string;
 
 	constructor(net: string, mask: number) {
 		if (mask > 29) {
@@ -34,7 +34,7 @@ export class Netmask extends netmask.Netmask {
 		this.third = netmask.long2ip(netmask.ip2long(this.first) + 2);
 	}
 
-	split(mask: number): Netmask[] {
+	public split(mask: number): Netmask[] {
 		if (mask < this.bitmask) {
 			throw new Error(`Cannot split /${this.bitmask} into /${mask}!`);
 		}
@@ -56,7 +56,7 @@ export class Netmask extends netmask.Netmask {
 	}
 
 	// Override netmask.Netmask.next so it returns a Netmask (as opposed to netmask.Netmask) object
-	next(count: number = 1): Netmask {
+	public next(count: number = 1): Netmask {
 		return new Netmask(
 			netmask.long2ip(this.netLong + this.size * count),
 			this.bitmask,
