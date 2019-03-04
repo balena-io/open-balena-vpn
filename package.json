@@ -15,16 +15,16 @@
     "test": "docker build -t test-balena-vpn . && IMAGE_NAME=test-balena-vpn ./automation/test.sh"
   },
   "dependencies": {
-    "@types/bluebird": "^3.5.25",
+    "@types/bluebird": "^3.5.26",
     "@types/body-parser": "^1.17.0",
     "@types/compression": "^0.0.36",
-    "@types/express": "^4.16.0",
-    "@types/forever-monitor": "^1.7.3",
-    "@types/lodash": "^4.14.119",
+    "@types/express": "^4.16.1",
+    "@types/forever-monitor": "^1.7.4",
+    "@types/lodash": "^4.14.122",
     "@types/morgan": "^1.7.35",
     "@types/netmask": "^1.0.30",
-    "@types/node": "^10.12.17",
-    "@types/raven": "^2.5.1",
+    "@types/node": "^10.12.29",
+    "@types/raven": "^2.5.3",
     "@types/request-promise": "^4.1.42",
     "@types/winston": "^2.4.4",
     "basic-auth-parser": "0.0.2",
@@ -46,7 +46,7 @@
     "request-promise": "^4.2.2",
     "tmp": "^0.0.33",
     "typed-error": "^3.0.2",
-    "typescript": "^3.2.2",
+    "typescript": "^3.3.3333",
     "winston": "^3.1.0"
   },
   "devDependencies": {
