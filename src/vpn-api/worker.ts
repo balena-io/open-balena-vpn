@@ -88,6 +88,8 @@ const worker = (instanceId: number) => {
 		'/etc/openvpn',
 		'--config',
 		'/etc/openvpn/server.conf',
+		'--verb',
+		'2',
 		'--dev',
 		`tun${instanceId}`,
 		'--port',

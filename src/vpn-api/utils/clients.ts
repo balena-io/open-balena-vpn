@@ -124,14 +124,12 @@ const setDeviceState = (() => {
 })();
 
 export const connected = (data: Partial<DeviceState>) => {
-	logger.info(`${data.common_name}: connected`, data);
 	data = _.pick(data, 'common_name', 'virtual_address');
 	data.connected = true;
 	return setDeviceState(data as DeviceState);
 };
 
 export const disconnected = (data: Partial<DeviceState>) => {
-	logger.info(`${data.common_name}: disconnected`, data);
 	data = _.pick(data, 'common_name');
 	data.connected = false;
 	return setDeviceState(data as DeviceState);
