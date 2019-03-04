@@ -17,7 +17,6 @@ global
 	stats socket /var/run/haproxy.sock mode 600 level admin
 
 defaults
-	mode tcp
 	maxconn {{$maxconn}}
 	log global
 	option dontlognull
@@ -29,21 +28,38 @@ defaults
 	timeout client {{$timeout}}s
 	timeout server {{$timeout}}s
 
+{{ if ne (getenv "METRICS_SECRET_TOKEN") "" -}}
+userlist metrics
+	user monitor insecure-password "{{ getenv "METRICS_SECRET_TOKEN" }}"
+{{- end }}
+
 frontend health-80
 	mode http
 	option httplog
 	bind ipv4@:80
 	bind ipv4@:81 accept-proxy
-	acl vpn_dead nbsrv(vpn-cluster) lt 1
+	acl vpn_dead nbsrv(vpn-workers) lt 1
 	monitor-uri /ping
 	monitor fail if vpn_dead
+{{- if ne (getenv "METRICS_SECRET_TOKEN") "" }}
+	acl is-metrics path /metrics
+	acl metrics-auth http_auth(metrics)
+	http-request deny if is-metrics !metrics-auth
+	use_backend vpn-master if is-metrics metrics-auth
+
+backend vpn-master
+	mode http
+	server vpn0 127.0.0.1:8080 check
+{{- end }}
 
 frontend tcp-{{$vpnPort}}
+	mode tcp
 	bind ipv4@:{{$vpnPort}} {{$bindOpt}}
 	# Routing <client-ip:port>@<frontend> to <backend>/<server>:<port> [Conns Queues Times]
 	log-format "Routing %ci:%cp@%ft to %b/%s:%bp [C:%bc/%sc Q:%bq/%sq T:%Tw/%Tc]"
-	default_backend vpn-cluster
+	default_backend vpn-workers
 
-backend vpn-cluster
+backend vpn-workers
+	mode tcp
 	balance leastconn
 	server-template vpn 1-{{$servers}} 127.0.0.1:10000 check disabled

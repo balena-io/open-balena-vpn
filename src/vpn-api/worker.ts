@@ -19,8 +19,12 @@ import * as Promise from 'bluebird';
 import * as compression from 'compression';
 import * as express from 'express';
 import * as forever from 'forever-monitor';
+import * as _ from 'lodash';
 import * as morgan from 'morgan';
 import * as net from 'net';
+import VpnManager = require('telnet-openvpn');
+
+import { metrics } from '@balena/node-metrics-gatherer';
 
 import { captureException, logger } from '../utils';
 import { Raven } from '../utils/errors';
@@ -28,7 +32,7 @@ import { Raven } from '../utils/errors';
 import apiFactory from './api';
 import { Netmask } from './utils';
 
-interface AsyncApplication extends express.Application {
+interface AsyncApplication extends express.Express {
 	listenAsync(port: number): Promise<ReturnType<express.Application['listen']>>;
 }
 
@@ -70,6 +74,10 @@ const getInstanceSubnet = (instanceId: number) => {
 	return network.split(VPN_INSTANCE_SUBNET_BITMASK)[instanceId - 1];
 };
 
+// disable bytecount reporting by default
+const VPN_BYTECOUNT_INTERVAL =
+	parseInt(process.env.VPN_BYTECOUNT_INTERVAL!, 10) || 0;
+
 const worker = (instanceId: number) => {
 	logger.info(`worker-${instanceId} process started with pid ${process.pid}`);
 
@@ -97,6 +105,7 @@ const worker = (instanceId: number) => {
 		'--management',
 		'127.0.0.1',
 		`${mgtPort}`,
+		'--management-hold',
 		'--ifconfig',
 		gateway,
 		subnet.second,
@@ -126,14 +135,49 @@ const worker = (instanceId: number) => {
 		captureException(err, 'OpenVPN Error');
 		process.exit(2);
 	});
+	const vpn = new VpnManager();
+	// map clientid -> uuid
+	const cidMap: { [key: string]: string } = {};
+	// and uuid -> clientid
+	const uuidMap: { [key: string]: string } = {};
 
-	const app = (Promise.promisifyAll(express()) as any) as AsyncApplication;
+	const app = Promise.promisifyAll(express()) as AsyncApplication;
 	app.disable('x-powered-by');
 	app.get('/ping', (_req, res) => res.send('OK'));
 	app.use(morgan('combined'));
 	app.use(compression());
 	app.use(apiFactory());
 	app.use(Raven.errorHandler());
+
+	// setup metrics for prometheus
+	const kb = 2 ** 10; // 1024
+	const mb = 2 ** 10 * kb;
+	const gb = 2 ** 10 * mb;
+	const tb = 2 ** 10 * gb;
+	const buckets = [
+		kb,
+		mb,
+		10 * mb,
+		100 * mb,
+		500 * mb,
+		gb,
+		10 * gb,
+		100 * gb,
+		150 * gb,
+		250 * gb,
+		500 * gb,
+		tb,
+	];
+	metrics.describe(
+		'vpn_sessions_rx_bytes',
+		'histogram of rx bytes per vpn session',
+		{ buckets },
+	);
+	metrics.describe(
+		'vpn_sessions_tx_bytes',
+		'histogram of tx bytes per vpn session',
+		{ buckets },
+	);
 
 	return app
 		.listenAsync(apiPort)
@@ -143,13 +187,66 @@ const worker = (instanceId: number) => {
 			),
 		)
 		.tap(() => openvpn.start())
+		.delay(1000)
+		.tap(() => {
+			return vpn.connect({ port: mgtPort, shellPrompt: '' }).then(() => {
+				vpn.connection.shellPrompt = '';
+				// monitor new client connections and map cid to uuid
+				vpn.on('log', data => {
+					if (data.includes('CLIENT:ESTABLISHED,')) {
+						const clientId = data.split(',')[1].trim();
+						const idMapper = (logData: string) => {
+							if (logData.includes('CLIENT:ENV,common_name=')) {
+								const uuid = logData.split('=')[1].trim();
+								// expire any previous mappings for this device
+								if (uuidMap[uuid] != null) {
+									delete cidMap[uuidMap[uuid]];
+									delete uuidMap[uuid];
+								}
+								// register current mapping
+								cidMap[clientId] = uuid;
+								uuidMap[uuid] = clientId;
+								logger.info(
+									`Parsed connect event for client_id=${clientId} uuid=${uuid}`,
+								);
+								vpn.removeListener('log', idMapper);
+							}
+						};
+						vpn.on('log', idMapper);
+					}
+				});
+				// process bytecount events to track realtime data usage
+				vpn.on('data', data => {
+					if (data.bytecount_cli == null) {
+						return;
+					}
+					const clientId = data.bytecount_cli[0];
+					const uuid = cidMap[clientId];
+
+					if (uuid == null) {
+						logger.error(`Unknown CID(${clientId}) from OpenVPN!`);
+						return;
+					}
+
+					const rxBytes = parseInt(data.bytecount_cli[1], 10);
+					const txBytes = parseInt(data.bytecount_cli[2], 10);
+					metrics.histogram('vpn_session_rx_bytes', rxBytes);
+					metrics.histogram('vpn_session_tx_bytes', txBytes);
+				});
+				// enable bytecount/status reporting and release management hold
+				return vpn
+					.exec(`bytecount ${VPN_BYTECOUNT_INTERVAL}`)
+					.then(() => vpn.exec('state on'))
+					.then(() => vpn.exec('hold release'));
+			});
+		})
 		.tap(() =>
 			net.createConnection('/var/run/haproxy.sock', function(this: net.Socket) {
 				this.on('error', err => {
 					logger.error(`Error connecting to haproxy socket: ${err.message}`);
 					process.exit(1);
 				});
-				const preamble = `set server vpn-cluster/vpn${instanceId}`;
+				const preamble = `set server vpn-workers/vpn${instanceId}`;
 				this.write(
 					`${preamble} addr 127.0.0.1 port ${vpnPort}\r\n${preamble} state ready\r\n`,
 					() => this.destroy(),

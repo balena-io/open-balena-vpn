@@ -16,8 +16,12 @@
 */
 
 import * as cluster from 'cluster';
+import * as express from 'express';
 import * as _ from 'lodash';
+import * as morgan from 'morgan';
 import * as os from 'os';
+
+import { metrics } from '@balena/node-metrics-gatherer';
 
 import { logger, VERSION } from '../utils';
 
@@ -40,29 +44,34 @@ if (cluster.isMaster) {
 	logger.info(
 		`open-balena-vpn@${VERSION} master process started with pid ${process.pid}`,
 	);
-	if (VPN_INSTANCE_COUNT > 1) {
-		logger.info(`spawning ${VPN_INSTANCE_COUNT} workers`);
-		_.times(VPN_INSTANCE_COUNT, i => {
-			const instanceId = i + 1;
-			const restartWorker = (code?: number, signal?: string) => {
-				if (signal != null) {
-					logger.error(
-						`open-balena-vpn worker-${instanceId} killed with signal ${signal}`,
-					);
-				}
-				if (code != null) {
-					logger.error(
-						`open-balena-vpn worker-${instanceId} exited with code ${code}`,
-					);
-				}
-				cluster.fork({ VPN_INSTANCE_ID: instanceId }).on('exit', restartWorker);
-			};
-			restartWorker();
-		});
-	}
+	logger.info(`spawning ${VPN_INSTANCE_COUNT} workers`);
+	_.times(VPN_INSTANCE_COUNT, i => {
+		const instanceId = i + 1;
+		const restartWorker = (code?: number, signal?: string) => {
+			if (signal != null) {
+				logger.error(
+					`open-balena-vpn worker-${instanceId} killed with signal ${signal}`,
+				);
+			}
+			if (code != null) {
+				logger.error(
+					`open-balena-vpn worker-${instanceId} exited with code ${code}`,
+				);
+			}
+			cluster.fork({ VPN_INSTANCE_ID: instanceId }).on('exit', restartWorker);
+		};
+		restartWorker();
+	});
+
+	const app = express();
+	app.disable('x-powered-by');
+	app.get('/ping', (_req, res) => res.send('OK'));
+	app.use(morgan('combined'));
+	app.get('/metrics', metrics.aggregateRequestHandler());
+	app.listen(8080);
 }
 
-if (cluster.isWorker || VPN_INSTANCE_COUNT === 1) {
-	const instanceId = parseInt(process.env.VPN_INSTANCE_ID || '1', 10);
+if (cluster.isWorker) {
+	const instanceId = parseInt(process.env.VPN_INSTANCE_ID!, 10);
 	service.wrap(() => worker(instanceId));
 }

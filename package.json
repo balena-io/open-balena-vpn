@@ -15,6 +15,7 @@
     "test": "docker build -t test-balena-vpn . && IMAGE_NAME=test-balena-vpn ./automation/test.sh"
   },
   "dependencies": {
+    "@balena/node-metrics-gatherer": "^2.1.0",
     "@types/bluebird": "^3.5.26",
     "@types/body-parser": "^1.17.0",
     "@types/compression": "^0.0.36",
@@ -44,6 +45,7 @@
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "source-map-support": "^0.5.11",
+    "telnet-openvpn": "^0.1.9",
     "tmp": "^0.1.0",
     "typed-error": "^3.1.0",
     "typescript": "^3.4.1",

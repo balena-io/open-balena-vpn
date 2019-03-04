@@ -64,7 +64,7 @@ before(() => {
 });
 
 describe('vpn worker', function() {
-	this.timeout(10 * 1000);
+	this.timeout(15 * 1000);
 
 	before(() => {
 		nock(`https://${BALENA_API_HOST}`)
