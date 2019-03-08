@@ -46,9 +46,9 @@ if (cluster.isMaster) {
 		);
 		// spawn worker processes
 		_.times(VPN_CONNECT_INSTANCE_COUNT, cluster.fork);
-		cluster.on('exit', (worker: cluster.Worker, code: number) => {
+		cluster.on('exit', (childWorker: cluster.Worker, code: number) => {
 			logger.error(
-				`proxy worker ${worker.process.pid} exited with code ${code}`,
+				`proxy worker ${childWorker.process.pid} exited with code ${code}`,
 			);
 			cluster.fork();
 		});

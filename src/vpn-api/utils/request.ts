@@ -15,9 +15,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { Agent } from 'https';
 import * as _ from 'lodash';
 import * as rp from 'request-promise';
-import { Agent } from 'https';
 
 export const request = rp.defaults({
 	resolveWithFullResponse: true,
