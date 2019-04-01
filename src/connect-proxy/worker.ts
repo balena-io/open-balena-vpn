@@ -137,14 +137,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 			lookupAsync(`${uuid}.vpn`)
 				.then(() => {
 					logger.info(`connecting to ${host}:${port}`);
-					return super.connect(port, host, client, req).tap(socket => {
-						socket.on('close', () =>
-							logger.info(
-								`connection to device ${uuid} on port ${port} closed`,
-							),
-						);
-						logger.info(`tunnel opened to device ${uuid} on port ${port}`);
-					});
+					return super.connect(port, host, client, req);
 				})
 				.catch(() => {
 					return device
@@ -235,16 +228,6 @@ const forwardRequest = (
 					),
 				);
 			}
-
-			// one proxied socket, ready to go!
-			logger.info(
-				`tunnel opened to device ${uuid} on port ${port} via ${vpnHost}`,
-			);
-			socket.on('close', () =>
-				logger.info(
-					`connection to device ${uuid} on port ${port} via ${vpnHost} closed`,
-				),
-			);
 			resolve(socket);
 		};
 

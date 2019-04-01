@@ -95,7 +95,7 @@ export const getDeviceVpnHost = (
 					manages__device: {
 						$any: {
 							$alias: 'd',
-							$expr: { d: { uuid } },
+							$expr: { d: { uuid, is_connected_to_vpn: true } },
 						},
 					},
 				},
