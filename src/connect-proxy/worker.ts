@@ -29,7 +29,7 @@ import * as device from './device';
 ['VPN_SERVICE_API_KEY']
 	.filter(key => process.env[key] == null)
 	.forEach((key, idx, keys) => {
-		logger.error(`${key} env variable is not set.`);
+		logger.emerg(`${key} env variable is not set.`);
 		if (idx === keys.length - 1) {
 			process.exit(1);
 		}
@@ -52,7 +52,7 @@ const parseRequest = (req: nodeTunnel.Request) => {
 	}
 	const [, uuid, tld, port = '80'] = match;
 	if (tld === 'resin') {
-		logger.warn(`'.resin' tld is deprecated, use '.balena'`);
+		logger.warning(`'.resin' tld is deprecated, use '.balena'`);
 	}
 
 	let auth;
@@ -103,14 +103,14 @@ const tunnelToDevice: nodeTunnel.Middleware = (req, cltSocket, _head, next) =>
 	})
 		.then(() => next())
 		.catch(errors.APIError, err => {
-			logger.error(`Invalid Response from API (${err.message})`);
+			logger.alert(`Invalid Response from API (${err.message})`);
 			cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
 		})
 		.catch(errors.BadRequestError, () =>
 			cltSocket.end('HTTP/1.0 400 Bad Request\r\n\r\n'),
 		)
 		.catch(errors.HandledTunnelingError, err =>
-			logger.error(`Tunneling Error (${err.message})`),
+			logger.crit(`Tunneling Error (${err.message})`),
 		)
 		.catch(errors.InvalidHostnameError, () =>
 			cltSocket.end('HTTP/1.0 403 Forbidden\r\n\r\n'),
@@ -143,7 +143,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 					return device
 						.getDeviceVpnHost(uuid, auth)
 						.catch(errors.APIError, err => {
-							logger.error(
+							logger.crit(
 								`error connecting to device ${uuid} on port ${port} (${
 									err.message
 								})`,
@@ -157,7 +157,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 							return forwardRequest(vpnHost, uuid, port, auth).catch(
 								errors.RemoteTunnellingError,
 								err => {
-									logger.error(
+									logger.crit(
 										`error forwarding request for ${uuid}:${port} (${
 											err.message
 										})`,
@@ -245,7 +245,7 @@ const worker = (port: string) => {
 	tunnel.on('error', err => {
 		// errors thrown in `Tunnel.connect` will appear here
 		if (!(err instanceof errors.HandledTunnelingError)) {
-			logger.error(
+			logger.crit(
 				`failed to connect to device (${err.message || err})\n${err.stack}`,
 			);
 			captureException(err);

@@ -15,54 +15,138 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { metrics } from '@balena/node-metrics-gatherer';
 import * as cluster from 'cluster';
+import * as express from 'express';
 import * as _ from 'lodash';
 import * as os from 'os';
+import * as prometheus from 'prom-client';
 
 import { logger, VERSION } from '../utils';
 
+import { describeMetrics, Metrics } from './metrics';
 import { service } from './utils';
 import worker from './worker';
 
 ['VPN_INSTANCE_COUNT']
 	.filter(key => process.env[key] == null)
 	.forEach((key, idx, keys) => {
-		logger.error(`${key} env variable is not set.`);
+		logger.emerg(`${key} env variable is not set.`);
 		if (idx === keys.length - 1) {
-			process.exit(1);
+			process.exitCode = 1;
 		}
 	});
 
 const VPN_INSTANCE_COUNT =
 	parseInt(process.env.VPN_INSTANCE_COUNT!, 10) || os.cpus().length;
 
+describeMetrics();
+
 if (cluster.isMaster) {
-	logger.info(
-		`open-balena-vpn@${VERSION} master process started with pid ${process.pid}`,
+	logger.notice(
+		`[master] open-balena-vpn@${VERSION} process started with pid=${
+			process.pid
+		}`,
 	);
-	if (VPN_INSTANCE_COUNT > 1) {
-		logger.info(`spawning ${VPN_INSTANCE_COUNT} workers`);
-		_.times(VPN_INSTANCE_COUNT, i => {
-			const instanceId = i + 1;
-			const restartWorker = (code?: number, signal?: string) => {
-				if (signal != null) {
-					logger.error(
-						`open-balena-vpn worker-${instanceId} killed with signal ${signal}`,
-					);
-				}
-				if (code != null) {
-					logger.error(
-						`open-balena-vpn worker-${instanceId} exited with code ${code}`,
-					);
-				}
-				cluster.fork({ VPN_INSTANCE_ID: instanceId }).on('exit', restartWorker);
-			};
-			restartWorker();
-		});
+
+	interface WorkerMetric {
+		uuid: string;
+		rxBitrate: number[];
+		txBitrate: number[];
 	}
+	let workerMetrics: { [key: string]: WorkerMetric } = {};
+	let verbose = false;
+
+	process.on('SIGUSR2', () => {
+		logger.notice('[master] caught SIGUSR2, toggling log verbosity');
+		verbose = !verbose;
+		process.env.VPN_VERBOSE_LOGS = `${verbose}`;
+		_.each(cluster.workers, clusterWorker => {
+			if (clusterWorker != null) {
+				clusterWorker.send('toggleVerbosity');
+			}
+		});
+	});
+
+	cluster.on(
+		'message',
+		(_worker, msg: { type: string; data: WorkerMetric }) => {
+			const { data, type } = msg;
+			if (type !== 'bytecount') {
+				return;
+			}
+			workerMetrics[data.uuid] = _.mergeWith(
+				workerMetrics[data.uuid] || { rxBitrate: [], txBitrate: [] },
+				data,
+				(obj, src) => {
+					if (_.isArray(obj)) {
+						return obj.concat([src]);
+					}
+				},
+			);
+		},
+	);
+
+	logger.info(`[master] spawning ${VPN_INSTANCE_COUNT} workers`);
+	_.times(VPN_INSTANCE_COUNT, i => {
+		const instanceId = i + 1;
+		const restartWorker = (code?: number, signal?: string) => {
+			if (signal != null) {
+				logger.crit(
+					`[master] worker-${instanceId} killed with signal ${signal}`,
+				);
+			}
+			if (code != null) {
+				logger.crit(`[master] worker-${instanceId} exited with code ${code}`);
+			}
+			cluster
+				.fork(_.defaults(process.env, { VPN_INSTANCE_ID: instanceId }))
+				.on('exit', restartWorker);
+		};
+		restartWorker();
+	});
+
+	const app = express();
+	app.disable('x-powered-by');
+	app.get('/ping', (_req, res) => res.send('OK'));
+	app.get('/cluster_metrics', (_req, res) => {
+		for (const clientMetrics of Object.values(workerMetrics)) {
+			metrics.histogram(
+				Metrics.SessionRxBitrate,
+				_.mean(clientMetrics.rxBitrate),
+				{
+					uuid: clientMetrics.uuid,
+				},
+			);
+			metrics.histogram(
+				Metrics.SessionTxBitrate,
+				_.mean(clientMetrics.txBitrate),
+				{
+					uuid: clientMetrics.uuid,
+				},
+			);
+		}
+		return new prometheus.AggregatorRegistry()
+			.clusterMetrics()
+			.then((clusterMetrics: string) => {
+				res.set('Content-Type', prometheus.register.contentType);
+				res.write(prometheus.register.metrics());
+				res.write('\n');
+				res.write(clusterMetrics);
+				res.end();
+				workerMetrics = {};
+				metrics.reset(Metrics.SessionRxBitrate);
+				metrics.reset(Metrics.SessionTxBitrate);
+			})
+			.catch((err: Error) => {
+				logger.warning(`error in /cluster_metrics: ${err}`);
+				res.status(500).send();
+			});
+	});
+	app.listen(8080);
 }
 
-if (cluster.isWorker || VPN_INSTANCE_COUNT === 1) {
-	const instanceId = parseInt(process.env.VPN_INSTANCE_ID || '1', 10);
+if (cluster.isWorker) {
+	const instanceId = parseInt(process.env.VPN_INSTANCE_ID!, 10);
 	service.wrap(() => worker(instanceId));
 }

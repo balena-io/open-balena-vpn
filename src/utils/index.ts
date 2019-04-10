@@ -30,10 +30,15 @@ export const balenaApi = new PinejsClientRequest(
 export const apiKey = process.env.VPN_SERVICE_API_KEY;
 
 const consoleTransport = new winston.transports.Console({
-	format: winston.format.simple(),
+	format: winston.format.combine(
+		winston.format.colorize(),
+		winston.format.simple(),
+	),
+	level: 'debug',
 });
 export const logger = winston.createLogger({
 	transports: [consoleTransport],
 	exceptionHandlers: [consoleTransport],
 	exitOnError: false,
+	levels: winston.config.syslog.levels,
 });

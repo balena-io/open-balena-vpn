@@ -7,7 +7,7 @@ openBalena VPN augments an OpenVPN server with the following components/features
 * `open-balena-connect-proxy` is a http connect proxy that
   handles connections through the vpn to services on connected devices, used by
   external services such as `balena-proxy`
-* `open-balena-vpn` which consists of an internal API for handling
+* `open-balena-vpn-api` which consists of an internal API for handling
   authentication and tracking device state, and spawns openvpn server instances
 * haproxy used for balancing new connections between openvpn instances
 * [libnss-openvpn](http://github.com/balena-io-modules/libnss-openvpn) is used to
@@ -20,7 +20,7 @@ Networking is configured by a number of environmental variables:
 * `BALENA_VPN_GATEWAY` (*optional*) dictates the server end of the p2p connection
 * `VPN_BASE_SUBNET` in CIDR notation is the entire subnet used for all servers
 * `VPN_INSTANCE_SUBNET_BITMASK` is the VLSM to split `VPN_BASE_SUBNET` into
-* `VPN_BASE_PORT`, `VPN_BASE_MANAGEMENT_PORT` and `VPN_API_BASE_PORT`
+  `VPN_BASE_PORT` and `VPN_BASE_MANAGEMENT_PORT`
 
 Given a base subnet of `10.240.0.0/12` and a per-instance VLSM of `20` a server
 the first instance subnet would be `10.240.0.0/20` and the second would be
@@ -47,18 +47,11 @@ OpenVPN writes connected client information to
 `/var/run/openvpn/server-${id}.status` which are interrogated by libnss-openvpn
 allowing for lookup of connected device VPN addresses via uuid.
 
-## Client Authentication
+## Client Authentication / State
 
-VPN client authentication is initially handled by a simple script which uses
-`curl` to pass the username and password (device UUID and Balena API key) to the
-internal `open-balena-vpn` API, which in turn makes a request to `open-balena-api` and
-ultimately decides the fate of the client.
-
-## Client State
-
-Client state is tracked via [openvpn scripts](https://github.com/balena-io/open-balena-vpn/tree/master/openvpn/scripts)
-executed on connect/disconnect events which in turn use `curl` to hit
-the relevant internal [api endpoints](https://github.com/balena-io/open-balena-vpn/blob/master/src/api.ts).
+VPN client authentication is initiated via an event from the vpn management
+console which proxies the credentials to the balena api which ultimately
+decides the fate of the client.
 
 ## Accessing Clients
 

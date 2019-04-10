@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2018 Balena Ltd.
+	Copyright (C) 2019 Balena Ltd.
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -15,10 +15,24 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as clients from './clients';
-export { clients };
-export { HAProxy } from './haproxy';
-export { Netmask } from './netmask';
-export { VpnManager } from './openvpn';
-export { request } from './request';
-export { service } from './service';
+declare module 'telnet-client' {
+	import { EventEmitter } from 'events';
+
+	export declare interface TelnetConnectOptions {
+		port?: number | string;
+		shellPrompt?: string;
+	}
+
+	declare interface Telnet extends EventEmitter {
+		on(event: 'data', callback?: (data: Buffer) => void): this;
+		on(event: 'connect' | 'close' | 'end', callback?: () => void): this;
+		on(event: 'error', callback?: (err: Error) => void): this;
+	}
+
+	declare class Telnet {
+		public connect(options: TelnetConnectOptions): Promise<void>;
+		public send(command: string): Promise<Buffer>;
+	}
+
+	export = Telnet;
+}

@@ -7,7 +7,7 @@ RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/d
 	&& apt-get update -qq \
 	&& apt-get install -qy openssl openvpn sipcalc socat --no-install-recommends \
 	&& apt-get install -qy haproxy=1.8.* -t stretch-backports-1.8 --no-install-recommends \
-	&& apt-get clean && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf
+	&& apt-get clean && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/openvpn/* /etc/rsyslog.d/49-haproxy.conf
 
 ENV LIBNSS_OPENVPN_VERSION 22feb11322182f6fd79f85cd014b65b6c40b7b47
 RUN tmp="$(mktemp -d)" set -x \
@@ -18,9 +18,6 @@ RUN tmp="$(mktemp -d)" set -x \
 	&& make -C "${tmp}" install \
 	&& sed --in-place --regexp-extended 's|(hosts:.*)|\1 openvpn|' /etc/nsswitch.conf \
 	&& rm -rf "${tmp}"
-
-RUN echo "AUTOSTART=none" > /etc/default/openvpn \
-	&& rm -rf /etc/openvpn && ln -s /usr/src/app/openvpn /etc/openvpn
 
 COPY package.json package-lock.json /usr/src/app/
 RUN npm ci --unsafe-perm --production && npm cache clean --force 2>/dev/null

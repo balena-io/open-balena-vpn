@@ -1,6 +1,6 @@
 [template]
 src = "server.crt.tmpl"
-dest = "/usr/src/app/openvpn/server.crt"
+dest = "/etc/openvpn/server.crt"
 keys = [
   "/resin/vpn/openvpn/crt"
 ]

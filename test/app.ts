@@ -22,7 +22,6 @@ import * as http from 'http';
 import * as _ from 'lodash';
 import * as nock from 'nock';
 import * as vpnClient from 'openvpn-client';
-import * as path from 'path';
 import * as querystring from 'querystring';
 
 const { expect } = chai;
@@ -33,8 +32,7 @@ import vpnWorker from '../src/vpn-api/worker';
 
 const vpnHost = process.env.VPN_HOST || '127.0.0.1';
 const vpnPort = process.env.VPN_PORT || '443';
-const caCertPath =
-	process.env.CA_CERT_PATH || path.resolve(__dirname, '../openvpn/ca.crt');
+const caCertPath = process.env.CA_CERT_PATH || '/etc/openvpn/ca.crt';
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const VPN_CONNECT_PROXY_PORT = process.env.VPN_CONNECT_PROXY_PORT!;
 
@@ -64,7 +62,7 @@ before(() => {
 });
 
 describe('vpn worker', function() {
-	this.timeout(10 * 1000);
+	this.timeout(15 * 1000);
 
 	before(() => {
 		nock(`https://${BALENA_API_HOST}`)

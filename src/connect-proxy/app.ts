@@ -26,9 +26,9 @@ import worker from './worker';
 ['VPN_CONNECT_INSTANCE_COUNT', 'VPN_CONNECT_PROXY_PORT']
 	.filter(key => process.env[key] == null)
 	.forEach((key, idx, keys) => {
-		logger.error(`${key} env variable is not set.`);
+		logger.emerg(`${key} env variable is not set.`);
 		if (idx === keys.length - 1) {
-			process.exit(1);
+			process.exitCode = 1;
 		}
 	});
 
@@ -47,7 +47,7 @@ if (cluster.isMaster) {
 		// spawn worker processes
 		_.times(VPN_CONNECT_INSTANCE_COUNT, cluster.fork);
 		cluster.on('exit', (childWorker: cluster.Worker, code: number) => {
-			logger.error(
+			logger.crit(
 				`proxy worker ${childWorker.process.pid} exited with code ${code}`,
 			);
 			cluster.fork();

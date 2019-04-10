@@ -29,8 +29,9 @@ import * as Promise from 'bluebird';
 import { IncomingMessage } from 'http';
 import * as _ from 'lodash';
 
-import { apiKey, captureException, logger } from '../../utils';
+import { apiKey, captureException } from '../../utils';
 
+import { VpnClientTrustedData } from './openvpn';
 import { pooledPostAsync } from './request';
 import { service } from './service';
 
@@ -40,7 +41,7 @@ const REQUEST_TIMEOUT = 60000;
 interface DeviceStateTracker {
 	promise: Promise<any>;
 	currentState: Partial<DeviceState>;
-	targetState: Partial<DeviceState>;
+	targetState: DeviceState;
 }
 
 export interface DeviceState {
@@ -52,13 +53,13 @@ export interface DeviceState {
 const setDeviceState = (() => {
 	const deviceStates: { [key: string]: DeviceStateTracker } = {};
 
-	const applyState = (uuid: string) => {
-		deviceStates[uuid].promise = deviceStates[uuid].promise.then(() => {
+	const applyState = (uuid: string) =>
+		(deviceStates[uuid].promise = deviceStates[uuid].promise.then(() => {
 			// Get the latest target state at the start of the request
 			const { targetState, currentState } = deviceStates[uuid];
 			if (_.isEqual(targetState, currentState)) {
 				// If the states match then we don't have to do anything
-				return;
+				return targetState;
 			}
 
 			const eventType = targetState.connected ? 'connect' : 'disconnect';
@@ -78,16 +79,7 @@ const setDeviceState = (() => {
 					}
 					// Update the current state on success
 					deviceStates[uuid].currentState = targetState;
-					// Log updated state
-					let stateMsg = `common_name=${targetState.common_name} connected=${
-						targetState.connected
-					}`;
-					if (targetState.virtual_address != null) {
-						stateMsg = `${stateMsg} virtual_address=${
-							targetState.virtual_address
-						}`;
-					}
-					logger.info(`Successfully updated state for ${uuid}: ${stateMsg}`);
+					return targetState;
 				})
 				.catch(err => {
 					captureException(err, 'Error updating state', {
@@ -99,38 +91,44 @@ const setDeviceState = (() => {
 						applyState(uuid);
 						// Since we are recursing and this function always extends
 						// the promise chain (deviceStates[uuid].promise.then ->..)
-						// we need to return undefined to make this promise resolve
+						// we need to return targetState to make this promise resolve
 						// and let it continue with the recursion. If we just
 						// returned applyState() instead, the whole thing would
 						// deadlock
-						return null;
+						return targetState;
 					});
 				});
-		});
-	};
+		}));
 
 	return (state: DeviceState) => {
 		const uuid = state.common_name;
 		if (deviceStates[uuid] == null) {
 			deviceStates[uuid] = {
-				targetState: {},
+				targetState: state,
 				currentState: {},
 				promise: Promise.resolve(),
 			};
+		} else {
+			deviceStates[uuid].targetState = state;
 		}
 		deviceStates[uuid].targetState = state;
-		applyState(uuid);
+		return applyState(uuid);
 	};
 })();
 
-export const connected = (data: Partial<DeviceState>) => {
-	data = _.pick(data, 'common_name', 'virtual_address');
-	data.connected = true;
-	return setDeviceState(data as DeviceState);
+export const connected = (data: VpnClientTrustedData) => {
+	const state: DeviceState = {
+		common_name: data.common_name,
+		connected: true,
+		virtual_address: data.ifconfig_pool_remote_ip,
+	};
+	return setDeviceState(state);
 };
 
-export const disconnected = (data: Partial<DeviceState>) => {
-	data = _.pick(data, 'common_name');
-	data.connected = false;
-	return setDeviceState(data as DeviceState);
+export const disconnected = (data: VpnClientTrustedData) => {
+	const state: DeviceState = {
+		common_name: data.common_name,
+		connected: false,
+	};
+	return setDeviceState(state);
 };

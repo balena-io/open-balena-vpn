@@ -9,7 +9,7 @@ topology p2p
 persist-key
 persist-tun
 
-proto tcp-server
+proto tcp4-server
 compress lzo
 keepalive {{ getenv "VPN_KEEPALIVE_FREQUENCY" "10" }} {{ getenv "VPN_KEEPALIVE_TIMEOUT" "60" }}
 

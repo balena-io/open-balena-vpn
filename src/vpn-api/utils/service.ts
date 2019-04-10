@@ -17,7 +17,7 @@
 
 import * as Promise from 'bluebird';
 
-import { apiKey, balenaApi, captureException, logger } from '../../utils';
+import { apiKey, balenaApi, captureException } from '../../utils';
 import { ServiceRegistrationError } from '../../utils/errors';
 
 class ServiceInstance {
@@ -38,7 +38,6 @@ class ServiceInstance {
 					);
 				}
 				this.id = id;
-				logger.info(`Registered as a service instance, received ID ${id}`);
 				return this;
 			})
 			.catch(err => {
