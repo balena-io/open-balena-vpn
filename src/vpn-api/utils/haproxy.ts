@@ -15,14 +15,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Promise from 'bluebird';
+import * as Bluebird from 'bluebird';
 import * as net from 'net';
 
 export class HAProxy {
 	constructor(private sockPath: string) {}
 
-	protected connect(): Promise<net.Socket> {
-		return new Promise((resolve, reject) => {
+	protected connect(): Bluebird<net.Socket> {
+		return new Bluebird((resolve, reject) => {
 			const socket = net.createConnection(this.sockPath);
 			socket.on('connect', () => resolve(socket));
 			socket.on('error', reject);
@@ -33,7 +33,7 @@ export class HAProxy {
 		name: string,
 		port: number,
 		host: string = '127.0.0.1',
-	): Promise<boolean> {
+	): Bluebird<boolean> {
 		const preamble = `set server ${name}`;
 		return this.connect()
 			.then(socket => {

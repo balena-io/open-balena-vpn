@@ -30,8 +30,8 @@ declare module 'telnet-client' {
 	}
 
 	declare class Telnet {
-		public connect(options: TelnetConnectOptions): Promise<void>;
-		public send(command: string): Promise<Buffer>;
+		public connect(options: TelnetConnectOptions): Bluebird<void>;
+		public send(command: string): Bluebird<Buffer>;
 	}
 
 	export = Telnet;

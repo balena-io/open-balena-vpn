@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Promise from 'bluebird';
+import * as Bluebird from 'bluebird';
 import * as _ from 'lodash';
 
 import * as utils from '../utils';
@@ -38,7 +38,7 @@ export interface DeviceInfo {
 export const getDeviceByUUID = (
 	uuid: string,
 	auth?: Buffer,
-): Promise<DeviceInfo> =>
+): Bluebird<DeviceInfo> =>
 	utils.balenaApi
 		.get({
 			resource: 'device',
@@ -85,7 +85,7 @@ export const canAccessDevice = (
 export const getDeviceVpnHost = (
 	uuid: string,
 	auth?: Buffer,
-): Promise<string> =>
+): Bluebird<string> =>
 	utils.balenaApi
 		.get({
 			resource: 'service_instance',

@@ -25,7 +25,7 @@
 // Reset does not happen by actually resending all the events,
 // the API has a special endpoint that first sets all clients as offline.
 
-import * as Promise from 'bluebird';
+import * as Bluebird from 'bluebird';
 import { IncomingMessage } from 'http';
 import * as _ from 'lodash';
 
@@ -39,7 +39,7 @@ const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const REQUEST_TIMEOUT = 60000;
 
 interface DeviceStateTracker {
-	promise: Promise<any>;
+	promise: Bluebird<any>;
 	currentState: Partial<DeviceState>;
 	targetState: DeviceState;
 }
@@ -86,7 +86,7 @@ const setDeviceState = (() => {
 						user: { uuid },
 					});
 					// Add a 60 second delay in case of failure to avoid a crazy flood
-					return Promise.delay(60000).then(() => {
+					return Bluebird.delay(60000).then(() => {
 						// Trigger another apply, to retry the failed update
 						applyState(uuid);
 						// Since we are recursing and this function always extends
@@ -106,7 +106,7 @@ const setDeviceState = (() => {
 			deviceStates[uuid] = {
 				targetState: state,
 				currentState: {},
-				promise: Promise.resolve(),
+				promise: Bluebird.resolve(),
 			};
 		} else {
 			deviceStates[uuid].targetState = state;

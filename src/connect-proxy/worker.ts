@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Promise from 'bluebird';
+import * as Bluebird from 'bluebird';
 import * as dns from 'dns';
 import * as _ from 'lodash';
 import * as net from 'net';
@@ -30,7 +30,7 @@ const logger = getLogger('proxy', process.env.WORKER_ID!);
 
 const VPN_SERVICE_API_KEY = Buffer.from(process.env.VPN_SERVICE_API_KEY!);
 
-const lookupAsync = Promise.promisify(dns.lookup);
+const lookupAsync = Bluebird.promisify(dns.lookup);
 
 const parseRequest = (req: nodeTunnel.Request) => {
 	if (req.url == null) {
@@ -57,7 +57,7 @@ const parseRequest = (req: nodeTunnel.Request) => {
 };
 
 const tunnelToDevice: nodeTunnel.Middleware = (req, cltSocket, _head, next) =>
-	Promise.try(() => {
+	Bluebird.try(() => {
 		const { uuid, port, auth } = parseRequest(req);
 		logger.info(`tunnel requested to device ${uuid} on port ${port}`);
 
@@ -126,7 +126,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 		client: net.Socket,
 		req: nodeTunnel.Request,
 	) {
-		return Promise.try(() => parseRequest(req)).then(({ uuid, auth }) =>
+		return Bluebird.try(() => parseRequest(req)).then(({ uuid, auth }) =>
 			lookupAsync(`${uuid}.vpn`)
 				.then(() => {
 					logger.info(`connecting to ${host}:${port}`);
@@ -169,8 +169,8 @@ const forwardRequest = (
 	uuid: string,
 	port: number,
 	proxyAuth?: Buffer,
-): Promise<net.Socket> =>
-	new Promise((resolve, reject) => {
+): Bluebird<net.Socket> =>
+	new Bluebird((resolve, reject) => {
 		let tunnelProxyResponse = '';
 		const socket: net.Socket = net.connect(3128, vpnHost, () => {
 			socket.write(`CONNECT ${uuid}.balena:${port} HTTP/1.0\r\n`);

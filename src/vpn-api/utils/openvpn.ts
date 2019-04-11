@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Promise from 'bluebird';
+import * as Bluebird from 'bluebird';
 import { ChildProcess, spawn } from 'child_process';
 import { EventEmitter } from 'events';
 import * as net from 'net';
@@ -250,7 +250,7 @@ export class VpnManager extends EventEmitter {
 		return emitter;
 	};
 
-	public start(): Promise<true> {
+	public start(): Bluebird<true> {
 		this.process = spawn('/usr/sbin/openvpn', this.args());
 		// proxy error events from the child process
 		this.process.on('error', err => {
@@ -263,8 +263,8 @@ export class VpnManager extends EventEmitter {
 		return this.waitForStart();
 	}
 
-	private waitForStart(since: number = Date.now()): Promise<true> {
-		return new Promise((resolve, reject) => {
+	private waitForStart(since: number = Date.now()): Bluebird<true> {
+		return new Bluebird((resolve, reject) => {
 			const socket = new net.Socket();
 			const errorHandler = () => {
 				socket.destroy();
@@ -281,7 +281,7 @@ export class VpnManager extends EventEmitter {
 		})
 			.timeout(5000 - (Date.now() - since))
 			.catch(err => {
-				if (err instanceof Promise.TimeoutError) {
+				if (err instanceof Bluebird.TimeoutError) {
 					throw err;
 				}
 				return this.waitForStart(since);
@@ -289,8 +289,8 @@ export class VpnManager extends EventEmitter {
 			.return(true);
 	}
 
-	public connect(): Promise<true> {
-		return Promise.try(() =>
+	public connect(): Bluebird<true> {
+		return Bluebird.try(() =>
 			this.connector
 				.connect({
 					port: this.mgtPort,
@@ -302,8 +302,8 @@ export class VpnManager extends EventEmitter {
 		).return(true);
 	}
 
-	public exec(command: string): Promise<true> {
-		return Promise.try(() => this.connector.exec(command)).return(true);
+	public exec(command: string): Bluebird<true> {
+		return Bluebird.try(() => this.connector.exec(command)).return(true);
 	}
 
 	public enableLogging() {

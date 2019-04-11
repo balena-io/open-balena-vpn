@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Promise from 'bluebird';
+import * as Bluebird from 'bluebird';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as nock from 'nock';
@@ -61,7 +61,7 @@ describe('getDeviceByUUID()', function() {
 
 	it('should return a promise', () => {
 		const device = getDeviceByUUID('deadbeef', VPN_SERVICE_API_KEY);
-		expect(device).to.be.an.instanceOf(Promise);
+		expect(device).to.be.an.instanceOf(Bluebird);
 	});
 
 	it('should resolve to the device requested', function() {
