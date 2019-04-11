@@ -27,7 +27,7 @@ ExecStartPre=/bin/bash -c 'mkdir -p /dev/net; if [ ! -c /dev/net/tun ]; then mkn
 ExecStartPre=/sbin/iptables -P FORWARD ${IPTABLES_FORWARD_POLICY}
 ExecStart=/usr/src/app/bin/balena-vpn-api
 Restart=always
-SyslogIdentifier=balena-vpn-api
+SyslogIdentifier=open-balena
 
 [Install]
 WantedBy=basic.target

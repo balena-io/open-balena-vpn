@@ -17,7 +17,7 @@
 
 import { metrics } from '@balena/node-metrics-gatherer';
 
-import { logger } from '../utils';
+import { getLogger } from '../utils';
 
 import { Metrics } from './metrics';
 import { clients, HAProxy, Netmask, request, VpnManager } from './utils';
@@ -26,24 +26,6 @@ import {
 	isTrusted,
 	VpnClientBytecountData,
 } from './utils/openvpn';
-
-[
-	'BALENA_API_HOST',
-	'VPN_SERVICE_API_KEY',
-	'VPN_HOST',
-
-	'VPN_BASE_SUBNET',
-	'VPN_BASE_PORT',
-	'VPN_BASE_MANAGEMENT_PORT',
-	'VPN_INSTANCE_SUBNET_BITMASK',
-]
-	.filter(key => process.env[key] == null)
-	.forEach((key, idx, keys) => {
-		logger.emerg(`${key} env variable is not set.`);
-		if (idx === keys.length - 1) {
-			process.exit(1);
-		}
-	});
 
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const BALENA_VPN_GATEWAY = process.env.BALENA_VPN_GATEWAY;
@@ -69,15 +51,15 @@ const getInstanceSubnet = (instanceId: number) => {
 };
 
 const worker = (instanceId: number) => {
-	logger.notice(
-		`[worker-${instanceId}] process started with pid=${process.pid}`,
-	);
 	const clientCache: {
 		[key: number]: { uuid: string; ts: number } & VpnClientBytecountData;
 	} = {};
+	const logger = getLogger('vpn', instanceId);
+
+	logger.notice(`process started with pid=${process.pid}`);
 
 	const fatalErrorHandler = (err: Error) => {
-		logger.emerg(`[worker-${instanceId}] ${err.message}`);
+		logger.emerg(err.message);
 		process.exitCode = 1;
 	};
 
@@ -88,9 +70,7 @@ const worker = (instanceId: number) => {
 		if (state.virtual_address != null) {
 			stateMsg = `${stateMsg} virtual_address=${state.virtual_address}`;
 		}
-		logger.debug(
-			`[worker-${instanceId}] successfully updated state for device: ${stateMsg}`,
-		);
+		logger.debug(`successfully updated state for device: ${stateMsg}`);
 	};
 
 	const writeBandwidthMetrics = (
@@ -122,11 +102,7 @@ const worker = (instanceId: number) => {
 	process.on('message', msg => {
 		if (msg === 'toggleVerbosity') {
 			verbose = !verbose;
-			logger.notice(
-				`[worker-${instanceId}] verbose logging ${
-					verbose ? 'enabled' : 'disabled'
-				}`,
-			);
+			logger.notice(`verbose logging ${verbose ? 'enabled' : 'disabled'}`);
 		}
 	});
 
@@ -156,16 +132,12 @@ const worker = (instanceId: number) => {
 	vpn.on('log', (level, message) => {
 		// only log warnings (or more severe) unless verbose=true
 		if (verbose || logger.levels[level] <= logger.levels.warning) {
-			logger.log(level, `[worker-${instanceId}/openvpn] ${message}`);
+			logger.log(level, message);
 		}
 	});
 
 	vpn.on('client:connect', (clientId, keyId, data) => {
-		logger.debug(
-			`[worker-${instanceId}] connect from client_id=${clientId} uuid=${
-				data.username
-			}`,
-		);
+		logger.debug(`connect from client_id=${clientId} uuid=${data.username}`);
 		request({
 			url: `https://${BALENA_API_HOST}/services/vpn/auth/${data.username}`,
 			timeout: 30000,
@@ -174,7 +146,7 @@ const worker = (instanceId: number) => {
 			.then(response => {
 				if (response.statusCode === 200) {
 					logger.debug(
-						`[worker-${instanceId}] authentication passed for client_id=${clientId} uuid=${
+						`authentication passed for client_id=${clientId} uuid=${
 							data.username
 						}`,
 					);
@@ -182,14 +154,12 @@ const worker = (instanceId: number) => {
 						.exec(`client-auth-nt ${clientId} ${keyId}`)
 						.then(() =>
 							logger.info(
-								`[worker-${instanceId}] authorised client_id=${clientId} uuid=${
-									data.username
-								}`,
+								`authorised client_id=${clientId} uuid=${data.username}`,
 							),
 						);
 				} else {
 					logger.debug(
-						`[worker-${instanceId}] authentication failed for client_id=${clientId} uuid=${
+						`authentication failed for client_id=${clientId} uuid=${
 							data.username
 						}`,
 					);
@@ -198,7 +168,7 @@ const worker = (instanceId: number) => {
 						.exec(`client-deny ${clientId} ${keyId} "AUTH_FAILURE"`)
 						.then(() =>
 							logger.info(
-								`[worker-${instanceId}] rejected client_id=${clientId} uuid=${
+								`rejected client_id=${clientId} uuid=${
 									data.username
 								} reason=AUTH_FAILURE`,
 							),
@@ -221,9 +191,7 @@ const worker = (instanceId: number) => {
 
 	vpn.on('client:established', (clientId, data) => {
 		logger.info(
-			`[worker-${instanceId}] connection established with client_id=${clientId} uuid=${
-				data.username
-			}`,
+			`connection established with client_id=${clientId} uuid=${data.username}`,
 		);
 		metrics.inc(Metrics.OnlineDevices);
 		metrics.inc(Metrics.TotalDevices);
@@ -241,7 +209,7 @@ const worker = (instanceId: number) => {
 	});
 
 	vpn.on('client:disconnect', (clientId, data) => {
-		let msg = `[worker-${instanceId}] session ended for`;
+		let msg = `session ended for`;
 		if (!isTrusted(data)) {
 			return logger.debug(`${msg} rejected client_id=${clientId}`);
 		}
@@ -264,7 +232,7 @@ const worker = (instanceId: number) => {
 		vpn
 			.start()
 			.tap(() => {
-				logger.info(`[worker-${instanceId}] openvpn process started`);
+				logger.info(`openvpn process started`);
 			})
 			// connect to vpn management console, setup logging & bytecount reporting, then release management hold
 			.bind(vpn)
@@ -273,7 +241,7 @@ const worker = (instanceId: number) => {
 			.tap(() => vpn.enableBytecountReporting(VPN_BYTECOUNT_INTERVAL))
 			.tap(vpn.releaseHold)
 			.tap(() => {
-				logger.info(`[worker-${instanceId}] management hold released`);
+				logger.info(`management hold released`);
 			})
 			// register as haproxy backend
 			.tap(() =>
@@ -284,12 +252,12 @@ const worker = (instanceId: number) => {
 			)
 			.tap(() => {
 				logger.info(
-					`[worker-${instanceId}] registered as haproxy backend server vpn-workers/vpn${instanceId}`,
+					`registered as haproxy backend server vpn-workers/vpn${instanceId}`,
 				);
 			})
 			.catch(fatalErrorHandler)
 			.tap(() => {
-				logger.notice(`[worker-${instanceId}] waiting for clients...`);
+				logger.notice(`waiting for clients...`);
 			})
 	);
 };

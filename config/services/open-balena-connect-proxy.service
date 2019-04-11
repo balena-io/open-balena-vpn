@@ -25,7 +25,7 @@ WorkingDirectory=/usr/src/app
 EnvironmentFile=/usr/src/app/config/env
 ExecStart=/usr/src/app/bin/balena-connect-proxy
 Restart=always
-SyslogIdentifier=balena-connect-proxy
+SyslogIdentifier=open-balena
 
 [Install]
 WantedBy=basic.target

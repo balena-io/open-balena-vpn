@@ -22,13 +22,26 @@ import * as _ from 'lodash';
 import * as os from 'os';
 import * as prometheus from 'prom-client';
 
-import { logger, VERSION } from '../utils';
+import { getLogger, spawnChildren, VERSION } from '../utils';
 
 import { describeMetrics, Metrics } from './metrics';
 import { service } from './utils';
 import worker from './worker';
 
-['VPN_INSTANCE_COUNT']
+const logger = getLogger('vpn');
+
+[
+	'VPN_INSTANCE_COUNT',
+
+	'BALENA_API_HOST',
+	'VPN_SERVICE_API_KEY',
+	'VPN_HOST',
+
+	'VPN_BASE_SUBNET',
+	'VPN_BASE_PORT',
+	'VPN_BASE_MANAGEMENT_PORT',
+	'VPN_INSTANCE_SUBNET_BITMASK',
+]
 	.filter(key => process.env[key] == null)
 	.forEach((key, idx, keys) => {
 		logger.emerg(`${key} env variable is not set.`);
@@ -43,12 +56,6 @@ const VPN_INSTANCE_COUNT =
 describeMetrics();
 
 if (cluster.isMaster) {
-	logger.notice(
-		`[master] open-balena-vpn@${VERSION} process started with pid=${
-			process.pid
-		}`,
-	);
-
 	interface WorkerMetric {
 		uuid: string;
 		rxBitrate: number[];
@@ -58,7 +65,7 @@ if (cluster.isMaster) {
 	let verbose = false;
 
 	process.on('SIGUSR2', () => {
-		logger.notice('[master] caught SIGUSR2, toggling log verbosity');
+		logger.notice('caught SIGUSR2, toggling log verbosity');
 		verbose = !verbose;
 		process.env.VPN_VERBOSE_LOGS = `${verbose}`;
 		_.each(cluster.workers, clusterWorker => {
@@ -87,24 +94,10 @@ if (cluster.isMaster) {
 		},
 	);
 
-	logger.info(`[master] spawning ${VPN_INSTANCE_COUNT} workers`);
-	_.times(VPN_INSTANCE_COUNT, i => {
-		const instanceId = i + 1;
-		const restartWorker = (code?: number, signal?: string) => {
-			if (signal != null) {
-				logger.crit(
-					`[master] worker-${instanceId} killed with signal ${signal}`,
-				);
-			}
-			if (code != null) {
-				logger.crit(`[master] worker-${instanceId} exited with code ${code}`);
-			}
-			cluster
-				.fork(_.defaults(process.env, { VPN_INSTANCE_ID: instanceId }))
-				.on('exit', restartWorker);
-		};
-		restartWorker();
-	});
+	logger.notice(
+		`open-balena-vpn@${VERSION} process started with pid=${process.pid}`,
+	);
+	spawnChildren(VPN_INSTANCE_COUNT, logger);
 
 	const app = express();
 	app.disable('x-powered-by');
@@ -147,6 +140,6 @@ if (cluster.isMaster) {
 }
 
 if (cluster.isWorker) {
-	const instanceId = parseInt(process.env.VPN_INSTANCE_ID!, 10);
+	const instanceId = parseInt(process.env.WORKER_ID!, 10);
 	service.wrap(() => worker(instanceId));
 }

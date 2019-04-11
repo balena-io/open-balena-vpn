@@ -21,19 +21,12 @@ import * as _ from 'lodash';
 import * as net from 'net';
 import * as nodeTunnel from 'node-tunnel';
 
-import { captureException, logger } from '../utils';
+import { captureException, getLogger } from '../utils';
 import * as errors from '../utils/errors';
 
 import * as device from './device';
 
-['VPN_SERVICE_API_KEY']
-	.filter(key => process.env[key] == null)
-	.forEach((key, idx, keys) => {
-		logger.emerg(`${key} env variable is not set.`);
-		if (idx === keys.length - 1) {
-			process.exit(1);
-		}
-	});
+const logger = getLogger('proxy', process.env.WORKER_ID!);
 
 const VPN_SERVICE_API_KEY = Buffer.from(process.env.VPN_SERVICE_API_KEY!);
 
@@ -238,7 +231,7 @@ const forwardRequest = (
 	});
 
 const worker = (port: string) => {
-	logger.info(`connect-proxy worker process started with pid ${process.pid}`);
+	logger.info(`process started with pid=${process.pid}`);
 	const tunnel = new Tunnel();
 	tunnel.use(tunnelToDevice);
 	tunnel.listen(port, () => logger.info(`tunnel listening on port ${port}`));
