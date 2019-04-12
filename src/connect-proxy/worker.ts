@@ -15,6 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { metrics } from '@balena/node-metrics-gatherer';
 import * as Bluebird from 'bluebird';
 import * as dns from 'dns';
 import * as _ from 'lodash';
@@ -31,6 +32,11 @@ const logger = getLogger('proxy', process.env.WORKER_ID!);
 const VPN_SERVICE_API_KEY = Buffer.from(process.env.VPN_SERVICE_API_KEY!);
 
 const lookupAsync = Bluebird.promisify(dns.lookup);
+
+const enum Metrics {
+	ActiveTunnels = 'vpn_proxy_active_tunnels',
+	TotalTunnels = 'vpn_proxy_total_tunnels',
+}
 
 const parseRequest = (req: nodeTunnel.Request) => {
 	if (req.url == null) {
@@ -130,7 +136,13 @@ class Tunnel extends nodeTunnel.Tunnel {
 			lookupAsync(`${uuid}.vpn`)
 				.then(() => {
 					logger.info(`connecting to ${host}:${port}`);
-					return super.connect(port, host, client, req);
+					return super.connect(port, host, client, req).tap(socket => {
+						metrics.inc(Metrics.ActiveTunnels);
+						metrics.inc(Metrics.TotalTunnels);
+						socket.on('close', () => {
+							metrics.dec(Metrics.ActiveTunnels);
+						});
+					});
 				})
 				.catch(() => {
 					return device
@@ -232,6 +244,16 @@ const forwardRequest = (
 
 const worker = (port: string) => {
 	logger.info(`process started with pid=${process.pid}`);
+
+	// setup metrics for prometheus
+	metrics.describe(Metrics.ActiveTunnels, 'current tunnels to vpn devices');
+	metrics.gauge(Metrics.ActiveTunnels, 0);
+	metrics.describe(
+		Metrics.TotalTunnels,
+		'running total of tunnels to vpn devices',
+	);
+	metrics.counter(Metrics.TotalTunnels, 0);
+
 	const tunnel = new Tunnel();
 	tunnel.use(tunnelToDevice);
 	tunnel.listen(port, () => logger.info(`tunnel listening on port ${port}`));

@@ -18,7 +18,7 @@
 import * as cluster from 'cluster';
 import * as os from 'os';
 
-import { getLogger, spawnChildren, VERSION } from '../utils';
+import { getLogger, metricsServer, spawnChildren, VERSION } from '../utils';
 
 import worker from './worker';
 
@@ -44,6 +44,7 @@ if (cluster.isMaster) {
 		}`,
 	);
 	spawnChildren(VPN_CONNECT_INSTANCE_COUNT, logger);
+	metricsServer().listen(8888);
 }
 
 if (cluster.isWorker) {

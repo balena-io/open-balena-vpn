@@ -15,7 +15,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { metrics } from '@balena/node-metrics-gatherer';
 import * as cluster from 'cluster';
+import * as express from 'express';
 import * as _ from 'lodash';
 import * as winston from 'winston';
 
@@ -51,6 +53,14 @@ export const getLogger = (service: string, workerId?: string | number) => {
 		exitOnError: false,
 		levels: winston.config.syslog.levels,
 	});
+};
+
+export const metricsServer = (handler?: express.RequestHandler) => {
+	const app = express();
+	app.disable('x-powered-by');
+	app.get('/ping', (_req, res) => res.send('OK'));
+	app.get('/cluster_metrics', handler || metrics.aggregateRequestHandler());
+	return app;
 };
 
 export const spawnChildren = (n: number, logger: winston.Logger) => {

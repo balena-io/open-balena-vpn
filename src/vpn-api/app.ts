@@ -17,12 +17,11 @@
 
 import { metrics } from '@balena/node-metrics-gatherer';
 import * as cluster from 'cluster';
-import * as express from 'express';
 import * as _ from 'lodash';
 import * as os from 'os';
 import * as prometheus from 'prom-client';
 
-import { getLogger, spawnChildren, VERSION } from '../utils';
+import { getLogger, metricsServer, spawnChildren, VERSION } from '../utils';
 
 import { describeMetrics, Metrics } from './metrics';
 import { service } from './utils';
@@ -98,11 +97,7 @@ if (cluster.isMaster) {
 		`open-balena-vpn@${VERSION} process started with pid=${process.pid}`,
 	);
 	spawnChildren(VPN_INSTANCE_COUNT, logger);
-
-	const app = express();
-	app.disable('x-powered-by');
-	app.get('/ping', (_req, res) => res.send('OK'));
-	app.get('/cluster_metrics', (_req, res) => {
+	metricsServer((_req, res) => {
 		for (const clientMetrics of Object.values(workerMetrics)) {
 			metrics.histogram(
 				Metrics.SessionRxBitrate,
@@ -135,8 +130,7 @@ if (cluster.isMaster) {
 				logger.warning(`error in /cluster_metrics: ${err}`);
 				res.status(500).send();
 			});
-	});
-	app.listen(8080);
+	}).listen(8080);
 }
 
 if (cluster.isWorker) {
