@@ -1,0 +1,295 @@
+- commits:
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: patch
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: 7f42afe0e189573e06f2bc753a4a05442285db5d
+    subject: 'npm: Update dependencies'
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: patch
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: 0e26bcb20f9f15b235075d3ba5cf3192986ee724
+    subject: 'connect-proxy: Reduce log verbosity'
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: patch
+      connects-to: '#39'
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: 2b556c3ee0b46cd2982fd186d3b6ff69a304d78b
+    subject: 'connect-proxy: Only query API for online devices'
+  date: "2019-04-01T16:08:21Z"
+  version: 8.10.1
+- commits:
+  - author: Heds Simons
+    body: ""
+    footers:
+      change-type: minor
+      connects-to: '#37'
+      signed-off-by: Heds Simons <heds@balena.io>
+    hash: 52888837325f77361527ed7c7fa2ce0e4ab05348
+    subject: 'open-balena-base: Update open-balena-base to v7.0.0'
+  date: "2019-03-14T17:14:04Z"
+  version: 8.10.0
+- commits:
+  - author: Heds Simons
+    body: ""
+    footers:
+      change-type: minor
+      connects-to: '#35'
+      signed-off-by: Heds Simons <heds@balena.io>
+    hash: 4b67cae004fd0ed3ea2c1ba0658535d333376c2a
+    subject: 'open-balena-base: Update open-balena-base to v6.0.0'
+  date: "2019-03-12T11:22:30Z"
+  version: 8.9.0
+- commits:
+  - author: Heds Simons
+    body: ""
+    footers:
+      change-type: patch
+      connects-to: '#33'
+      signed-off-by: Heds Simons <heds@balena.io>
+    hash: dffdcd6660aaf1bc3ec69d39e62e251760ce0985
+    subject: "codeowners: Update with\t@Page- & @hedss"
+  date: "2019-03-09T13:10:55Z"
+  version: 8.8.1
+- commits:
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: patch
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: 24594f09ab8a375e270e977d2fccea7c74be4eac
+    subject: 'openvpn: Reduce log verbosity'
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: minor
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: 79ca141d9325b4fd7db32e2c8a9876c871c14c6b
+    subject: 'core: Update dev dependencies'
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: minor
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: 5d6b3d21d6d73a9995b9fb79b1c1c730009e9ee8
+    subject: 'core: Update typescript and @types'
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: minor
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: 63917573ca5c4234ff8bc2a68893c8c97aa8e378
+    subject: 'core: Update dependencies'
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: patch
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: 9250616f5c5008735e8b5aecee2a3b4ce37e6fd0
+    subject: 'core: Add sourcemap support when running javascript'
+  date: "2019-03-08T11:27:40Z"
+  version: 8.8.0
+- commits:
+  - author: Pagan Gazzard
+    body: ""
+    footers:
+      change-type: minor
+    hash: 4e1c153e009b85dc96a7cc6fb8cfdd66d9a28de5
+    subject: Update open-balena-base to v5.3.1
+  date: "2019-03-06T18:04:57Z"
+  version: 8.7.0
+- commits:
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: minor
+      connects-to: '#28'
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: 19448a123fa5293a3d14e62ecd1b7b5e6960d18e
+    subject: 'vpn-api: set FORWARD chain policy on startup'
+  date: "2019-02-28T19:32:47Z"
+  version: 8.6.0
+- commits:
+  - author: Pagan Gazzard
+    body: ""
+    footers:
+      change-type: minor
+    hash: deddaa0d6643a3abd4bb503d887382d40ef836ce
+    subject: Switch to a https.Agent instance for limiting concurrent requests
+  date: "2019-02-21T11:42:16Z"
+  version: 8.5.0
+- commits:
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: minor
+      connects-to: '#19'
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: 360ed60d1d681a0aec948918310e576bb673673a
+    subject: 'core: Precompile typescript and run javascript in production'
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: patch
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: b3d694d45178013bb2c27adc12a87c63e6013bde
+    subject: 'core: Update npm dependencies'
+  - author: Will Boyce
+    body: This is a workaround for BalenaCI not running any tests.
+    footers:
+      change-type: patch
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: ae7c8f2bd7678eb54d906e57c33631e17a9edbf5
+    subject: 'core: Run unit tests when building docker image'
+  date: "2018-12-18T23:30:40Z"
+  version: 8.4.0
+- commits:
+  - author: Pagan Gazzard
+    body: ""
+    footers:
+      change-type: patch
+    hash: b3ca354ec46639382eccbb435a503e0055a6a3cc
+    subject: Update open-balena-base to v5.0.1
+  date: "2018-12-03T13:01:09Z"
+  version: 8.3.1
+- commits:
+  - author: Will Boyce
+    body: |-
+      When a tunnel is requested for a device which is not directly connected,
+      the connect-proxy will lookup the appropriate instance in the api and
+      transparently establish the tunnel via that server.
+    footers:
+      change-type: minor
+      connects-to: '#20'
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: d3a1b1bf458960fc33dd7ecef12a7dac6ef6f9de
+    subject: 'connect-proxy: Route non local requests via the relevant instance'
+  - author: Will Boyce
+    body: |-
+      Capture fewer errors in sentry, tidy up logging and handling of
+      expected errors.
+    footers:
+      change-type: minor
+      connects-to: '#22'
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: a9a1ffc8dababd2492e2469017bfc0bd8447894a
+    subject: 'connect-proxy: Improve error handling'
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: patch
+      connects-to: '#13'
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: be3dbf1b77384a113bf5dd480e3e044ddbf6b020
+    subject: 'lint: Auto-prettify staged changes using husky/lint-staged'
+  date: "2018-11-22T13:49:40Z"
+  version: 8.3.0
+- commits:
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: patch
+      connects-to: '#15'
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: 023f83dc6faed5494f67a0b34a84a500eb041c04
+    subject: 'api: Remove references to `is_web_accessible` device attr'
+  date: "2018-11-06T11:12:14Z"
+  version: 8.2.1
+- commits:
+  - author: Will Boyce
+    body: |-
+      * Remove references to private repositories
+      * Add issue (bug report, feature request) templates
+      * Configure CODEOWNERS
+    footers:
+      change-type: patch
+      connects-to: '#6'
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: 6b05bd28931a6b759146898bc1342fd8df4261fc
+    subject: 'open-sourcing: Prepare for open-sourcing repository'
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: patch
+      connects-to: '#6'
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: 915aa78967bbf954df2e0d2f80830df0bddedc3f
+    subject: 'core: Update npm dependencies'
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: patch
+      connects-to: '#6'
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: e7a478e56b498d71bae2075e7c39c4f66d02798b
+    subject: 'rename: Tidy up some remaining resin references'
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: minor
+      connects-to: '#6'
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: ee180d06ac0728427f9a59213e56805977b4a6fd
+    subject: 'api: Use balenaAPI v5 endpoint'
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: patch
+      connects-to: '#6'
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: c547d938ac68a76291ac5aa32a8210fdc77e7dfa
+    subject: 'lint: Enforce `prettier` coding standards'
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: patch
+      connects-to: '#12'
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: 4759cd425cd04598345f9eaf965fc06d194caa9e
+    subject: 'logging: Fix a few incomplete log messages'
+  date: "2018-10-31T10:43:46Z"
+  version: 8.2.0
+- commits:
+  - author: Pagan Gazzard
+    body: ""
+    footers:
+      change-type: minor
+    hash: 94db6104fc7eae1b4eb2719bdbbdd168c08e84f1
+    subject: Update to open-balena-base 5.0.0, including nodejs 10
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: patch
+      connects-to: '#5'
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: ea0e26128f1618d11d2fc9e2af1fca8f87468c3f
+    subject: 'rename: Rename remaining `RESIN_` variables to `BALENA_`'
+  date: "2018-10-30T14:30:41Z"
+  version: 8.1.0
+- commits:
+  - author: Heds Simons
+    body: ""
+    footers:
+      change-type: patch
+      connects-to: '#3'
+      signed-off-by: Heds Simons <heds@balena.io>
+    hash: da353bd706bd4a97d6e26019b707f66a53d19a84
+    subject: 'base: Update resin-base version to autoset subdomain envvars'
+  date: "2018-10-26T13:24:08Z"
+  version: 8.0.2
+- commits:
+  - author: Will Boyce
+    body: ""
+    footers:
+      change-type: patch
+      connects-to: '#1'
+      signed-off-by: Will Boyce <will@balena.io>
+    hash: 5a946289f63a3f6acf85036ed43213695d28fff8
+    subject: 'dockerfile: Use `balena/open-balena-base` base image'
+  date: "2018-10-23T18:34:05Z"
+  version: 8.0.1
