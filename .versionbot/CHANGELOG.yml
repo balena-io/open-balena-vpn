@@ -1,4 +1,25 @@
 - commits:
+    - subject: 'openvpn: discard process output'
+      hash: 0521fbecf3b7cdbde54f67480ef8fabc2d7b28c7
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'haproxy: log backend events'
+      hash: 1844f39c89c2ae1e2000e012b0b37fdeb36b8d9f
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.11.1
+  date: 2019-04-16T15:43:33.754Z
+- commits:
     - subject: 'proxy: collect tunnel count stats for prometheus'
       hash: 1c6efdc44190df5b607768164e50122149ce8ed4
       body: ''
