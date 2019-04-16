@@ -15,14 +15,13 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Promise from 'bluebird';
+import * as Bluebird from 'bluebird';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as http from 'http';
 import * as _ from 'lodash';
 import * as nock from 'nock';
 import * as vpnClient from 'openvpn-client';
-import * as path from 'path';
 import * as querystring from 'querystring';
 
 const { expect } = chai;
@@ -33,8 +32,7 @@ import vpnWorker from '../src/vpn-api/worker';
 
 const vpnHost = process.env.VPN_HOST || '127.0.0.1';
 const vpnPort = process.env.VPN_PORT || '443';
-const caCertPath =
-	process.env.CA_CERT_PATH || path.resolve(__dirname, '../openvpn/ca.crt');
+const caCertPath = process.env.CA_CERT_PATH || '/etc/openvpn/ca.crt';
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const VPN_CONNECT_PROXY_PORT = process.env.VPN_CONNECT_PROXY_PORT!;
 
@@ -55,8 +53,8 @@ const vpnDefaultOpts = [
 ];
 
 interface HttpServerAsync {
-	listenAsync(port: number): Promise<HttpServerAsync>;
-	closeAsync(): Promise<HttpServerAsync>;
+	listenAsync(port: number): Bluebird<HttpServerAsync>;
+	closeAsync(): Bluebird<HttpServerAsync>;
 }
 
 before(() => {
@@ -64,7 +62,7 @@ before(() => {
 });
 
 describe('vpn worker', function() {
-	this.timeout(10 * 1000);
+	this.timeout(15 * 1000);
 
 	before(() => {
 		nock(`https://${BALENA_API_HOST}`)
@@ -85,7 +83,7 @@ describe('VPN Events', function() {
 	this.timeout(30 * 1000);
 
 	const getEvent = (name: string) =>
-		new Promise<string>(resolve => {
+		new Bluebird<string>(resolve => {
 			nock(`https://${process.env.BALENA_API_HOST}`)
 				.post(`/services/vpn/client-${name}`, /common_name=user2/g)
 				.reply(200, (_uri: string, body: any) => {
@@ -137,15 +135,15 @@ describe('VPN proxy', function() {
 	const vpnTest = (
 		credentials: { user: string; pass: string },
 		func: () => any,
-	): Promise<HttpServerAsync> => {
-		const server = (Promise.promisifyAll(
+	): Bluebird<HttpServerAsync> => {
+		const server = (Bluebird.promisifyAll(
 			http.createServer((_req, res) => {
 				res.writeHead(200, { 'Content-type': 'text/plain' });
 				res.end('hello from 8080');
 			}),
 		) as any) as HttpServerAsync;
 
-		return Promise.using(vpnClient.connect(credentials, vpnDefaultOpts), () =>
+		return Bluebird.using(vpnClient.connect(credentials, vpnDefaultOpts), () =>
 			server
 				.listenAsync(8080)
 				.tap(() => func())

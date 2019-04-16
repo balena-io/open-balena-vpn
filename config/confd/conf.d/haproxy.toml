@@ -1,4 +1,7 @@
 [template]
 src = "haproxy.cfg.tmpl"
 dest = "/etc/haproxy/haproxy.cfg"
-keys = [ "/resin/vpn/" ]
+keys = [
+    "/balena/monitor/secret-token",
+    "/resin/vpn/"
+]

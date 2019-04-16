@@ -3,6 +3,7 @@ src = "haproxy.cfg.tmpl"
 dest = "/etc/haproxy/haproxy.cfg"
 keys = [
   "BALENA_VPN_PORT",
+  "MONITOR_SECRET_TOKEN",
   "NPROC",
   "PRODUCTION_MODE",
   "VPN_HAPROXY_ACCEPT_PROXY",

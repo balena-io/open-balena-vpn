@@ -15,29 +15,28 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Promise from 'bluebird';
+import { metrics } from '@balena/node-metrics-gatherer';
+import * as Bluebird from 'bluebird';
 import * as dns from 'dns';
 import * as _ from 'lodash';
 import * as net from 'net';
 import * as nodeTunnel from 'node-tunnel';
 
-import { captureException, logger } from '../utils';
+import { captureException, getLogger } from '../utils';
 import * as errors from '../utils/errors';
 
 import * as device from './device';
 
-['VPN_SERVICE_API_KEY']
-	.filter(key => process.env[key] == null)
-	.forEach((key, idx, keys) => {
-		logger.error(`${key} env variable is not set.`);
-		if (idx === keys.length - 1) {
-			process.exit(1);
-		}
-	});
+const logger = getLogger('proxy', process.env.WORKER_ID!);
 
 const VPN_SERVICE_API_KEY = Buffer.from(process.env.VPN_SERVICE_API_KEY!);
 
-const lookupAsync = Promise.promisify(dns.lookup);
+const lookupAsync = Bluebird.promisify(dns.lookup);
+
+const enum Metrics {
+	ActiveTunnels = 'vpn_proxy_active_tunnels',
+	TotalTunnels = 'vpn_proxy_total_tunnels',
+}
 
 const parseRequest = (req: nodeTunnel.Request) => {
 	if (req.url == null) {
@@ -52,7 +51,7 @@ const parseRequest = (req: nodeTunnel.Request) => {
 	}
 	const [, uuid, tld, port = '80'] = match;
 	if (tld === 'resin') {
-		logger.warn(`'.resin' tld is deprecated, use '.balena'`);
+		logger.warning(`'.resin' tld is deprecated, use '.balena'`);
 	}
 
 	let auth;
@@ -64,7 +63,7 @@ const parseRequest = (req: nodeTunnel.Request) => {
 };
 
 const tunnelToDevice: nodeTunnel.Middleware = (req, cltSocket, _head, next) =>
-	Promise.try(() => {
+	Bluebird.try(() => {
 		const { uuid, port, auth } = parseRequest(req);
 		logger.info(`tunnel requested to device ${uuid} on port ${port}`);
 
@@ -103,14 +102,14 @@ const tunnelToDevice: nodeTunnel.Middleware = (req, cltSocket, _head, next) =>
 	})
 		.then(() => next())
 		.catch(errors.APIError, err => {
-			logger.error(`Invalid Response from API (${err.message})`);
+			logger.alert(`Invalid Response from API (${err.message})`);
 			cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
 		})
 		.catch(errors.BadRequestError, () =>
 			cltSocket.end('HTTP/1.0 400 Bad Request\r\n\r\n'),
 		)
 		.catch(errors.HandledTunnelingError, err =>
-			logger.error(`Tunneling Error (${err.message})`),
+			logger.crit(`Tunneling Error (${err.message})`),
 		)
 		.catch(errors.InvalidHostnameError, () =>
 			cltSocket.end('HTTP/1.0 403 Forbidden\r\n\r\n'),
@@ -133,17 +132,23 @@ class Tunnel extends nodeTunnel.Tunnel {
 		client: net.Socket,
 		req: nodeTunnel.Request,
 	) {
-		return Promise.try(() => parseRequest(req)).then(({ uuid, auth }) =>
+		return Bluebird.try(() => parseRequest(req)).then(({ uuid, auth }) =>
 			lookupAsync(`${uuid}.vpn`)
 				.then(() => {
 					logger.info(`connecting to ${host}:${port}`);
-					return super.connect(port, host, client, req);
+					return super.connect(port, host, client, req).tap(socket => {
+						metrics.inc(Metrics.ActiveTunnels);
+						metrics.inc(Metrics.TotalTunnels);
+						socket.on('close', () => {
+							metrics.dec(Metrics.ActiveTunnels);
+						});
+					});
 				})
 				.catch(() => {
 					return device
 						.getDeviceVpnHost(uuid, auth)
 						.catch(errors.APIError, err => {
-							logger.error(
+							logger.crit(
 								`error connecting to device ${uuid} on port ${port} (${
 									err.message
 								})`,
@@ -157,7 +162,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 							return forwardRequest(vpnHost, uuid, port, auth).catch(
 								errors.RemoteTunnellingError,
 								err => {
-									logger.error(
+									logger.crit(
 										`error forwarding request for ${uuid}:${port} (${
 											err.message
 										})`,
@@ -176,8 +181,8 @@ const forwardRequest = (
 	uuid: string,
 	port: number,
 	proxyAuth?: Buffer,
-): Promise<net.Socket> =>
-	new Promise((resolve, reject) => {
+): Bluebird<net.Socket> =>
+	new Bluebird((resolve, reject) => {
 		let tunnelProxyResponse = '';
 		const socket: net.Socket = net.connect(3128, vpnHost, () => {
 			socket.write(`CONNECT ${uuid}.balena:${port} HTTP/1.0\r\n`);
@@ -238,14 +243,24 @@ const forwardRequest = (
 	});
 
 const worker = (port: string) => {
-	logger.info(`connect-proxy worker process started with pid ${process.pid}`);
+	logger.info(`process started with pid=${process.pid}`);
+
+	// setup metrics for prometheus
+	metrics.describe(Metrics.ActiveTunnels, 'current tunnels to vpn devices');
+	metrics.gauge(Metrics.ActiveTunnels, 0);
+	metrics.describe(
+		Metrics.TotalTunnels,
+		'running total of tunnels to vpn devices',
+	);
+	metrics.counter(Metrics.TotalTunnels, 0);
+
 	const tunnel = new Tunnel();
 	tunnel.use(tunnelToDevice);
 	tunnel.listen(port, () => logger.info(`tunnel listening on port ${port}`));
 	tunnel.on('error', err => {
 		// errors thrown in `Tunnel.connect` will appear here
 		if (!(err instanceof errors.HandledTunnelingError)) {
-			logger.error(
+			logger.crit(
 				`failed to connect to device (${err.message || err})\n${err.stack}`,
 			);
 			captureException(err);

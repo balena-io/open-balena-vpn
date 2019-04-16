@@ -1,5 +1,3 @@
 build/
 node_modules/
 config/env
-openvpn/
-!openvpn/scripts/

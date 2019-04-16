@@ -1,6 +1,6 @@
 [template]
 src = "ca.crt.tmpl"
-dest = "/usr/src/app/openvpn/ca.crt"
+dest = "/etc/openvpn/ca.crt"
 keys = [
   "VPN_OPENVPN_CA_CRT"
 ]

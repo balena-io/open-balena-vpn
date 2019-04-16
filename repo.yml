@@ -1,4 +1,8 @@
 type: 'docker'
 upstream:
+  - repo: '@balena/node-metrics-gatherer'
+    url: 'https://github.com/balena-io-modules/node-metrics-gatherer'
+  - repo: 'node-tunnel'
+    url: 'https://github.com/balena-io-modules/node-tunnel'
   - repo: 'typed-error'
     url: 'https://github.com/balena-io-modules/typed-error'

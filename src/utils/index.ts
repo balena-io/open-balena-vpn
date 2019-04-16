@@ -15,6 +15,10 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { metrics } from '@balena/node-metrics-gatherer';
+import * as cluster from 'cluster';
+import * as express from 'express';
+import * as _ from 'lodash';
 import * as winston from 'winston';
 
 import { PinejsClientRequest } from 'pinejs-client-request';
@@ -29,11 +33,53 @@ export const balenaApi = new PinejsClientRequest(
 );
 export const apiKey = process.env.VPN_SERVICE_API_KEY;
 
-const consoleTransport = new winston.transports.Console({
-	format: winston.format.simple(),
-});
-export const logger = winston.createLogger({
-	transports: [consoleTransport],
-	exceptionHandlers: [consoleTransport],
-	exitOnError: false,
-});
+export const getLogger = (service: string, workerId?: string | number) => {
+	let workerLabel = 'master';
+	if (workerId != null) {
+		workerLabel = `worker-${workerId}`;
+	}
+	const transport = new winston.transports.Console({
+		format: winston.format.combine(
+			winston.format.colorize(),
+			winston.format.label({ label: workerLabel, message: true }),
+			winston.format.label({ label: service, message: true }),
+			winston.format.simple(),
+		),
+		level: 'debug',
+	});
+	return winston.createLogger({
+		transports: [transport],
+		exceptionHandlers: [transport],
+		exitOnError: false,
+		levels: winston.config.syslog.levels,
+	});
+};
+
+export const metricsServer = (handler?: express.RequestHandler) => {
+	const app = express();
+	app.disable('x-powered-by');
+	app.get('/ping', (_req, res) => res.send('OK'));
+	app.get('/cluster_metrics', handler || metrics.aggregateRequestHandler());
+	return app;
+};
+
+export const spawnChildren = (n: number, logger: winston.Logger) => {
+	logger.info(`spawning ${n} workers`);
+	_.times(n, i => {
+		const workerId = i + 1;
+		const restartWorker = (code?: number, signal?: string) => {
+			if (signal != null) {
+				logger.crit(`worker-${workerId} killed with signal ${signal}`);
+			}
+			if (code != null) {
+				logger.crit(`worker-${workerId} exited with code ${code}`);
+			}
+			const env = {
+				...process.env,
+				WORKER_ID: workerId,
+			};
+			cluster.fork(env).on('exit', restartWorker);
+		};
+		restartWorker();
+	});
+};

@@ -15,9 +15,9 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Promise from 'bluebird';
+import * as Bluebird from 'bluebird';
 
-import { apiKey, balenaApi, captureException, logger } from '../../utils';
+import { apiKey, balenaApi, captureException } from '../../utils';
 import { ServiceRegistrationError } from '../../utils/errors';
 
 class ServiceInstance {
@@ -25,7 +25,7 @@ class ServiceInstance {
 
 	constructor(private interval: number = 10 * 1000) {}
 
-	public register(): Promise<this> {
+	public register(): Bluebird<this> {
 		return balenaApi
 			.post({
 				resource: 'service_instance',
@@ -38,19 +38,18 @@ class ServiceInstance {
 					);
 				}
 				this.id = id;
-				logger.info(`Registered as a service instance, received ID ${id}`);
 				return this;
 			})
 			.catch(err => {
 				captureException(err, 'Failed to register with API');
 				// Retry until it works
-				return Promise.delay(this.interval).then(() => this.register());
+				return Bluebird.delay(this.interval).then(() => this.register());
 			});
 	}
 
-	public scheduleHeartbeat(): Promise<boolean> {
+	public scheduleHeartbeat(): Bluebird<boolean> {
 		return (
-			Promise.delay(this.interval)
+			Bluebird.delay(this.interval)
 				.bind(this)
 				.then(this.sendHeartbeat)
 				// Whether it worked or not, keep sending at the same interval
@@ -58,9 +57,9 @@ class ServiceInstance {
 		);
 	}
 
-	public sendHeartbeat(): Promise<boolean> {
-		return Promise.try(() =>
-			balenaApi.patch({
+	public sendHeartbeat(): Bluebird<boolean> {
+		return balenaApi
+			.patch({
 				resource: 'service_instance',
 				id: this.getId(),
 				body: {
@@ -68,8 +67,7 @@ class ServiceInstance {
 					is_alive: true,
 				},
 				passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
-			}),
-		)
+			})
 			.return(true)
 			.catch(err => {
 				captureException(err, 'Failed to send a heartbeat to the API', {
@@ -79,7 +77,7 @@ class ServiceInstance {
 			});
 	}
 
-	public wrap(func: () => void): Promise<this> {
+	public wrap(func: () => void): Bluebird<this> {
 		return this.register()
 			.tap(func)
 			.bind(this)

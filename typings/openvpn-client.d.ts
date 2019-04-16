@@ -22,8 +22,8 @@ declare module 'openvpn-client' {
 		constructor(vpnOpts?: VpnOpts);
 
 		public authenticate(user: string, pass: string): void;
-		public connect(callback: () => void): Promise<any>;
-		public disconnect(): Promise<void>;
+		public connect(callback: () => void): Bluebird<any>;
+		public disconnect(): Bluebird<void>;
 
 		public on(event: 'data', callback: (data: Buffer) => void): this;
 		public on(event: 'connect', callback: () => void): this;
