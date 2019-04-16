@@ -1,4 +1,47 @@
 - commits:
+    - subject: 'proxy: collect tunnel count stats for prometheus'
+      hash: 1c6efdc44190df5b607768164e50122149ce8ed4
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'logging: unify logging formats and practices'
+      hash: b2eb17f2b0d06dbd0329cf4d92fe0304135f91f9
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'vpn: use management interface to manage openvpn processes'
+      hash: 7929e28854b0cde2c70e6dc88abe650427dc7d36
+      body: >
+        * Handle client authentication via management events.
+
+        * Generate custom, more fine grained, logs; openvpn log verbosity can be
+          toggled with SIGUSR2.
+        * Use `child_process.spawn` in place of `forever.Monitor` meaning a
+        process
+          exit will cause the worker process it be restarted meaning the restart will
+          pass through the initialisation flow again.
+        * Gather client events and publish for Prometheus (session bitrate +
+        length,
+          total bytes rx/tx, online clients, total clients, auth failures).
+      footer:
+        Change-type: minor
+        change-type: minor
+        Connects-to: '#31'
+        connects-to: '#31'
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.11.0
+  date: 2019-04-16T12:38:02.095Z
+- commits:
     - subject: 'versionist: set repo type to docker'
       hash: 26232f761a231f3391c0e22a4207f52220d1d4c9
       body: ''
