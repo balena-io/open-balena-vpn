@@ -176,7 +176,7 @@ const worker = (instanceId: number) => {
 				}
 			})
 			.catch(err => {
-				logger.alert(`api error: ${err}\n${err.stack}`);
+				logger.alert(`auth error: ${err}\n${err.stack}`);
 				return vpn
 					.exec(`client-deny ${clientId} ${keyId} "AUTH_ERROR"`)
 					.then(() =>
