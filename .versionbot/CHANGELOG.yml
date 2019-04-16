@@ -1,4 +1,18 @@
 - commits:
+    - subject: 'versionist: set repo type to docker'
+      hash: 26232f761a231f3391c0e22a4207f52220d1d4c9
+      body: ''
+      footer:
+        Connects-to: '#44'
+        connects-to: '#44'
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.10.3
+  date: 2019-04-15T15:06:32.219Z
+- commits:
     - subject: 'versionbot: add structured CHANGELOG.yml'
       hash: df95589845e8c7ebab1e502dc20bf83d18186877
       body: ''
