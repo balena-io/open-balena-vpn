@@ -72,7 +72,7 @@ export const canAccessDevice = (
 			id: device.id,
 			passthrough: { headers: authHeader(auth) },
 			body: {
-				action: `tunnel-${port}`,
+				action: { or: ['tunnel-any', `tunnel-${port}`] },
 			},
 			url: `device(${device.id})/canAccess`,
 		})
