@@ -77,6 +77,12 @@ const worker = (instanceId: number) => {
 		clientId: number,
 		data: VpnClientBytecountData,
 	) => {
+		if (clientCache[clientId] == null) {
+			logger.warning(
+				`unable to write bandwidth metrics for unknown client_id=${clientId}`,
+			);
+			return;
+		}
 		const uuid = clientCache[clientId].uuid;
 		const rxDelta = data.bytes_received - clientCache[clientId].bytes_received;
 		const txDelta = data.bytes_sent - clientCache[clientId].bytes_sent;
