@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'metrics: reduce cardinality of session bitrate metrics'
+      hash: 511cdc08fd84666b4e5f18895d93655f23dfda5a
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.11.2
+  date: 2019-04-19T12:37:02.349Z
+- commits:
     - subject: 'openvpn: discard process output'
       hash: 0521fbecf3b7cdbde54f67480ef8fabc2d7b28c7
       body: ''
