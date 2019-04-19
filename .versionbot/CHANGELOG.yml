@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'vpn: guard against writing bandwidth metrics for unknown clients'
+      hash: 98fecca29a7455029bb15a00436b74a28eaca002
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.11.3
+  date: 2019-04-19T13:46:00.500Z
+- commits:
     - subject: 'metrics: reduce cardinality of session bitrate metrics'
       hash: 511cdc08fd84666b4e5f18895d93655f23dfda5a
       body: ''
