@@ -102,16 +102,10 @@ if (cluster.isMaster) {
 			metrics.histogram(
 				Metrics.SessionRxBitrate,
 				_.mean(clientMetrics.rxBitrate),
-				{
-					uuid: clientMetrics.uuid,
-				},
 			);
 			metrics.histogram(
 				Metrics.SessionTxBitrate,
 				_.mean(clientMetrics.txBitrate),
-				{
-					uuid: clientMetrics.uuid,
-				},
 			);
 		}
 		return new prometheus.AggregatorRegistry()
