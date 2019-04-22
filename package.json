@@ -38,7 +38,7 @@
     "middleware-handler": "^0.2.0",
     "netmask": "^1.0.6",
     "node-tunnel": "^3.0.0",
-    "pinejs-client-request": "^5.1.0",
+    "pinejs-client-request": "^6.0.0",
     "raven": "^2.6.4",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
