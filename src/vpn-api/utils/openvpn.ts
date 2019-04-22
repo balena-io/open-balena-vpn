@@ -17,7 +17,7 @@
 
 import * as Bluebird from 'bluebird';
 import { ChildProcess, spawn } from 'child_process';
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 import * as net from 'net';
 import VpnConnector = require('telnet-openvpn');
 
