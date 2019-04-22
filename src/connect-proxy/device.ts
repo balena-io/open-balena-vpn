@@ -51,7 +51,7 @@ export const getDeviceByUUID = (
 			passthrough: { headers: authHeader(auth) },
 		})
 		.then(devices => {
-			if (!_.isArray(devices)) {
+			if (!_.isArray(devices) || devices.length === 0) {
 				throw new Error('invalid api response');
 			}
 			return devices[0] as DeviceInfo;
@@ -104,7 +104,7 @@ export const getDeviceVpnHost = (
 		})
 		.then(
 			(devices): string => {
-				if (!_.isArray(devices)) {
+				if (!_.isArray(devices) || devices.length === 0) {
 					throw new Error('invalid api response');
 				}
 				return devices[0].ip_address;

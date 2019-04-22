@@ -39,13 +39,14 @@ const logger = getLogger('vpn');
 	'VPN_BASE_SUBNET',
 	'VPN_BASE_PORT',
 	'VPN_BASE_MANAGEMENT_PORT',
+	'VPN_API_BASE_PORT',
 	'VPN_INSTANCE_SUBNET_BITMASK',
 ]
 	.filter(key => process.env[key] == null)
 	.forEach((key, idx, keys) => {
 		logger.emerg(`${key} env variable is not set.`);
 		if (idx === keys.length - 1) {
-			process.exitCode = 1;
+			process.exit(1);
 		}
 	});
 
@@ -78,7 +79,7 @@ if (cluster.isMaster) {
 		'message',
 		(_worker, msg: { type: string; data: WorkerMetric }) => {
 			const { data, type } = msg;
-			if (type !== 'bytecount') {
+			if (type !== 'bitrate') {
 				return;
 			}
 			workerMetrics[data.uuid] = _.mergeWith(
