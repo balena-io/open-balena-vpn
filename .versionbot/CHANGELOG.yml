@@ -1,4 +1,86 @@
 - commits:
+    - subject: 'vpn: revert to script/curl/api based client auth'
+      hash: 7e3c9c582ecb394172176f8f900e33498944ae0a
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'pinejs-client-request: update to v6.0.0'
+      hash: 0f0f5d035793e12272c4d1a184f2415453b4e0c7
+      body: |
+        Update pinejs-client-request from 5.1.0 to 6.0.0
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+      nested:
+        - commits:
+            - subject: 'typed-error: Update to v3.1.0'
+              hash: 82e50ac9992b3a157360eef5163f43a90fa9feea
+              body: |
+                Update typed error from 2.0.0 to 3.1.0
+              footer:
+                Change-type: major
+                change-type: major
+                Signed-off-by: Will Boyce <will@balena.io>
+                signed-off-by: Will Boyce <will@balena.io>
+              author: Will Boyce
+          version: pinejs-client-request-6.0.0
+          date: 2019-04-17T15:08:00.745Z
+        - commits:
+            - author: Cameron Diver
+              body: ''
+              footers:
+                change-type: minor
+                signed-off-by: Cameron Diver <cameron@balena.io>
+              hash: e0874db1e45f6059a14494255986b293ae3af2e5
+              subject: Export the StatusError from module
+          date: '2019-02-12T11:27:25Z'
+          version: pinejs-client-request-5.2.0
+    - subject: 'node-tunnel: update to v3.0.0'
+      hash: 0eaeea7ee44d926547891612265ad96bde85dee0
+      body: |
+        Update node-tunnel from 2.1.2 to 3.0.0
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+      nested:
+        - commits:
+            - subject: >-
+                Switch to `eventemitter3.EventEmitter` from the stdlib
+                EventEmitter
+              hash: 87ab668c5f16456e8d71f625c3fab507ffc8c161
+              body: ''
+              footer:
+                Change-type: major
+                change-type: major
+                Signed-off-by: Will Boyce <will@balena.io>
+                signed-off-by: Will Boyce <will@balena.io>
+              author: Will Boyce
+          version: node-tunnel-3.0.0
+          date: 2019-04-17T10:19:39.204Z
+    - subject: 'vpn: switch to eventemitter3 in openvpn management class-'
+      hash: f9cf06fa2700445b22ce579f253bf2187f975a8a
+      body: ''
+      footer:
+        Connects-to: '#49'
+        connects-to: '#49'
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.12.0
+  date: 2019-04-23T09:55:11.923Z
+- commits:
     - subject: 'vpn: guard against writing bandwidth metrics for unknown clients'
       hash: 98fecca29a7455029bb15a00436b74a28eaca002
       body: ''
