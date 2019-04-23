@@ -17,7 +17,7 @@
 
 import * as Bluebird from 'bluebird';
 import { ChildProcess, spawn } from 'child_process';
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 import * as net from 'net';
 import VpnConnector = require('telnet-openvpn');
 
@@ -63,6 +63,10 @@ export const isTrusted = (data: any): data is VpnClientTrustedData =>
 	data.common_name != null;
 export const hasBytecountData = (data: any): data is VpnClientBytecountData =>
 	data.bytes_received != null && data.bytes_sent != null;
+export const hasDurationData = (
+	data: any,
+): data is VpnClientDisconnectData & VpnClientTrustedData =>
+	data.time_duration != null && isTrusted(data);
 
 const VpnLogLevels = {
 	D: 'debug',
@@ -123,6 +127,7 @@ export class VpnManager extends EventEmitter {
 		private mgtPort: number,
 		private subnet: Netmask,
 		private gateway?: string,
+		debug?: boolean,
 	) {
 		super();
 		// proxy `data` events from connector, splitting at newlines
@@ -133,6 +138,9 @@ export class VpnManager extends EventEmitter {
 				this.emit('manager:data', line.trim());
 			}
 		});
+		if (debug) {
+			this.on('manager:data', console.debug);
+		}
 		// subscribe to our own raw data events in order to generate structured events
 		this.on('manager:data', this.dataHandler);
 	}
@@ -168,7 +176,13 @@ export class VpnManager extends EventEmitter {
 			this.subnet.mask,
 			'--push',
 			`route ${gateway}`,
-			'--management-client-auth',
+			'--auth-user-pass-verify',
+			`scripts/auth.sh ${this.instanceId}`,
+			'via-env',
+			'--client-connect',
+			`scripts/client-connect.sh ${this.instanceId}`,
+			'--client-disconnect',
+			`scripts/client-disconnect.sh ${this.instanceId}`,
 		];
 	}
 
@@ -251,7 +265,9 @@ export class VpnManager extends EventEmitter {
 	};
 
 	public start(): Bluebird<true> {
-		this.process = spawn('/usr/sbin/openvpn', this.args(), { stdio: 'ignore' });
+		this.process = spawn('/usr/sbin/openvpn', this.args(), {
+			stdio: 'inherit',
+		});
 		// proxy error events from the child process
 		this.process.on('error', err => {
 			this.emit('process:error', err);

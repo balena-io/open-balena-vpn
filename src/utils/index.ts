@@ -40,7 +40,6 @@ export const getLogger = (service: string, workerId?: string | number) => {
 	}
 	const transport = new winston.transports.Console({
 		format: winston.format.combine(
-			winston.format.colorize(),
 			winston.format.label({ label: workerLabel, message: true }),
 			winston.format.label({ label: service, message: true }),
 			winston.format.simple(),
@@ -64,7 +63,7 @@ export const metricsServer = (handler?: express.RequestHandler) => {
 };
 
 export const spawnChildren = (n: number, logger: winston.Logger) => {
-	logger.info(`spawning ${n} workers`);
+	logger.info(`spawning ${n} worker${n > 1 ? 's' : ''}`);
 	_.times(n, i => {
 		const workerId = i + 1;
 		const restartWorker = (code?: number, signal?: string) => {

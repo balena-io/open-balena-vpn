@@ -23,6 +23,7 @@ COPY package.json package-lock.json /usr/src/app/
 RUN npm ci --unsafe-perm --production && npm cache clean --force 2>/dev/null
 COPY . /usr/src/app
 
+COPY openvpn /etc/openvpn
 COPY config/services /etc/systemd/system
 RUN systemctl enable open-balena-vpn-api.service open-balena-connect-proxy.service
 

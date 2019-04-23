@@ -29,7 +29,7 @@ const logger = getLogger('proxy');
 	.forEach((key, idx, keys) => {
 		logger.emerg(`${key} env variable is not set.`);
 		if (idx === keys.length - 1) {
-			process.exitCode = 1;
+			process.exit(1);
 		}
 	});
 
