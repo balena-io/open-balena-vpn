@@ -44,6 +44,15 @@ export const describeMetrics = () => {
 		const kb = 2 ** 10; // 1024
 		const mb = 2 ** 10 * kb;
 		const bitrateBuckets = [
+			kb,
+			2.5 * kb,
+			5 * kb,
+			7.5 * kb,
+			10 * kb,
+			15 * kb,
+			20 * kb,
+			25 * kb,
+			50 * kb,
 			100 * kb,
 			250 * kb,
 			500 * kb,
@@ -57,6 +66,13 @@ export const describeMetrics = () => {
 			8 * mb,
 			9 * mb,
 			10 * mb,
+			15 * mb,
+			20 * mb,
+			25 * mb,
+			30 * mb,
+			35 * mb,
+			40 * mb,
+			45 * mb,
 			50 * mb,
 			100 * mb,
 		];
