@@ -1,4 +1,28 @@
 - commits:
+    - subject: 'pinejs-client-request: update to v6.0.1'
+      hash: c4fff08972d97e1f626f74979c07ef52ce7126f7
+      body: |
+        Update pinejs-client-request from 6.0.0 to 6.0.1
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+      nested:
+        - commits:
+            - subject: 'Update target to es2016, part of/fixing the typed-error bump'
+              hash: 6025bf882f6f2675b321571f327f59a4908da539
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: pinejs-client-request-6.0.1
+          date: 2019-04-23T20:43:52.266Z
+  version: 8.12.1
+  date: 2019-04-24T09:25:18.363Z
+- commits:
     - subject: 'vpn: revert to script/curl/api based client auth'
       hash: 7e3c9c582ecb394172176f8f900e33498944ae0a
       body: ''
