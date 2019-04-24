@@ -55,7 +55,7 @@ export const getDeviceByUUID = (
 			return devices[0] as DeviceInfo;
 		})
 		.catch(err => {
-			captureException(err, err.message);
+			captureException(err, 'device-lookup-error');
 			throw new APIError(err.message);
 		});
 
@@ -110,6 +110,6 @@ export const getDeviceVpnHost = (
 			return devices[0].ip_address;
 		})
 		.catch(err => {
-			captureException(err, err.message);
+			captureException(err, 'device-vpn-host-lookup-error');
 			throw new APIError(`cannot find device vpn host (${err.message})`);
 		});

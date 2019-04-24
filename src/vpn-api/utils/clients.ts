@@ -83,8 +83,8 @@ const setDeviceState = (() => {
 					return targetState;
 				})
 				.catch(err => {
-					captureException(err, 'Error updating state', {
-						user: { uuid },
+					captureException(err, 'device-state-update-error', {
+						tags: { uuid },
 					});
 					// Add a 60 second delay in case of failure to avoid a crazy flood
 					return Bluebird.delay(60000).then(() => {

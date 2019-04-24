@@ -22,7 +22,7 @@ import * as express from 'express';
 import * as morgan from 'morgan';
 
 import { captureException, getLogger } from '../utils';
-import { Raven } from '../utils/errors';
+import { Sentry } from '../utils/errors';
 
 import { Metrics } from './metrics';
 import { clients, pooledRequest } from './utils';
@@ -94,7 +94,7 @@ export const apiFactory = (instanceId: number) => {
 				}
 			})
 			.catch(err => {
-				captureException(err, 'Proxy Auth Error', { req });
+				captureException(err, 'api-auth-error', { req });
 				res.sendStatus(401);
 			});
 	});
@@ -126,6 +126,6 @@ export const apiServer = (instanceId: number) => {
 	app.use(morgan('combined'));
 	app.use(compression());
 	app.use(apiFactory(instanceId));
-	app.use(Raven.errorHandler());
+	app.use(Sentry.Handlers.errorHandler());
 	return app;
 };
