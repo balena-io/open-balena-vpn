@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'metrics: increase granularity of bitrate buckets'
+      hash: 5ac408741a69ec1dcbef86177aeb0c58b13cf1bc
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.12.2
+  date: 2019-04-24T10:21:09.453Z
+- commits:
     - subject: 'pinejs-client-request: update to v6.0.1'
       hash: c4fff08972d97e1f626f74979c07ef52ce7126f7
       body: |
