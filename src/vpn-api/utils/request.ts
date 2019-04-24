@@ -33,4 +33,4 @@ if (MAX_API_POST_WORKERS != null) {
 const pool = new Agent({
 	maxSockets,
 });
-export const pooledPostAsync = request.defaults({ pool }).post;
+export const pooledRequest = request.defaults({ pool });

@@ -32,7 +32,7 @@ import * as _ from 'lodash';
 import { apiKey, captureException } from '../../utils';
 
 import { VpnClientTrustedData } from './openvpn';
-import { pooledPostAsync } from './request';
+import { pooledRequest } from './request';
 import { service } from './service';
 
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
@@ -63,12 +63,13 @@ const setDeviceState = (() => {
 			}
 
 			const eventType = targetState.connected ? 'connect' : 'disconnect';
-			return pooledPostAsync({
-				url: `https://${BALENA_API_HOST}/services/vpn/client-${eventType}`,
-				timeout: REQUEST_TIMEOUT,
-				form: _.extend({ service_id: service.getId() }, targetState),
-				headers: { Authorization: `Bearer ${apiKey}` },
-			})
+			return pooledRequest
+				.post({
+					url: `https://${BALENA_API_HOST}/services/vpn/client-${eventType}`,
+					timeout: REQUEST_TIMEOUT,
+					form: _.extend({ service_id: service.getId() }, targetState),
+					headers: { Authorization: `Bearer ${apiKey}` },
+				})
 				.promise()
 				.timeout(REQUEST_TIMEOUT)
 				.then((response: IncomingMessage) => {

@@ -20,5 +20,5 @@ export { clients };
 export { HAProxy } from './haproxy';
 export { Netmask } from './netmask';
 export { VpnManager } from './openvpn';
-export { request } from './request';
+export { pooledRequest } from './request';
 export { service } from './service';

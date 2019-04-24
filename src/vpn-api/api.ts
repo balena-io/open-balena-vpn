@@ -25,7 +25,7 @@ import { captureException, getLogger } from '../utils';
 import { Raven } from '../utils/errors';
 
 import { Metrics } from './metrics';
-import { clients, request } from './utils';
+import { clients, pooledRequest } from './utils';
 import { hasDurationData, isTrusted } from './utils/openvpn';
 
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
@@ -78,11 +78,14 @@ export const apiFactory = (instanceId: number) => {
 			return res.sendStatus(400);
 		}
 
-		request({
-			url: `https://${BALENA_API_HOST}/services/vpn/auth/${req.body.username}`,
-			timeout: 30000,
-			headers: { Authorization: `Bearer ${req.body.password}` },
-		})
+		pooledRequest
+			.get({
+				url: `https://${BALENA_API_HOST}/services/vpn/auth/${
+					req.body.username
+				}`,
+				timeout: 30000,
+				headers: { Authorization: `Bearer ${req.body.password}` },
+			})
 			.then(response => {
 				if (response.statusCode === 200) {
 					return res.send('OK');
