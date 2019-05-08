@@ -1,4 +1,43 @@
 - commits:
+    - subject: Disable the service start limits
+      hash: 8953b91ac98a3c14244e45fd71e4287eabe2335a
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+    - subject: Update open-balena-base to 7.0.2
+      hash: 33893a5b5d2599e6638b1d9fbd1277e709435abd
+      body: |
+        Update open-balena-base from 7.0.0 to 7.0.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Disable the apt daily timer
+              hash: bbcc74a1b72886272bbec3071d79e0240c14a174
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: open-balena-base-7.0.2
+          date: 2019-05-06T10:25:53.563Z
+        - commits:
+            - subject: Disable start limit for confd.service
+              hash: 8ef586e573f77b06adaead91f47093757cc0584b
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: open-balena-base-7.0.1
+          date: 2019-05-06T10:05:10.962Z
+  version: 8.12.4
+  date: 2019-05-08T13:32:41.667Z
+- commits:
     - subject: 'vpn: use pooled request workers for client authentication via api'
       hash: 57b1dcd5fc022f168a7fecd087589a0e3e643687
       body: ''
