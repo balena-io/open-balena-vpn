@@ -8,3 +8,5 @@ upstream:
     url: 'https://github.com/balena-io-modules/pinejs-client-request'
   - repo: 'typed-error'
     url: 'https://github.com/balena-io-modules/typed-error'
+  - repo: 'open-balena-base'
+    url: 'https://github.com/balena-io/open-balena-base'
