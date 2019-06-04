@@ -1,4 +1,20 @@
 - commits:
+    - subject: 'perms: Add tunnel-any check when tunnelling ports'
+      hash: a2340e7ad8e000e0fcf8b76ca8ea98c682c6f43d
+      body: |
+        Add an additional check to the actions allowed when tunnelling
+        ports through the connect-proxy. This means that if the key used
+        is sufficiently privileged then any port can be tunnelled to a
+        device.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Rich Bayliss <rich@balena.io>
+        signed-off-by: Rich Bayliss <rich@balena.io>
+      author: Rich Bayliss
+  version: 8.13.1
+  date: 2019-06-04T08:15:10.174Z
+- commits:
     - subject: Update open-balena-base to 7.2.0
       hash: 98c9eefeacbd44ea35dd11f8c0deb0e37243b38f
       body: |
