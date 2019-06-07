@@ -1,4 +1,26 @@
 - commits:
+    - subject: Update open-balena-base to 7.2.1
+      hash: 496a641026fe0e9b627d957fc2c84ca3548d4220
+      body: |
+        Update open-balena-base from 7.2.0 to 7.2.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Fix adding htoprc
+              hash: 24f7afc3559227e3c58cfcf1483aab91f034be5f
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: open-balena-base-7.2.1
+          date: 2019-06-03T13:55:28.382Z
+  version: 8.13.2
+  date: 2019-06-06T18:48:12.410Z
+- commits:
     - subject: 'perms: Add tunnel-any check when tunnelling ports'
       hash: a2340e7ad8e000e0fcf8b76ca8ea98c682c6f43d
       body: |
