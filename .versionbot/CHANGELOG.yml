@@ -1,4 +1,28 @@
 - commits:
+    - subject: Update open-balena-base to 7.2.2
+      hash: 55b3348f2883b27c8f2472fb8b54b16ea1d63ba6
+      body: |
+        Update open-balena-base from 7.2.1 to 7.2.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: 'systemd: move StartLimitIntervalSec to proper conf section'
+              hash: d8e86fb27e02975a98ff271ec5c7f30c6f1dcd03
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Matthew McGinn <matthew@balena.io>
+                signed-off-by: Matthew McGinn <matthew@balena.io>
+              author: Matthew McGinn
+          version: open-balena-base-7.2.2
+          date: 2019-06-19T14:32:09.638Z
+  version: 8.13.3
+  date: 2019-06-20T14:50:52.492Z
+- commits:
     - subject: Update open-balena-base to 7.2.1
       hash: 496a641026fe0e9b627d957fc2c84ca3548d4220
       body: |
