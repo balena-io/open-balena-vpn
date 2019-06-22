@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'dev: move typescript+@types dependencies to devDependencies'
+      hash: 8f2be4a3366739088d53ffed30b6a6fad10364e4
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.14.0
+  date: 2019-06-22T15:39:42.008Z
+- commits:
     - subject: Update open-balena-base to 7.2.2
       hash: 55b3348f2883b27c8f2472fb8b54b16ea1d63ba6
       body: |
