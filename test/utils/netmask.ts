@@ -20,11 +20,12 @@ import 'mocha';
 
 import * as netmask from '../../src/vpn-api/utils/netmask';
 
-const net = new netmask.Netmask('10.240.0.0', 12);
+const BASE_SIZE = 10;
+const net = new netmask.Netmask('100.64.0.0', BASE_SIZE);
 
 describe('Netmask', () => {
 	it('should fail on /30 or smaller subnets', () => {
-		expect(() => new netmask.Netmask('10.240.0.0', 30)).to.throw(
+		expect(() => new netmask.Netmask('100.64.0.0', 30)).to.throw(
 			Error,
 			'Mask /30 is too small, 3 usable addresses are required.',
 		);
@@ -34,7 +35,7 @@ describe('Netmask', () => {
 		it('should be the second usable address', () => {
 			expect(net)
 				.to.have.property('second')
-				.that.equals('10.240.0.2');
+				.that.equals('100.64.0.2');
 		});
 	});
 
@@ -42,13 +43,16 @@ describe('Netmask', () => {
 		it('should be the third usable address', () => {
 			expect(net)
 				.to.have.property('third')
-				.that.equals('10.240.0.3');
+				.that.equals('100.64.0.3');
 		});
 	});
 
 	describe('.split', () => {
 		it('should refuse if split < mask', () => {
-			expect(() => net.split(11)).to.throw(Error, 'Cannot split /12 into /11!');
+			expect(() => net.split(BASE_SIZE - 1)).to.throw(
+				Error,
+				`Cannot split /${BASE_SIZE} into /${BASE_SIZE - 1}!`,
+			);
 		});
 
 		it('should refuse if mask >= 30', () => {
@@ -67,35 +71,35 @@ describe('Netmask', () => {
 		});
 
 		it('should allow when split == mask', () => {
-			const subnets = net.split(12);
+			const subnets = net.split(BASE_SIZE);
 			expect(subnets)
 				.to.have.property('length')
 				.that.equals(1);
 			expect(subnets[0])
 				.to.have.property('base')
-				.that.equals('10.240.0.0');
+				.that.equals('100.64.0.0');
 			expect(subnets[0])
 				.to.have.property('bitmask')
-				.that.equals(12);
+				.that.equals(BASE_SIZE);
 		});
 
 		it('should return non-overlapping subnets', () => {
-			const subnets = net.split(13);
+			const subnets = net.split(BASE_SIZE + 1);
 			expect(subnets)
 				.to.have.property('length')
 				.that.equals(2);
 			expect(subnets[0])
 				.to.have.property('base')
-				.that.equals('10.240.0.0');
+				.that.equals('100.64.0.0');
 			expect(subnets[0])
 				.to.have.property('bitmask')
-				.that.equals(13);
+				.that.equals(BASE_SIZE + 1);
 			expect(subnets[1])
 				.to.have.property('base')
-				.that.equals('10.248.0.0');
+				.that.equals('100.96.0.0');
 			expect(subnets[1])
 				.to.have.property('bitmask')
-				.that.equals(13);
+				.that.equals(BASE_SIZE + 1);
 		});
 	});
 });

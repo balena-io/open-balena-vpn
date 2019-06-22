@@ -22,9 +22,9 @@ Networking is configured by a number of environmental variables:
 * `VPN_INSTANCE_SUBNET_BITMASK` is the VLSM to split `VPN_BASE_SUBNET` into
   `VPN_BASE_PORT` and `VPN_BASE_MANAGEMENT_PORT`
 
-Given a base subnet of `10.240.0.0/12` and a per-instance VLSM of `20` a server
-the first instance subnet would be `10.240.0.0/20` and the second would be
-`10.240.16.0/20`, and so forth up to `10.255.240.0/20` for the 256th instance.
+Given a base subnet of `100.64.0.0/10` and a per-instance VLSM of `20` a server
+the first instance subnet would be `100.64.0.0/20` and the second would be
+`100.64.16.0/20`, and so forth up to `100.127.240.1/20` for the 1024th instance.
 
 If `BALENA_VPN_GATEWAY` is not defined then the first usable address of the
 instance subnet will be used in its place. This address, and the second usable
@@ -36,7 +36,8 @@ is used as a DHCP pool for devices.
 Note that the dhcp pool size will also dictate the max clients per
 process, with the max clients per server being
 `max_clients_per_instance * VPN_INSTANCE_COUNT` and not the size of
-the base subnet. A VLSM of `20` will allow for 4094 clients per instance.
+the base subnet. A VLSM of `20` will allow for 4,094 clients per instance, and a
+base subnet of size `/10` will allow for a total of a total of 4,194,302 clients.
 
 Base ports are increments by the process instance ID (1-indexed) to calculate
 the port for that instance.

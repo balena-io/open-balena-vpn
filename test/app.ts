@@ -124,7 +124,7 @@ describe('VPN Events', function() {
 			expect(data).to.not.have.property('real_address');
 			expect(data)
 				.to.have.property('virtual_address')
-				.that.match(/^10\.2[45][0-9]\.[0-9]+\.[0-9]+$/);
+				.that.match(/^100\.64\.[0-9]+\.[0-9]+$/);
 		});
 
 		this.client = vpnClient.create(vpnDefaultOpts);
