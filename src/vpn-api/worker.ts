@@ -172,7 +172,7 @@ const worker = (instanceId: number) => {
 			.tap(() => {
 				logger.notice(`waiting for clients...`);
 			})
-			.return(true)
+			.return(vpn)
 	);
 };
 export default worker;

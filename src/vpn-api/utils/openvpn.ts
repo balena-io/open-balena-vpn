@@ -305,6 +305,12 @@ export class VpnManager extends EventEmitter {
 			.return(true);
 	}
 
+	public stop() {
+		if (this.process != null) {
+			this.process.kill();
+		}
+	}
+
 	public connect(): Bluebird<true> {
 		return Bluebird.try(() =>
 			this.connector

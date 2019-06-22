@@ -27,7 +27,7 @@ import * as querystring from 'querystring';
 const { expect } = chai;
 
 import tunnelWorker from '../src/connect-proxy/worker';
-import { service } from '../src/vpn-api/utils';
+import { service, VpnManager } from '../src/vpn-api/utils';
 import { request } from '../src/vpn-api/utils/request';
 import vpnWorker from '../src/vpn-api/worker';
 
@@ -36,6 +36,8 @@ const vpnPort = process.env.VPN_PORT || '443';
 const caCertPath = process.env.CA_CERT_PATH || '/etc/openvpn/ca.crt';
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const VPN_CONNECT_PROXY_PORT = process.env.VPN_CONNECT_PROXY_PORT!;
+
+let manager: VpnManager;
 
 const vpnDefaultOpts = [
 	'--client',
@@ -62,6 +64,12 @@ before(() => {
 	chai.use(chaiAsPromised);
 });
 
+after(() => {
+	if (manager != null) {
+		manager.stop();
+	}
+});
+
 describe('vpn worker', function() {
 	this.timeout(15 * 1000);
 
@@ -72,7 +80,15 @@ describe('vpn worker', function() {
 	});
 
 	it('should resolve true when ready', () =>
-		expect(service.register().then(() => vpnWorker(1))).to.eventually.be.true);
+		expect(
+			service
+				.register()
+				.then(() => vpnWorker(1))
+				.tap(m => {
+					manager = m;
+				})
+				.return(true),
+		).to.eventually.be.true);
 });
 
 describe('tunnel worker', () =>
