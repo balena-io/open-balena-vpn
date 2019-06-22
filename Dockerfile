@@ -1,5 +1,18 @@
 FROM balena/open-balena-base:v7.2.2 as base
 
+
+FROM base as builder
+COPY package.json package-lock.json /usr/src/app/
+RUN npm ci && npm cache clean --force 2>/dev/null
+COPY tsconfig.json tsconfig.dev.json /usr/src/app/
+COPY typings /usr/src/app/typings
+COPY test /usr/src/app/test
+COPY src /usr/src/app/src
+RUN npm run build
+
+
+FROM base as main
+
 EXPOSE 80 443 3128
 
 RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/dev/null \
@@ -7,7 +20,9 @@ RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/d
 	&& apt-get update -qq \
 	&& apt-get install -qy openssl openvpn sipcalc socat --no-install-recommends \
 	&& apt-get install -qy haproxy=1.8.* -t stretch-backports-1.8 --no-install-recommends \
-	&& apt-get clean && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/openvpn/* /etc/rsyslog.d/49-haproxy.conf
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/openvpn/* /etc/rsyslog.d/49-haproxy.conf \
+	&& ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts
 
 ENV LIBNSS_OPENVPN_VERSION 22feb11322182f6fd79f85cd014b65b6c40b7b47
 RUN tmp="$(mktemp -d)" set -x \
@@ -21,18 +36,11 @@ RUN tmp="$(mktemp -d)" set -x \
 
 COPY package.json package-lock.json /usr/src/app/
 RUN npm ci --unsafe-perm --production && npm cache clean --force 2>/dev/null
-COPY . /usr/src/app
 
-COPY openvpn /etc/openvpn
+COPY --from=builder /usr/src/app/build /usr/src/app/build
+COPY bin /usr/src/app/bin
+COPY config /usr/src/app/config
+COPY openvpn /usr/src/app/openvpn
+
 COPY config/services /etc/systemd/system
 RUN systemctl enable open-balena-vpn-api.service open-balena-connect-proxy.service
-
-# build test image
-FROM base as test
-RUN npm ci && npm cache clean --force 2>/dev/null
-ENV BALENA_API_HOST api.balena.test
-RUN npm run check && npm run test-unit
-
-# build and export production image
-FROM base as main
-RUN npm run build

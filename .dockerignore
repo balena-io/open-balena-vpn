@@ -1,5 +1,8 @@
-.git
-build
+.*
+*.md
 automation
-node_modules
+build
 config/env
+Dockerfile
+node_modules
+repo.yml
