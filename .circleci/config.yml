@@ -1,0 +1,59 @@
+---
+version: 2
+jobs:
+  build:
+    docker:
+      - image: library/docker
+    working_directory: /tmp/open-balena-vpn
+    environment:
+      DOCKER_IMAGE: balena/open-balena-vpn
+    branches:
+      ignore:
+        - /.+-build-[0-9a-f]+/
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Login
+          command: docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+      - run:
+          name: Build
+          command: |
+            set -x
+            docker pull ${DOCKER_IMAGE}:${CIRCLE_BRANCH} || \
+              docker pull ${DOCKER_IMAGE}:master || true
+
+            docker build \
+              --cache-from="${DOCKER_IMAGE}:${CIRCLE_BRANCH}" \
+              --cache-from="${DOCKER_IMAGE}:master" \
+              --rm=false \
+              --pull \
+              --tag "${DOCKER_IMAGE}:${CIRCLE_SHA1}" \
+              .
+      - run:
+          name: Test
+          command: IMAGE_NAME="${DOCKER_IMAGE}:${CIRCLE_SHA1}" ./automation/test.sh
+      - deploy:
+          name: Push
+          command: |
+            apk add --no-cache git
+            # only push tagged commits on master branch (i.e., versions)
+            if [ "${CIRCLE_BRANCH}" = "master" ] && [ -n "$(git tag --list --points-at HEAD)" ]; then
+              set -x
+              docker tag "${DOCKER_IMAGE}:${CIRCLE_SHA1}" "${DOCKER_IMAGE}:${CIRCLE_BRANCH}"
+              docker push "${DOCKER_IMAGE}:${CIRCLE_BRANCH}"
+            fi
+      - deploy:
+          name: Deploy to Staging
+          command: |
+            # only deploy tagged commits on master branch (i.e., versions)
+            if [ "${CIRCLE_BRANCH}" = "master" ] && [ -n "$(git tag --list --points-at HEAD)" ]; then
+              curl --silent \
+                --request POST \
+                --user ${JENKINS_USER}:${JENKINS_TOKEN} \
+                --data-urlencode "action=deploy" \
+                --data-urlencode "component=vpn" \
+                --data-urlencode "environment=staging" \
+                --dump-header /dev/stdout \
+                "https://jenkins.dev.resin.io/job/resin-deploy/buildWithParameters"
+            fi
