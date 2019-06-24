@@ -1,4 +1,72 @@
 - commits:
+    - subject: 'deps: update dependencies'
+      hash: 15b0b54b9d6a5a926d5ae722bde2a595c56861f3
+      body: |
+        * update @balena/node-metrics-gatherer from 2.3.1 to 2.4.1
+        * update pinejs-client-request from 6.0.1 to 6.0.2
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+      nested:
+        - commits:
+            - subject: Add node 12 tests
+              hash: 624b1efadfbb920d718bd2f54f99e8eef0e5c645
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+            - subject: Add upstream for pinejs-client-core
+              hash: 33dc1299939483534686f52e903bb27f8a08b543
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: pinejs-client-request-6.0.2
+          date: 2019-05-08T15:57:24.879Z
+    - subject: 'dockerfile: remove extraneous apt-get installs'
+      hash: 1821ea4a850c6556b8c116cb5a59a1df9eeac566
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'tests: fix canAccess mocks to account for tunnel-any perms'
+      hash: 7c753dce1cf58d6e68cb7e9a274145f5fd788530
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'tests: kill openvpn process when complete to prevent hanging'
+      hash: b5bd7043b3b8f3ec530c0e0442ba944aba3d8f15
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'dev: configure circle to test prs and deploy new versions to staging'
+      hash: 4567c7ca9aa085282adfa88a24bf82d2ee60845f
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.14.1
+  date: 2019-06-24T12:52:04.066Z
+- commits:
     - subject: 'dev: move typescript+@types dependencies to devDependencies'
       hash: 8f2be4a3366739088d53ffed30b6a6fad10364e4
       body: ''
