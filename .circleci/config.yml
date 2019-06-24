@@ -8,8 +8,8 @@ jobs:
     environment:
       DOCKER_IMAGE: balena/open-balena-vpn
     branches:
-      ignore:
-        - /.+-build-[0-9a-f]+/
+      only:
+        - master
     steps:
       - checkout
       - setup_remote_docker
