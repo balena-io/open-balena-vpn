@@ -15,18 +15,18 @@
     "test": "docker build -t test-balena-vpn . && IMAGE_NAME=test-balena-vpn ./automation/test.sh"
   },
   "dependencies": {
-    "@balena/node-metrics-gatherer": "^2.3.1",
-    "block-queue": "~0.0.2",
-    "bluebird": "^3.5.4",
+    "@balena/node-metrics-gatherer": "^2.4.1",
+    "block-queue": "^0.0.2",
+    "bluebird": "^3.5.5",
     "compression": "^1.7.4",
-    "eventemitter3": "^3.1.0",
-    "express": "^4.16.4",
+    "eventemitter3": "^4.0.0",
+    "express": "^4.17.1",
     "lodash": "^4.17.11",
     "middleware-handler": "^0.2.0",
     "morgan": "^1.9.1",
     "netmask": "^1.0.6",
     "node-tunnel": "^3.0.0",
-    "pinejs-client-request": "^6.0.1",
+    "pinejs-client-request": "^6.0.2",
     "raven": "^2.6.4",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
@@ -59,7 +59,7 @@
     "openvpn-client": "0.0.2",
     "resin-lint": "^3.0.4",
     "typescript": "^3.5.2",
-    "ts-node": "^6.2.0"
+    "ts-node": "^8.3.0"
   },
   "husky": {
     "hooks": {

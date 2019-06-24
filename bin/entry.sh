@@ -17,7 +17,7 @@ if [ "${NODE_ENV}" = "development" ]; then
 	tsnode="$(command -v ts-node || true)"
 	if [ -x "${tsnode}" ]; then
 		command="${tsnode}"
-		args=()
+		args=("--files")
 		entrypoint="src/${service}/app.ts"
 	fi
 fi
