@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'circle: fix deploy to staging job'
+      hash: 3ead4d4546d09c773cbd4188ebb5d5ef4cfff908
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.14.2
+  date: 2019-06-24T13:28:22.260Z
+- commits:
     - subject: 'deps: update dependencies'
       hash: 15b0b54b9d6a5a926d5ae722bde2a595c56861f3
       body: |
