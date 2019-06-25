@@ -1,4 +1,27 @@
 - commits:
+    - subject: 'subnets: add config opts for vpn subnets and default to RFC6598 block'
+      hash: 7a1653d86c7ad9306a172abdd91fb7acdbf2aa09
+      body: >
+        Using CGN address space should eliminate all instances of addressing
+        clashes
+
+        regardless of device placement and without the necessity of a dedicated
+        and
+
+        public `BALENA_VPN_GATEWAY` ipv4 address for the remote peer.
+      footer:
+        Refs: 'https://tools.ietf.org/html/rfc6598'
+        refs: 'https://tools.ietf.org/html/rfc6598'
+        Connects-to: '#67'
+        connects-to: '#67'
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.15.0
+  date: 2019-06-24T13:48:52.856Z
+- commits:
     - subject: 'circle: fix deploy to staging job'
       hash: 3ead4d4546d09c773cbd4188ebb5d5ef4cfff908
       body: ''
