@@ -134,43 +134,48 @@ class Tunnel extends nodeTunnel.Tunnel {
 	) {
 		return Bluebird.try(() => parseRequest(req)).then(({ uuid, auth }) =>
 			lookupAsync(`${uuid}.vpn`)
-				.then(() => {
-					logger.info(`connecting to ${host}:${port}`);
-					return super.connect(port, host, client, req).tap(socket => {
-						metrics.inc(Metrics.ActiveTunnels);
-						metrics.inc(Metrics.TotalTunnels);
-						socket.on('close', () => {
-							metrics.dec(Metrics.ActiveTunnels);
+				.return(true)
+				.catchReturn(false)
+				.then(exists => {
+					if (exists) {
+						// The lookup succeeded so we try to connect
+						logger.info(`connecting to ${host}:${port}`);
+						return super.connect(port, host, client, req).tap(socket => {
+							metrics.inc(Metrics.ActiveTunnels);
+							metrics.inc(Metrics.TotalTunnels);
+							socket.on('close', () => {
+								metrics.dec(Metrics.ActiveTunnels);
+							});
 						});
-					});
-				})
-				.catch(() => {
-					return device
-						.getDeviceVpnHost(uuid, auth)
-						.catch(errors.APIError, err => {
-							logger.crit(
-								`error connecting to device ${uuid} on port ${port} (${
-									err.message
-								})`,
-							);
-							throw new errors.HandledTunnelingError(err.message);
-						})
-						.then(vpnHost => {
-							logger.info(
-								`forwarding tunnel request for ${uuid}:${port} via ${vpnHost}`,
-							);
-							return forwardRequest(vpnHost, uuid, port, auth).catch(
-								errors.RemoteTunnellingError,
-								err => {
-									logger.crit(
-										`error forwarding request for ${uuid}:${port} (${
-											err.message
-										})`,
-									);
-									throw new errors.HandledTunnelingError(err.message);
-								},
-							);
-						});
+					} else {
+						// The lookup failed so we try to forward to the correct vpn instance instead
+						return device
+							.getDeviceVpnHost(uuid, auth)
+							.catch(errors.APIError, err => {
+								logger.crit(
+									`error connecting to device ${uuid} on port ${port} (${
+										err.message
+									})`,
+								);
+								throw new errors.HandledTunnelingError(err.message);
+							})
+							.then(vpnHost => {
+								logger.info(
+									`forwarding tunnel request for ${uuid}:${port} via ${vpnHost}`,
+								);
+								return forwardRequest(vpnHost, uuid, port, auth).catch(
+									errors.RemoteTunnellingError,
+									err => {
+										logger.crit(
+											`error forwarding request for ${uuid}:${port} (${
+												err.message
+											})`,
+										);
+										throw new errors.HandledTunnelingError(err.message);
+									},
+								);
+							});
+					}
 				}),
 		);
 	}
