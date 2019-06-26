@@ -1,4 +1,14 @@
 - commits:
+    - subject: Only try to forward to the correct vpn instance if lookup fails
+      hash: a73829f2ef32d8972bc8db1944efc9c7980f0bb0
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 8.15.1
+  date: 2019-06-25T17:00:32.627Z
+- commits:
     - subject: 'subnets: add config opts for vpn subnets and default to RFC6598 block'
       hash: 7a1653d86c7ad9306a172abdd91fb7acdbf2aa09
       body: >
