@@ -197,7 +197,7 @@ describe('VPN proxy', function() {
 				});
 
 			nock(`https://${BALENA_API_HOST}`)
-				.post('/v5/device(1)/canAccess', {
+				.post('/v5/device(@id)/canAccess?@id=1', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(200, {
@@ -263,7 +263,7 @@ describe('VPN proxy', function() {
 
 		it('should not allow port 8080 without authentication', () => {
 			nock(`https://${BALENA_API_HOST}`)
-				.post('/v5/device(2)/canAccess', {
+				.post('/v5/device(@id)/canAccess?@id=2', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(200, () => {
@@ -285,7 +285,7 @@ describe('VPN proxy', function() {
 
 		it('should allow port 8080 with authentication', () => {
 			nock(`https://${BALENA_API_HOST}`)
-				.post('/v5/device(2)/canAccess', {
+				.post('/v5/device(@id)/canAccess?@id=2', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(200, {

@@ -59,21 +59,24 @@ export const getDeviceByUUID = (
 			throw new APIError(err.message);
 		});
 
+const canAccessDeviceQuery = utils.balenaApi.prepare<{ id: number }>({
+	method: 'POST',
+	resource: 'device',
+	id: { '@': 'id' },
+	url: `device(@id)/canAccess`,
+});
 export const canAccessDevice = (
 	device: DeviceInfo,
 	port: number,
 	auth?: Buffer,
 ) =>
-	utils.balenaApi
-		.post({
-			resource: 'device',
-			id: device.id,
-			passthrough: { headers: authHeader(auth) },
-			body: {
-				action: { or: ['tunnel-any', `tunnel-${port}`] },
-			},
-			url: `device(${device.id})/canAccess`,
-		})
+	canAccessDeviceQuery(
+		{ id: device.id },
+		{
+			action: { or: ['tunnel-any', `tunnel-${port}`] },
+		},
+		{ headers: authHeader(auth) },
+	)
 		.then(
 			({ d }: { d?: Array<{ id: number }> }) =>
 				_.isArray(d) && d.length === 1 && d[0].id === device.id,
