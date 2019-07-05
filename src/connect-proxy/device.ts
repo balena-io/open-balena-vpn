@@ -31,25 +31,23 @@ const authHeader = (auth?: Buffer): { Authorization?: string } => {
 
 export interface DeviceInfo {
 	id: number;
-	uuid: string;
 	is_connected_to_vpn: boolean;
 }
 
+const getDeviceByUUIDQuery = utils.balenaApi.prepare<{ uuid: string }>({
+	resource: 'device',
+	options: {
+		$select: ['id', 'is_connected_to_vpn'],
+		$filter: {
+			uuid: { '@': 'uuid' },
+		},
+	},
+});
 export const getDeviceByUUID = (
 	uuid: string,
 	auth?: Buffer,
 ): Bluebird<DeviceInfo> =>
-	utils.balenaApi
-		.get({
-			resource: 'device',
-			options: {
-				$select: ['id', 'uuid', 'is_connected_to_vpn'],
-				$filter: {
-					uuid,
-				},
-			},
-			passthrough: { headers: authHeader(auth) },
-		})
+	getDeviceByUUIDQuery({ uuid }, undefined, { headers: authHeader(auth) })
 		.then(devices => {
 			if (!_.isArray(devices) || devices.length === 0) {
 				throw new Error('invalid api response');
