@@ -51,8 +51,9 @@ describe('getDeviceByUUID()', function() {
 		nock(`https://${BALENA_API_HOST}`)
 			.get('/v5/device')
 			.query({
-				$select: 'id,uuid,is_connected_to_vpn',
-				$filter: "uuid eq 'deadbeef'",
+				$select: 'id,is_connected_to_vpn',
+				$filter: 'uuid eq @uuid',
+				'@uuid': 'deadbeef',
 			})
 			.reply(200, { d: [this.mockDevice] });
 	});

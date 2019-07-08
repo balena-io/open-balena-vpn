@@ -183,29 +183,27 @@ describe('VPN proxy', function() {
 			nock(`https://${BALENA_API_HOST}`)
 				.get('/v5/device')
 				.query({
-					$select: 'id,uuid,is_connected_to_vpn',
-					$filter: "uuid eq 'deadbeef'",
+					$select: 'id,is_connected_to_vpn',
+					$filter: 'uuid eq @uuid',
+					'@uuid': "'deadbeef'",
 				})
 				.reply(200, {
 					d: [
 						{
 							id: 1,
-							uuid: 'deadbeef',
 							is_connected_to_vpn: 1,
 						},
 					],
 				});
 
 			nock(`https://${BALENA_API_HOST}`)
-				.post('/v5/device(1)/canAccess', {
+				.post('/v5/device(@id)/canAccess?@id=1', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(200, {
 					d: [
 						{
 							id: 1,
-							uuid: 'deadbeef',
-							is_connected_to_vpn: 1,
 						},
 					],
 				});
@@ -249,14 +247,14 @@ describe('VPN proxy', function() {
 			nock(`https://${BALENA_API_HOST}`)
 				.get('/v5/device')
 				.query({
-					$select: 'id,uuid,is_connected_to_vpn',
-					$filter: "uuid eq 'deadbeef'",
+					$select: 'id,is_connected_to_vpn',
+					$filter: 'uuid eq @uuid',
+					'@uuid': "'deadbeef'",
 				})
 				.reply(200, {
 					d: [
 						{
 							id: 2,
-							uuid: 'deadbeef',
 							is_connected_to_vpn: 1,
 						},
 					],
@@ -265,7 +263,7 @@ describe('VPN proxy', function() {
 
 		it('should not allow port 8080 without authentication', () => {
 			nock(`https://${BALENA_API_HOST}`)
-				.post('/v5/device(2)/canAccess', {
+				.post('/v5/device(@id)/canAccess?@id=2', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(200, () => {
@@ -287,15 +285,13 @@ describe('VPN proxy', function() {
 
 		it('should allow port 8080 with authentication', () => {
 			nock(`https://${BALENA_API_HOST}`)
-				.post('/v5/device(2)/canAccess', {
+				.post('/v5/device(@id)/canAccess?@id=2', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(200, {
 					d: [
 						{
 							id: 2,
-							uuid: 'deadbeef',
-							is_connected_to_vpn: 1,
 						},
 					],
 				});

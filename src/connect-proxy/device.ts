@@ -31,25 +31,23 @@ const authHeader = (auth?: Buffer): { Authorization?: string } => {
 
 export interface DeviceInfo {
 	id: number;
-	uuid: string;
 	is_connected_to_vpn: boolean;
 }
 
+const getDeviceByUUIDQuery = utils.balenaApi.prepare<{ uuid: string }>({
+	resource: 'device',
+	options: {
+		$select: ['id', 'is_connected_to_vpn'],
+		$filter: {
+			uuid: { '@': 'uuid' },
+		},
+	},
+});
 export const getDeviceByUUID = (
 	uuid: string,
 	auth?: Buffer,
 ): Bluebird<DeviceInfo> =>
-	utils.balenaApi
-		.get({
-			resource: 'device',
-			options: {
-				$select: ['id', 'uuid', 'is_connected_to_vpn'],
-				$filter: {
-					uuid,
-				},
-			},
-			passthrough: { headers: authHeader(auth) },
-		})
+	getDeviceByUUIDQuery({ uuid }, undefined, { headers: authHeader(auth) })
 		.then(devices => {
 			if (!_.isArray(devices) || devices.length === 0) {
 				throw new Error('invalid api response');
@@ -61,21 +59,24 @@ export const getDeviceByUUID = (
 			throw new APIError(err.message);
 		});
 
+const canAccessDeviceQuery = utils.balenaApi.prepare<{ id: number }>({
+	method: 'POST',
+	resource: 'device',
+	id: { '@': 'id' },
+	url: `device(@id)/canAccess`,
+});
 export const canAccessDevice = (
 	device: DeviceInfo,
 	port: number,
 	auth?: Buffer,
 ) =>
-	utils.balenaApi
-		.post({
-			resource: 'device',
-			id: device.id,
-			passthrough: { headers: authHeader(auth) },
-			body: {
-				action: { or: ['tunnel-any', `tunnel-${port}`] },
-			},
-			url: `device(${device.id})/canAccess`,
-		})
+	canAccessDeviceQuery(
+		{ id: device.id },
+		{
+			action: { or: ['tunnel-any', `tunnel-${port}`] },
+		},
+		{ headers: authHeader(auth) },
+	)
 		.then(
 			({ d }: { d?: Array<{ id: number }> }) =>
 				_.isArray(d) && d.length === 1 && d[0].id === device.id,
