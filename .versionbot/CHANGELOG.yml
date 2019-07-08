@@ -1,4 +1,21 @@
 - commits:
+    - subject: Use a prepared query for `canAccessDevice`
+      hash: 83b75052b03d06eec18f8b1ec0f2794f0110ad08
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+    - subject: Use a prepared query for getDeviceByUUID
+      hash: 64d124ce94ce9b7e6ecc71002f0af77a0e1b1b51
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 8.15.2
+  date: 2019-07-05T18:55:35.983Z
+- commits:
     - subject: Only try to forward to the correct vpn instance if lookup fails
       hash: a73829f2ef32d8972bc8db1944efc9c7980f0bb0
       body: ''
