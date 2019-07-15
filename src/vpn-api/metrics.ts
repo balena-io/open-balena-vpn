@@ -5,11 +5,11 @@ export const enum Metrics {
 	SessionDuration = 'vpn_session_duration',
 	SessionRxBitrate = 'vpn_session_avg_rx_bitrate',
 	SessionTxBitrate = 'vpn_session_avg_tx_bitrate',
-	RxBytes = 'vpn_total_rx_bytes',
-	TxBytes = 'vpn_total_tx_bytes',
+	RxBytes = 'vpn_rx_bytes_total',
+	TxBytes = 'vpn_tx_bytes_total',
 	OnlineDevices = 'vpn_online_devices',
-	TotalDevices = 'vpn_total_devices',
-	AuthFailures = 'vpn_auth_failures',
+	TotalDevices = 'vpn_devices_total',
+	AuthFailures = 'vpn_auth_failures_total',
 }
 
 export const describeMetrics = () => {
