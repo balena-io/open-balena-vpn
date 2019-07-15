@@ -17,6 +17,7 @@
 Description=open-balena-connect-proxy
 Requires=confd.service
 After=confd.service
+StartLimitIntervalSec=0
 
 [Service]
 StandardOutput=journal+console
@@ -26,7 +27,6 @@ EnvironmentFile=/usr/src/app/config/env
 ExecStart=/usr/src/app/bin/balena-connect-proxy
 Restart=always
 SyslogIdentifier=open-balena
-StartLimitIntervalSec=0
 
 [Install]
 WantedBy=basic.target

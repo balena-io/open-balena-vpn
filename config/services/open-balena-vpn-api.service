@@ -17,6 +17,7 @@
 Description=open-balena-vpn-api
 Requires=confd.service haproxy.service balena-root-ca.service
 After=confd.service balena-root-ca.service
+StartLimitIntervalSec=0
 
 [Service]
 StandardOutput=journal+console
@@ -28,7 +29,6 @@ ExecStartPre=/usr/sbin/iptables-legacy -P FORWARD ${IPTABLES_FORWARD_POLICY}
 ExecStart=/usr/src/app/bin/balena-vpn-api
 Restart=always
 SyslogIdentifier=open-balena
-StartLimitIntervalSec=0
 
 [Install]
 WantedBy=basic.target
