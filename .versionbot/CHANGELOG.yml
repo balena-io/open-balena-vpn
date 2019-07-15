@@ -1,4 +1,26 @@
 - commits:
+    - subject: Update open-balena-base to 8.0.0
+      hash: 404c1553b6613c4d69dadb09e6d59461793aaff6
+      body: |
+        Update open-balena-base from 7.2.2 to 8.0.0
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Upgrade to debian buster
+              hash: d090290e87b279482d7e3884a0a9e93a845152fe
+              body: ''
+              footer:
+                Change-type: major
+                change-type: major
+              author: Pagan Gazzard
+          version: open-balena-base-8.0.0
+          date: 2019-07-08T10:31:53.488Z
+  version: 8.16.0
+  date: 2019-07-15T16:06:04.479Z
+- commits:
     - subject: Use a prepared query for `canAccessDevice`
       hash: 83b75052b03d06eec18f8b1ec0f2794f0110ad08
       body: ''
