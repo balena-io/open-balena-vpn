@@ -46,9 +46,7 @@ export const apiFactory = (instanceId: number) => {
 	const logger = getLogger('vpn', instanceId);
 
 	const logStateUpdate = (state: clients.DeviceState) => {
-		let stateMsg = `common_name=${state.common_name} connected=${
-			state.connected
-		}`;
+		let stateMsg = `common_name=${state.common_name} connected=${state.connected}`;
 		if (state.virtual_address != null) {
 			stateMsg = `${stateMsg} virtual_address=${state.virtual_address}`;
 		}
@@ -80,9 +78,7 @@ export const apiFactory = (instanceId: number) => {
 
 		pooledRequest
 			.get({
-				url: `https://${BALENA_API_HOST}/services/vpn/auth/${
-					req.body.username
-				}`,
+				url: `https://${BALENA_API_HOST}/services/vpn/auth/${req.body.username}`,
 				timeout: 30000,
 				headers: { Authorization: `Bearer ${req.body.password}` },
 			})

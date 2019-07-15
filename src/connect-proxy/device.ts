@@ -103,14 +103,12 @@ export const getDeviceVpnHost = (
 			},
 			passthrough: { headers: authHeader(auth) },
 		})
-		.then(
-			(devices): string => {
-				if (!_.isArray(devices) || devices.length === 0) {
-					throw new Error('invalid api response');
-				}
-				return devices[0].ip_address;
-			},
-		)
+		.then((devices): string => {
+			if (!_.isArray(devices) || devices.length === 0) {
+				throw new Error('invalid api response');
+			}
+			return devices[0].ip_address;
+		})
 		.catch(err => {
 			captureException(err, err.message);
 			throw new APIError(`cannot find device vpn host (${err.message})`);

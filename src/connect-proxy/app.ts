@@ -39,9 +39,7 @@ const VPN_CONNECT_PROXY_PORT = process.env.VPN_CONNECT_PROXY_PORT!;
 
 if (cluster.isMaster) {
 	logger.info(
-		`open-balena-proxy@${VERSION} master process started with pid=${
-			process.pid
-		}`,
+		`open-balena-proxy@${VERSION} master process started with pid=${process.pid}`,
 	);
 	spawnChildren(VPN_CONNECT_INSTANCE_COUNT, logger);
 	metricsServer().listen(8888);

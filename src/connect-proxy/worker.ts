@@ -153,9 +153,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 							.getDeviceVpnHost(uuid, auth)
 							.catch(errors.APIError, err => {
 								logger.crit(
-									`error connecting to device ${uuid} on port ${port} (${
-										err.message
-									})`,
+									`error connecting to device ${uuid} on port ${port} (${err.message})`,
 								);
 								throw new errors.HandledTunnelingError(err.message);
 							})
@@ -167,9 +165,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 									errors.RemoteTunnellingError,
 									err => {
 										logger.crit(
-											`error forwarding request for ${uuid}:${port} (${
-												err.message
-											})`,
+											`error forwarding request for ${uuid}:${port} (${err.message})`,
 										);
 										throw new errors.HandledTunnelingError(err.message);
 									},
