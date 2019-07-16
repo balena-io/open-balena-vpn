@@ -53,7 +53,7 @@ describe('getDeviceByUUID()', function() {
 			.query({
 				$select: 'id,is_connected_to_vpn',
 				$filter: 'uuid eq @uuid',
-				'@uuid': 'deadbeef',
+				'@uuid': "'deadbeef'",
 			})
 			.reply(200, { d: [this.mockDevice] });
 	});
