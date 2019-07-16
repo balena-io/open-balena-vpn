@@ -1,4 +1,16 @@
 - commits:
+    - subject: replace deprecated raven package with @sentry/node
+      hash: 2d4598fb2bd437b7cad138583d9a121d0f2e5b52
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.17.1
+  date: 2019-07-16T18:36:25.927Z
+- commits:
     - subject: 'dev: fix unit test mocks'
       hash: 03b2746d4dcae1e12706ac0e772f5eb944d10bac
       body: ''
