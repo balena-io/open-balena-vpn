@@ -15,30 +15,42 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as _Raven from 'raven';
+import * as Sentry from '@sentry/node';
 import { TypedError } from 'typed-error';
 
 import { VERSION } from '.';
 
-export const Raven = _Raven;
-
-Raven.config(process.env.SENTRY_DSN || false, {
-	captureUnhandledRejections: true,
+Sentry.init({
+	dsn: process.env.SENTRY_DSN,
+	debug: process.env.NODE_ENV === 'development',
 	release: VERSION,
 	environment: process.env.NODE_ENV,
-}).install();
+});
+export { Sentry };
 
 export const captureException = (
 	err: Error,
-	message?: string,
-	options?: _Raven.CaptureOptions,
-): string => {
-	options = options || {};
-	if (message) {
-		options.extra = options.extra || {};
-		options.extra.message = message;
-	}
-	return Raven.captureException(err, options);
+	fingerprint: string,
+	opts?: { tags?: { [key: string]: string }; req?: { [key: string]: any } },
+) => {
+	Sentry.configureScope(scope => {
+		scope.addEventProcessor(evt => {
+			evt.fingerprint = [fingerprint];
+			return evt;
+		});
+
+		if (opts != null) {
+			const { tags, req } = opts;
+			if (tags != null) {
+				scope.setTags(tags);
+			}
+			if (req != null) {
+				scope.addEventProcessor(evt => Sentry.Handlers.parseRequest(evt, req));
+			}
+		}
+
+		Sentry.captureException(err);
+	});
 };
 
 export class APIError extends TypedError {}

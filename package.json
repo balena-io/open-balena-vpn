@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@balena/node-metrics-gatherer": "^2.4.1",
+    "@sentry/node": "^5.5.0",
     "block-queue": "^0.0.2",
     "bluebird": "^3.5.5",
     "compression": "^1.7.4",
@@ -27,7 +28,6 @@
     "netmask": "^1.0.6",
     "node-tunnel": "^3.0.0",
     "pinejs-client-request": "^6.0.2",
-    "raven": "^2.6.4",
     "request": "^2.88.0",
     "request-promise": "^4.2.4",
     "source-map-support": "^0.5.12",

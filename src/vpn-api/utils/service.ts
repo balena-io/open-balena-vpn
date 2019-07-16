@@ -25,6 +25,15 @@ class ServiceInstance {
 
 	constructor(private interval: number = 10 * 1000) {}
 
+	private captureException(err: Error, fingerprint: string) {
+		const tags: { [key: string]: string } = {};
+		try {
+			tags.instance_id = this.getId();
+		} finally {
+			captureException(err, fingerprint, { tags });
+		}
+	}
+
 	public register(): Bluebird<this> {
 		return balenaApi
 			.post({
@@ -41,7 +50,7 @@ class ServiceInstance {
 				return this;
 			})
 			.catch(err => {
-				captureException(err, 'Failed to register with API');
+				this.captureException(err, 'service-registration-error');
 				// Retry until it works
 				return Bluebird.delay(this.interval).then(() => this.register());
 			});
@@ -70,9 +79,7 @@ class ServiceInstance {
 			})
 			.return(true)
 			.catch(err => {
-				captureException(err, 'Failed to send a heartbeat to the API', {
-					tags: { service_id: this.getId() },
-				});
+				this.captureException(err, 'service-heartbeart-error');
 				return false;
 			});
 	}

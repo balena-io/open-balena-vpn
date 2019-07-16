@@ -115,13 +115,7 @@ const tunnelToDevice: nodeTunnel.Middleware = (req, cltSocket, _head, next) =>
 			cltSocket.end('HTTP/1.0 403 Forbidden\r\n\r\n'),
 		)
 		.catch((err: Error) => {
-			captureException(
-				err,
-				`unexpected error establishing tunnel to ${req.url} (${err.message})`,
-				{
-					req,
-				},
-			);
+			captureException(err, 'proxy-tunnel-error', { req });
 			cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
 		});
 
@@ -207,7 +201,8 @@ const forwardRequest = (
 			if (err != null && err.message) {
 				errMsg += `: ${err.message}`;
 			}
-			captureException(err, errMsg);
+			logger.warning(errMsg);
+			captureException(err, 'proxy-forward-error');
 			reject(new errors.RemoteTunnellingError(errMsg));
 		};
 		const proxyData = (chunk: Buffer) => {
@@ -264,7 +259,7 @@ const worker = (port: string) => {
 			logger.crit(
 				`failed to connect to device (${err.message || err})\n${err.stack}`,
 			);
-			captureException(err);
+			captureException(err, 'proxy-connect-error');
 		}
 	});
 	return tunnel;
