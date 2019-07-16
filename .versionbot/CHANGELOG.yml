@@ -1,4 +1,45 @@
 - commits:
+    - subject: 'dev: fix unit test mocks'
+      hash: 03b2746d4dcae1e12706ac0e772f5eb944d10bac
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'deps: update dependencies'
+      hash: 2bdc9375b23ae5d187ee138ac1363f0a21da09c7
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'config: allow overriding `VPN_INSTANCE_COUNT`'
+      hash: 4f607062fc9a38ca364713f2ad671163ad3547e7
+      body: ''
+      footer:
+        Connects-to: 'balena-io/open-balena#57'
+        connects-to: 'balena-io/open-balena#57'
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'metrics: fix up metrics naming'
+      hash: 50401ef2bcd142973c297c905410137ee90aaa80
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Matthew McGinn <matthew@balena.io>
+        signed-off-by: Matthew McGinn <matthew@balena.io>
+      author: Matthew McGinn
+  version: 8.17.0
+  date: 2019-07-16T18:05:45.750Z
+- commits:
     - subject: 'systemd: move StartLimitIntervalSec to proper section'
       hash: 4bb3b82e246d77813df682eee54009b687c955dd
       body: ''
