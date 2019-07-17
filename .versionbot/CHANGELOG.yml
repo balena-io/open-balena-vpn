@@ -1,4 +1,32 @@
 - commits:
+    - subject: Update open-balena-base to 8.0.1
+      hash: ed6b573e77c75bd88c941badfc081b0ff918c087
+      body: |
+        Update open-balena-base from 8.0.0 to 8.0.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: 'mdns: Ensure multipart subdomains are allowed'
+              hash: bc5903d77867c3c969f1e7193cbef69dab12eeef
+              body: |
+                Debian Buster now uses Avahi 0.7 instead of
+                0.6.32. This means that there is now a stricter
+                policy defining MDNS domains. This commit allows
+                us to use multipart subdomains.
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Heds Simons <heds@balena.io>
+                signed-off-by: Heds Simons <heds@balena.io>
+              author: Heds Simons
+          version: open-balena-base-8.0.1
+          date: 2019-07-17T15:08:57.053Z
+  version: 8.17.2
+  date: 2019-07-17T16:54:41.427Z
+- commits:
     - subject: replace deprecated raven package with @sentry/node
       hash: 2d4598fb2bd437b7cad138583d9a121d0f2e5b52
       body: ''
