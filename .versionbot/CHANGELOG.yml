@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'config: fix typo in env template'
+      hash: a05fe21cdf546f95507474d4a0510a7dd5f0ddcb
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.17.3
+  date: 2019-07-18T11:50:19.266Z
+- commits:
     - subject: Update open-balena-base to 8.0.1
       hash: ed6b573e77c75bd88c941badfc081b0ff918c087
       body: |
