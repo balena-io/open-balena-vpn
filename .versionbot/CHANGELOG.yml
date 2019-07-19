@@ -1,4 +1,19 @@
 - commits:
+    - subject: 'openvpn: Remove override files for service'
+      hash: 0a352be9f47202c67691c89f8dda1087f99936fd
+      body: |
+        We no longer use the openvpn@server.service unit,
+        so do not require these overrides. Should also stop
+        BoB from running them.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Heds Simons <heds@balena.io>
+        signed-off-by: Heds Simons <heds@balena.io>
+      author: Heds Simons
+  version: 8.17.4
+  date: 2019-07-19T15:17:38.830Z
+- commits:
     - subject: 'config: fix typo in env template'
       hash: a05fe21cdf546f95507474d4a0510a7dd5f0ddcb
       body: ''
