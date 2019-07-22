@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'vpn-api: reduce default log verbosity'
+      hash: 2105146966fe19996e087686bb4f8ef5044e39ec
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.18.0
+  date: 2019-07-20T18:53:15.449Z
+- commits:
     - subject: 'openvpn: Remove override files for service'
       hash: 0a352be9f47202c67691c89f8dda1087f99936fd
       body: |
