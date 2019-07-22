@@ -111,6 +111,12 @@ const worker = (instanceId: number) => {
 		BALENA_VPN_GATEWAY,
 	);
 
+	vpn.on('log', (level, message) => {
+		if (verbose || logger.levels[level] <= logger.levels.warning) {
+			logger.log(level, message);
+		}
+	});
+
 	vpn.on('process:exit', (code, signal) => {
 		let msg = 'process exited';
 		if (code != null) {

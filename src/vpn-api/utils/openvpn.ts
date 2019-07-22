@@ -266,7 +266,7 @@ export class VpnManager extends EventEmitter {
 
 	public start(): Bluebird<true> {
 		this.process = spawn('/usr/sbin/openvpn', this.args(), {
-			stdio: 'inherit',
+			stdio: 'ignore',
 		});
 		// proxy error events from the child process
 		this.process.on('error', err => {
