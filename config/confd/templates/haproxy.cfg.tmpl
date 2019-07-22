@@ -14,10 +14,12 @@ global
 	user haproxy
 	group haproxy
 	stats socket /var/run/haproxy.sock mode 600 level admin
-	log /dev/log local0 notice
+	log /dev/log local0
 
 defaults
-	log global
+	timeout connect 10s
+	timeout client 10s
+	timeout server 10s
 
 {{ if ne (getv "/balena/monitor/secret-token" "") "" -}}
 userlist metrics
@@ -44,30 +46,37 @@ frontend http-80
 
 backend proxy-master
 	mode http
+	log global
+	option httpchk GET /ping
+	http-check expect string OK
 	server proxy0 127.0.0.1:8888 check
 
 backend vpn-master
 	mode http
+	log global
+	option httpchk GET /ping
+	http-check expect string OK
 	server vpn0 127.0.0.1:8080 check
 {{- end }}
 
 frontend tcp-{{$vpnPort}}
 	mode tcp
 	bind ipv4@:{{$vpnPort}} {{$bindOpt}}
+	log global
 	option dontlognull
 	option logasap
 	option splice-auto
 	option tcp-smart-accept
-	option tcp-smart-connect
 	maxconn {{$maxconn}}
-	timeout connect 10s
 	timeout client {{$timeout}}s
-	timeout server {{$timeout}}s
 	# Routing <client-ip:port>@<frontend> to <backend>/<server>:<port> [Conns Queues Times]
 	log-format "Routing %ci:%cp@%ft to %b/%s:%bp [C:%bc/%sc Q:%bq/%sq T:%Tw/%Tc]"
 	default_backend vpn-workers
 
 backend vpn-workers
 	mode tcp
+	log global
 	balance leastconn
+	option tcp-smart-connect
+	timeout server {{$timeout}}s
 	server-template vpn 1-{{$servers}} 127.0.0.1:10000 check disabled
