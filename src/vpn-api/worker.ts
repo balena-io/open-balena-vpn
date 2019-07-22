@@ -144,7 +144,7 @@ const worker = (instanceId: number) => {
 		writeBandwidthMetrics(clientId, data);
 	});
 
-	logger.notice(`starting...`);
+	logger.notice('starting...');
 	return (
 		// start client auth api server
 		apiServer(instanceId)
