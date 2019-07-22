@@ -1,4 +1,25 @@
 - commits:
+    - subject: 'vpn-api: enable openvpn logging via management console'
+      hash: 7e89228c0ba7c249e649351a224725575460f2fe
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'openvpn: set txqueuelen=1000 on interfaces at startup'
+      hash: 3039d85ec922fe94232bcdfe45e94db9ce279e2f
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.19.0
+  date: 2019-07-22T17:37:52.533Z
+- commits:
     - subject: 'vpn-api: reduce default log verbosity'
       hash: 2105146966fe19996e087686bb4f8ef5044e39ec
       body: ''
