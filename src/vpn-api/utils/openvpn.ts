@@ -159,6 +159,8 @@ export class VpnManager extends EventEmitter {
 			'3',
 			'--dev',
 			`tun${this.instanceId}`,
+			'--txqueuelen',
+			'1000',
 			'--port',
 			`${this.vpnPort}`,
 			'--management',
