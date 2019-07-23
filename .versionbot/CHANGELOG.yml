@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'haproxy: restore logs and fix timeout configs'
+      hash: f50703c6e01f191f4f0c6e6f9149f4b3f2cf7a8f
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 8.19.1
+  date: 2019-07-22T21:47:36.759Z
+- commits:
     - subject: 'vpn-api: enable openvpn logging via management console'
       hash: 7e89228c0ba7c249e649351a224725575460f2fe
       body: ''
