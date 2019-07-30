@@ -1,4 +1,14 @@
 - commits:
+    - subject: Combine the worker id into the service name
+      hash: a08217989f16f60addc898940a0a21f0a1389934
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+  version: 8.20.0
+  date: 2019-07-30T12:34:21.595Z
+- commits:
     - subject: 'haproxy: restore logs and fix timeout configs'
       hash: f50703c6e01f191f4f0c6e6f9149f4b3f2cf7a8f
       body: ''
