@@ -1,4 +1,27 @@
 - commits:
+    - subject: 'service: Ensure captureException does not throw'
+      hash: 5756684de3befaaa2514d44d7e1dbcb22d522a02
+      body: |
+        The code in the captureException() method 'try's
+        to get an ID. If it fails, it 'finally' registers
+        the exception passed to it. Unfortunately, because
+        it doesn't 'catch', if the 'try' fails, then the
+        error from it bubbles up and the code calling
+        'captureException' does not finalise. This is
+        most prevalent should the API not currently be
+        running, as it won't register and the timed retry
+        to register will never get called.
+
+        This will also fix other calls made with it.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Heds Simons <heds@balena.io>
+        signed-off-by: Heds Simons <heds@balena.io>
+      author: Heds Simons
+  version: 8.20.1
+  date: 2019-08-01T11:27:38.265Z
+- commits:
     - subject: Combine the worker id into the service name
       hash: a08217989f16f60addc898940a0a21f0a1389934
       body: ''
