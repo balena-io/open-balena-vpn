@@ -29,9 +29,10 @@ class ServiceInstance {
 		const tags: { [key: string]: string } = {};
 		try {
 			tags.instance_id = this.getId();
-		} finally {
-			captureException(err, fingerprint, { tags });
-		}
+			// tslint:disable-next-line:no-empty
+		} catch {}
+
+		captureException(err, fingerprint, { tags });
 	}
 
 	public register(): Bluebird<this> {
