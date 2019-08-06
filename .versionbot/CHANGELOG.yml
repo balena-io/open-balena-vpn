@@ -1,4 +1,26 @@
 - commits:
+    - subject: Update open-balena-base to 8.0.2
+      hash: 2ac4b014c11da8506b8431108d2eba2fb8e04be5
+      body: |
+        Update open-balena-base from 8.0.1 to 8.0.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update nodejs to 10.16.1 and npm to 6.10.2
+              hash: 11a141feb88985b698d5f4358505767e9065a200
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: open-balena-base-8.0.2
+          date: 2019-08-06T13:52:12.883Z
+  version: 8.20.2
+  date: 2019-08-06T15:42:32.182Z
+- commits:
     - subject: 'service: Ensure captureException does not throw'
       hash: 5756684de3befaaa2514d44d7e1dbcb22d522a02
       body: |
