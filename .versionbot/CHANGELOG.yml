@@ -1,4 +1,21 @@
 - commits:
+    - subject: Change syslog identifier from 'open-balena' to 'vpn'
+      hash: cd66a0c3be6258875c6e85720ee17b91d37b8fa2
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+    - subject: Reduce log length for proxying messages
+      hash: 81e4cdde1a913dd0cc7b0f734fe7482ba924562b
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 8.20.3
+  date: 2019-08-13T12:46:48.910Z
+- commits:
     - subject: Update open-balena-base to 8.0.2
       hash: 2ac4b014c11da8506b8431108d2eba2fb8e04be5
       body: |
