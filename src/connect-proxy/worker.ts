@@ -65,7 +65,7 @@ const parseRequest = (req: nodeTunnel.Request) => {
 const tunnelToDevice: nodeTunnel.Middleware = (req, cltSocket, _head, next) =>
 	Bluebird.try(() => {
 		const { uuid, port, auth } = parseRequest(req);
-		logger.info(`tunnel requested to device ${uuid} on port ${port}`);
+		logger.info(`tunnel requested to ${uuid}:${port}`);
 
 		// we need to use VPN_SERVICE_API_KEY here as this could be an unauthenticated request
 		return device
@@ -147,7 +147,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 							.getDeviceVpnHost(uuid, auth)
 							.catch(errors.APIError, err => {
 								logger.crit(
-									`error connecting to device ${uuid} on port ${port} (${err.message})`,
+									`error connecting to ${uuid}:${port} (${err.message})`,
 								);
 								throw new errors.HandledTunnelingError(err.message);
 							})
@@ -192,7 +192,7 @@ const forwardRequest = (
 		const earlyEnd = () => {
 			reject(
 				new errors.RemoteTunnellingError(
-					`could not connect to device ${uuid} on port ${port}: tunneling socket closed prematurely.`,
+					`could not connect to ${uuid}:${port}: tunneling socket closed prematurely.`,
 				),
 			);
 		};
