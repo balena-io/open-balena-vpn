@@ -83,10 +83,15 @@ export const canAccessDevice = (
 		)
 		.catchReturn(false);
 
+interface VpnHost {
+	id: number;
+	ip_address: string;
+}
+
 export const getDeviceVpnHost = (
 	uuid: string,
 	auth?: Buffer,
-): Bluebird<string> =>
+): Bluebird<VpnHost> =>
 	balenaApi
 		.get({
 			resource: 'service_instance',
@@ -103,11 +108,11 @@ export const getDeviceVpnHost = (
 			},
 			passthrough: { headers: authHeader(auth) },
 		})
-		.then((devices): string => {
-			if (!_.isArray(devices) || devices.length === 0) {
+		.then(services => {
+			if (!_.isArray(services) || services.length === 0) {
 				throw new Error('invalid api response');
 			}
-			return devices[0].ip_address;
+			return services[0] as VpnHost;
 		})
 		.catch(err => {
 			captureException(err, 'device-vpn-host-lookup-error');

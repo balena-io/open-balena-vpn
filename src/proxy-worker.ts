@@ -91,18 +91,25 @@ class Tunnel extends nodeTunnel.Tunnel {
 								throw err;
 							})
 							.then(vpnHost => {
+								if (vpnHost.id === this.serviceId) {
+									throw new errors.HandledTunnelingError(
+										'device is not available on registered service instance',
+									);
+								}
 								this.logger.info(
-									`forwarding tunnel request for ${uuid}:${port} via ${vpnHost}`,
+									`forwarding tunnel request for ${uuid}:${port} via ${vpnHost.id}@${vpnHost.ip_address}`,
 								);
-								return this.forwardRequest(vpnHost, uuid, port, auth).catch(
-									errors.RemoteTunnellingError,
-									err => {
-										this.logger.crit(
-											`error forwarding request for ${uuid}:${port} (${err.message})`,
-										);
-										throw new errors.HandledTunnelingError(err.message);
-									},
-								);
+								return this.forwardRequest(
+									vpnHost.ip_address,
+									uuid,
+									port,
+									auth,
+								).catch(errors.RemoteTunnellingError, err => {
+									this.logger.crit(
+										`error forwarding request for ${uuid}:${port} (${err.message})`,
+									);
+									throw new errors.HandledTunnelingError(err.message);
+								});
 							});
 					}
 				}),
