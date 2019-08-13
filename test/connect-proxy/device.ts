@@ -20,7 +20,7 @@ import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as nock from 'nock';
 
-import { getDeviceByUUID } from '../../src/connect-proxy/device';
+import { getDeviceByUUID } from '../../src/utils/device';
 
 const { expect } = chai;
 nock.disableNetConnect();

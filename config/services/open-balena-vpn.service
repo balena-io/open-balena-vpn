@@ -1,4 +1,4 @@
-# Copyright (C) 2016 Balena Ltd.
+# Copyright (C) 2015 Balena Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
@@ -14,9 +14,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 [Unit]
-Description=open-balena-connect-proxy
-Requires=confd.service
-After=confd.service
+Description=open-balena-vpn
+Requires=confd.service haproxy.service balena-root-ca.service
+After=confd.service balena-root-ca.service
 StartLimitIntervalSec=0
 
 [Service]
@@ -24,9 +24,11 @@ StandardOutput=journal+console
 StandardError=journal+console
 WorkingDirectory=/usr/src/app
 EnvironmentFile=/usr/src/app/config/env
-ExecStart=/usr/src/app/bin/balena-connect-proxy
+ExecStartPre=/bin/bash -c 'mkdir -p /dev/net; if [ ! -c /dev/net/tun ]; then mknod /dev/net/tun c 10 200; fi'
+ExecStartPre=/usr/sbin/iptables-legacy -P FORWARD ${IPTABLES_FORWARD_POLICY}
+ExecStart=/usr/src/app/bin/start.sh
 Restart=always
-SyslogIdentifier=open-balena
+SyslogIdentifier=vpn
 
 [Install]
 WantedBy=basic.target

@@ -40,4 +40,4 @@ COPY config /usr/src/app/config
 COPY openvpn /usr/src/app/openvpn
 
 COPY config/services /etc/systemd/system
-RUN systemctl enable open-balena-vpn-api.service open-balena-connect-proxy.service
+RUN systemctl enable open-balena-vpn.service

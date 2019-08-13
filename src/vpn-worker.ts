@@ -17,11 +17,10 @@
 
 import { metrics } from '@balena/node-metrics-gatherer';
 
-import { getLogger } from '../utils';
+import { getLogger } from './utils';
 
 import { apiServer } from './api';
-import { Metrics } from './metrics';
-import { HAProxy, Netmask, VpnManager } from './utils';
+import { HAProxy, Metrics, Netmask, VpnManager } from './utils';
 import { VpnClientBytecountData } from './utils/openvpn';
 
 const BALENA_VPN_GATEWAY = process.env.BALENA_VPN_GATEWAY;
@@ -47,8 +46,8 @@ const getInstanceSubnet = (instanceId: number) => {
 	return network.split(VPN_INSTANCE_SUBNET_BITMASK)[instanceId - 1];
 };
 
-const worker = (instanceId: number) => {
-	const logger = getLogger('vpn', instanceId);
+const worker = (instanceId: number, serviceId: number) => {
+	const logger = getLogger('vpn', instanceId, serviceId);
 
 	logger.notice(`process started with pid=${process.pid}`);
 
@@ -147,7 +146,7 @@ const worker = (instanceId: number) => {
 	logger.notice('starting...');
 	return (
 		// start client auth api server
-		apiServer(instanceId)
+		apiServer(instanceId, serviceId)
 			.listenAsync(apiPort)
 			.bind(vpn)
 			// start openvpn

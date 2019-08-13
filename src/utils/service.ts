@@ -17,18 +17,18 @@
 
 import * as Bluebird from 'bluebird';
 
-import { apiKey, balenaApi, captureException } from '../../utils';
-import { ServiceRegistrationError } from '../../utils/errors';
+import { apiKey, balenaApi, captureException } from '.';
+import { ServiceRegistrationError } from './errors';
 
 class ServiceInstance {
-	private _id: string | null = null;
+	private _id: number | null = null;
 
 	constructor(private interval: number = 10 * 1000) {}
 
 	private captureException(err: Error, fingerprint: string) {
 		const tags: { [key: string]: string } = {};
 		try {
-			tags.instance_id = this.getId();
+			tags.instance_id = `${this.getId()}`;
 			// tslint:disable-next-line:no-empty
 		} catch {}
 
@@ -41,7 +41,7 @@ class ServiceInstance {
 				resource: 'service_instance',
 				passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
 			})
-			.then(({ id }: { id?: string }) => {
+			.then(({ id }: { id?: number }) => {
 				if (id == null) {
 					throw new ServiceRegistrationError(
 						'No service ID received on response',
@@ -85,21 +85,21 @@ class ServiceInstance {
 			});
 	}
 
-	public wrap(func: () => void): Bluebird<this> {
+	public wrap(func: (serviceInstance: this) => void): Bluebird<this> {
 		return this.register()
 			.tap(func)
 			.bind(this)
 			.tap(this.scheduleHeartbeat);
 	}
 
-	public getId(): string {
+	public getId(): number {
 		if (this._id == null) {
 			throw new ServiceRegistrationError('Not Registered');
 		}
 		return this._id;
 	}
 
-	set id(id: string) {
+	set id(id: number) {
 		if (this._id != null) {
 			throw new ServiceRegistrationError('Already Registered');
 		}

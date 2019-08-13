@@ -29,11 +29,10 @@ import * as Bluebird from 'bluebird';
 import { IncomingMessage } from 'http';
 import * as _ from 'lodash';
 
-import { apiKey, captureException } from '../../utils';
+import { apiKey, captureException } from './index';
 
 import { VpnClientTrustedData } from './openvpn';
 import { pooledRequest } from './request';
-import { service } from './service';
 
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const REQUEST_TIMEOUT = 60000;
@@ -53,7 +52,7 @@ export interface DeviceState {
 const setDeviceState = (() => {
 	const deviceStates: { [key: string]: DeviceStateTracker } = {};
 
-	const applyState = (uuid: string) =>
+	const applyState = (serviceId: number, uuid: string) =>
 		(deviceStates[uuid].promise = deviceStates[uuid].promise.then(() => {
 			// Get the latest target state at the start of the request
 			const { targetState, currentState } = deviceStates[uuid];
@@ -67,7 +66,7 @@ const setDeviceState = (() => {
 				.post({
 					url: `https://${BALENA_API_HOST}/services/vpn/client-${eventType}`,
 					timeout: REQUEST_TIMEOUT,
-					form: _.extend({ service_id: service.getId() }, targetState),
+					form: { service_id: serviceId, ...targetState },
 					headers: { Authorization: `Bearer ${apiKey}` },
 				})
 				.promise()
@@ -89,7 +88,7 @@ const setDeviceState = (() => {
 					// Add a 60 second delay in case of failure to avoid a crazy flood
 					return Bluebird.delay(60000).then(() => {
 						// Trigger another apply, to retry the failed update
-						applyState(uuid);
+						applyState(serviceId, uuid);
 						// Since we are recursing and this function always extends
 						// the promise chain (deviceStates[uuid].promise.then ->..)
 						// we need to return targetState to make this promise resolve
@@ -101,7 +100,7 @@ const setDeviceState = (() => {
 				});
 		}));
 
-	return (state: DeviceState) => {
+	return (serviceId: number, state: DeviceState) => {
 		const uuid = state.common_name;
 		if (deviceStates[uuid] == null) {
 			deviceStates[uuid] = {
@@ -113,23 +112,23 @@ const setDeviceState = (() => {
 			deviceStates[uuid].targetState = state;
 		}
 		deviceStates[uuid].targetState = state;
-		return applyState(uuid);
+		return applyState(serviceId, uuid);
 	};
 })();
 
-export const connected = (data: VpnClientTrustedData) => {
+export const connected = (serviceId: number, data: VpnClientTrustedData) => {
 	const state: DeviceState = {
 		common_name: data.common_name,
 		connected: true,
 		virtual_address: data.ifconfig_pool_remote_ip,
 	};
-	return setDeviceState(state);
+	return setDeviceState(serviceId, state);
 };
 
-export const disconnected = (data: VpnClientTrustedData) => {
+export const disconnected = (serviceId: number, data: VpnClientTrustedData) => {
 	const state: DeviceState = {
 		common_name: data.common_name,
 		connected: false,
 	};
-	return setDeviceState(state);
+	return setDeviceState(serviceId, state);
 };

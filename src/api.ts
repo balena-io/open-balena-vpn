@@ -21,11 +21,14 @@ import * as compression from 'compression';
 import * as express from 'express';
 import * as morgan from 'morgan';
 
-import { captureException, getLogger } from '../utils';
-import { Sentry } from '../utils/errors';
-
-import { Metrics } from './metrics';
-import { clients, pooledRequest } from './utils';
+import {
+	captureException,
+	clients,
+	getLogger,
+	Metrics,
+	pooledRequest,
+} from './utils';
+import { Sentry } from './utils/errors';
 import { hasDurationData, isTrusted } from './utils/openvpn';
 
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
@@ -40,10 +43,10 @@ const fromLocalHost: express.RequestHandler = (req, res, next) => {
 	next();
 };
 
-export const apiFactory = (instanceId: number) => {
+export const apiFactory = (instanceId: number, serviceId: number) => {
 	const api = express.Router();
 
-	const logger = getLogger('vpn', instanceId);
+	const logger = getLogger('vpn', instanceId, serviceId);
 
 	const logStateUpdate = (state: clients.DeviceState) => {
 		let stateMsg = `common_name=${state.common_name} connected=${state.connected}`;
@@ -61,7 +64,7 @@ export const apiFactory = (instanceId: number) => {
 		}
 		metrics.inc(Metrics.OnlineDevices);
 		metrics.inc(Metrics.TotalDevices);
-		clients.connected(req.body).then(logStateUpdate);
+		clients.connected(serviceId, req.body).then(logStateUpdate);
 		res.send('OK');
 	});
 
@@ -108,7 +111,7 @@ export const apiFactory = (instanceId: number) => {
 			metrics.histogram(Metrics.SessionDuration, req.body.time_duration);
 		}
 		metrics.dec(Metrics.OnlineDevices);
-		clients.disconnected(req.body).then(logStateUpdate);
+		clients.disconnected(serviceId, req.body).then(logStateUpdate);
 		res.send('OK');
 	});
 
@@ -119,13 +122,13 @@ interface ExpressAsync extends express.Express {
 	listenAsync(port: number): Promise<ReturnType<express.Express['listen']>>;
 }
 
-export const apiServer = (instanceId: number) => {
+export const apiServer = (instanceId: number, serviceId: number) => {
 	const app = Promise.promisifyAll(express()) as ExpressAsync;
 	app.disable('x-powered-by');
 	app.get('/ping', (_req, res) => res.send('OK'));
 	app.use(morgan('combined'));
 	app.use(compression());
-	app.use(apiFactory(instanceId));
+	app.use(apiFactory(instanceId, serviceId));
 	app.use(Sentry.Handlers.errorHandler());
 	return app;
 };

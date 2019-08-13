@@ -26,17 +26,17 @@ import * as querystring from 'querystring';
 
 const { expect } = chai;
 
-import tunnelWorker from '../src/connect-proxy/worker';
-import { service, VpnManager } from '../src/vpn-api/utils';
-import { request } from '../src/vpn-api/utils/request';
-import vpnWorker from '../src/vpn-api/worker';
+import { pooledRequest, service, VpnManager } from '../src/utils';
+
+import proxyWorker from '../src/proxy-worker';
+import vpnWorker from '../src/vpn-worker';
 
 const vpnHost = process.env.VPN_HOST || '127.0.0.1';
 const vpnPort = process.env.VPN_PORT || '443';
 const caCertPath = process.env.CA_CERT_PATH || '/etc/openvpn/ca.crt';
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
-const VPN_CONNECT_PROXY_PORT = process.env.VPN_CONNECT_PROXY_PORT!;
 
+let instance: typeof service;
 let manager: VpnManager;
 
 const vpnDefaultOpts = [
@@ -83,7 +83,10 @@ describe('vpn worker', function() {
 		expect(
 			service
 				.register()
-				.then(() => vpnWorker(1))
+				.then(serviceInstance => {
+					instance = serviceInstance;
+					return vpnWorker(1, serviceInstance.getId());
+				})
 				.tap(m => {
 					manager = m;
 				})
@@ -93,7 +96,7 @@ describe('vpn worker', function() {
 
 describe('tunnel worker', () =>
 	it('should startup successfully', () => {
-		tunnelWorker(VPN_CONNECT_PROXY_PORT);
+		proxyWorker(1, instance.getId());
 	}));
 
 describe('VPN Events', function() {
@@ -119,6 +122,9 @@ describe('VPN Events', function() {
 		const connectEvent = getEvent('connect').then(body => {
 			const data = querystring.parse(body);
 			expect(data)
+				.to.have.property('service_id')
+				.that.equals(`${instance.getId()}`);
+			expect(data)
 				.to.have.property('common_name')
 				.that.equals('user2');
 			expect(data).to.not.have.property('real_address');
@@ -135,6 +141,9 @@ describe('VPN Events', function() {
 	it('should send a client-disconnect event', function() {
 		const disconnectEvent = getEvent('disconnect').then(body => {
 			const data = querystring.parse(body);
+			expect(data)
+				.to.have.property('service_id')
+				.that.equals(`${instance.getId()}`);
 			expect(data)
 				.to.have.property('common_name')
 				.that.equals('user2');
@@ -211,7 +220,7 @@ describe('VPN proxy', function() {
 
 		it('should allow port 8080 without authentication (.balena)', () =>
 			vpnTest({ user: 'user3', pass: 'pass' }, () =>
-				request({
+				pooledRequest({
 					url: 'http://deadbeef.balena:8080/test',
 					proxy: 'http://localhost:3128',
 					tunnel: true,
@@ -227,7 +236,7 @@ describe('VPN proxy', function() {
 
 		it('should allow port 8080 without authentication (.resin)', () =>
 			vpnTest({ user: 'user3', pass: 'pass' }, () =>
-				request({
+				pooledRequest({
 					url: 'http://deadbeef.resin:8080/test',
 					proxy: 'http://localhost:3128',
 					tunnel: true,
@@ -274,7 +283,7 @@ describe('VPN proxy', function() {
 				{ user: 'user4', pass: 'pass' },
 				() =>
 					expect(
-						request({
+						pooledRequest({
 							url: 'http://deadbeef.balena:8080/test',
 							proxy: 'http://localhost:3128',
 							tunnel: true,
@@ -297,7 +306,7 @@ describe('VPN proxy', function() {
 				});
 
 			return vpnTest({ user: 'user5', pass: 'pass' }, () =>
-				request({
+				pooledRequest({
 					url: 'http://deadbeef.balena:8080/test',
 					proxy: 'http://BALENA_api:test_api_key@localhost:3128',
 					tunnel: true,
