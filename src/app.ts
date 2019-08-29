@@ -17,15 +17,15 @@
 
 import { metrics } from '@balena/node-metrics-gatherer';
 import * as cluster from 'cluster';
+import * as express from 'express';
 import * as _ from 'lodash';
 import * as os from 'os';
 import * as prometheus from 'prom-client';
 
-import { getLogger, metricsServer, spawnChildren, VERSION } from '../utils';
+import { describeMetrics, getLogger, Metrics, service, VERSION } from './utils';
 
-import { describeMetrics, Metrics } from './metrics';
-import { service } from './utils';
-import worker from './worker';
+import proxyWorker from './proxy-worker';
+import vpnWorker from './vpn-worker';
 
 const logger = getLogger('vpn');
 
@@ -97,38 +97,78 @@ if (cluster.isMaster) {
 	logger.notice(
 		`open-balena-vpn@${VERSION} process started with pid=${process.pid}`,
 	);
-	spawnChildren(VPN_INSTANCE_COUNT, logger);
-	metricsServer((_req, res) => {
-		for (const clientMetrics of Object.values(workerMetrics)) {
-			metrics.histogram(
-				Metrics.SessionRxBitrate,
-				_.mean(clientMetrics.rxBitrate),
-			);
-			metrics.histogram(
-				Metrics.SessionTxBitrate,
-				_.mean(clientMetrics.txBitrate),
-			);
-		}
-		return new prometheus.AggregatorRegistry()
-			.clusterMetrics()
-			.then((clusterMetrics: string) => {
-				res.set('Content-Type', prometheus.register.contentType);
-				res.write(prometheus.register.metrics());
-				res.write('\n');
-				res.write(clusterMetrics);
-				res.end();
-				workerMetrics = {};
-				metrics.reset(Metrics.SessionRxBitrate);
-				metrics.reset(Metrics.SessionTxBitrate);
+	logger.debug('registering as service instance...');
+	service.wrap(serviceInstance => {
+		logger.info(
+			`registered as service instance with id=${serviceInstance.getId()}`,
+		);
+		logger.info(
+			`spawning ${VPN_INSTANCE_COUNT} worker${
+				VPN_INSTANCE_COUNT > 1 ? 's' : ''
+			}`,
+		);
+		_.times(VPN_INSTANCE_COUNT, i => {
+			const workerId = i + 1;
+			const restartWorker = (code?: number, signal?: string) => {
+				if (signal != null) {
+					logger.crit(`worker-${workerId} killed with signal ${signal}`);
+				}
+				if (code != null) {
+					logger.crit(`worker-${workerId} exited with code ${code}`);
+				}
+				const env = {
+					...process.env,
+					WORKER_ID: workerId,
+					SERVICE_ID: serviceInstance.getId(),
+				};
+				cluster.fork(env).on('exit', restartWorker);
+			};
+			restartWorker();
+		});
+
+		const app = express();
+		app.disable('x-powered-by');
+		app.get('/ping', (_req, res) => res.send('OK'));
+		app
+			.get('/cluster_metrics', (_req, res) => {
+				for (const clientMetrics of Object.values(workerMetrics)) {
+					metrics.histogram(
+						Metrics.SessionRxBitrate,
+						_.mean(clientMetrics.rxBitrate),
+					);
+					metrics.histogram(
+						Metrics.SessionTxBitrate,
+						_.mean(clientMetrics.txBitrate),
+					);
+				}
+				return new prometheus.AggregatorRegistry()
+					.clusterMetrics()
+					.then((clusterMetrics: string) => {
+						res.set('Content-Type', prometheus.register.contentType);
+						res.write(prometheus.register.metrics());
+						res.write('\n');
+						res.write(clusterMetrics);
+						res.end();
+						workerMetrics = {};
+						metrics.reset(Metrics.SessionRxBitrate);
+						metrics.reset(Metrics.SessionTxBitrate);
+					})
+					.catch((err: Error) => {
+						logger.warning(`error in /cluster_metrics: ${err}`);
+						res.status(500).send();
+					});
 			})
-			.catch((err: Error) => {
-				logger.warning(`error in /cluster_metrics: ${err}`);
-				res.status(500).send();
-			});
-	}).listen(8080);
+			.listen(8080);
+	});
 }
 
 if (cluster.isWorker) {
 	const instanceId = parseInt(process.env.WORKER_ID!, 10);
-	service.wrap(() => worker(instanceId));
+	const serviceId = parseInt(process.env.SERVICE_ID!, 10);
+	getLogger('worker', instanceId, serviceId).notice(
+		`process started with pid=${process.pid}`,
+	);
+	vpnWorker(instanceId, serviceId).then(() =>
+		proxyWorker(instanceId, serviceId),
+	);
 }

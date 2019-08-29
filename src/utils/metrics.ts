@@ -10,6 +10,9 @@ export const enum Metrics {
 	OnlineDevices = 'vpn_online_devices',
 	TotalDevices = 'vpn_devices_total',
 	AuthFailures = 'vpn_auth_failures_total',
+
+	ActiveTunnels = 'vpn_proxy_active_tunnels',
+	TotalTunnels = 'vpn_proxy_total_tunnels',
 }
 
 export const describeMetrics = () => {
@@ -40,6 +43,13 @@ export const describeMetrics = () => {
 				buckets: durationBuckets,
 			},
 		);
+		metrics.describe(Metrics.ActiveTunnels, 'current tunnels to vpn devices');
+		metrics.gauge(Metrics.ActiveTunnels, 0);
+		metrics.describe(
+			Metrics.TotalTunnels,
+			'running total of tunnels to vpn devices',
+		);
+		metrics.counter(Metrics.TotalTunnels, 0);
 	} else {
 		const kb = 2 ** 10; // 1024
 		const mb = 2 ** 10 * kb;

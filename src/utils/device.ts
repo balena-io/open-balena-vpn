@@ -18,8 +18,8 @@
 import * as Bluebird from 'bluebird';
 import * as _ from 'lodash';
 
-import * as utils from '../utils';
-import { APIError, captureException } from '../utils/errors';
+import { balenaApi } from '.';
+import { APIError, captureException } from './errors';
 
 const authHeader = (auth?: Buffer): { Authorization?: string } => {
 	const headers: { Authorization?: string } = {};
@@ -34,7 +34,7 @@ export interface DeviceInfo {
 	is_connected_to_vpn: boolean;
 }
 
-const getDeviceByUUIDQuery = utils.balenaApi.prepare<{ uuid: string }>({
+const getDeviceByUUIDQuery = balenaApi.prepare<{ uuid: string }>({
 	resource: 'device',
 	options: {
 		$select: ['id', 'is_connected_to_vpn'],
@@ -59,7 +59,7 @@ export const getDeviceByUUID = (
 			throw new APIError(err.message);
 		});
 
-const canAccessDeviceQuery = utils.balenaApi.prepare<{ id: number }>({
+const canAccessDeviceQuery = balenaApi.prepare<{ id: number }>({
 	method: 'POST',
 	resource: 'device',
 	id: { '@': 'id' },
@@ -83,11 +83,16 @@ export const canAccessDevice = (
 		)
 		.catchReturn(false);
 
+interface VpnHost {
+	id: number;
+	ip_address: string;
+}
+
 export const getDeviceVpnHost = (
 	uuid: string,
 	auth?: Buffer,
-): Bluebird<string> =>
-	utils.balenaApi
+): Bluebird<VpnHost> =>
+	balenaApi
 		.get({
 			resource: 'service_instance',
 			options: {
@@ -103,11 +108,11 @@ export const getDeviceVpnHost = (
 			},
 			passthrough: { headers: authHeader(auth) },
 		})
-		.then((devices): string => {
-			if (!_.isArray(devices) || devices.length === 0) {
+		.then(services => {
+			if (!_.isArray(services) || services.length === 0) {
 				throw new Error('invalid api response');
 			}
-			return devices[0].ip_address;
+			return services[0] as VpnHost;
 		})
 		.catch(err => {
 			captureException(err, 'device-vpn-host-lookup-error');
