@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'haproxy: remove proxy process metrics config'
+      hash: 95cd7bf8a3482c459c024316d717c5e4bb9e417d
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.1.0
+  date: 2019-08-29T11:05:57.511Z
+- commits:
     - subject: 'proxy: prevent forwarding request to self'
       hash: 096c8fbdfcd34919f161255caf6d876ff6bd5e42
       body: ''
