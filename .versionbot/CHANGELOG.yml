@@ -1,4 +1,29 @@
 - commits:
+    - subject: 'proxy: prevent forwarding request to self'
+      hash: 096c8fbdfcd34919f161255caf6d876ff6bd5e42
+      body: ''
+      footer:
+        Connects-to: '#50'
+        connects-to: '#50'
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'refactor: merge systemd services'
+      hash: 0774408a8c8607f3c999a591d7e927428d147288
+      body: ''
+      footer:
+        Connects-to: '#48'
+        connects-to: '#48'
+        Change-type: major
+        change-type: major
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.0.0
+  date: 2019-08-27T17:50:57.619Z
+- commits:
     - subject: Update open-balena-base to 8.0.3
       hash: e481d8da5debc013083777944a53fe3273070b57
       body: |
