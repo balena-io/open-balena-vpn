@@ -34,10 +34,12 @@ frontend http-80
 	monitor-uri /ping
 	monitor fail if vpn_dead
 {{- if ne (getenv "MONITOR_SECRET_TOKEN") "" }}
-	acl is-metrics path /cluster_metrics
+	acl is-node-metrics path /metrics
+	acl is-vpn-metrics path /cluster_metrics
 	acl metrics-auth http_auth(metrics)
-	http-request deny if is-metrics !metrics-auth
-	use_backend vpn-master if is-metrics metrics-auth
+	http-request deny if is-node-metrics !metrics-auth or is-vpn-metrics !metrics-auth
+	use_backend node-exporter if is-node-metrics metrics-auth
+	use_backend vpn-master if is-vpn-metrics metrics-auth
 
 backend vpn-master
 	mode http
@@ -45,6 +47,10 @@ backend vpn-master
 	option httpchk GET /ping
 	http-check expect string OK
 	server vpn0 127.0.0.1:8080 check
+
+backend node-exporter
+	mode http
+	server node_exporter 127.0.0.1:9000 check
 {{- end }}
 
 frontend tcp-{{$vpnPort}}

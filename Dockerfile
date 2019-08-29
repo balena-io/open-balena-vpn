@@ -31,6 +31,14 @@ RUN tmp="$(mktemp -d)" set -x \
 	&& sed --in-place --regexp-extended 's|(hosts:.*)|\1 openvpn|' /etc/nsswitch.conf \
 	&& rm -rf "${tmp}"
 
+ENV NODE_EXPORTER_VERSION 0.18.1
+ENV NODE_EXPORTER_SHA256SUM b2503fd932f85f4e5baf161268854bf5d22001869b84f00fd2d1f57b51b72424
+RUN NODE_EXPORTER_TGZ="/tmp/node_exporter.tar.gz" set -x \
+    && curl -Lo "${NODE_EXPORTER_TGZ}" https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz \
+    && echo "${NODE_EXPORTER_SHA256SUM}  ${NODE_EXPORTER_TGZ}" | sha256sum -c \
+    && tar -xzC /usr/local/bin -f "${NODE_EXPORTER_TGZ}" --strip-components=1 --wildcards '*/node_exporter' \
+    && rm "${NODE_EXPORTER_TGZ}"
+
 COPY package.json package-lock.json /usr/src/app/
 RUN npm ci --unsafe-perm --production && npm cache clean --force 2>/dev/null
 
@@ -40,4 +48,4 @@ COPY config /usr/src/app/config
 COPY openvpn /usr/src/app/openvpn
 
 COPY config/services /etc/systemd/system
-RUN systemctl enable open-balena-vpn.service
+RUN systemctl enable open-balena-vpn.service node-exporter.service
