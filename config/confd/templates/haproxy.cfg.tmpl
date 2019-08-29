@@ -34,22 +34,10 @@ frontend http-80
 	monitor-uri /ping
 	monitor fail if vpn_dead
 {{- if ne (getv "/balena/monitor/secret-token" "") "" }}
-	http-request set-var(req.orig_path) path
-	acl is-proxy-metrics var(req.orig_path) /cluster_metrics/proxy
-	acl is-vpn-metrics var(req.orig_path) /cluster_metrics/vpn
-	http-request set-path /cluster_metrics if is-proxy-metrics or is-vpn-metrics
 	acl is-metrics path /cluster_metrics
 	acl metrics-auth http_auth(metrics)
 	http-request deny if is-metrics !metrics-auth
-	use_backend proxy-master if is-proxy-metrics metrics-auth
-	use_backend vpn-master if is-vpn-metrics metrics-auth
-
-backend proxy-master
-	mode http
-	log global
-	option httpchk GET /ping
-	http-check expect string OK
-	server proxy0 127.0.0.1:8888 check
+	use_backend vpn-master if is-metrics metrics-auth
 
 backend vpn-master
 	mode http
