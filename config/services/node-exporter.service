@@ -10,7 +10,7 @@ Type=simple
 
 ExecStart=/usr/local/bin/node_exporter \
     --web.listen-address 127.0.0.1:9000 \
-    --web.telemetry-path /metrics \
+    --web.telemetry-path /metrics/node \
     --collector.netstat \
     --no-collector.arp \
     --no-collector.bcache \

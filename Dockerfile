@@ -41,6 +41,14 @@ RUN NODE_EXPORTER_TGZ="/tmp/node_exporter.tar.gz" set -x \
     && tar -xzC /usr/local/bin -f "${NODE_EXPORTER_TGZ}" --strip-components=1 --wildcards '*/node_exporter' \
     && rm "${NODE_EXPORTER_TGZ}"
 
+ENV PROCESS_EXPORTER_VERSION 0.5.0
+ENV PROCESS_EXPORTER_SHA256SUM 1b422f5f26ebefc0928b56fbefc08d0aab3cc7a636627d7d57b200af84e91bb9
+RUN PROCESS_EXPORTER_TGZ="/tmp/process_exporter.tar.gz" set -x \
+    && curl -Lo "${PROCESS_EXPORTER_TGZ}" https://github.com/ncabatoff/process-exporter/releases/download/v${PROCESS_EXPORTER_VERSION}/process-exporter-${PROCESS_EXPORTER_VERSION}.linux-amd64.tar.gz \
+    && echo "${PROCESS_EXPORTER_SHA256SUM}  ${PROCESS_EXPORTER_TGZ}" | sha256sum -c \
+    && tar -xzC /usr/local/bin -f "${PROCESS_EXPORTER_TGZ}" --strip-components=1 --wildcards '*/process-exporter' \
+    && rm "${PROCESS_EXPORTER_TGZ}"
+
 COPY package.json package-lock.json /usr/src/app/
 RUN npm ci --unsafe-perm --production && npm cache clean --force 2>/dev/null
 
@@ -50,4 +58,7 @@ COPY config /usr/src/app/config
 COPY openvpn /usr/src/app/openvpn
 
 COPY config/services /etc/systemd/system
-RUN systemctl enable open-balena-vpn.service node-exporter.service
+RUN systemctl enable \
+    open-balena-vpn.service \
+    node-exporter.service \
+    process-exporter.service

@@ -36,13 +36,23 @@ frontend http-80
 {{- if ne (getv "/balena/monitor/secret-token" "") "" }}
 	option http-use-htx
 	acl is-haproxy-metrics path /metrics/haproxy
-	acl is-node-metrics path /metrics
+	acl is-node-metrics path /metrics/node
+	acl is-process-metrics path /metrics/process
 	acl is-vpn-metrics path /cluster_metrics
 	acl metrics-auth http_auth(metrics)
-	http-request deny if is-haproxy-metrics !metrics-auth or is-node-metrics !metrics-auth or is-vpn-metrics !metrics-auth
+	http-request deny if !metrics-auth
 	http-request use-service prometheus-exporter if is-haproxy-metrics metrics-auth
 	use_backend node-exporter if is-node-metrics metrics-auth
+	use_backend process-exporter if is-process-metrics metrics-auth
 	use_backend vpn-master if is-vpn-metrics metrics-auth
+
+backend node-exporter
+	mode http
+	server node_exporter 127.0.0.1:9000 check
+
+backend process-exporter
+	mode http
+	server process_exporter 127.0.0.1:9001 check
 
 backend vpn-master
 	mode http
@@ -50,10 +60,6 @@ backend vpn-master
 	option httpchk GET /ping
 	http-check expect string OK
 	server vpn0 127.0.0.1:8080 check
-
-backend node-exporter
-	mode http
-	server node_exporter 127.0.0.1:9000 check
 {{- end }}
 
 frontend tcp-{{$vpnPort}}
