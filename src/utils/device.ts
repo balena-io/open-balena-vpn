@@ -96,7 +96,7 @@ export const getDeviceVpnHost = (
 		.get({
 			resource: 'service_instance',
 			options: {
-				$select: 'ip_address',
+				$select: ['id', 'ip_address'],
 				$filter: {
 					manages__device: {
 						$any: {

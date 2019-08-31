@@ -96,6 +96,17 @@ class Tunnel extends nodeTunnel.Tunnel {
 										'device is not available on registered service instance',
 									);
 								}
+								const forwardSignature = `By=open-balena-vpn(${this.serviceId})`;
+								if (req.headers.forwarded != null) {
+									if (req.headers.forwarded.includes(forwardSignature)) {
+										throw new errors.HandledTunnelingError(
+											'loop detected forwarding tunnel request',
+										);
+									}
+									req.headers.forwarded = `${req.headers.forwarded},${forwardSignature}`;
+								} else {
+									req.headers.forwarded = forwardSignature;
+								}
 								this.logger.info(
 									`forwarding tunnel request for ${uuid}:${port} via ${vpnHost.id}@${vpnHost.ip_address}`,
 								);
