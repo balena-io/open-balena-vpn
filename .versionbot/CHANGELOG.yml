@@ -1,4 +1,34 @@
 - commits:
+    - subject: add `process-exporter` to collect stats on haproxy/node/openvpn
+      hash: 31093016be077123e0073c033ee5806da129477c
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'haproxy: update to 2.0 & expose internal stats to prometheus'
+      hash: 4af64e646a1c6fe8241b2a6168ffd6364350a243
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: add `node-exporter` to collect network statistics
+      hash: 434b03e1c05370a81f4f31400fd4a38523cac192
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.2.0
+  date: 2019-09-03T14:03:46.732Z
+- commits:
     - subject: 'haproxy: remove proxy process metrics config'
       hash: 95cd7bf8a3482c459c024316d717c5e4bb9e417d
       body: ''
