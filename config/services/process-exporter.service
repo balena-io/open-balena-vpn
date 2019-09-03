@@ -1,0 +1,20 @@
+[Unit]
+Description=Prometheus Process Exporter
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+StandardOutput=journal+console
+StandardError=journal+console
+Type=simple
+
+ExecStart=/usr/local/bin/process-exporter \
+    -web.listen-address 127.0.0.1:9001 \
+    -web.telemetry-path /metrics/process \
+    -procnames haproxy,node,openvpn
+
+Restart=always
+SyslogIdentifier=process-exporter
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,51 @@
+[Unit]
+Description=Prometheus Node Exporter
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+StandardOutput=journal+console
+StandardError=journal+console
+Type=simple
+
+ExecStart=/usr/local/bin/node_exporter \
+    --web.listen-address 127.0.0.1:9000 \
+    --web.telemetry-path /metrics/node \
+    --collector.netstat \
+    --no-collector.arp \
+    --no-collector.bcache \
+    --no-collector.bonding \
+    --no-collector.conntrack \
+    --no-collector.cpu \
+    --no-collector.cpufreq \
+    --no-collector.diskstats \
+    --no-collector.edac \
+    --no-collector.entropy \
+    --no-collector.filefd \
+    --no-collector.filesystem \
+    --no-collector.hwmon \
+    --no-collector.infiniband \
+    --no-collector.ipvs \
+    --no-collector.loadavg \
+    --no-collector.mdadm \
+    --no-collector.meminfo \
+    --no-collector.netclass \
+    --no-collector.netdev \
+    --no-collector.nfs \
+    --no-collector.nfsd \
+    --no-collector.pressure \
+    --no-collector.sockstat \
+    --no-collector.stat \
+    --no-collector.textfile \
+    --no-collector.time \
+    --no-collector.timex \
+    --no-collector.uname \
+    --no-collector.vmstat \
+    --no-collector.xfs \
+    --no-collector.zfs
+
+Restart=always
+SyslogIdentifier=node-exporter
+
+[Install]
+WantedBy=multi-user.target
