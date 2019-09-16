@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'CircleCI: Fix staging auto-deployments'
+      hash: 549d5d9841700172fc5af44574e9251d22388d5f
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Michael Angelos Simos <michalis@balena.io>
+        signed-off-by: Michael Angelos Simos <michalis@balena.io>
+      author: Michael Angelos Simos
+  version: 9.2.1
+  date: 2019-09-16T15:53:37.567Z
+- commits:
     - subject: add `process-exporter` to collect stats on haproxy/node/openvpn
       hash: 31093016be077123e0073c033ee5806da129477c
       body: ''
