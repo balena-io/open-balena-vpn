@@ -1,4 +1,29 @@
 - commits:
+    - subject: 'npm: update dependencies'
+      hash: fb1d0a89eb1fb6bddda1acdf37df085726732ef7
+      body: |
+        * Update @balena/node-metrics-gatherer from 2.4.1 to 3.0.2
+        * Update @sentry/node frmo 5.5.0 to 5.6.2
+        * Update lodash from 4.17.14 to 4.17.15
+        * Update source-map-support from 0.5.12 to 0.5.13
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'npm: update dev dependencies'
+      hash: b821d2cab36686effc81c609a5124af5c67b8a19
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.2.2
+  date: 2019-09-23T14:16:47.445Z
+- commits:
     - subject: 'CircleCI: Fix staging auto-deployments'
       hash: 549d5d9841700172fc5af44574e9251d22388d5f
       body: ''
