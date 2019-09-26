@@ -82,4 +82,4 @@ backend vpn-workers
 	balance leastconn
 	option tcp-smart-connect
 	timeout server {{$timeout}}s
-	server-template vpn 1-{{$servers}} 127.0.0.1:10000 check disabled
+	server-template vpn 1-{{$servers}} 127.0.0.1:10000 disabled
