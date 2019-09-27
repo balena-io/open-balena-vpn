@@ -17,6 +17,7 @@
 
 import * as Bluebird from 'bluebird';
 import { ChildProcess, spawn } from 'child_process';
+import * as es from 'event-stream';
 import { EventEmitter } from 'eventemitter3';
 import * as net from 'net';
 import VpnConnector = require('telnet-openvpn');
@@ -268,7 +269,14 @@ export class VpnManager extends EventEmitter {
 
 	public start(): Bluebird<true> {
 		this.process = spawn('/usr/sbin/openvpn', this.args(), {
-			stdio: 'ignore',
+			stdio: ['ignore', 'pipe', 'pipe'],
+		});
+		// proxy logs from the child process stdout/stderr
+		this.process.stdout.pipe(es.split()).on('data', data => {
+			this.emit('log', VpnLogLevels.n, data);
+		});
+		this.process.stderr.pipe(es.split()).on('data', data => {
+			this.emit('log', VpnLogLevels.n, data);
 		});
 		// proxy error events from the child process
 		this.process.on('error', err => {

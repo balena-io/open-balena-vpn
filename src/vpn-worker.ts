@@ -156,7 +156,6 @@ const worker = (instanceId: number, serviceId: number) => {
 			})
 			// connect to vpn management console, setup bytecount reporting, then release management hold
 			.tap(vpn.connect)
-			.tap(vpn.enableLogging)
 			.tap(() => vpn.enableBytecountReporting(VPN_BYTECOUNT_INTERVAL))
 			.tap(vpn.releaseHold)
 			.tap(() => {
