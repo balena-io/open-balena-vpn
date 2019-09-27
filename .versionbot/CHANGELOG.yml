@@ -1,4 +1,14 @@
 - commits:
+    - subject: Remove redundant code
+      hash: 9f928b79575f8f5ec31ae3437b2afd919d364920
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 9.3.1
+  date: 2019-09-27T19:10:43.068Z
+- commits:
     - subject: 'haproxy: disable checks on vpn workers'
       hash: 9330d09479726d7966f47cd68797a64cd9404996
       body: ''
