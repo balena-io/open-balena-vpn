@@ -53,6 +53,8 @@ const logger = getLogger('vpn');
 const VPN_INSTANCE_COUNT =
 	parseInt(process.env.VPN_INSTANCE_COUNT!, 10) || os.cpus().length;
 
+const VPN_VERBOSE_LOGS = process.env.DEFAULT_VERBOSE_LOGS === 'true';
+
 describeMetrics();
 
 if (cluster.isMaster) {
@@ -62,12 +64,11 @@ if (cluster.isMaster) {
 		txBitrate: number[];
 	}
 	let workerMetrics: { [key: string]: WorkerMetric } = {};
-	let verbose = false;
+	let verbose = VPN_VERBOSE_LOGS;
 
 	process.on('SIGUSR2', () => {
 		logger.notice('caught SIGUSR2, toggling log verbosity');
 		verbose = !verbose;
-		process.env.VPN_VERBOSE_LOGS = `${verbose}`;
 		_.each(cluster.workers, clusterWorker => {
 			if (clusterWorker != null) {
 				clusterWorker.send('toggleVerbosity');
@@ -120,6 +121,7 @@ if (cluster.isMaster) {
 					...process.env,
 					WORKER_ID: workerId,
 					SERVICE_ID: serviceInstance.getId(),
+					VPN_VERBOSE_LOGS: verbose,
 				};
 				cluster.fork(env).on('exit', restartWorker);
 			};
