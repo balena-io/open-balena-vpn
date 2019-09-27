@@ -1,4 +1,25 @@
 - commits:
+    - subject: 'logging: stream openvpn logs from process stdout/stderr'
+      hash: afdf787f398f87499775e42b80bc06f3fafed203
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'logging: allow enabling openvpn verbose logging by default'
+      hash: a93202a41c1787b7d14af62849bd60b117b65cc5
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.4.0
+  date: 2019-09-27T20:42:34.719Z
+- commits:
     - subject: Remove redundant code
       hash: 9f928b79575f8f5ec31ae3437b2afd919d364920
       body: ''
