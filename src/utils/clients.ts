@@ -111,7 +111,6 @@ const setDeviceState = (() => {
 		} else {
 			deviceStates[uuid].targetState = state;
 		}
-		deviceStates[uuid].targetState = state;
 		return applyState(serviceId, uuid);
 	};
 })();
