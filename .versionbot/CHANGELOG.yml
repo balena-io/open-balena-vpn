@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'haproxy: disable checks on vpn workers'
+      hash: 9330d09479726d7966f47cd68797a64cd9404996
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.3.0
+  date: 2019-09-27T12:54:43.883Z
+- commits:
     - subject: 'npm: update dependencies'
       hash: fb1d0a89eb1fb6bddda1acdf37df085726732ef7
       body: |
