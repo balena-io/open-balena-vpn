@@ -56,5 +56,5 @@ jobs:
                 --data-urlencode "component=vpn" \
                 --data-urlencode "environment=staging" \
                 --dump-header /dev/stdout \
-                "https://jenkins.dev.resin.io/job/resin/buildWithParameters"
+                "https://jenkins.dev.resin.io/job/deploy/buildWithParameters"
             fi
