@@ -26,6 +26,7 @@ import * as querystring from 'querystring';
 
 const { expect } = chai;
 
+import { apiServer } from '../src/api';
 import { pooledRequest, service, VpnManager } from '../src/utils';
 
 import proxyWorker from '../src/proxy-worker';
@@ -35,6 +36,7 @@ const vpnHost = process.env.VPN_HOST || '127.0.0.1';
 const vpnPort = process.env.VPN_PORT || '443';
 const caCertPath = process.env.CA_CERT_PATH || '/etc/openvpn/ca.crt';
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
+const VPN_API_PORT = parseInt(process.env.VPN_API_PORT!, 10);
 
 let instance: typeof service;
 let manager: VpnManager;
@@ -97,6 +99,11 @@ describe('vpn worker', function() {
 describe('tunnel worker', () =>
 	it('should startup successfully', () => {
 		proxyWorker(1, instance.getId());
+	}));
+
+describe('api server', () =>
+	it('should startup successfully', () => {
+		apiServer(instance.getId()).listenAsync(VPN_API_PORT);
 	}));
 
 describe('VPN Events', function() {

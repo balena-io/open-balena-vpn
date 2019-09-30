@@ -19,7 +19,6 @@ import { metrics } from '@balena/node-metrics-gatherer';
 
 import { getLogger } from './utils';
 
-import { apiServer } from './api';
 import { HAProxy, Metrics, Netmask, VpnManager } from './utils';
 import { VpnClientBytecountData } from './utils/openvpn';
 
@@ -34,7 +33,6 @@ const VPN_BASE_MANAGEMENT_PORT = parseInt(
 	process.env.VPN_BASE_MANAGEMENT_PORT!,
 	10,
 );
-const VPN_API_BASE_PORT = parseInt(process.env.VPN_API_BASE_PORT!, 10);
 
 // disable verbose logs and bytecount reporting by default
 const VPN_BYTECOUNT_INTERVAL =
@@ -47,7 +45,7 @@ const getInstanceSubnet = (instanceId: number) => {
 };
 
 const worker = (instanceId: number, serviceId: number) => {
-	const logger = getLogger('vpn', instanceId, serviceId);
+	const logger = getLogger('vpn', serviceId, instanceId);
 
 	logger.notice(`process started with pid=${process.pid}`);
 
@@ -100,7 +98,6 @@ const worker = (instanceId: number, serviceId: number) => {
 
 	const vpnPort = VPN_BASE_PORT + instanceId;
 	const mgtPort = VPN_BASE_MANAGEMENT_PORT + instanceId;
-	const apiPort = VPN_API_BASE_PORT + instanceId;
 
 	const vpn = new VpnManager(
 		instanceId,
@@ -145,12 +142,10 @@ const worker = (instanceId: number, serviceId: number) => {
 
 	logger.notice('starting...');
 	return (
-		// start client auth api server
-		apiServer(instanceId, serviceId)
-			.listenAsync(apiPort)
+		// start openvpn
+		vpn
+			.start()
 			.bind(vpn)
-			// start openvpn
-			.tap(vpn.start)
 			.tap(() => {
 				logger.info(`openvpn process started`);
 			})

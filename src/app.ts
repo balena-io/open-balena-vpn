@@ -22,12 +22,13 @@ import * as _ from 'lodash';
 import * as os from 'os';
 import * as prometheus from 'prom-client';
 
+import { apiServer } from './api';
 import { describeMetrics, getLogger, Metrics, service, VERSION } from './utils';
 
 import proxyWorker from './proxy-worker';
 import vpnWorker from './vpn-worker';
 
-const logger = getLogger('vpn');
+const masterLogger = getLogger('master');
 
 [
 	'VPN_INSTANCE_COUNT',
@@ -39,12 +40,12 @@ const logger = getLogger('vpn');
 	'VPN_BASE_SUBNET',
 	'VPN_BASE_PORT',
 	'VPN_BASE_MANAGEMENT_PORT',
-	'VPN_API_BASE_PORT',
+	'VPN_API_PORT',
 	'VPN_INSTANCE_SUBNET_BITMASK',
 ]
 	.filter(key => process.env[key] == null)
 	.forEach((key, idx, keys) => {
-		logger.emerg(`${key} env variable is not set.`);
+		masterLogger.emerg(`${key} env variable is not set.`);
 		if (idx === keys.length - 1) {
 			process.exit(1);
 		}
@@ -52,7 +53,7 @@ const logger = getLogger('vpn');
 
 const VPN_INSTANCE_COUNT =
 	parseInt(process.env.VPN_INSTANCE_COUNT!, 10) || os.cpus().length;
-
+const VPN_API_PORT = parseInt(process.env.VPN_API_PORT!, 10);
 const VPN_VERBOSE_LOGS = process.env.DEFAULT_VERBOSE_LOGS === 'true';
 
 describeMetrics();
@@ -67,7 +68,7 @@ if (cluster.isMaster) {
 	let verbose = VPN_VERBOSE_LOGS;
 
 	process.on('SIGUSR2', () => {
-		logger.notice('caught SIGUSR2, toggling log verbosity');
+		masterLogger.notice('caught SIGUSR2, toggling log verbosity');
 		verbose = !verbose;
 		_.each(cluster.workers, clusterWorker => {
 			if (clusterWorker != null) {
@@ -95,79 +96,89 @@ if (cluster.isMaster) {
 		},
 	);
 
-	logger.notice(
+	masterLogger.notice(
 		`open-balena-vpn@${VERSION} process started with pid=${process.pid}`,
 	);
-	logger.debug('registering as service instance...');
+	masterLogger.debug('registering as service instance...');
 	service.wrap(serviceInstance => {
-		logger.info(
+		const serviceLogger = getLogger('master', serviceInstance.getId());
+		serviceLogger.info(
 			`registered as service instance with id=${serviceInstance.getId()}`,
 		);
-		logger.info(
-			`spawning ${VPN_INSTANCE_COUNT} worker${
-				VPN_INSTANCE_COUNT > 1 ? 's' : ''
-			}`,
-		);
-		_.times(VPN_INSTANCE_COUNT, i => {
-			const workerId = i + 1;
-			const restartWorker = (code?: number, signal?: string) => {
-				if (signal != null) {
-					logger.crit(`worker-${workerId} killed with signal ${signal}`);
-				}
-				if (code != null) {
-					logger.crit(`worker-${workerId} exited with code ${code}`);
-				}
-				const env = {
-					...process.env,
-					WORKER_ID: workerId,
-					SERVICE_ID: serviceInstance.getId(),
-					VPN_VERBOSE_LOGS: verbose,
-				};
-				cluster.fork(env).on('exit', restartWorker);
-			};
-			restartWorker();
-		});
 
-		const app = express();
-		app.disable('x-powered-by');
-		app.get('/ping', (_req, res) => res.send('OK'));
-		app
-			.get('/cluster_metrics', (_req, res) => {
-				for (const clientMetrics of Object.values(workerMetrics)) {
-					metrics.histogram(
-						Metrics.SessionRxBitrate,
-						_.mean(clientMetrics.rxBitrate),
-					);
-					metrics.histogram(
-						Metrics.SessionTxBitrate,
-						_.mean(clientMetrics.txBitrate),
-					);
-				}
-				return new prometheus.AggregatorRegistry()
-					.clusterMetrics()
-					.then((clusterMetrics: string) => {
-						res.set('Content-Type', prometheus.register.contentType);
-						res.write(prometheus.register.metrics());
-						res.write('\n');
-						res.write(clusterMetrics);
-						res.end();
-						workerMetrics = {};
-						metrics.reset(Metrics.SessionRxBitrate);
-						metrics.reset(Metrics.SessionTxBitrate);
-					})
-					.catch((err: Error) => {
-						logger.warning(`error in /cluster_metrics: ${err}`);
-						res.status(500).send();
-					});
-			})
-			.listen(8080);
+		serviceLogger.info('spawning vpn authentication api server...');
+		const api = apiServer(serviceInstance.getId());
+		api.listenAsync(VPN_API_PORT).then(() => {
+			serviceLogger.info(
+				`spawning ${VPN_INSTANCE_COUNT} worker${
+					VPN_INSTANCE_COUNT > 1 ? 's' : ''
+				}`,
+			);
+			_.times(VPN_INSTANCE_COUNT, i => {
+				const workerId = i + 1;
+				const restartWorker = (code?: number, signal?: string) => {
+					if (signal != null) {
+						serviceLogger.crit(
+							`worker-${workerId} killed with signal ${signal}`,
+						);
+					}
+					if (code != null) {
+						serviceLogger.crit(`worker-${workerId} exited with code ${code}`);
+					}
+					const env = {
+						...process.env,
+						WORKER_ID: workerId,
+						SERVICE_ID: serviceInstance.getId(),
+						VPN_VERBOSE_LOGS: verbose,
+					};
+					cluster.fork(env).on('exit', restartWorker);
+				};
+				restartWorker();
+			});
+
+			const app = express();
+			app.disable('x-powered-by');
+			app.get('/ping', (_req, res) => res.send('OK'));
+			app
+				.get('/cluster_metrics', (_req, res) => {
+					for (const clientMetrics of Object.values(workerMetrics)) {
+						metrics.histogram(
+							Metrics.SessionRxBitrate,
+							_.mean(clientMetrics.rxBitrate),
+						);
+						metrics.histogram(
+							Metrics.SessionTxBitrate,
+							_.mean(clientMetrics.txBitrate),
+						);
+					}
+					return new prometheus.AggregatorRegistry()
+						.clusterMetrics()
+						.then((clusterMetrics: string) => {
+							res.set('Content-Type', prometheus.register.contentType);
+							res.write(prometheus.register.metrics());
+							res.write('\n');
+							res.write(clusterMetrics);
+							res.end();
+							workerMetrics = {};
+							metrics.reset(Metrics.SessionRxBitrate);
+							metrics.reset(Metrics.SessionTxBitrate);
+						})
+						.catch((err: Error) => {
+							serviceLogger.warning(`error in /cluster_metrics: ${err}`);
+							res.status(500).send();
+						});
+				})
+				.listen(8080);
+
+			return [app, metrics];
+		});
 	});
 }
 
 if (cluster.isWorker) {
 	const instanceId = parseInt(process.env.WORKER_ID!, 10);
 	const serviceId = parseInt(process.env.SERVICE_ID!, 10);
-	getLogger('worker', instanceId, serviceId).notice(
+	getLogger('worker', serviceId, instanceId).notice(
 		`process started with pid=${process.pid}`,
 	);
 	vpnWorker(instanceId, serviceId).then(() =>

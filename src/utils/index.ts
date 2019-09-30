@@ -31,17 +31,20 @@ export const apiKey = process.env.VPN_SERVICE_API_KEY;
 
 export const getLogger = (
 	service: string,
-	workerId?: string | number,
 	serviceId?: number,
+	workerId?: string | number,
 ) => {
-	let workerLabel = 'master';
-	if (workerId != null && serviceId != null) {
-		workerLabel = `${serviceId}.${workerId}`;
+	let label = `${service}`;
+	if (serviceId != null) {
+		label = `${label}-${serviceId}`;
+		if (workerId != null) {
+			label = `${label}.${workerId}`;
+		}
 	}
 	const transport = new winston.transports.Console({
 		format: winston.format.combine(
 			winston.format.label({
-				label: `${service}-${workerLabel}`,
+				label,
 				message: true,
 			}),
 			winston.format.simple(),

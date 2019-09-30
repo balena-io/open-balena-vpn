@@ -41,7 +41,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 		private readonly serviceId: number,
 	) {
 		super();
-		this.logger = getLogger('proxy', this.instanceId, this.serviceId);
+		this.logger = getLogger('proxy', this.serviceId, this.instanceId);
 
 		this.on('error', err => {
 			// errors thrown in `this.connect` will appear here
@@ -277,7 +277,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 }
 
 const worker = (instanceId: number, serviceId: number) => {
-	getLogger('proxy', instanceId, serviceId).info(
+	getLogger('proxy', serviceId, instanceId).info(
 		`process started with pid=${process.pid}`,
 	);
 
