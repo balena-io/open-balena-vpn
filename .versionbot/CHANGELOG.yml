@@ -1,4 +1,18 @@
 - commits:
+    - subject: 'proxy: refuse to forward tunnels via self and detect forwarding loops'
+      hash: 19dab19c7cb354f589a29e27fc3f5b35d3511270
+      body: ''
+      footer:
+        Connects-to: '#17'
+        connects-to: '#17'
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.5.0
+  date: 2019-09-30T16:06:03.900Z
+- commits:
     - subject: 'circleci: Rename deploy job'
       hash: f3067545f98f1a1d2d1e82ebcae6dca01b76d17f
       body: ''
