@@ -251,6 +251,83 @@ describe('VPN proxy', function() {
 			));
 	});
 
+	describe('tunnel forwarding', () => {
+		beforeEach(() => {
+			nock(`https://${BALENA_API_HOST}`)
+				.get('/v5/device')
+				.query({
+					$select: 'id,is_connected_to_vpn',
+					$filter: 'uuid eq @uuid',
+					'@uuid': "'c0ffeec0ffeec0ffee'",
+				})
+				.reply(200, {
+					d: [
+						{
+							id: 2,
+							is_connected_to_vpn: 1,
+						},
+					],
+				});
+
+			nock(`https://${BALENA_API_HOST}`)
+				.post('/v5/device(@id)/canAccess?@id=2', {
+					action: { or: ['tunnel-any', 'tunnel-8080'] },
+				})
+				.reply(200, {
+					d: [
+						{
+							id: 2,
+						},
+					],
+				});
+		});
+
+		it('should refuse to forward via itself', () => {
+			nock(`https://${BALENA_API_HOST}`)
+				.get(
+					'/v5/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
+				)
+				.reply(200, { d: [{ id: instance.getId(), ip_address: '127.0.0.1' }] });
+
+			return vpnTest(
+				{ user: 'user3', pass: 'pass' },
+				() =>
+					expect(
+						pooledRequest({
+							url: 'http://c0ffeec0ffeec0ffee.balena:8080/test',
+							proxy: 'http://localhost:3128',
+							tunnel: true,
+						}),
+					).to.eventually.be.rejected,
+			);
+		});
+
+		it('should detect forward loops', () => {
+			nock(`https://${BALENA_API_HOST}`)
+				.get(
+					'/v5/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
+				)
+				.reply(200, { d: [{ id: 0, ip_address: '127.0.0.1' }] });
+
+			return vpnTest(
+				{ user: 'user3', pass: 'pass' },
+				() =>
+					expect(
+						pooledRequest.defaults({
+							proxyHeaderWhiteList: ['Forwarded'],
+						} as any)({
+							url: 'http://c0ffeec0ffeec0ffee.balena:8080/test',
+							headers: {
+								Forwarded: `By=open-balena-vpn(${instance.getId()})`,
+							},
+							proxy: 'http://localhost:3128',
+							tunnel: true,
+						}),
+					).to.eventually.be.rejected,
+			);
+		});
+	});
+
 	describe('not web accessible device', () => {
 		beforeEach(() => {
 			nock(`https://${BALENA_API_HOST}`)
