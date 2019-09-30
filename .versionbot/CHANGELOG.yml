@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'circleci: Rename deploy job'
+      hash: f3067545f98f1a1d2d1e82ebcae6dca01b76d17f
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Michael Angelos Simos <michalis@balena.io>
+        signed-off-by: Michael Angelos Simos <michalis@balena.io>
+      author: Michael Angelos Simos
+  version: 9.4.1
+  date: 2019-09-30T15:09:13.414Z
+- commits:
     - subject: 'logging: stream openvpn logs from process stdout/stderr'
       hash: afdf787f398f87499775e42b80bc06f3fafed203
       body: ''
