@@ -315,6 +315,12 @@ export class VpnManager extends EventEmitter {
 			.return(true);
 	}
 
+	public pid() {
+		if (this.process != null) {
+			return this.process.pid;
+		}
+	}
+
 	public stop() {
 		if (this.process != null) {
 			this.process.kill();

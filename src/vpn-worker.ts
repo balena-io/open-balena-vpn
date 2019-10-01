@@ -114,11 +114,13 @@ const worker = (instanceId: number, serviceId: number) => {
 	});
 
 	vpn.on('process:exit', (code, signal) => {
-		let msg = 'process exited';
+		let msg = `openvpn process (pid=${vpn.pid()})`;
 		if (code != null) {
-			msg = `process exited with code ${code}`;
+			msg = `${msg} exited (code=${code})`;
 		} else if (signal != null) {
-			msg = `process terminated with signal ${signal}`;
+			msg = `${msg} terminated (signal=${signal})`;
+		} else {
+			msg = `${msg} exited`;
 		}
 		fatalErrorHandler(new Error(msg));
 	});
@@ -147,7 +149,7 @@ const worker = (instanceId: number, serviceId: number) => {
 			.start()
 			.bind(vpn)
 			.tap(() => {
-				logger.info(`openvpn process started`);
+				logger.info(`openvpn process (pid=${vpn.pid()}) started`);
 			})
 			// connect to vpn management console, setup bytecount reporting, then release management hold
 			.tap(vpn.connect)
