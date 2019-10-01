@@ -1,4 +1,25 @@
 - commits:
+    - subject: 'logging: include openvpn pid in major events'
+      hash: 88a96c8f92b66243c6625f9575e52bdd16e73761
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'api: use single auth api server with shared pool'
+      hash: 01ebda27857af636e1f2ce5ab81051db28d2b4c4
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.6.0
+  date: 2019-10-01T16:46:50.002Z
+- commits:
     - subject: 'proxy: refuse to forward tunnels via self and detect forwarding loops'
       hash: 19dab19c7cb354f589a29e27fc3f5b35d3511270
       body: ''
