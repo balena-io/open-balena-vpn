@@ -22,14 +22,14 @@ VPN_INSTANCE_ID=$1
 if [ -f /usr/src/app/config/env ]; then
 	source /usr/src/app/config/env
 fi
-API_PORT=$((VPN_API_BASE_PORT + VPN_INSTANCE_ID))
 
-curl -s -X POST $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -d @- "http://127.0.0.1:${API_PORT}/api/v1/clients" >/dev/null <<-EOF || true
+curl -s -X POST $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v1/clients" >/dev/null <<-EOF || true
 {
 	"event": "client-connect",
 	"common_name": "$common_name",
 	"ifconfig_pool_remote_ip": "$ifconfig_pool_remote_ip",
 	"trusted_ip": "$trusted_ip",
-	"trusted_port": $trusted_port
+	"trusted_port": $trusted_port,
+	"worker_id": "$VPN_INSTANCE_ID"
 }
 EOF

@@ -43,10 +43,10 @@ const fromLocalHost: express.RequestHandler = (req, res, next) => {
 	next();
 };
 
-export const apiFactory = (instanceId: number, serviceId: number) => {
+export const apiFactory = (serviceId: number) => {
 	const api = express.Router();
 
-	const logger = getLogger('vpn', instanceId, serviceId);
+	const logger = getLogger('vpn', serviceId);
 
 	const logStateUpdate = (state: clients.DeviceState) => {
 		let stateMsg = `common_name=${state.common_name} connected=${state.connected}`;
@@ -122,13 +122,13 @@ interface ExpressAsync extends express.Express {
 	listenAsync(port: number): Promise<ReturnType<express.Express['listen']>>;
 }
 
-export const apiServer = (instanceId: number, serviceId: number) => {
+export const apiServer = (serviceId: number) => {
 	const app = Promise.promisifyAll(express()) as ExpressAsync;
 	app.disable('x-powered-by');
 	app.get('/ping', (_req, res) => res.send('OK'));
 	app.use(morgan('combined'));
 	app.use(compression());
-	app.use(apiFactory(instanceId, serviceId));
+	app.use(apiFactory(serviceId));
 	app.use(Sentry.Handlers.errorHandler());
 	return app;
 };
