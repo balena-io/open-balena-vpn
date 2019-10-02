@@ -47,6 +47,7 @@ export interface DeviceState {
 	common_name: string;
 	connected: boolean;
 	virtual_address?: string;
+	worker_id: string;
 }
 
 const setDeviceState = (() => {
@@ -115,19 +116,29 @@ const setDeviceState = (() => {
 	};
 })();
 
-export const connected = (serviceId: number, data: VpnClientTrustedData) => {
+export const connected = (
+	serviceId: number,
+	workerId: string,
+	data: VpnClientTrustedData,
+) => {
 	const state: DeviceState = {
 		common_name: data.common_name,
 		connected: true,
 		virtual_address: data.ifconfig_pool_remote_ip,
+		worker_id: workerId,
 	};
 	return setDeviceState(serviceId, state);
 };
 
-export const disconnected = (serviceId: number, data: VpnClientTrustedData) => {
+export const disconnected = (
+	serviceId: number,
+	workerId: string,
+	data: VpnClientTrustedData,
+) => {
 	const state: DeviceState = {
 		common_name: data.common_name,
 		connected: false,
+		worker_id: workerId,
 	};
 	return setDeviceState(serviceId, state);
 };
