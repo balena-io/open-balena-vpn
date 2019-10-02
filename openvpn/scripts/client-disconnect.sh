@@ -20,7 +20,7 @@ if [ -f /usr/src/app/config/env ]; then
 	source /usr/src/app/config/env
 fi
 
-curl -s -X DELETE $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v1/clients" >/dev/null <<-EOF || true
+curl -s -X DELETE $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF || true
 {
 	"event": "client-disconnect",
 	"common_name": "$common_name",
@@ -29,7 +29,6 @@ curl -s -X DELETE $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -d @- "h
 	"trusted_port": $trusted_port,
 	"bytes_received": $bytes_received,
 	"bytes_sent": $bytes_sent,
-	"time_duration": $time_duration,
-	"worker_id": "$VPN_INSTANCE_ID"
+	"time_duration": $time_duration
 }
 EOF

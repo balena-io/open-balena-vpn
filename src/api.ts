@@ -49,7 +49,7 @@ export const apiFactory = (serviceId: number) => {
 	const logger = getLogger('vpn', serviceId);
 
 	const logStateUpdate = (state: clients.DeviceState) => {
-		let stateMsg = `common_name=${state.common_name} connected=${state.connected}`;
+		let stateMsg = `common_name=${state.common_name} worker_id=${state.worker_id} connected=${state.connected}`;
 		if (state.virtual_address != null) {
 			stateMsg = `${stateMsg} virtual_address=${state.virtual_address}`;
 		}
@@ -58,13 +58,15 @@ export const apiFactory = (serviceId: number) => {
 
 	api.use(express.json());
 
-	api.post('/api/v1/clients/', fromLocalHost, (req, res) => {
+	api.post('/api/v2/:worker/clients/', fromLocalHost, (req, res) => {
 		if (!isTrusted(req.body)) {
 			return res.sendStatus(400);
 		}
 		metrics.inc(Metrics.OnlineDevices);
 		metrics.inc(Metrics.TotalDevices);
-		clients.connected(serviceId, req.body).then(logStateUpdate);
+		clients
+			.connected(serviceId, req.params.worker, req.body)
+			.then(logStateUpdate);
 		res.send('OK');
 	});
 
@@ -102,7 +104,7 @@ export const apiFactory = (serviceId: number) => {
 			});
 	});
 
-	api.delete('/api/v1/clients/', fromLocalHost, (req, res) => {
+	api.delete('/api/v2/:worker/clients/', fromLocalHost, (req, res) => {
 		if (!isTrusted(req.body)) {
 			return res.sendStatus(400);
 		}
@@ -111,7 +113,9 @@ export const apiFactory = (serviceId: number) => {
 			metrics.histogram(Metrics.SessionDuration, req.body.time_duration);
 		}
 		metrics.dec(Metrics.OnlineDevices);
-		clients.disconnected(serviceId, req.body).then(logStateUpdate);
+		clients
+			.disconnected(serviceId, req.params.worker, req.body)
+			.then(logStateUpdate);
 		res.send('OK');
 	});
 
