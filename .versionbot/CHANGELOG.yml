@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'logging: include worker_id in state update messages'
+      hash: ecc2829fa330cadcd1782334b0105ee75d4e87be
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.6.1
+  date: 2019-10-02T08:30:25.462Z
+- commits:
     - subject: 'logging: include openvpn pid in major events'
       hash: 88a96c8f92b66243c6625f9575e52bdd16e73761
       body: ''
