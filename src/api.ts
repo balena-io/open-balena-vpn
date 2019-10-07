@@ -122,7 +122,7 @@ export const apiFactory = (serviceId: number) => {
 		}
 
 		if (workerMap[req.body.common_name] !== req.params.worker) {
-			logger.warn(
+			logger.warning(
 				`dropping oos disconnect event for uuid=${
 					req.body.common_name
 				} worker=${req.params.worker} (expected=${
