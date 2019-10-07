@@ -1,4 +1,25 @@
 - commits:
+    - subject: 'metrics: fix over-eager online count decrement'
+      hash: bc269942db8c908e818ddef7c831f004887c445c
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'api: fix typo in logger call'
+      hash: de8bac11f17a3d956ef0e6ed6027faec05293909
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.6.4
+  date: 2019-10-07T19:05:25.549Z
+- commits:
     - subject: 'metrics: always decrement online count on client-disconnect event'
       hash: 5b525d2b1e14f814ab419473510a6609215953ae
       body: ''
