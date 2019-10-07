@@ -51,7 +51,7 @@ export const apiFactory = (serviceId: number) => {
 	const logger = getLogger('vpn', serviceId);
 
 	const logStateUpdate = (state: clients.DeviceState) => {
-		let stateMsg = `common_name=${state.common_name} worker_id=${state.worker_id} connected=${state.connected}`;
+		let stateMsg = `uuid=${state.common_name} worker_id=${state.worker_id} connected=${state.connected}`;
 		if (state.virtual_address != null) {
 			stateMsg = `${stateMsg} virtual_address=${state.virtual_address}`;
 		}
@@ -66,6 +66,11 @@ export const apiFactory = (serviceId: number) => {
 		}
 		metrics.inc(Metrics.OnlineDevices);
 		metrics.inc(Metrics.TotalDevices);
+
+		if (workerMap[req.body.common_name] !== req.params.worker) {
+			metrics.dec(Metrics.OnlineDevices);
+		}
+
 		workerMap[req.body.common_name] = req.params.worker;
 		clients
 			.connected(serviceId, req.params.worker, req.body)
@@ -112,20 +117,29 @@ export const apiFactory = (serviceId: number) => {
 			return res.sendStatus(400);
 		}
 
+		if (hasDurationData(req.body)) {
+			metrics.histogram(Metrics.SessionDuration, req.body.time_duration);
+		}
+
 		if (workerMap[req.body.common_name] !== req.params.worker) {
+			logger.warn(
+				`dropping oos disconnect event for uuid=${
+					req.body.common_name
+				} worker=${req.params.worker} (expected=${
+					workerMap[req.body.common_name]
+				})`,
+			);
 			captureException(
 				new Error('Out of Sync OpenVPN Client Event Received'),
 				'openvpn-oos-event',
-				{ req },
+				{ tags: { uuid: req.body.common_name }, req },
 			);
 			return res.sendStatus(400);
 		}
 		delete workerMap[req.body.common_name];
 
-		if (hasDurationData(req.body)) {
-			metrics.histogram(Metrics.SessionDuration, req.body.time_duration);
-		}
 		metrics.dec(Metrics.OnlineDevices);
+
 		clients
 			.disconnected(serviceId, req.params.worker, req.body)
 			.then(logStateUpdate);
