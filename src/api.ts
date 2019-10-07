@@ -66,6 +66,11 @@ export const apiFactory = (serviceId: number) => {
 		}
 		metrics.inc(Metrics.OnlineDevices);
 		metrics.inc(Metrics.TotalDevices);
+
+		if (workerMap[req.body.common_name] !== req.params.worker) {
+			metrics.dec(Metrics.OnlineDevices);
+		}
+
 		workerMap[req.body.common_name] = req.params.worker;
 		clients
 			.connected(serviceId, req.params.worker, req.body)
@@ -112,6 +117,10 @@ export const apiFactory = (serviceId: number) => {
 			return res.sendStatus(400);
 		}
 
+		if (hasDurationData(req.body)) {
+			metrics.histogram(Metrics.SessionDuration, req.body.time_duration);
+		}
+
 		if (workerMap[req.body.common_name] !== req.params.worker) {
 			logger.warn(
 				`dropping oos disconnect event for uuid=${
@@ -129,10 +138,8 @@ export const apiFactory = (serviceId: number) => {
 		}
 		delete workerMap[req.body.common_name];
 
-		if (hasDurationData(req.body)) {
-			metrics.histogram(Metrics.SessionDuration, req.body.time_duration);
-		}
 		metrics.dec(Metrics.OnlineDevices);
+
 		clients
 			.disconnected(serviceId, req.params.worker, req.body)
 			.then(logStateUpdate);
