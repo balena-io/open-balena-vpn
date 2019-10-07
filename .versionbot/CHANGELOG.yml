@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'api: filter client state updates by worker id'
+      hash: 689fa2c2132f3d41f3f72861cebc3326604bd1fe
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.6.2
+  date: 2019-10-07T11:28:05.024Z
+- commits:
     - subject: 'logging: include worker_id in state update messages'
       hash: ecc2829fa330cadcd1782334b0105ee75d4e87be
       body: ''
