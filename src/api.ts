@@ -46,6 +46,8 @@ const fromLocalHost: express.RequestHandler = (req, res, next) => {
 export const apiFactory = (serviceId: number) => {
 	const api = express.Router();
 
+	const workerMap: _.Dictionary<string> = {};
+
 	const logger = getLogger('vpn', serviceId);
 
 	const logStateUpdate = (state: clients.DeviceState) => {
@@ -64,6 +66,7 @@ export const apiFactory = (serviceId: number) => {
 		}
 		metrics.inc(Metrics.OnlineDevices);
 		metrics.inc(Metrics.TotalDevices);
+		workerMap[req.body.common_name] = req.params.worker;
 		clients
 			.connected(serviceId, req.params.worker, req.body)
 			.then(logStateUpdate);
@@ -108,6 +111,16 @@ export const apiFactory = (serviceId: number) => {
 		if (!isTrusted(req.body)) {
 			return res.sendStatus(400);
 		}
+
+		if (workerMap[req.body.common_name] !== req.params.worker) {
+			captureException(
+				new Error('Out of Sync OpenVPN Client Event Received'),
+				'openvpn-oos-event',
+				{ req },
+			);
+			return res.sendStatus(400);
+		}
+		delete workerMap[req.body.common_name];
 
 		if (hasDurationData(req.body)) {
 			metrics.histogram(Metrics.SessionDuration, req.body.time_duration);
