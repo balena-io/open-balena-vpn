@@ -67,7 +67,10 @@ export const apiFactory = (serviceId: number) => {
 		metrics.inc(Metrics.OnlineDevices);
 		metrics.inc(Metrics.TotalDevices);
 
-		if (workerMap[req.body.common_name] !== req.params.worker) {
+		if (
+			workerMap[req.body.common_name] != null &&
+			workerMap[req.body.common_name] !== req.params.worker
+		) {
 			metrics.dec(Metrics.OnlineDevices);
 		}
 
