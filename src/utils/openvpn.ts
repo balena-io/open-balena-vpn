@@ -19,6 +19,7 @@ import * as Bluebird from 'bluebird';
 import { ChildProcess, spawn } from 'child_process';
 import * as es from 'event-stream';
 import { EventEmitter } from 'eventemitter3';
+import * as fs from 'fs';
 import * as net from 'net';
 import VpnConnector = require('telnet-openvpn');
 
@@ -79,6 +80,9 @@ const VpnLogLevels = {
 } as const;
 type ValueOf<T> = T[keyof T];
 
+const KILL_TIMEOUT = 5 * 1000;
+const STARTUP_TIMEOUT = 5 * 1000;
+
 export declare interface VpnManager {
 	on(event: 'process:error', callback?: (err: Error) => void): this;
 	on(
@@ -121,6 +125,7 @@ export class VpnManager extends EventEmitter {
 	private process?: ChildProcess;
 	private readonly connector = new VpnConnector();
 	private buf?: string;
+	private readonly pidFile: string;
 
 	constructor(
 		private instanceId: number,
@@ -131,6 +136,7 @@ export class VpnManager extends EventEmitter {
 		debug?: boolean,
 	) {
 		super();
+		this.pidFile = `/var/run/openvpn/server-${this.instanceId}.pid`;
 		// proxy `data` events from connector, splitting at newlines
 		this.connector.connection.on('data', data => {
 			const lines = ((this.buf || '') + data.toString()).split(/\r?\n/);
@@ -149,6 +155,8 @@ export class VpnManager extends EventEmitter {
 	private args() {
 		const gateway = this.gateway || this.subnet.first;
 		return [
+			'--writepid',
+			this.pidFile,
 			'--status',
 			`/run/openvpn/server-${this.instanceId}.status`,
 			'10',
@@ -267,26 +275,61 @@ export class VpnManager extends EventEmitter {
 		return emitter;
 	};
 
-	public start(): Bluebird<true> {
-		this.process = spawn('/usr/sbin/openvpn', this.args(), {
-			stdio: ['ignore', 'pipe', 'pipe'],
-		});
-		// proxy logs from the child process stdout/stderr
-		this.process.stdout.pipe(es.split()).on('data', data => {
-			this.emit('log', VpnLogLevels.n, data);
-		});
-		this.process.stderr.pipe(es.split()).on('data', data => {
-			this.emit('log', VpnLogLevels.n, data);
-		});
-		// proxy error events from the child process
-		this.process.on('error', err => {
-			this.emit('process:error', err);
-		});
-		this.process.on('exit', (code, signal) => {
-			this.emit('process:exit', code, signal);
-		});
+	private async killOrphan() {
+		try {
+			await fs.promises.access(this.pidFile);
+		} catch {
+			return;
+		}
 
-		return this.waitForStart();
+		const pid = (await fs.promises.readFile(this.pidFile, 'utf8')).replace(
+			/\D/g,
+			'',
+		);
+		const signals = { PING: 0, KILL: 9 } as const;
+		const kill = (signal?: ValueOf<typeof signals>) =>
+			spawn('/bin/kill', signal != null ? [`-${signal}`, pid] : [pid]);
+
+		return new Promise(resolve => {
+			const timeout = Date.now() + KILL_TIMEOUT;
+			const waitForDeath = (code?: number) => {
+				if (code !== 0) {
+					// the signal was unsuccessful, the pid no longer exists;
+					// the process is dead, and our work here is done.
+					return resolve();
+				}
+				if (Date.now() < timeout) {
+					kill(signals.PING).on('exit', waitForDeath);
+				} else {
+					kill(signals.KILL).on('exit', waitForDeath);
+				}
+			};
+			kill().on('exit', waitForDeath);
+		});
+	}
+
+	public start() {
+		return Bluebird.resolve(this.killOrphan())
+			.tap(() => {
+				this.process = spawn('/usr/sbin/openvpn', this.args(), {
+					stdio: ['ignore', 'pipe', 'pipe'],
+				});
+				// proxy logs from the child process stdout/stderr
+				this.process.stdout.pipe(es.split()).on('data', data => {
+					this.emit('log', VpnLogLevels.n, data);
+				});
+				this.process.stderr.pipe(es.split()).on('data', data => {
+					this.emit('log', VpnLogLevels.n, data);
+				});
+				// proxy error events from the child process
+				this.process.on('error', err => {
+					this.emit('process:error', err);
+				});
+				this.process.on('exit', (code, signal) => {
+					this.emit('process:exit', code, signal);
+				});
+			})
+			.then(() => this.waitForStart());
 	}
 
 	private waitForStart(since: number = Date.now()): Bluebird<true> {
@@ -305,7 +348,7 @@ export class VpnManager extends EventEmitter {
 			socket.on('timeout', errorHandler);
 			socket.connect(this.mgtPort);
 		})
-			.timeout(5000 - (Date.now() - since))
+			.timeout(STARTUP_TIMEOUT - (Date.now() - since))
 			.catch(err => {
 				if (err instanceof Bluebird.TimeoutError) {
 					throw err;
