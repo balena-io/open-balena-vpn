@@ -1,4 +1,25 @@
 - commits:
+    - subject: 'metrics: always decrement online count on client-disconnect event'
+      hash: 5b525d2b1e14f814ab419473510a6609215953ae
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'api: increase verbosity of out-of-sync event reporting'
+      hash: 988703fad9f9f5455b1dbd4d51015dbca4385151
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.6.3
+  date: 2019-10-07T18:08:02.371Z
+- commits:
     - subject: 'api: filter client state updates by worker id'
       hash: 689fa2c2132f3d41f3f72861cebc3326604bd1fe
       body: ''
