@@ -80,8 +80,10 @@ const VpnLogLevels = {
 } as const;
 type ValueOf<T> = T[keyof T];
 
-const KILL_TIMEOUT = 5 * 1000;
-const STARTUP_TIMEOUT = 5 * 1000;
+const SECONDS = 1000;
+const STARTUP_TIMEOUT = 5 * SECONDS;
+const TERM_TIMEOUT = 5 * SECONDS;
+const KILL_TIMEOUT = TERM_TIMEOUT * 2;
 
 export declare interface VpnManager {
 	on(event: 'process:error', callback?: (err: Error) => void): this;
@@ -290,18 +292,23 @@ export class VpnManager extends EventEmitter {
 		const kill = (signal?: ValueOf<typeof signals>) =>
 			spawn('/bin/kill', signal != null ? [`-${signal}`, pid] : [pid]);
 
-		return new Promise(resolve => {
-			const timeout = Date.now() + KILL_TIMEOUT;
+		return new Promise((resolve, reject) => {
+			const start = Date.now();
 			const waitForDeath = (code?: number) => {
 				if (code !== 0) {
 					// the signal was unsuccessful, the pid no longer exists;
 					// the process is dead, and our work here is done.
 					return resolve();
 				}
-				if (Date.now() < timeout) {
+				const elapsedTime = Date.now() - start;
+				if (elapsedTime < TERM_TIMEOUT) {
 					kill(signals.PING).on('exit', waitForDeath);
-				} else {
+				} else if (elapsedTime < KILL_TIMEOUT) {
 					kill(signals.KILL).on('exit', waitForDeath);
+				} else {
+					return reject(
+						new Bluebird.TimeoutError('orphan openvpn process did not go away'),
+					);
 				}
 			};
 			kill().on('exit', waitForDeath);
