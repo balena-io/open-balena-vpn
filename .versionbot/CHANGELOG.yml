@@ -1,4 +1,14 @@
 - commits:
+    - subject: Remove unused api keys
+      hash: 1e1462bf9242e4984d9a6147ebdd799ccd7a117e
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 9.6.6
+  date: 2019-10-11T14:39:08.250Z
+- commits:
     - subject: 'config: add switch for default verbose logging'
       hash: 4db4258645a53de2961922c704a7d484076e05b5
       body: ''
