@@ -1,4 +1,25 @@
 - commits:
+    - subject: 'vpn: gracefully handle orphan server process refusing to die'
+      hash: f3646eab1b09762245263ad6b9ded3c594535329
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'vpn: kill orphan server processes on startup'
+      hash: c4771a63cef0e251d0ae0a18489f9f1f062bdb95
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.6.7
+  date: 2019-10-14T11:54:07.486Z
+- commits:
     - subject: Remove unused api keys
       hash: 1e1462bf9242e4984d9a6147ebdd799ccd7a117e
       body: ''
