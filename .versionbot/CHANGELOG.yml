@@ -1,4 +1,14 @@
 - commits:
+    - subject: Update dependencies
+      hash: 0240b4c876972e50e8a73b609437733620adcb85
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 9.6.8
+  date: 2019-10-15T11:13:26.493Z
+- commits:
     - subject: 'vpn: gracefully handle orphan server process refusing to die'
       hash: f3646eab1b09762245263ad6b9ded3c594535329
       body: ''
