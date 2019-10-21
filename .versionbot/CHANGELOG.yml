@@ -1,4 +1,20 @@
 - commits:
+    - subject: 'device-metrics: create timeseries per-device with device_uuid tag'
+      hash: 8946c3f204c524875b726df7da7b522615382eb1
+      body: ''
+      footer:
+        Connects-to: 'https://github.com/balena-io/balena-monitor/pull/94'
+        connects-to: 'https://github.com/balena-io/balena-monitor/pull/94'
+        HQ: 'https://github.com/balena-io/balena/issues/1869'
+        hq: 'https://github.com/balena-io/balena/issues/1869'
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Matthew McGinn <matthew@balena.io>
+        signed-off-by: Matthew McGinn <matthew@balena.io>
+      author: Matthew McGinn
+  version: 9.8.0
+  date: 2019-10-21T14:51:08.460Z
+- commits:
     - subject: Update open-balena-base to 9.0.0
       hash: e2173870f1826658c5fa879850f51f48b462aec3
       body: |
