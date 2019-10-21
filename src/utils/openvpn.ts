@@ -322,10 +322,10 @@ export class VpnManager extends EventEmitter {
 					stdio: ['ignore', 'pipe', 'pipe'],
 				});
 				// proxy logs from the child process stdout/stderr
-				this.process.stdout.pipe(es.split()).on('data', data => {
+				this.process.stdout!.pipe(es.split()).on('data', data => {
 					this.emit('log', VpnLogLevels.n, data);
 				});
-				this.process.stderr.pipe(es.split()).on('data', data => {
+				this.process.stderr!.pipe(es.split()).on('data', data => {
 					this.emit('log', VpnLogLevels.n, data);
 				});
 				// proxy error events from the child process
