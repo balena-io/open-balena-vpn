@@ -1,4 +1,67 @@
 - commits:
+    - subject: Update open-balena-base to 9.0.0
+      hash: e2173870f1826658c5fa879850f51f48b462aec3
+      body: |
+        Update open-balena-base from 8.0.3 to 9.0.0
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update to nodejs 12
+              hash: cde7021d266cfba7e6b7055421c7afb0c0dd2781
+              body: ''
+              footer:
+                Change-type: major
+                change-type: major
+              author: Pagan Gazzard
+          version: open-balena-base-9.0.0
+          date: 2019-10-21T09:37:45.197Z
+        - commits:
+            - subject: Respect BALENA_TLD env variable in nosystemd variant
+              hash: 66ad0ec93fadc749c3104443a3313ff73bf04946
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Roman Mazur <roman@balena.io>
+                signed-off-by: Roman Mazur <roman@balena.io>
+              author: Roman Mazur
+            - subject: Optimize for caching
+              hash: 652a3e18545079de46bfe21c3891523467d6163f
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Roman Mazur <roman@balena.io>
+                signed-off-by: Roman Mazur <roman@balena.io>
+              author: Roman Mazur
+            - subject: Use balena node base image
+              hash: b7c1e12773a414a5f843cfaaba943eabf3425e71
+              body: ''
+              footer:
+                Change-type: minor
+                change-type: minor
+                Signed-off-by: Roman Mazur <roman@balena.io>
+                signed-off-by: Roman Mazur <roman@balena.io>
+              author: Roman Mazur
+            - subject: Add a base image without systemd
+              hash: d7e44872d9594b9ef0557f78b8f38c6e449bbe54
+              body: >
+                Also configures circleCI to publish no-systemd variant in
+                parallel.
+              footer:
+                Change-type: minor
+                change-type: minor
+                Signed-off-by: Roman Mazur <roman@balena.io>
+                signed-off-by: Roman Mazur <roman@balena.io>
+              author: Roman Mazur
+          version: open-balena-base-8.1.0
+          date: 2019-09-24T16:07:27.946Z
+  version: 9.7.0
+  date: 2019-10-21T11:14:19.717Z
+- commits:
     - subject: Update dependencies
       hash: 0240b4c876972e50e8a73b609437733620adcb85
       body: ''
