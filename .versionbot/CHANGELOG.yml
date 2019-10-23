@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'proxy: fix incorrect headers inserted into stream'
+      hash: 39df7b6c0593c0cbbf079aa9dc1e5f41e7370f78
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.8.1
+  date: 2019-10-23T14:46:38.013Z
+- commits:
     - subject: 'device-metrics: create timeseries per-device with device_uuid tag'
       hash: 8946c3f204c524875b726df7da7b522615382eb1
       body: ''
