@@ -226,7 +226,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 						`Proxy-Authorization: Basic ${proxyAuth.toString('base64')}\r\n`,
 					);
 				}
-				socket.write('\r\n\r\n');
+				socket.write('\r\n');
 			});
 
 			const earlyEnd = () => {
