@@ -315,54 +315,51 @@ export class VpnManager extends EventEmitter {
 		});
 	}
 
-	public start() {
-		return Bluebird.resolve(this.killOrphan())
-			.tap(() => {
-				this.process = spawn('/usr/sbin/openvpn', this.args(), {
-					stdio: ['ignore', 'pipe', 'pipe'],
-				});
-				// proxy logs from the child process stdout/stderr
-				this.process.stdout!.pipe(es.split()).on('data', data => {
-					this.emit('log', VpnLogLevels.n, data);
-				});
-				this.process.stderr!.pipe(es.split()).on('data', data => {
-					this.emit('log', VpnLogLevels.n, data);
-				});
-				// proxy error events from the child process
-				this.process.on('error', err => {
-					this.emit('process:error', err);
-				});
-				this.process.on('exit', (code, signal) => {
-					this.emit('process:exit', code, signal);
-				});
-			})
-			.then(() => this.waitForStart());
+	public async start() {
+		await this.killOrphan();
+		this.process = spawn('/usr/sbin/openvpn', this.args(), {
+			stdio: ['ignore', 'pipe', 'pipe'],
+		});
+		// proxy logs from the child process stdout/stderr
+		this.process.stdout!.pipe(es.split()).on('data', data => {
+			this.emit('log', VpnLogLevels.n, data);
+		});
+		this.process.stderr!.pipe(es.split()).on('data', data => {
+			this.emit('log', VpnLogLevels.n, data);
+		});
+		// proxy error events from the child process
+		this.process.on('error', err => {
+			this.emit('process:error', err);
+		});
+		this.process.on('exit', (code, signal) => {
+			this.emit('process:exit', code, signal);
+		});
+		await this.waitForStart();
 	}
 
-	private waitForStart(since: number = Date.now()): Bluebird<true> {
-		return new Bluebird((resolve, reject) => {
-			const socket = new net.Socket();
-			const errorHandler = () => {
-				socket.destroy();
-				reject(new Error('socket not ready'));
-			};
-			const readyHandler = () => {
-				socket.end();
-				resolve(true);
-			};
-			socket.on('ready', readyHandler);
-			socket.on('error', errorHandler);
-			socket.on('timeout', errorHandler);
-			socket.connect(this.mgtPort);
-		})
-			.timeout(STARTUP_TIMEOUT - (Date.now() - since))
-			.catch(err => {
-				if (err instanceof Bluebird.TimeoutError) {
-					throw err;
-				}
-				return this.waitForStart(since);
-			})
-			.return(true);
+	private async waitForStart(since: number = Date.now()) {
+		try {
+			await new Bluebird((resolve, reject) => {
+				const socket = new net.Socket();
+				const errorHandler = () => {
+					socket.destroy();
+					reject(new Error('socket not ready'));
+				};
+				const readyHandler = () => {
+					socket.end();
+					resolve();
+				};
+				socket.on('ready', readyHandler);
+				socket.on('error', errorHandler);
+				socket.on('timeout', errorHandler);
+				socket.connect(this.mgtPort);
+			}).timeout(STARTUP_TIMEOUT - (Date.now() - since));
+		} catch (err) {
+			if (err instanceof Bluebird.TimeoutError) {
+				throw err;
+			}
+			await this.waitForStart(since);
+		}
 	}
 
 	public pid() {
@@ -377,21 +374,16 @@ export class VpnManager extends EventEmitter {
 		}
 	}
 
-	public connect(): Bluebird<true> {
-		return Bluebird.try(() =>
-			this.connector
-				.connect({
-					port: this.mgtPort,
-					shellPrompt: '',
-				})
-				.then(() => {
-					this.emit('manager:connect');
-				}),
-		).return(true);
+	public async connect() {
+		await this.connector.connect({
+			port: this.mgtPort,
+			shellPrompt: '',
+		});
+		this.emit('manager:connect');
 	}
 
-	public exec(command: string): Bluebird<true> {
-		return Bluebird.try(() => this.connector.exec(command)).return(true);
+	public async exec(command: string) {
+		await this.connector.exec(command);
 	}
 
 	public enableLogging() {
