@@ -44,7 +44,7 @@ const getInstanceSubnet = (instanceId: number) => {
 	return network.split(VPN_INSTANCE_SUBNET_BITMASK)[instanceId - 1];
 };
 
-const worker = (instanceId: number, serviceId: number) => {
+const worker = async (instanceId: number, serviceId: number) => {
 	const logger = getLogger('vpn', serviceId, instanceId);
 
 	logger.notice(`process started with pid=${process.pid}`);
@@ -144,39 +144,27 @@ const worker = (instanceId: number, serviceId: number) => {
 		writeBandwidthMetrics(clientId, data);
 	});
 
-	logger.notice('starting...');
-	return (
-		// start openvpn
-		vpn
-			.start()
-			.bind(vpn)
-			.tap(() => {
-				logger.info(`openvpn process (pid=${vpn.pid()}) started`);
-			})
-			// connect to vpn management console, setup bytecount reporting, then release management hold
-			.tap(vpn.connect)
-			.tap(() => vpn.enableBytecountReporting(VPN_BYTECOUNT_INTERVAL))
-			.tap(vpn.releaseHold)
-			.tap(() => {
-				logger.info(`management hold released`);
-			})
-			// register as haproxy backend
-			.tap(() =>
-				new HAProxy('/var/run/haproxy.sock').register(
-					`vpn-workers/vpn${instanceId}`,
-					vpnPort,
-				),
-			)
-			.tap(() => {
-				logger.info(
-					`registered as haproxy backend server vpn-workers/vpn${instanceId}`,
-				);
-			})
-			.catch(fatalErrorHandler)
-			.tap(() => {
-				logger.notice(`waiting for clients...`);
-			})
-			.return(vpn)
-	);
+	try {
+		logger.notice('starting...');
+		await vpn.start();
+		logger.info(`openvpn process (pid=${vpn.pid()}) started`);
+		// connect to vpn management console, setup bytecount reporting, then release management hold
+		await vpn.connect();
+		await vpn.enableBytecountReporting(VPN_BYTECOUNT_INTERVAL);
+		await vpn.releaseHold();
+		logger.info(`management hold released`);
+		// register as haproxy backend
+		await new HAProxy('/var/run/haproxy.sock').register(
+			`vpn-workers/vpn${instanceId}`,
+			vpnPort,
+		);
+		logger.info(
+			`registered as haproxy backend server vpn-workers/vpn${instanceId}`,
+		);
+	} catch (err) {
+		fatalErrorHandler(err);
+	}
+	logger.notice(`waiting for clients...`);
+	return vpn;
 };
 export default worker;
