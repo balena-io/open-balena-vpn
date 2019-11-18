@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'vpn-worker: convert promise chains to async/await'
+      hash: ef13afa66094f70d2d8ec5251be47f7ed538e6d2
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.8.3
+  date: 2019-11-18T17:00:18.475Z
+- commits:
     - subject: 'deps: update dependencies'
       hash: 0b893bff3472097e3753518f13945a6729aa0dc5
       body: |
