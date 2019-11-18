@@ -1,4 +1,17 @@
 - commits:
+    - subject: 'deps: update dependencies'
+      hash: 0b893bff3472097e3753518f13945a6729aa0dc5
+      body: |
+        Update @balena/node-metrics-gatherer from 3.0.2 to 4.0.1
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.8.2
+  date: 2019-11-18T16:24:38.277Z
+- commits:
     - subject: 'proxy: fix incorrect headers inserted into stream'
       hash: 39df7b6c0593c0cbbf079aa9dc1e5f41e7370f78
       body: ''
