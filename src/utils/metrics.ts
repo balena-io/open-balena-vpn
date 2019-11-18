@@ -19,16 +19,19 @@ export const enum Metrics {
 
 export const describeMetrics = () => {
 	if (cluster.isWorker) {
-		metrics.describe(Metrics.OnlineDevices, 'vpn current online devices');
+		metrics.describe.gauge(Metrics.OnlineDevices, 'vpn current online devices');
 		metrics.gauge(Metrics.OnlineDevices, 0);
-		metrics.describe(Metrics.TotalDevices, 'vpn total devices since restart');
+		metrics.describe.counter(
+			Metrics.TotalDevices,
+			'vpn total devices since restart',
+		);
 		metrics.counter(Metrics.TotalDevices, 0);
-		metrics.describe(
+		metrics.describe.counter(
 			Metrics.AuthFailures,
 			'vpn device auth failures since restart',
 		);
 		metrics.counter(Metrics.AuthFailures, 0);
-		metrics.describe(
+		metrics.describe.counter(
 			Metrics.AuthFailuresByUuid,
 			'vpn device auth failures since restart',
 			{
@@ -36,9 +39,12 @@ export const describeMetrics = () => {
 			},
 		);
 		metrics.counter(Metrics.AuthFailuresByUuid, 0);
-		metrics.describe(Metrics.RxBytes, 'total rx bytes across all vpn sessions');
+		metrics.describe.counter(
+			Metrics.RxBytes,
+			'total rx bytes across all vpn sessions',
+		);
 		metrics.counter(Metrics.RxBytes, 0);
-		metrics.describe(
+		metrics.describe.counter(
 			Metrics.RxBytesByUuid,
 			'total rx bytes across all vpn sessions',
 			{
@@ -46,9 +52,12 @@ export const describeMetrics = () => {
 			},
 		);
 		metrics.counter(Metrics.RxBytesByUuid, 0);
-		metrics.describe(Metrics.TxBytes, 'total tx bytes across all vpn sessions');
+		metrics.describe.counter(
+			Metrics.TxBytes,
+			'total tx bytes across all vpn sessions',
+		);
 		metrics.counter(Metrics.TxBytes, 0);
-		metrics.describe(
+		metrics.describe.counter(
 			Metrics.TxBytesByUuid,
 			'total tx bytes across all vpn sessions',
 			{
@@ -62,16 +71,19 @@ export const describeMetrics = () => {
 		const week = 7 * day;
 		const month = 4 * week;
 		const durationBuckets = [1, 10, min, hour, day, week, month];
-		metrics.describe(
+		metrics.describe.histogram(
 			Metrics.SessionDuration,
 			'histogram showing duration of vpn sessions',
 			{
 				buckets: durationBuckets,
 			},
 		);
-		metrics.describe(Metrics.ActiveTunnels, 'current tunnels to vpn devices');
+		metrics.describe.gauge(
+			Metrics.ActiveTunnels,
+			'current tunnels to vpn devices',
+		);
 		metrics.gauge(Metrics.ActiveTunnels, 0);
-		metrics.describe(
+		metrics.describe.counter(
 			Metrics.TotalTunnels,
 			'running total of tunnels to vpn devices',
 		);
@@ -112,12 +124,12 @@ export const describeMetrics = () => {
 			50 * mb,
 			100 * mb,
 		];
-		metrics.describe(
+		metrics.describe.histogram(
 			Metrics.SessionRxBitrate,
 			'histogram of average rx rate per vpn client',
 			{ buckets: bitrateBuckets },
 		);
-		metrics.describe(
+		metrics.describe.histogram(
 			Metrics.SessionTxBitrate,
 			'histogram of average tx rate per vpn client',
 			{ buckets: bitrateBuckets },
