@@ -1,4 +1,25 @@
 - commits:
+    - subject: 'service: convert promise chains to async/await'
+      hash: 34804eda95210ffde70dbcc856e58c6f3f04447f
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'proxy-worker: convert promise chains to async/await'
+      hash: 886ec228bfc129505cbfe707d467d0d0b3d863ea
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.9.0
+  date: 2020-01-03T11:47:12.990Z
+- commits:
     - subject: Update open-balena-base to 9.0.3
       hash: 0c2d77dd5d9c03e827fba438195a97c44035fab3
       body: |
