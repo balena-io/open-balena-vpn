@@ -16,8 +16,7 @@
 */
 
 import { metrics } from '@balena/node-metrics-gatherer';
-import * as Bluebird from 'bluebird';
-import * as dns from 'dns';
+import { promises as dns } from 'dns';
 import * as _ from 'lodash';
 import * as net from 'net';
 import * as nodeTunnel from 'node-tunnel';
@@ -30,8 +29,6 @@ const VPN_CONNECT_PROXY_PORT = parseInt(
 	process.env.VPN_CONNECT_PROXY_PORT!,
 	10,
 );
-
-const lookupAsync = Bluebird.promisify(dns.lookup);
 
 class Tunnel extends nodeTunnel.Tunnel {
 	private readonly logger: winston.Logger;
@@ -56,75 +53,64 @@ class Tunnel extends nodeTunnel.Tunnel {
 		this.use(this.tunnelToDevice);
 	}
 
-	public connect = (
+	public connect = async (
 		port: number,
 		host: string,
 		client: net.Socket,
 		req: nodeTunnel.Request,
-	) =>
-		Bluebird.try(() => this.parseRequest(req)).then(({ uuid, auth }) =>
-			lookupAsync(`${uuid}.vpn`)
-				.return(true)
-				.catchReturn(false)
-				.then(exists => {
-					if (exists) {
-						// The lookup succeeded so we try to connect
-						this.logger.info(`connecting to ${host}:${port}`);
-						return super.connect(port, host, client, req).tap(socket => {
-							metrics.inc(Metrics.ActiveTunnels);
-							metrics.inc(Metrics.TotalTunnels);
-							socket.on('close', () => {
-								metrics.dec(Metrics.ActiveTunnels);
-							});
-						});
-					} else {
-						// The lookup failed so we try to forward to the correct vpn instance instead
-						return device
-							.getDeviceVpnHost(uuid, auth)
-							.catch(err => {
-								if (err instanceof errors.APIError) {
-									this.logger.crit(
-										`error connecting to ${uuid}:${port} (${err.message})`,
-									);
-									throw new errors.HandledTunnelingError(err.message);
-								}
-								throw err;
-							})
-							.then(vpnHost => {
-								if (vpnHost.id === this.serviceId) {
-									throw new errors.HandledTunnelingError(
-										'device is not available on registered service instance',
-									);
-								}
-								const forwardSignature = `By=open-balena-vpn(${this.serviceId})`;
-								if (req.headers.forwarded != null) {
-									if (req.headers.forwarded.includes(forwardSignature)) {
-										throw new errors.HandledTunnelingError(
-											'loop detected forwarding tunnel request',
-										);
-									}
-									req.headers.forwarded = `${req.headers.forwarded},${forwardSignature}`;
-								} else {
-									req.headers.forwarded = forwardSignature;
-								}
-								this.logger.info(
-									`forwarding tunnel request for ${uuid}:${port} via ${vpnHost.id}@${vpnHost.ip_address}`,
-								);
-								return this.forwardRequest(
-									vpnHost.ip_address,
-									uuid,
-									port,
-									auth,
-								).catch(errors.RemoteTunnellingError, err => {
-									this.logger.crit(
-										`error forwarding request for ${uuid}:${port} (${err.message})`,
-									);
-									throw new errors.HandledTunnelingError(err.message);
-								});
-							});
+	) => {
+		const { uuid, auth } = this.parseRequest(req);
+		try {
+			await dns.lookup(`${uuid}.vpn`);
+			this.logger.info(`connecting to ${host}:${port}`);
+			const socket = await super.connect(port, host, client, req);
+			metrics.inc(Metrics.ActiveTunnels);
+			metrics.inc(Metrics.TotalTunnels);
+			socket.on('close', () => {
+				metrics.dec(Metrics.ActiveTunnels);
+			});
+			return socket;
+		} catch {
+			// The lookup failed so we try to forward to the correct vpn instance instead
+			try {
+				const vpnHost = await device.getDeviceVpnHost(uuid, auth);
+				if (vpnHost.id === this.serviceId) {
+					throw new errors.HandledTunnelingError(
+						'device is not available on registered service instance',
+					);
+				}
+				const forwardSignature = `By=open-balena-vpn(${this.serviceId})`;
+				if (req.headers.forwarded != null) {
+					if (req.headers.forwarded.includes(forwardSignature)) {
+						throw new errors.HandledTunnelingError(
+							'loop detected forwarding tunnel request',
+						);
 					}
-				}),
-		);
+					req.headers.forwarded = `${req.headers.forwarded},${forwardSignature}`;
+				} else {
+					req.headers.forwarded = forwardSignature;
+				}
+				this.logger.info(
+					`forwarding tunnel request for ${uuid}:${port} via ${vpnHost.id}@${vpnHost.ip_address}`,
+				);
+				return await this.forwardRequest(vpnHost.ip_address, uuid, port, auth);
+			} catch (err) {
+				if (err instanceof errors.APIError) {
+					this.logger.crit(
+						`error connecting to ${uuid}:${port} (${err.message})`,
+					);
+					throw new errors.HandledTunnelingError(err.message);
+				}
+				if (err instanceof errors.RemoteTunnellingError) {
+					this.logger.crit(
+						`error forwarding request for ${uuid}:${port} (${err.message})`,
+					);
+					throw new errors.HandledTunnelingError(err.message);
+				}
+				throw err;
+			}
+		}
+	};
 
 	public start = (port: number) => {
 		this.listen(port, () => {
@@ -156,46 +142,36 @@ class Tunnel extends nodeTunnel.Tunnel {
 		return { uuid, port: parseInt(port, 10), auth };
 	};
 
-	private tunnelToDevice: nodeTunnel.Middleware = (
+	private tunnelToDevice: nodeTunnel.Middleware = async (
 		req,
 		cltSocket,
 		_head,
 		next,
-	) =>
-		Bluebird.try(() => {
+	) => {
+		try {
 			const { uuid, port, auth } = this.parseRequest(req);
 			this.logger.info(`tunnel requested to ${uuid}:${port}`);
 
 			// we need to use VPN_SERVICE_API_KEY here as this could be an unauthenticated request
-			return device
-				.getDeviceByUUID(uuid, VPN_SERVICE_API_KEY)
-				.tap(data => {
-					if (data == null) {
-						cltSocket.end('HTTP/1.0 404 Not Found\r\n\r\n');
-						throw new errors.HandledTunnelingError(`device not found: ${uuid}`);
-					}
-					return device.canAccessDevice(data, port, auth).tap(isAllowed => {
-						if (!isAllowed) {
-							cltSocket.end(
-								'HTTP/1.0 407 Proxy Authorization Required\r\n\r\n',
-							);
-							throw new errors.HandledTunnelingError(
-								`device not accessible: ${uuid}`,
-							);
-						}
-						if (!data.is_connected_to_vpn) {
-							cltSocket.end('HTTP/1.0 503 Service Unavailable\r\n\r\n');
-							throw new errors.HandledTunnelingError(
-								`device not available: ${uuid}`,
-							);
-						}
-					});
-				})
-				.then(() => {
-					req.url = `${uuid}.vpn:${port}`;
-					return next();
-				});
-		}).catch((err: Error) => {
+			const data = await device.getDeviceByUUID(uuid, VPN_SERVICE_API_KEY);
+			if (data == null) {
+				cltSocket.end('HTTP/1.0 404 Not Found\r\n\r\n');
+				throw new errors.HandledTunnelingError(`device not found: ${uuid}`);
+			}
+			const isAllowed = await device.canAccessDevice(data, port, auth);
+			if (!isAllowed) {
+				cltSocket.end('HTTP/1.0 407 Proxy Authorization Required\r\n\r\n');
+				throw new errors.HandledTunnelingError(
+					`device not accessible: ${uuid}`,
+				);
+			}
+			if (!data.is_connected_to_vpn) {
+				cltSocket.end('HTTP/1.0 503 Service Unavailable\r\n\r\n');
+				throw new errors.HandledTunnelingError(`device not available: ${uuid}`);
+			}
+			req.url = `${uuid}.vpn:${port}`;
+			next();
+		} catch (err) {
 			if (err instanceof errors.APIError) {
 				this.logger.alert(`Invalid Response from API (${err.message})`);
 				cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
@@ -209,15 +185,16 @@ class Tunnel extends nodeTunnel.Tunnel {
 				captureException(err, 'proxy-tunnel-error', { req });
 				cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
 			}
-		});
+		}
+	};
 
 	private forwardRequest = (
 		vpnHost: string,
 		uuid: string,
 		port: number,
 		proxyAuth?: Buffer,
-	): Bluebird<net.Socket> =>
-		new Bluebird((resolve, reject) => {
+	): Promise<net.Socket> =>
+		new Promise((resolve, reject) => {
 			let tunnelProxyResponse = '';
 			const socket: net.Socket = net.connect(3128, vpnHost, () => {
 				socket.write(`CONNECT ${uuid}.balena:${port} HTTP/1.0\r\n`);

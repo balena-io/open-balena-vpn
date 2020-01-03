@@ -35,41 +35,38 @@ class ServiceInstance {
 		captureException(err, fingerprint, { tags });
 	}
 
-	public register(): Bluebird<this> {
-		return balenaApi
-			.post({
+	public async register(): Promise<this> {
+		try {
+			const { id } = (await balenaApi.post({
 				resource: 'service_instance',
 				passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
-			})
-			.then(({ id }: { id?: number }) => {
-				if (id == null) {
-					throw new ServiceRegistrationError(
-						'No service ID received on response',
-					);
-				}
-				this.id = id;
-				return this;
-			})
-			.catch(err => {
-				this.captureException(err, 'service-registration-error');
-				// Retry until it works
-				return Bluebird.delay(this.interval).then(() => this.register());
-			});
+			})) as { id?: number };
+			if (id == null) {
+				throw new ServiceRegistrationError(
+					'No service ID received on response',
+				);
+			}
+			this.id = id;
+			return this;
+		} catch (err) {
+			this.captureException(err, 'service-registration-error');
+			await Bluebird.delay(this.interval);
+			return await this.register();
+		}
 	}
 
-	public scheduleHeartbeat(): Bluebird<boolean> {
-		return (
-			Bluebird.delay(this.interval)
-				.bind(this)
-				.then(this.sendHeartbeat)
-				// Whether it worked or not, keep sending at the same interval
-				.finally(this.scheduleHeartbeat)
-		);
+	public async scheduleHeartbeat() {
+		await Bluebird.delay(this.interval);
+		try {
+			return await this.sendHeartbeat();
+		} finally {
+			this.scheduleHeartbeat();
+		}
 	}
 
-	public sendHeartbeat(): Bluebird<boolean> {
-		return balenaApi
-			.patch({
+	public async sendHeartbeat() {
+		try {
+			await balenaApi.patch({
 				resource: 'service_instance',
 				id: this.getId(),
 				body: {
@@ -77,19 +74,19 @@ class ServiceInstance {
 					is_alive: true,
 				},
 				passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
-			})
-			.return(true)
-			.catch(err => {
-				this.captureException(err, 'service-heartbeart-error');
-				return false;
 			});
+			return true;
+		} catch (err) {
+			this.captureException(err, 'service-heartbeart-error');
+			return false;
+		}
 	}
 
-	public wrap(func: (serviceInstance: this) => void): Bluebird<this> {
-		return this.register()
-			.tap(func)
-			.bind(this)
-			.tap(this.scheduleHeartbeat);
+	public async wrap(func: (serviceInstance: this) => void) {
+		await this.register();
+		func(this);
+		await this.scheduleHeartbeat();
+		return this;
 	}
 
 	public getId(): number {

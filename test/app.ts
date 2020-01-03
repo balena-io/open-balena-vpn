@@ -81,19 +81,10 @@ describe('vpn worker', function() {
 			.reply(200, { id: _.random(1, 1024) });
 	});
 
-	it('should resolve true when ready', () =>
-		expect(
-			service
-				.register()
-				.then(serviceInstance => {
-					instance = serviceInstance;
-					return vpnWorker(1, serviceInstance.getId());
-				})
-				.tap(m => {
-					manager = m;
-				})
-				.return(true),
-		).to.eventually.be.true);
+	it('should resolve true when ready', async () => {
+		instance = await service.register();
+		manager = await vpnWorker(1, instance.getId());
+	});
 });
 
 describe('tunnel worker', () =>
