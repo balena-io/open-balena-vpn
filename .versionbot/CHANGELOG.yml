@@ -1,4 +1,16 @@
 - commits:
+    - subject: 'utils: cache `canAccess` lookups for 5s'
+      hash: d46d9aa44ba982a4eb45f899c7bb7a60bf042700
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.10.0
+  date: 2020-01-20T14:05:02.457Z
+- commits:
     - subject: 'service: convert promise chains to async/await'
       hash: 34804eda95210ffde70dbcc856e58c6f3f04447f
       body: ''
