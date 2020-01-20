@@ -17,6 +17,7 @@
 
 import * as Bluebird from 'bluebird';
 import * as _ from 'lodash';
+import * as memoize from 'memoizee';
 
 import { balenaApi } from '.';
 import { APIError, captureException } from './errors';
@@ -24,7 +25,7 @@ import { APIError, captureException } from './errors';
 const authHeader = (auth?: Buffer): { Authorization?: string } => {
 	const headers: { Authorization?: string } = {};
 	if (auth != null) {
-		headers.Authorization = `Bearer ${auth.toString()}`;
+		headers.Authorization = `Bearer ${auth}`;
 	}
 	return headers;
 };
@@ -65,11 +66,7 @@ const canAccessDeviceQuery = balenaApi.prepare<{ id: number }>({
 	id: { '@': 'id' },
 	url: `device(@id)/canAccess`,
 });
-export const canAccessDevice = (
-	device: DeviceInfo,
-	port: number,
-	auth?: Buffer,
-) =>
+const $canAccessDevice = (device: DeviceInfo, port: number, auth?: Buffer) =>
 	canAccessDeviceQuery(
 		{ id: device.id },
 		{
@@ -82,6 +79,11 @@ export const canAccessDevice = (
 				_.isArray(d) && d.length === 1 && d[0].id === device.id,
 		)
 		.catchReturn(false);
+export const canAccessDevice = memoize($canAccessDevice, {
+	maxAge: 5 * 1000,
+	normalizer: args => `${args[0].id}-${args[1]}-${args[2] ?? 'guest'}`,
+	promise: true,
+});
 
 interface VpnHost {
 	id: number;
