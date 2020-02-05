@@ -1,4 +1,14 @@
 - commits:
+    - subject: Remove *.md from dockerignore so the changelog is included
+      hash: 392c60b90cf31c19632f1d02f53238f100336f6d
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 9.10.2
+  date: 2020-02-03T12:52:12.101Z
+- commits:
     - subject: Update open-balena-base to 9.0.5
       hash: f4cea749510d41fc19e658e708871587b3f0b16d
       body: |
