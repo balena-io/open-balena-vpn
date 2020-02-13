@@ -29,6 +29,10 @@ const VPN_CONNECT_PROXY_PORT = parseInt(
 	process.env.VPN_CONNECT_PROXY_PORT!,
 	10,
 );
+const VPN_GUEST_API_KEY =
+	process.env.VPN_GUEST_API_KEY != null
+		? Buffer.from(process.env.VPN_GUEST_API_KEY)
+		: undefined;
 
 class Tunnel extends nodeTunnel.Tunnel {
 	private readonly logger: winston.Logger;
@@ -158,7 +162,11 @@ class Tunnel extends nodeTunnel.Tunnel {
 				cltSocket.end('HTTP/1.0 404 Not Found\r\n\r\n');
 				throw new errors.HandledTunnelingError(`device not found: ${uuid}`);
 			}
-			const isAllowed = await device.canAccessDevice(data, port, auth);
+			const isAllowed = await device.canAccessDevice(
+				data,
+				port,
+				auth ?? VPN_GUEST_API_KEY,
+			);
 			if (!isAllowed) {
 				cltSocket.end('HTTP/1.0 407 Proxy Authorization Required\r\n\r\n');
 				throw new errors.HandledTunnelingError(
