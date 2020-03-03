@@ -29,6 +29,10 @@ const VPN_CONNECT_PROXY_PORT = parseInt(
 	process.env.VPN_CONNECT_PROXY_PORT!,
 	10,
 );
+const VPN_FORWARD_PROXY_PORT = parseInt(
+	process.env.VPN_FORWARD_PROXY_PORT!,
+	10,
+);
 
 class Tunnel extends nodeTunnel.Tunnel {
 	private readonly logger: winston.Logger;
@@ -196,15 +200,19 @@ class Tunnel extends nodeTunnel.Tunnel {
 	): Promise<net.Socket> =>
 		new Promise((resolve, reject) => {
 			let tunnelProxyResponse = '';
-			const socket: net.Socket = net.connect(3128, vpnHost, () => {
-				socket.write(`CONNECT ${uuid}.balena:${port} HTTP/1.0\r\n`);
-				if (proxyAuth != null) {
-					socket.write(
-						`Proxy-Authorization: Basic ${proxyAuth.toString('base64')}\r\n`,
-					);
-				}
-				socket.write('\r\n');
-			});
+			const socket: net.Socket = net.connect(
+				VPN_FORWARD_PROXY_PORT,
+				vpnHost,
+				() => {
+					socket.write(`CONNECT ${uuid}.balena:${port} HTTP/1.0\r\n`);
+					if (proxyAuth != null) {
+						socket.write(
+							`Proxy-Authorization: Basic ${proxyAuth.toString('base64')}\r\n`,
+						);
+					}
+					socket.write('\r\n');
+				},
+			);
 
 			const earlyEnd = () => {
 				reject(
