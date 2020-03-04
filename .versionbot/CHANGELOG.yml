@@ -1,4 +1,18 @@
 - commits:
+    - subject: add VPN_FORWARD_PROXY_PORT
+      hash: f057405fe436274db49d8735c74401153859d24d
+      body: |
+        * allow override
+        * default to 3128
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: ab77 <anton@balena.io>
+        signed-off-by: ab77 <anton@balena.io>
+      author: ab77
+  version: 9.11.0
+  date: 2020-03-04T18:16:52.578Z
+- commits:
     - subject: Update open-balena-base to 9.2.1
       hash: 5af4e0947451f9a8a01af7c55d9481f0f2134bca
       body: |
