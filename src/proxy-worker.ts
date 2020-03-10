@@ -79,6 +79,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 			try {
 				const vpnHost = await device.getDeviceVpnHost(uuid, auth);
 				if (vpnHost.id === this.serviceId) {
+					client.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
 					throw new errors.HandledTunnelingError(
 						'device is not available on registered service instance',
 					);
@@ -86,6 +87,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 				const forwardSignature = `By=open-balena-vpn(${this.serviceId})`;
 				if (req.headers.forwarded != null) {
 					if (req.headers.forwarded.includes(forwardSignature)) {
+						client.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
 						throw new errors.HandledTunnelingError(
 							'loop detected forwarding tunnel request',
 						);
@@ -99,15 +101,17 @@ class Tunnel extends nodeTunnel.Tunnel {
 				);
 				return await this.forwardRequest(vpnHost.ip_address, uuid, port, auth);
 			} catch (err) {
-				if (err instanceof errors.APIError) {
+				if (err instanceof errors.RemoteTunnellingError) {
+					client.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
 					this.logger.crit(
-						`error connecting to ${uuid}:${port} (${err.message})`,
+						`error forwarding request for ${uuid}:${port} (${err.message})`,
 					);
 					throw new errors.HandledTunnelingError(err.message);
 				}
-				if (err instanceof errors.RemoteTunnellingError) {
+				if (!(err instanceof errors.HandledTunnelingError)) {
+					client.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
 					this.logger.crit(
-						`error forwarding request for ${uuid}:${port} (${err.message})`,
+						`error connecting to ${uuid}:${port} (${err.message})`,
 					);
 					throw new errors.HandledTunnelingError(err.message);
 				}
