@@ -22,10 +22,14 @@ import * as memoize from 'memoizee';
 import { balenaApi } from '.';
 import { APIError, captureException } from './errors';
 
+const { VPN_GUEST_API_KEY } = process.env;
+
 const authHeader = (auth?: Buffer): { Authorization?: string } => {
 	const headers: { Authorization?: string } = {};
 	if (auth != null) {
 		headers.Authorization = `Bearer ${auth}`;
+	} else if (VPN_GUEST_API_KEY != null) {
+		headers.Authorization = `Bearer ${VPN_GUEST_API_KEY}`;
 	}
 	return headers;
 };
