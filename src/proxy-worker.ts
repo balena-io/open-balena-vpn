@@ -67,14 +67,22 @@ class Tunnel extends nodeTunnel.Tunnel {
 		try {
 			await dns.lookup(`${uuid}.vpn`);
 			this.logger.info(`connecting to ${host}:${port}`);
-			const socket = await super.connect(port, host, client, req);
-			metrics.inc(Metrics.ActiveTunnels);
-			metrics.inc(Metrics.TotalTunnels);
-			socket.on('close', () => {
-				metrics.dec(Metrics.ActiveTunnels);
-			});
-			return socket;
-		} catch {
+			try {
+				const socket = await super.connect(port, host, client, req);
+				metrics.inc(Metrics.ActiveTunnels);
+				metrics.inc(Metrics.TotalTunnels);
+				socket.on('close', () => {
+					metrics.dec(Metrics.ActiveTunnels);
+				});
+				return socket;
+			} catch {
+				client.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
+				throw new errors.HandledTunnelingError('cannot connect to device');
+			}
+		} catch (err) {
+			if (err instanceof errors.HandledTunnelingError) {
+				throw err;
+			}
 			// The lookup failed so we try to forward to the correct vpn instance instead
 			try {
 				const vpnHost = await device.getDeviceVpnHost(uuid, auth);
