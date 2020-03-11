@@ -18,20 +18,20 @@ EXPOSE 80 443 3128
 RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/dev/null \
     && echo deb http://haproxy.debian.net buster-backports-2.0 main > /etc/apt/sources.list.d/haproxy.list \
     && apt-get update -qq \
-	&& apt-get install -qy haproxy=2.0.* iptables --no-install-recommends \
-	&& apt-get clean \
-	&& rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/openvpn/* /etc/rsyslog.d/49-haproxy.conf \
-	&& ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts
+    && apt-get install -qy haproxy=2.0.* iptables --no-install-recommends \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/openvpn/* /etc/rsyslog.d/49-haproxy.conf \
+    && ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts
 
 ENV LIBNSS_OPENVPN_VERSION 22feb11322182f6fd79f85cd014b65b6c40b7b47
 RUN tmp="$(mktemp -d)" set -x \
-	&& git clone -q https://github.com/balena-io-modules/libnss-openvpn.git "${tmp}" \
-	&& cd "${tmp}" \
-	&& git -C "${tmp}" checkout -q ${LIBNSS_OPENVPN_VERSION} \
-	&& make -C "${tmp}" -j "$(nproc)" \
-	&& make -C "${tmp}" install \
-	&& sed --in-place --regexp-extended 's|(hosts:.*)|\1 openvpn|' /etc/nsswitch.conf \
-	&& rm -rf "${tmp}"
+    && git clone -q https://github.com/balena-io-modules/libnss-openvpn.git "${tmp}" \
+    && cd "${tmp}" \
+    && git -C "${tmp}" checkout -q ${LIBNSS_OPENVPN_VERSION} \
+    && make -C "${tmp}" -j "$(nproc)" \
+    && make -C "${tmp}" install \
+    && sed --in-place --regexp-extended 's|(hosts:\W+)(.*)|\1openvpn \2|' /etc/nsswitch.conf \
+    && rm -rf "${tmp}"
 
 ENV NODE_EXPORTER_VERSION 0.18.1
 ENV NODE_EXPORTER_SHA256SUM b2503fd932f85f4e5baf161268854bf5d22001869b84f00fd2d1f57b51b72424
