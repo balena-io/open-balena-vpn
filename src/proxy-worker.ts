@@ -34,6 +34,8 @@ const VPN_FORWARD_PROXY_PORT = parseInt(
 	10,
 );
 
+const HTTP_500 = 'HTTP/1.0 500 Internal Server Error\r\n\r\n';
+
 class Tunnel extends nodeTunnel.Tunnel {
 	private readonly logger: winston.Logger;
 
@@ -64,10 +66,19 @@ class Tunnel extends nodeTunnel.Tunnel {
 		req: nodeTunnel.Request,
 	) => {
 		const { uuid, auth } = this.parseRequest(req);
-		try {
-			await dns.lookup(`${uuid}.vpn`);
-			this.logger.info(`connecting to ${host}:${port}`);
+
+		const deviceIsLocal = async () => {
 			try {
+				await dns.lookup(`${uuid}.vpn`);
+				return true;
+			} catch {
+				return false;
+			}
+		};
+
+		try {
+			if (await deviceIsLocal()) {
+				this.logger.info(`connecting to ${host}:${port}`);
 				const socket = await super.connect(port, host, client, req);
 				metrics.inc(Metrics.ActiveTunnels);
 				metrics.inc(Metrics.TotalTunnels);
@@ -75,19 +86,10 @@ class Tunnel extends nodeTunnel.Tunnel {
 					metrics.dec(Metrics.ActiveTunnels);
 				});
 				return socket;
-			} catch {
-				client.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
-				throw new errors.HandledTunnelingError('cannot connect to device');
-			}
-		} catch (err) {
-			if (err instanceof errors.HandledTunnelingError) {
-				throw err;
-			}
-			// The lookup failed so we try to forward to the correct vpn instance instead
-			try {
+			} else {
 				const vpnHost = await device.getDeviceVpnHost(uuid, auth);
 				if (vpnHost.id === this.serviceId) {
-					client.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
+					client.end(HTTP_500);
 					throw new errors.HandledTunnelingError(
 						'device is not available on registered service instance',
 					);
@@ -95,7 +97,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 				const forwardSignature = `By=open-balena-vpn(${this.serviceId})`;
 				if (req.headers.forwarded != null) {
 					if (req.headers.forwarded.includes(forwardSignature)) {
-						client.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
+						client.end(HTTP_500);
 						throw new errors.HandledTunnelingError(
 							'loop detected forwarding tunnel request',
 						);
@@ -108,23 +110,24 @@ class Tunnel extends nodeTunnel.Tunnel {
 					`forwarding tunnel request for ${uuid}:${port} via ${vpnHost.id}@${vpnHost.ip_address}`,
 				);
 				return await this.forwardRequest(vpnHost.ip_address, uuid, port, auth);
-			} catch (err) {
-				if (err instanceof errors.RemoteTunnellingError) {
-					client.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
-					this.logger.crit(
-						`error forwarding request for ${uuid}:${port} (${err.message})`,
-					);
-					throw new errors.HandledTunnelingError(err.message);
-				}
-				if (!(err instanceof errors.HandledTunnelingError)) {
-					client.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
-					this.logger.crit(
-						`error connecting to ${uuid}:${port} (${err.message})`,
-					);
-					throw new errors.HandledTunnelingError(err.message);
-				}
-				throw err;
 			}
+		} catch (err) {
+			if (err instanceof errors.RemoteTunnellingError) {
+				client.end(HTTP_500);
+				this.logger.crit(
+					`error forwarding request for ${uuid}:${port} (${err.message})`,
+				);
+				throw new errors.HandledTunnelingError(err.message);
+			} else {
+				this.logger.crit(
+					`error connecting to ${uuid}:${port} (${err.message})`,
+				);
+				if (!(err instanceof errors.HandledTunnelingError)) {
+					client.end(HTTP_500);
+					throw new errors.HandledTunnelingError(err.message);
+				}
+			}
+			throw err;
 		}
 	};
 
@@ -190,7 +193,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 		} catch (err) {
 			if (err instanceof errors.APIError) {
 				this.logger.alert(`Invalid Response from API (${err.message})`);
-				cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
+				cltSocket.end(HTTP_500);
 			} else if (err instanceof errors.BadRequestError) {
 				cltSocket.end('HTTP/1.0 400 Bad Request\r\n\r\n');
 			} else if (err instanceof errors.HandledTunnelingError) {
@@ -199,7 +202,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 				cltSocket.end('HTTP/1.0 403 Forbidden\r\n\r\n');
 			} else {
 				captureException(err, 'proxy-tunnel-error', { req });
-				cltSocket.end('HTTP/1.0 500 Internal Server Error\r\n\r\n');
+				cltSocket.end(HTTP_500);
 			}
 		}
 	};
