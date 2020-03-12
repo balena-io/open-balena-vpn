@@ -15,6 +15,7 @@ export const enum Metrics {
 	AuthFailuresByUuid = 'vpn_auth_failures_by_uuid_total',
 	ActiveTunnels = 'vpn_proxy_active_tunnels',
 	TotalTunnels = 'vpn_proxy_total_tunnels',
+	TunnelErrors = 'vpn_proxy_tunnel_errors',
 }
 
 export const describeMetrics = () => {
@@ -88,6 +89,11 @@ export const describeMetrics = () => {
 			'running total of tunnels to vpn devices',
 		);
 		metrics.counter(Metrics.TotalTunnels, 0);
+		metrics.describe.counter(
+			Metrics.TunnelErrors,
+			'number of tunnels failed due to transmission error',
+		);
+		metrics.counter(Metrics.TunnelErrors, 0);
 	} else {
 		const kb = 2 ** 10; // 1024
 		const mb = 2 ** 10 * kb;

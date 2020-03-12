@@ -82,8 +82,11 @@ class Tunnel extends nodeTunnel.Tunnel {
 				const socket = await super.connect(port, host, client, req);
 				metrics.inc(Metrics.ActiveTunnels);
 				metrics.inc(Metrics.TotalTunnels);
-				socket.on('close', () => {
+				socket.on('close', hadError => {
 					metrics.dec(Metrics.ActiveTunnels);
+					if (hadError) {
+						metrics.inc(Metrics.TunnelErrors);
+					}
 				});
 				return socket;
 			} else {
