@@ -1,4 +1,61 @@
 - commits:
+    - subject: 'proxy-worker: track a tunnel transmission errors metric'
+      hash: 2c1991246669fef3b05824da59d363d8dc870057
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'nss: prioritise openvpn provider for dns lookups'
+      hash: bb2c834d59168da4159c5eea7d494c8807f2577a
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'proxy-worker: improve device connection error handling'
+      hash: 4fc8be34f298b8b4b40c6189b928902fd4b6e1dc
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'utils: use `VPN_GUEST_API_KEY`, if provided, for anonymous queries'
+      hash: 4f3f822bb9f146dfb2abddc2f7d2fd6d0c51bbcd
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'proxy-worker: do not blindly attempt to forward requests on error'
+      hash: 5efa19a13aa1e42592b179956c565716e2b339a0
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'proxy-worker: gracefully handle failed tunnelling request when possible'
+      hash: 01bca067e8342844073ad6f7b12ca6c3b8ef6fbc
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.12.0
+  date: 2020-03-12T14:07:13.944Z
+- commits:
     - subject: add VPN_FORWARD_PROXY_PORT
       hash: f057405fe436274db49d8735c74401153859d24d
       body: |
