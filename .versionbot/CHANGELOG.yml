@@ -1,4 +1,25 @@
 - commits:
+    - subject: 'circleci: update config to v2.1 syntax'
+      hash: 1ef58d9d4db55286a1f886ba951d1914540f8fbd
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+    - subject: 'circleci: use `library/docker:19-git` image and enable layer caching'
+      hash: 80466d1ffb54aeeb31caf60b6a4dd10b9511af76
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.12.1
+  date: 2020-03-17T15:05:33.325Z
+- commits:
     - subject: 'proxy-worker: track a tunnel transmission errors metric'
       hash: 2c1991246669fef3b05824da59d363d8dc870057
       body: ''
