@@ -1,5 +1,17 @@
 - commits:
     - subject: 'circleci: fix deploy to staging job'
+      hash: 697e82023875abe07f66e922cb81e82ee83158f5
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.12.3
+  date: 2020-03-17T18:20:42.675Z
+- commits:
+    - subject: 'circleci: fix deploy to staging job'
       hash: 46460f19b6f961f248a00862d94fcb79cd615985
       body: ''
       footer:
