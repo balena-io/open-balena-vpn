@@ -68,11 +68,13 @@ workflows:
           filters:
             branches:
               ignore: /.+-build-[0-9a-f]+/
+            tags:
+              only: /v\d+\.\d+\.\d+/
       - deploy:
           requires:
             - build
           filters:
             branches:
-              ignore: /.+/
+              ignore: /.*/
             tags:
               only: /v\d+\.\d+\.\d+/
