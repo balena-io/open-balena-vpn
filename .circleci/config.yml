@@ -43,23 +43,19 @@ jobs:
             fi
   deploy:
     docker:
-      - image: cimg/base
+      - image: cimg/base:stable
     steps:
-      - checkout
       - deploy:
           name: Deploy to Staging
           command: |
-            # only deploy tagged commits on master branch (i.e., versions)
-            if [ "${CIRCLE_BRANCH}" = "master" ] && [ -n "$(git tag --list --points-at HEAD)" ]; then
-              curl --silent \
-                --request POST \
-                --user ${JENKINS_USER}:${JENKINS_TOKEN} \
-                --data-urlencode "action=deploy" \
-                --data-urlencode "component=vpn" \
-                --data-urlencode "environment=staging" \
-                --dump-header /dev/stdout \
-                "https://jenkins.dev.resin.io/job/deploy/buildWithParameters"
-            fi
+            curl --silent \
+              --request POST \
+              --user ${JENKINS_USER}:${JENKINS_TOKEN} \
+              --data-urlencode "action=deploy" \
+              --data-urlencode "component=vpn" \
+              --data-urlencode "environment=staging" \
+              --dump-header /dev/stdout \
+              "https://jenkins.dev.resin.io/job/deploy/buildWithParameters"
 workflows:
   version: 2
   main:
