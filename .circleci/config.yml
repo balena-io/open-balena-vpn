@@ -1,18 +1,17 @@
 ---
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
-      - image: library/docker
+      - image: library/docker:19-git
     working_directory: /tmp/open-balena-vpn
     environment:
       DOCKER_IMAGE: balena/open-balena-vpn
-    branches:
-      ignore:
-        - /.+-build-[0-9a-f]+/
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
+          version: 18.09.3
       - run:
           name: Login
           command: docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
@@ -36,13 +35,16 @@ jobs:
       - deploy:
           name: Push
           command: |
-            apk add --no-cache git
             # only push tagged commits on master branch (i.e., versions)
             if [ "${CIRCLE_BRANCH}" = "master" ] && [ -n "$(git tag --list --points-at HEAD)" ]; then
               set -x
               docker tag "${DOCKER_IMAGE}:${CIRCLE_SHA1}" "${DOCKER_IMAGE}:${CIRCLE_BRANCH}"
               docker push "${DOCKER_IMAGE}:${CIRCLE_BRANCH}"
             fi
+  deploy:
+    docker:
+      - image: alpine
+    steps:
       - deploy:
           name: Deploy to Staging
           command: |
@@ -58,3 +60,19 @@ jobs:
                 --dump-header /dev/stdout \
                 "https://jenkins.dev.resin.io/job/deploy/buildWithParameters"
             fi
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore:
+                - /.+-build-[0-9a-f]+/
+      - deploy:
+          requires:
+            - build
+          filters:
+            tags:
+              only:
+                - /v\d+\.\d+\.\d+/
