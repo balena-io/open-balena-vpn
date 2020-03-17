@@ -1,5 +1,5 @@
 ---
-version: 2
+version: 2.1
 jobs:
   build:
     docker:
@@ -7,9 +7,6 @@ jobs:
     working_directory: /tmp/open-balena-vpn
     environment:
       DOCKER_IMAGE: balena/open-balena-vpn
-    branches:
-      ignore:
-        - /.+-build-[0-9a-f]+/
     steps:
       - checkout
       - setup_remote_docker:
@@ -44,6 +41,10 @@ jobs:
               docker tag "${DOCKER_IMAGE}:${CIRCLE_SHA1}" "${DOCKER_IMAGE}:${CIRCLE_BRANCH}"
               docker push "${DOCKER_IMAGE}:${CIRCLE_BRANCH}"
             fi
+  deploy:
+    docker:
+      - image: alpine
+    steps:
       - deploy:
           name: Deploy to Staging
           command: |
@@ -59,3 +60,19 @@ jobs:
                 --dump-header /dev/stdout \
                 "https://jenkins.dev.resin.io/job/deploy/buildWithParameters"
             fi
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+          filters:
+            branches:
+              ignore:
+                - /.+-build-[0-9a-f]+/
+      - deploy:
+          requires:
+            - build
+          filters:
+            tags:
+              only:
+                - /v\d+\.\d+\.\d+/
