@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: library/docker
+      - image: library/docker:19-git
     working_directory: /tmp/open-balena-vpn
     environment:
       DOCKER_IMAGE: balena/open-balena-vpn
@@ -12,7 +12,9 @@ jobs:
         - /.+-build-[0-9a-f]+/
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          docker_layer_caching: true
+          version: 18.09.3
       - run:
           name: Login
           command: docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
@@ -36,7 +38,6 @@ jobs:
       - deploy:
           name: Push
           command: |
-            apk add --no-cache git
             # only push tagged commits on master branch (i.e., versions)
             if [ "${CIRCLE_BRANCH}" = "master" ] && [ -n "$(git tag --list --points-at HEAD)" ]; then
               set -x
