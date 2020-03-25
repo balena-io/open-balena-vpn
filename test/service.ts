@@ -56,7 +56,7 @@ describe('sendHeartbeat()', () => {
 	});
 
 	it('should trigger a patch request on service_instance using PineJS', () =>
-		service.sendHeartbeat().then(registered => {
+		service.sendHeartbeat().then((registered) => {
 			expect(registered).to.be.equal(true);
 			expect(called).to.equal(1);
 			expect(isAlive).to.be.equal(true);

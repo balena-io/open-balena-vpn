@@ -91,7 +91,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 	};
 
 	let verbose = process.env.VPN_VERBOSE_LOGS === 'true';
-	process.on('message', msg => {
+	process.on('message', (msg) => {
 		if (msg === 'toggleVerbosity') {
 			verbose = !verbose;
 			logger.notice(`verbose logging ${verbose ? 'enabled' : 'disabled'}`);

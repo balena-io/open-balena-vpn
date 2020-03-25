@@ -34,7 +34,7 @@ before(() => {
 	chai.use(chaiAsPromised);
 });
 
-beforeEach(function() {
+beforeEach(function () {
 	this.mockDevice = {
 		id: 1234,
 		uuid: 'deadbeef',
@@ -46,8 +46,8 @@ beforeEach(function() {
 	};
 });
 
-describe('getDeviceByUUID()', function() {
-	beforeEach(function() {
+describe('getDeviceByUUID()', function () {
+	beforeEach(function () {
 		nock(`https://${BALENA_API_HOST}`)
 			.get('/v5/device')
 			.query({
@@ -65,7 +65,7 @@ describe('getDeviceByUUID()', function() {
 		expect(device).to.be.an.instanceOf(Bluebird);
 	});
 
-	it('should resolve to the device requested', function() {
+	it('should resolve to the device requested', function () {
 		const device = getDeviceByUUID('deadbeef', VPN_SERVICE_API_KEY);
 		expect(device).to.eventually.deep.equal(this.mockDevice);
 	});

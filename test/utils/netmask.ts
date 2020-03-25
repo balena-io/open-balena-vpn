@@ -33,17 +33,13 @@ describe('Netmask', () => {
 
 	describe('.second', () => {
 		it('should be the second usable address', () => {
-			expect(net)
-				.to.have.property('second')
-				.that.equals('100.64.0.2');
+			expect(net).to.have.property('second').that.equals('100.64.0.2');
 		});
 	});
 
 	describe('.third', () => {
 		it('should be the third usable address', () => {
-			expect(net)
-				.to.have.property('third')
-				.that.equals('100.64.0.3');
+			expect(net).to.have.property('third').that.equals('100.64.0.3');
 		});
 	});
 
@@ -72,31 +68,19 @@ describe('Netmask', () => {
 
 		it('should allow when split == mask', () => {
 			const subnets = net.split(BASE_SIZE);
-			expect(subnets)
-				.to.have.property('length')
-				.that.equals(1);
-			expect(subnets[0])
-				.to.have.property('base')
-				.that.equals('100.64.0.0');
-			expect(subnets[0])
-				.to.have.property('bitmask')
-				.that.equals(BASE_SIZE);
+			expect(subnets).to.have.property('length').that.equals(1);
+			expect(subnets[0]).to.have.property('base').that.equals('100.64.0.0');
+			expect(subnets[0]).to.have.property('bitmask').that.equals(BASE_SIZE);
 		});
 
 		it('should return non-overlapping subnets', () => {
 			const subnets = net.split(BASE_SIZE + 1);
-			expect(subnets)
-				.to.have.property('length')
-				.that.equals(2);
-			expect(subnets[0])
-				.to.have.property('base')
-				.that.equals('100.64.0.0');
+			expect(subnets).to.have.property('length').that.equals(2);
+			expect(subnets[0]).to.have.property('base').that.equals('100.64.0.0');
 			expect(subnets[0])
 				.to.have.property('bitmask')
 				.that.equals(BASE_SIZE + 1);
-			expect(subnets[1])
-				.to.have.property('base')
-				.that.equals('100.96.0.0');
+			expect(subnets[1]).to.have.property('base').that.equals('100.96.0.0');
 			expect(subnets[1])
 				.to.have.property('bitmask')
 				.that.equals(BASE_SIZE + 1);

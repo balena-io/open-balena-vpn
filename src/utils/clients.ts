@@ -82,7 +82,7 @@ const setDeviceState = (() => {
 					deviceStates[uuid].currentState = targetState;
 					return targetState;
 				})
-				.catch(err => {
+				.catch((err) => {
 					captureException(err, 'device-state-update-error', {
 						tags: { uuid },
 					});

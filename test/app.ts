@@ -72,7 +72,7 @@ after(() => {
 	}
 });
 
-describe('vpn worker', function() {
+describe('vpn worker', function () {
 	this.timeout(15 * 1000);
 
 	before(() => {
@@ -97,11 +97,11 @@ describe('api server', () =>
 		apiServer(instance.getId()).listenAsync(VPN_API_PORT);
 	}));
 
-describe('VPN Events', function() {
+describe('VPN Events', function () {
 	this.timeout(30 * 1000);
 
 	const getEvent = (name: string) =>
-		new Bluebird<string>(resolve => {
+		new Bluebird<string>((resolve) => {
 			nock(`https://${process.env.BALENA_API_HOST}`)
 				.post(`/services/vpn/client-${name}`, /common_name=user2/g)
 				.reply(200, (_uri: string, body: any) => {
@@ -116,15 +116,13 @@ describe('VPN Events', function() {
 			.reply(200, 'OK');
 	});
 
-	it('should send a client-connect event', function() {
-		const connectEvent = getEvent('connect').then(body => {
+	it('should send a client-connect event', function () {
+		const connectEvent = getEvent('connect').then((body) => {
 			const data = querystring.parse(body);
 			expect(data)
 				.to.have.property('service_id')
 				.that.equals(`${instance.getId()}`);
-			expect(data)
-				.to.have.property('common_name')
-				.that.equals('user2');
+			expect(data).to.have.property('common_name').that.equals('user2');
 			expect(data).to.not.have.property('real_address');
 			expect(data)
 				.to.have.property('virtual_address')
@@ -136,15 +134,13 @@ describe('VPN Events', function() {
 		return this.client.connect().return(connectEvent);
 	});
 
-	it('should send a client-disconnect event', function() {
-		const disconnectEvent = getEvent('disconnect').then(body => {
+	it('should send a client-disconnect event', function () {
+		const disconnectEvent = getEvent('disconnect').then((body) => {
 			const data = querystring.parse(body);
 			expect(data)
 				.to.have.property('service_id')
 				.that.equals(`${instance.getId()}`);
-			expect(data)
-				.to.have.property('common_name')
-				.that.equals('user2');
+			expect(data).to.have.property('common_name').that.equals('user2');
 			expect(data).to.not.have.property('real_address');
 			expect(data).to.not.have.property('virtual_address');
 		});
@@ -153,7 +149,7 @@ describe('VPN Events', function() {
 	});
 });
 
-describe('VPN proxy', function() {
+describe('VPN proxy', function () {
 	this.timeout(30 * 1000);
 
 	const vpnTest = (
@@ -222,10 +218,8 @@ describe('VPN proxy', function() {
 					url: 'http://deadbeef.balena:8080/test',
 					proxy: 'http://localhost:3128',
 					tunnel: true,
-				}).then(response => {
-					expect(response)
-						.to.have.property('statusCode')
-						.that.equals(200);
+				}).then((response) => {
+					expect(response).to.have.property('statusCode').that.equals(200);
 					expect(response)
 						.to.have.property('body')
 						.that.equals('hello from 8080');
@@ -238,10 +232,8 @@ describe('VPN proxy', function() {
 					url: 'http://deadbeef.resin:8080/test',
 					proxy: 'http://localhost:3128',
 					tunnel: true,
-				}).then(response => {
-					expect(response)
-						.to.have.property('statusCode')
-						.that.equals(200);
+				}).then((response) => {
+					expect(response).to.have.property('statusCode').that.equals(200);
 					expect(response)
 						.to.have.property('body')
 						.that.equals('hello from 8080');
@@ -385,10 +377,8 @@ describe('VPN proxy', function() {
 					url: 'http://deadbeef.balena:8080/test',
 					proxy: 'http://BALENA_api:test_api_key@localhost:3128',
 					tunnel: true,
-				}).then(response => {
-					expect(response)
-						.to.have.property('statusCode')
-						.that.equals(200);
+				}).then((response) => {
+					expect(response).to.have.property('statusCode').that.equals(200);
 					expect(response)
 						.to.have.property('body')
 						.that.equals('hello from 8080');

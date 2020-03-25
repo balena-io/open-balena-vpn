@@ -81,7 +81,7 @@ export const apiFactory = (serviceId: number) => {
 		res.send('OK');
 	});
 
-	api.post('/api/v1/auth/', fromLocalHost, function(req, res) {
+	api.post('/api/v1/auth/', fromLocalHost, function (req, res) {
 		if (req.body.username == null) {
 			logger.info('AUTH FAIL: UUID not specified.');
 			return res.sendStatus(400);
@@ -98,7 +98,7 @@ export const apiFactory = (serviceId: number) => {
 				timeout: 30000,
 				headers: { Authorization: `Bearer ${req.body.password}` },
 			})
-			.then(response => {
+			.then((response) => {
 				if (response.statusCode === 200) {
 					return res.send('OK');
 				} else {
@@ -112,7 +112,7 @@ export const apiFactory = (serviceId: number) => {
 					return res.sendStatus(401);
 				}
 			})
-			.catch(err => {
+			.catch((err) => {
 				captureException(err, 'api-auth-error', { req });
 				res.sendStatus(401);
 			});
