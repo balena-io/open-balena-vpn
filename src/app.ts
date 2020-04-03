@@ -19,11 +19,11 @@ import { metrics } from '@balena/node-metrics-gatherer';
 import * as cluster from 'cluster';
 import * as express from 'express';
 import * as _ from 'lodash';
-import * as os from 'os';
 import * as prometheus from 'prom-client';
 
 import { apiServer } from './api';
 import { describeMetrics, getLogger, Metrics, service, VERSION } from './utils';
+import { getInstanceCount, intVar } from './utils/config';
 
 import proxyWorker from './proxy-worker';
 import vpnWorker from './vpn-worker';
@@ -51,9 +51,8 @@ const masterLogger = getLogger('master');
 		}
 	});
 
-const VPN_INSTANCE_COUNT =
-	parseInt(process.env.VPN_INSTANCE_COUNT!, 10) || os.cpus().length;
-const VPN_API_PORT = parseInt(process.env.VPN_API_PORT!, 10);
+const VPN_INSTANCE_COUNT = getInstanceCount('VPN_INSTANCE_COUNT');
+const VPN_API_PORT = intVar('VPN_API_PORT');
 const VPN_VERBOSE_LOGS = process.env.DEFAULT_VERBOSE_LOGS === 'true';
 
 describeMetrics();

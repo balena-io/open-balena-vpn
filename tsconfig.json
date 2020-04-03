@@ -11,17 +11,17 @@
 		"preserveConstEnums": true,
 		"removeComments": true,
 		"resolveJsonModule": true,
+		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,
-		"skipLibCheck": true,
 		"strictNullChecks": true,
 		"target": "es2018"
 	},
+	"exclude": [
+		"node_modules"
+	],
 	"include": [
 		"src/**/*.ts",
 		"typings/**/*.d.ts"
-	],
-	"exclude": [
-		"node_modules"
 	]
 }
