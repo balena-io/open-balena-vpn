@@ -61,7 +61,7 @@ export function intVar<R>(varName: string, defaultValue?: R): number | R {
 // resolve number of workers based on number of CPUs assigned to pods or available CPUs
 export const getInstanceCount = (varName: string) => {
 	let instanceCount = intVar(varName, null);
-	if (instanceCount != null) {
+	if (instanceCount != null && instanceCount > 0) {
 		return instanceCount;
 	}
 	try {
