@@ -140,7 +140,7 @@ export class VpnManager extends EventEmitter {
 		super();
 		this.pidFile = `/var/run/openvpn/server-${this.instanceId}.pid`;
 		// proxy `data` events from connector, splitting at newlines
-		this.connector.connection.on('data', data => {
+		this.connector.connection.on('data', (data) => {
 			const lines = ((this.buf || '') + data.toString()).split(/\r?\n/);
 			this.buf = lines.pop();
 			for (const line of lines) {
@@ -321,14 +321,14 @@ export class VpnManager extends EventEmitter {
 			stdio: ['ignore', 'pipe', 'pipe'],
 		});
 		// proxy logs from the child process stdout/stderr
-		this.process.stdout!.pipe(es.split()).on('data', data => {
+		this.process.stdout!.pipe(es.split()).on('data', (data) => {
 			this.emit('log', VpnLogLevels.n, data);
 		});
-		this.process.stderr!.pipe(es.split()).on('data', data => {
+		this.process.stderr!.pipe(es.split()).on('data', (data) => {
 			this.emit('log', VpnLogLevels.n, data);
 		});
 		// proxy error events from the child process
-		this.process.on('error', err => {
+		this.process.on('error', (err) => {
 			this.emit('process:error', err);
 		});
 		this.process.on('exit', (code, signal) => {

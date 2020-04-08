@@ -22,7 +22,7 @@ export const getEnv = <T extends string>(
 	...args: T[]
 ): { [key in T]: string } => {
 	args
-		.filter(key => process.env[key] == null)
+		.filter((key) => process.env[key] == null)
 		.forEach((key, idx, keys) => {
 			console.log(`${key} env variable is not set.`);
 			if (idx === keys.length - 1) {

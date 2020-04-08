@@ -53,13 +53,13 @@ export const getDeviceByUUID = (
 	auth?: Buffer,
 ): Bluebird<DeviceInfo> =>
 	getDeviceByUUIDQuery({ uuid }, undefined, { headers: authHeader(auth) })
-		.then(devices => {
+		.then((devices) => {
 			if (!_.isArray(devices) || devices.length === 0) {
 				throw new Error('invalid api response');
 			}
 			return devices[0] as DeviceInfo;
 		})
-		.catch(err => {
+		.catch((err) => {
 			captureException(err, 'device-lookup-error');
 			throw new APIError(err.message);
 		});
@@ -85,7 +85,7 @@ const $canAccessDevice = (device: DeviceInfo, port: number, auth?: Buffer) =>
 		.catchReturn(false);
 export const canAccessDevice = memoize($canAccessDevice, {
 	maxAge: 5 * 1000,
-	normalizer: args => `${args[0].id}-${args[1]}-${args[2] ?? 'guest'}`,
+	normalizer: (args) => `${args[0].id}-${args[1]}-${args[2] ?? 'guest'}`,
 	promise: true,
 });
 
@@ -114,13 +114,13 @@ export const getDeviceVpnHost = (
 			},
 			passthrough: { headers: authHeader(auth) },
 		})
-		.then(services => {
+		.then((services) => {
 			if (!_.isArray(services) || services.length === 0) {
 				throw new Error('invalid api response');
 			}
 			return services[0] as VpnHost;
 		})
-		.catch(err => {
+		.catch((err) => {
 			captureException(err, 'device-vpn-host-lookup-error');
 			throw new APIError(`cannot find device vpn host (${err.message})`);
 		});

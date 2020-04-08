@@ -46,7 +46,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 		super();
 		this.logger = getLogger('proxy', this.serviceId, this.instanceId);
 
-		this.on('error', err => {
+		this.on('error', (err) => {
 			// errors thrown in `this.connect` will appear here
 			if (!(err instanceof errors.HandledTunnelingError)) {
 				this.logger.crit(
@@ -82,7 +82,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 				const socket = await super.connect(port, host, client, req);
 				metrics.inc(Metrics.ActiveTunnels);
 				metrics.inc(Metrics.TotalTunnels);
-				socket.on('close', hadError => {
+				socket.on('close', (hadError) => {
 					metrics.dec(Metrics.ActiveTunnels);
 					if (hadError) {
 						metrics.inc(Metrics.TunnelErrors);
@@ -272,10 +272,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 				resolve(socket);
 			};
 
-			socket
-				.on('end', earlyEnd)
-				.on('error', earlyError)
-				.on('data', proxyData);
+			socket.on('end', earlyEnd).on('error', earlyError).on('data', proxyData);
 		});
 }
 

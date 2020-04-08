@@ -59,12 +59,9 @@ export const getLogger = (
 	});
 };
 
-import * as clients from './clients';
-export { clients };
-import * as device from './device';
-export { device };
-import * as errors from './errors';
-export { errors };
+export * as clients from './clients';
+export * as device from './device';
+export * as errors from './errors';
 export { HAProxy } from './haproxy';
 export { describeMetrics, Metrics } from './metrics';
 export { Netmask } from './netmask';

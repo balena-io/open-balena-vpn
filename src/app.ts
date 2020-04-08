@@ -43,7 +43,7 @@ const masterLogger = getLogger('master');
 	'VPN_API_PORT',
 	'VPN_INSTANCE_SUBNET_BITMASK',
 ]
-	.filter(key => process.env[key] == null)
+	.filter((key) => process.env[key] == null)
 	.forEach((key, idx, keys) => {
 		masterLogger.emerg(`${key} env variable is not set.`);
 		if (idx === keys.length - 1) {
@@ -69,7 +69,7 @@ if (cluster.isMaster) {
 	process.on('SIGUSR2', () => {
 		masterLogger.notice('caught SIGUSR2, toggling log verbosity');
 		verbose = !verbose;
-		_.each(cluster.workers, clusterWorker => {
+		_.each(cluster.workers, (clusterWorker) => {
 			if (clusterWorker != null) {
 				clusterWorker.send('toggleVerbosity');
 			}
@@ -99,7 +99,7 @@ if (cluster.isMaster) {
 		`open-balena-vpn@${VERSION} process started with pid=${process.pid}`,
 	);
 	masterLogger.debug('registering as service instance...');
-	service.wrap(serviceInstance => {
+	service.wrap((serviceInstance) => {
 		const serviceLogger = getLogger('master', serviceInstance.getId());
 		serviceLogger.info(
 			`registered as service instance with id=${serviceInstance.getId()}`,
@@ -113,7 +113,7 @@ if (cluster.isMaster) {
 					VPN_INSTANCE_COUNT > 1 ? 's' : ''
 				}`,
 			);
-			_.times(VPN_INSTANCE_COUNT, i => {
+			_.times(VPN_INSTANCE_COUNT, (i) => {
 				const workerId = i + 1;
 				const restartWorker = (code?: number, signal?: string) => {
 					if (signal != null) {

@@ -36,7 +36,7 @@ export class HAProxy {
 	): Bluebird<boolean> {
 		const preamble = `set server ${name}`;
 		return this.connect()
-			.then(socket => {
+			.then((socket) => {
 				socket.write(
 					`${preamble} addr ${host} port ${port}\r\n${preamble} state ready\r\n`,
 					() => {
