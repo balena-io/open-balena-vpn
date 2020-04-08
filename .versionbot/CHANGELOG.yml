@@ -1,4 +1,369 @@
 - commits:
+    - subject: resolve service instance count from podinfo
+      hash: 2cb39faa9c7e492c0fe5e7570fa34570c8e4bc0d
+      body: ''
+      footer:
+        Co-Authored-By: Page- <pjgazzard@googlemail.com>
+        co-authored-by: Page- <pjgazzard@googlemail.com>
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: ab77 <anton@balena.io>
+        signed-off-by: ab77 <anton@balena.io>
+      author: ab77
+    - subject: update dependencies
+      hash: 1f26dcf05236f65f910d72f95532d9d1c1c60d09
+      body: |
+        * update @balena/node-metrics-gatherer from 4.0.1 to 5.2.1
+        * update pinejs-client-request from 6.0.2 to 6.1.1
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+      nested:
+        - commits:
+            - subject: Add linting
+              hash: 988d58f708da1bd1a4389a1a2129fa5d30706065
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: pinejs-client-request-6.1.1
+          date: 2020-03-19T21:47:11.959Z
+        - commits:
+            - subject: Move require-npm4-to-publish to dev dependencies
+              hash: 084a19f61c408643d9a9448c1d656bed7791fec5
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+            - subject: Update dependencies
+              hash: 1b06cd6c26b60a4d043ad1aaaf6e4ab9b822ace2
+              body: |
+                Update pinejs-client-core from 5.3.6 to 5.6.11
+                Update typed-error from 3.1.0 to 3.2.0
+              footer:
+                Change-type: minor
+                change-type: minor
+              author: Pagan Gazzard
+              nested:
+                - commits:
+                    - subject: update deps and specify minimum engine requirements
+                      hash: 22f293afc187e67b88dab280951eb6e2bb504b24
+                      body: ''
+                      footer:
+                        Change-type: minor
+                        change-type: minor
+                        Signed-off-by: Will Boyce <will@balena.io>
+                        signed-off-by: Will Boyce <will@balena.io>
+                      author: Will Boyce
+                  version: typed-error-3.2.0
+                  date: 2019-11-20T09:52:39.017Z
+                - commits:
+                    - subject: "\U0001F41B: Fix missing `deprecated.getStringParams` function"
+                      hash: 53edb7e7485acd4310e9b04291894f6ab746285a
+                      body: |
+                        The function `deprecated.getStringParams` was used, but
+                        not defined.
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                        Signed-off-by: Andreas Fitzek <andreas@balena.io>
+                        signed-off-by: Andreas Fitzek <andreas@balena.io>
+                      author: Andreas Fitzek
+                  version: pinejs-client-js-5.6.11
+                  date: 2020-02-21T13:35:51.993Z
+                - commits:
+                    - subject: Update to resin-lint 3.x
+                      hash: f1b415154cc21b9880ad8ee1134ea9340220aba2
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.6.10
+                  date: 2020-02-14T15:37:12.741Z
+                - commits:
+                    - subject: 'CircleCI: Remove deploy job as it''s handled by balenaCI'
+                      hash: d6c9a485e0da5f6aa600597b6d076a8dce411df7
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.6.9
+                  date: 2020-02-14T15:27:02.200Z
+                - commits:
+                    - subject: Add the missing `method` on the post method
+                      hash: 2f649c3157a50277f6e168a64abb1593ac9d7a4f
+                      body: |
+                        Fixes a regression of v5.6.7.
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                        Signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+                        signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+                      author: Thodoris Greasidis
+                  version: pinejs-client-js-5.6.8
+                  date: 2020-02-14T14:59:02.633Z
+                - commits:
+                    - subject: Deprecate request overrides
+                      hash: 84fa00ab60a98bbe56885ee5fabcccfc876a86d6
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                    - subject: Deprecate queries using a string url
+                      hash: 8cd9be6b0642ff5b1cba0596f827a74fd76bbff5
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                    - subject: Deprecate `query` in favor of `get`
+                      hash: ab77d10cad0a57914018b76c9755deddb3e078ef
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.6.7
+                  date: 2020-02-14T12:52:12.207Z
+                - commits:
+                    - subject: Allow resource/$count in $filter
+                      hash: 7eac38f1ed6a3bcdf1e6c4be5dde50aca953359e
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.6.6
+                  date: 2020-02-14T12:35:22.507Z
+                - commits:
+                    - subject: Remove `defaults` helper in favour of `??`
+                      hash: 806852bceb07a858572511609dc88ea0b748038e
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.6.5
+                  date: 2020-01-30T17:09:03.006Z
+                - commits:
+                    - subject: Avoid allocations when destroying a poll
+                      hash: 8f397a83803ae43d19331f4c32952384ba9e7fe6
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.6.4
+                  date: 2020-01-30T16:25:12.292Z
+                - commits:
+                    - subject: Improve `RawFilter` typing
+                      hash: 2006d4e7f0fecbb99357b82215da28978194db41
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.6.3
+                  date: 2020-01-30T12:59:22.535Z
+                - commits:
+                    - subject: Update dependencies
+                      hash: e7314acbdd029ece267a4568bf15cb5dc333eec1
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.6.2
+                  date: 2020-01-29T21:12:32.246Z
+                - commits:
+                    - subject: Switch most CODEOWNERS entries to a team
+                      hash: 3ef7e0db285ae54f96aee3f52319ac8d8c4d61e8
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.6.1
+                  date: 2020-01-22T16:38:22.045Z
+                - commits:
+                    - subject: >-
+                        Add 'upsert' method supporting natural keys, requires
+                        Pinejs ^10.19.1
+                      hash: c8ebfceec3ecc1cc57ee6942db35730c6d993192
+                      body: |
+                        Detects unique constrain errors by 409 statusCodes.
+                        Because of this, the upsert() method is only
+                        supported when Pinejs ^10.19.0 is used.
+                      footer:
+                        Resolves: '#77'
+                        resolves: '#77'
+                        Change-type: minor
+                        change-type: minor
+                        Signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+                        signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+                      author: Thodoris Greasidis
+                  version: pinejs-client-js-5.6.0
+                  date: 2019-07-12T20:46:17.091Z
+                - commits:
+                    - subject: >-
+                        Remove unnecessary `string` type that is handled by the
+                        `Params` type
+                      hash: 0ab1242860aa8b3ed4162a5ee25081c640297676
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.5.4
+                  date: 2019-06-18T14:46:38.983Z
+                - commits:
+                    - subject: >-
+                        Use an .npmrc to prevent creating a package-lock on each
+                        install
+                      hash: 993c4ae09c3ba50e1d48e4156e86a7c890e54749
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                        Signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+                        signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+                      author: Thodoris Greasidis
+                  version: pinejs-client-js-5.5.3
+                  date: 2019-06-18T10:24:38.995Z
+                - commits:
+                    - subject: >-
+                        Add some type casting so that it compiles on TypeScript
+                        3.5
+                      hash: 695c053ceab9b146a8b755f9b041eb03e70b5914
+                      body: ''
+                      footer:
+                        Resolves: '#79'
+                        resolves: '#79'
+                        Change-type: patch
+                        change-type: patch
+                        Signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+                        signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+                      author: Thodoris Greasidis
+                  version: pinejs-client-js-5.5.2
+                  date: 2019-06-10T10:48:07.772Z
+                - commits:
+                    - subject: >-
+                        Fix downstream declaration creation errors due to
+                        `Dictionary`
+                      hash: a8a39edff8cc7e1d05fb9b67037718970e94296c
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.5.1
+                  date: 2019-05-15T13:32:13.920Z
+                - commits:
+                    - subject: >-
+                        Add a prepare method that prepares a query into a
+                        function
+                      hash: eb7eccca7d90c453710575ebdf3adb9ef56835a7
+                      body: ''
+                      footer:
+                        Change-type: minor
+                        change-type: minor
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.5.0
+                  date: 2019-05-15T11:51:46.450Z
+                - commits:
+                    - subject: Add CODEOWNERS
+                      hash: e01174008f812e0c24ec1036aa1f9ff0bc716e85
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                        Signed-off-by: Gergely Imreh <gergely@balena.io>
+                        signed-off-by: Gergely Imreh <gergely@balena.io>
+                      author: Gergely Imreh
+                  version: pinejs-client-js-5.4.1
+                  date: 2019-05-10T10:14:00.677Z
+                - commits:
+                    - subject: Add support for parameter aliases in resource ids
+                      hash: a4e6a640a3ced56bcd3ef7bf22770338e089a90d
+                      body: ''
+                      footer:
+                        Change-type: minor
+                        change-type: minor
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.4.0
+                  date: 2019-05-10T09:57:46.863Z
+                - commits:
+                    - subject: Deduplicate transformation of GET results
+                      hash: dd856e24072f652684adf63af97408ee0ba7389c
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.3.10
+                  date: 2019-05-10T09:44:09.422Z
+                - commits:
+                    - subject: >-
+                        Simplify how we expose types, which means `subscribe` is
+                        now exposed
+                      hash: f81e0cc59e75e0f9ffc71d9f122b9cfab9c05165
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.3.9
+                  date: 2019-05-10T08:57:16.276Z
+                - commits:
+                    - subject: Add automatic formatting via prettier
+                      hash: a345d32f295acfa8ed4e5b815c24e1e7fdb335f2
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.3.8
+                  date: 2019-05-09T17:38:43.260Z
+                - commits:
+                    - subject: 'Remove node 4 build, add node 12'
+                      hash: 8d549277d80746feadbdd8a6bba37eb076270440
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                    - subject: Add .versionbot/CHANGELOG.yml for downstream changelogs
+                      hash: 067bedf65e86a902b7334ed6e5f117d6ac41afde
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-5.3.7
+                  date: 2019-05-08T15:41:50.201Z
+          version: pinejs-client-request-6.1.0
+          date: 2020-03-19T12:19:09.392Z
+        - commits:
+            - subject: Add CODEOWNERS
+              hash: efc40c853d4392b866eb3784839871fad086fccd
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: pinejs-client-request-6.0.3
+          date: 2020-01-22T16:35:52.630Z
+  version: 9.13.0
+  date: 2020-04-08T11:35:32.581Z
+- commits:
     - subject: 'circleci: fix/optimise deploy to staging job'
       hash: 7367866b2dbe4cd3eeed5300b8a96acce095d41b
       body: ''
