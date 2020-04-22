@@ -1,4 +1,18 @@
 - commits:
+    - subject: refactor instance number autodetect
+      hash: 14bfd2d3a56d3ff8a883e17e2c55fdf2be567647
+      body: |
+        * move logic to getInstanceCount function
+        * refactor conf.d logic to handle additional cases
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: ab77 <anton@balena.io>
+        signed-off-by: ab77 <anton@balena.io>
+      author: ab77
+  version: 9.13.2
+  date: 2020-04-22T17:49:29.622Z
+- commits:
     - subject: Update open-balena-base to 9.2.2
       hash: 8e827c3f5322bcc21fe11892cf467ca61fe7d532
       body: |
