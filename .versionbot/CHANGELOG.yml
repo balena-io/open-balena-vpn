@@ -1,4 +1,38 @@
 - commits:
+    - subject: Update open-balena-base to 9.2.4
+      hash: 90c826cfa5ee7df0ed17067f3987aecbb90db04c
+      body: |
+        Update open-balena-base from 9.2.2 to 9.2.4
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update nodejs to 12.16.3
+              hash: 069780c6c88a8247c684a574e57bf885c3b45be9
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: open-balena-base-9.2.4
+          date: 2020-04-30T15:10:28.844Z
+        - commits:
+            - subject: Forward log from journald to console by default
+              hash: 60d85f6207929eb0426979fb56e5238439a3a5b8
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Trong Nghia Nguyen <nghiant2710@gmail.com>
+                signed-off-by: Trong Nghia Nguyen <nghiant2710@gmail.com>
+              author: Trong Nghia Nguyen
+          version: open-balena-base-9.2.3
+          date: 2020-04-15T10:39:48.849Z
+  version: 9.13.3
+  date: 2020-05-01T09:40:41.536Z
+- commits:
     - subject: refactor instance number autodetect
       hash: 14bfd2d3a56d3ff8a883e17e2c55fdf2be567647
       body: |
