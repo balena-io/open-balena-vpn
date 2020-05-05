@@ -1,4 +1,4 @@
-FROM balena/open-balena-base:v9.2.2 as base
+FROM balena/open-balena-base:v9.2.4 as base
 
 
 FROM base as builder
