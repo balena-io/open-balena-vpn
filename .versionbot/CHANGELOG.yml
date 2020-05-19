@@ -1,4 +1,14 @@
 - commits:
+    - subject: Update dependencies
+      hash: a87997efd23a73e7bfb35a7b61e56c70be27c95e
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+  version: 9.13.4
+  date: 2020-05-18T14:45:47.116Z
+- commits:
     - subject: Update open-balena-base to 9.2.4
       hash: 90c826cfa5ee7df0ed17067f3987aecbb90db04c
       body: |
