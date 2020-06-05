@@ -20,8 +20,9 @@ RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/d
     && apt-get update -qq \
     && apt-get install -qy haproxy=2.0.* iptables --no-install-recommends \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/openvpn/* /etc/rsyslog.d/49-haproxy.conf \
-    && ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts
+    && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
+    && ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts \
+    && systemctl mask openvpn@.service openvpn.service
 
 ENV LIBNSS_OPENVPN_VERSION 22feb11322182f6fd79f85cd014b65b6c40b7b47
 RUN tmp="$(mktemp -d)" set -x \
