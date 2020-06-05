@@ -1,4 +1,18 @@
 - commits:
+    - subject: 'dockerfile: explicitly disable os-provided openvpn services'
+      hash: 5c87bedb9e1c526109abc3210fd33f68e92b5550
+      body: ''
+      footer:
+        Connects-to: balena-io/balena-on-balena#191
+        connects-to: balena-io/balena-on-balena#191
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+  version: 9.13.6
+  date: 2020-06-05T10:55:57.376Z
+- commits:
     - subject: Update open-balena-base to 9.3.0
       hash: 0bf89d2653ae4b091061093f1313691809e355d0
       body: |
@@ -1430,8 +1444,8 @@
       hash: 4f607062fc9a38ca364713f2ad671163ad3547e7
       body: ''
       footer:
-        Connects-to: 'balena-io/open-balena#57'
-        connects-to: 'balena-io/open-balena#57'
+        Connects-to: balena-io/open-balena#57
+        connects-to: balena-io/open-balena#57
         Change-type: minor
         change-type: minor
         Signed-off-by: Will Boyce <will@balena.io>
