@@ -1,4 +1,46 @@
 - commits:
+    - subject: Update open-balena-base to 9.4.2
+      hash: 82c132c5d679b45a557656c4d83d036cce04ca98
+      body: |
+        Update open-balena-base from 9.3.0 to 9.4.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update nodejs to 12.18.2
+              hash: 7ca9da66bd3de13616642235a342f5b45feae96e
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: open-balena-base-9.4.2
+          date: 2020-06-30T15:32:36.381Z
+        - commits:
+            - subject: Update nodejs to 12.18.1
+              hash: 94c1803d479d80d3f9c1450bf0c3ea0d4639478b
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: open-balena-base-9.4.1
+          date: 2020-06-19T13:51:47.608Z
+        - commits:
+            - subject: Update nodejs to 12.18.0
+              hash: f7bf6f487ea64af6ffce821974ccddc5646bb6d8
+              body: ''
+              footer:
+                Change-type: minor
+                change-type: minor
+              author: Pagan Gazzard
+          version: open-balena-base-9.4.0
+          date: 2020-06-08T11:55:53.921Z
+  version: 9.13.7
+  date: 2020-06-30T22:34:32.923Z
+- commits:
     - subject: 'dockerfile: explicitly disable os-provided openvpn services'
       hash: 5c87bedb9e1c526109abc3210fd33f68e92b5550
       body: ''
