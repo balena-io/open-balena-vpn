@@ -18,12 +18,13 @@
 import * as chai from 'chai';
 import * as nock from 'nock';
 
-import { service } from '../src/utils';
+import { ServiceInstance } from '../src/utils';
 
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 
 const { expect } = chai;
 
+const serviceInstance = new ServiceInstance();
 const serviceId = 10;
 
 describe('id', () => {
@@ -34,11 +35,13 @@ describe('id', () => {
 	});
 
 	it('should throw error when service is not registered', () => {
-		expect(() => service.getId()).to.throw('Not Registered');
+		expect(() => serviceInstance.getId()).to.throw('Not Registered');
 	});
 
-	it('should return the service id once registered on the api', () =>
-		service.register().then(() => expect(service.getId()).to.equal(serviceId)));
+	it('should return the service id once registered on the api', async () => {
+		await serviceInstance.register();
+		expect(serviceInstance.getId()).to.equal(serviceId);
+	});
 });
 
 describe('sendHeartbeat()', () => {
@@ -55,10 +58,10 @@ describe('sendHeartbeat()', () => {
 			});
 	});
 
-	it('should trigger a patch request on service_instance using PineJS', () =>
-		service.sendHeartbeat().then((registered) => {
-			expect(registered).to.be.equal(true);
-			expect(called).to.equal(1);
-			expect(isAlive).to.be.equal(true);
-		}));
+	it('should trigger a patch request on service_instance using PineJS', async () => {
+		const registered = await serviceInstance.sendHeartbeat();
+		expect(registered).to.be.equal(true);
+		expect(called).to.equal(1);
+		expect(isAlive).to.be.equal(true);
+	});
 });

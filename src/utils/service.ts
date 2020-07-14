@@ -20,7 +20,7 @@ import * as Bluebird from 'bluebird';
 import { apiKey, balenaApi, captureException } from '.';
 import { ServiceRegistrationError } from './errors';
 
-class ServiceInstance {
+export class ServiceInstance {
 	private _id: number | null = null;
 
 	constructor(private interval: number = 10 * 1000) {}
@@ -83,16 +83,6 @@ class ServiceInstance {
 		}
 	}
 
-	public async wrap(
-		{ ipAddress }: { ipAddress?: string },
-		func: (serviceInstance: this) => void,
-	) {
-		await this.register(ipAddress);
-		func(this);
-		await this.scheduleHeartbeat();
-		return this;
-	}
-
 	public getId(): number {
 		if (this._id == null) {
 			throw new ServiceRegistrationError('Not Registered');
@@ -107,5 +97,3 @@ class ServiceInstance {
 		this._id = id;
 	}
 }
-
-export const service = new ServiceInstance();

@@ -71,19 +71,24 @@ const canAccessDeviceQuery = balenaApi.prepare<{ id: number }>({
 	id: { '@': 'id' },
 	url: `device(@id)/canAccess`,
 });
-const $canAccessDevice = (device: DeviceInfo, port: number, auth?: Buffer) =>
-	canAccessDeviceQuery(
-		{ id: device.id },
-		{
-			action: { or: ['tunnel-any', `tunnel-${port}`] },
-		},
-		{ headers: authHeader(auth) },
-	)
-		.then(
-			({ d }: { d?: Array<{ id: number }> }) =>
-				_.isArray(d) && d.length === 1 && d[0].id === device.id,
-		)
-		.catch(() => false);
+const $canAccessDevice = async (
+	device: DeviceInfo,
+	port: number,
+	auth?: Buffer,
+) => {
+	try {
+		const { d }: { d?: Array<{ id: number }> } = await canAccessDeviceQuery(
+			{ id: device.id },
+			{
+				action: { or: ['tunnel-any', `tunnel-${port}`] },
+			},
+			{ headers: authHeader(auth) },
+		);
+		return _.isArray(d) && d.length === 1 && d[0].id === device.id;
+	} catch {
+		return false;
+	}
+};
 export const canAccessDevice = memoize($canAccessDevice, {
 	maxAge: 5 * 1000,
 	normalizer: (args) => `${args[0].id}-${args[1]}-${args[2] ?? 'guest'}`,
@@ -94,13 +99,12 @@ interface VpnHost {
 	id: number;
 	ip_address: string;
 }
-
-export const getDeviceVpnHost = (
+export const getDeviceVpnHost = async (
 	uuid: string,
 	auth?: Buffer,
-): Promise<VpnHost> =>
-	balenaApi
-		.get({
+): Promise<VpnHost> => {
+	try {
+		const services = await balenaApi.get({
 			resource: 'service_instance',
 			options: {
 				$select: ['id', 'ip_address'],
@@ -114,14 +118,13 @@ export const getDeviceVpnHost = (
 				},
 			},
 			passthrough: { headers: authHeader(auth) },
-		})
-		.then((services) => {
-			if (!_.isArray(services) || services.length === 0) {
-				throw new Error('invalid api response');
-			}
-			return services[0] as VpnHost;
-		})
-		.catch((err) => {
-			captureException(err, 'device-vpn-host-lookup-error');
-			throw new APIError(`cannot find device vpn host (${err.message})`);
 		});
+		if (!_.isArray(services) || services.length === 0) {
+			throw new Error('invalid api response');
+		}
+		return services[0] as VpnHost;
+	} catch (err) {
+		captureException(err, 'device-vpn-host-lookup-error');
+		throw new APIError(`cannot find device vpn host (${err.message})`);
+	}
+};

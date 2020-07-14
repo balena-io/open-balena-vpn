@@ -27,7 +27,7 @@ import * as querystring from 'querystring';
 const { expect } = chai;
 
 import { apiServer } from '../src/api';
-import { pooledRequest, service, VpnManager } from '../src/utils';
+import { pooledRequest, ServiceInstance, VpnManager } from '../src/utils';
 
 import proxyWorker from '../src/proxy-worker';
 import vpnWorker from '../src/vpn-worker';
@@ -38,7 +38,7 @@ const caCertPath = process.env.CA_CERT_PATH || '/etc/openvpn/ca.crt';
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const VPN_API_PORT = parseInt(process.env.VPN_API_PORT!, 10);
 
-let instance: typeof service;
+const serviceInstance = new ServiceInstance();
 let manager: VpnManager;
 
 const vpnDefaultOpts = [
@@ -82,19 +82,19 @@ describe('vpn worker', function () {
 	});
 
 	it('should resolve true when ready', async () => {
-		instance = await service.register();
-		manager = await vpnWorker(1, instance.getId());
+		await serviceInstance.register();
+		manager = await vpnWorker(1, serviceInstance.getId());
 	});
 });
 
 describe('tunnel worker', () =>
 	it('should startup successfully', () => {
-		proxyWorker(1, instance.getId());
+		proxyWorker(1, serviceInstance.getId());
 	}));
 
 describe('api server', () =>
 	it('should startup successfully', () => {
-		apiServer(instance.getId()).listenAsync(VPN_API_PORT);
+		apiServer(serviceInstance.getId()).listenAsync(VPN_API_PORT);
 	}));
 
 describe('VPN Events', function () {
@@ -121,7 +121,7 @@ describe('VPN Events', function () {
 			const data = querystring.parse(body);
 			expect(data)
 				.to.have.property('service_id')
-				.that.equals(`${instance.getId()}`);
+				.that.equals(`${serviceInstance.getId()}`);
 			expect(data).to.have.property('common_name').that.equals('user2');
 			expect(data).to.not.have.property('real_address');
 			expect(data)
@@ -139,7 +139,7 @@ describe('VPN Events', function () {
 			const data = querystring.parse(body);
 			expect(data)
 				.to.have.property('service_id')
-				.that.equals(`${instance.getId()}`);
+				.that.equals(`${serviceInstance.getId()}`);
 			expect(data).to.have.property('common_name').that.equals('user2');
 			expect(data).to.not.have.property('real_address');
 			expect(data).to.not.have.property('virtual_address');
@@ -277,7 +277,9 @@ describe('VPN proxy', function () {
 				.get(
 					'/v6/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
 				)
-				.reply(200, { d: [{ id: instance.getId(), ip_address: '127.0.0.1' }] });
+				.reply(200, {
+					d: [{ id: serviceInstance.getId(), ip_address: '127.0.0.1' }],
+				});
 
 			return vpnTest(
 				{ user: 'user3', pass: 'pass' },
@@ -308,7 +310,7 @@ describe('VPN proxy', function () {
 						} as any)({
 							url: 'http://c0ffeec0ffeec0ffee.balena:8080/test',
 							headers: {
-								Forwarded: `By=open-balena-vpn(${instance.getId()})`,
+								Forwarded: `By=open-balena-vpn(${serviceInstance.getId()})`,
 							},
 							proxy: 'http://localhost:3128',
 							tunnel: true,
