@@ -1,4 +1,17 @@
 - commits:
+    - subject: register with api using local interface address if specified
+      hash: 1c71590c51d7ef04ed6f7fc45de4d42f2b17a639
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+      nested: []
+  version: 9.14.0
+  date: 2020-07-14T11:31:56.708Z
+- commits:
     - subject: Update open-balena-base to 9.4.2
       hash: 82c132c5d679b45a557656c4d83d036cce04ca98
       body: |
