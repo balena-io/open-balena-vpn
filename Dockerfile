@@ -16,9 +16,9 @@ FROM base as main
 EXPOSE 80 443 3128
 
 RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/dev/null \
-    && echo deb http://haproxy.debian.net buster-backports-2.0 main > /etc/apt/sources.list.d/haproxy.list \
+    && echo deb http://haproxy.debian.net buster-backports-2.2 main > /etc/apt/sources.list.d/haproxy.list \
     && apt-get update -qq \
-    && apt-get install -qy haproxy=2.0.* iptables --no-install-recommends \
+    && apt-get install -qy haproxy=2.2.* iptables --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
     && ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts \
