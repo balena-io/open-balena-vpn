@@ -19,6 +19,7 @@ import { metrics } from '@balena/node-metrics-gatherer';
 import * as cluster from 'cluster';
 import * as express from 'express';
 import * as _ from 'lodash';
+import * as os from 'os';
 import * as prometheus from 'prom-client';
 
 import { apiServer } from './api';
@@ -54,6 +55,12 @@ const masterLogger = getLogger('master');
 const VPN_INSTANCE_COUNT = getInstanceCount('VPN_INSTANCE_COUNT');
 const VPN_API_PORT = intVar('VPN_API_PORT');
 const VPN_VERBOSE_LOGS = process.env.DEFAULT_VERBOSE_LOGS === 'true';
+
+const VPN_SERVICE_ADDRESS =
+	process.env.VPN_SERVICE_REGISTER_INTERFACE != null
+		? os.networkInterfaces()[process.env.VPN_SERVICE_REGISTER_INTERFACE]?.[0]
+				?.address
+		: undefined;
 
 describeMetrics();
 
@@ -99,7 +106,7 @@ if (cluster.isMaster) {
 		`open-balena-vpn@${VERSION} process started with pid=${process.pid}`,
 	);
 	masterLogger.debug('registering as service instance...');
-	service.wrap((serviceInstance) => {
+	service.wrap({ ipAddress: VPN_SERVICE_ADDRESS }, (serviceInstance) => {
 		const serviceLogger = getLogger('master', serviceInstance.getId());
 		serviceLogger.info(
 			`registered as service instance with id=${serviceInstance.getId()}`,

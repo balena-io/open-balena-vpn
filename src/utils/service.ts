@@ -35,11 +35,12 @@ class ServiceInstance {
 		captureException(err, fingerprint, { tags });
 	}
 
-	public async register(): Promise<this> {
+	public async register(ipAddress?: string): Promise<this> {
 		try {
 			const { id } = (await balenaApi.post({
 				resource: 'service_instance',
 				passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
+				body: ipAddress != null ? { ip_address: ipAddress } : {},
 			})) as { id?: number };
 			if (id == null) {
 				throw new ServiceRegistrationError(
@@ -82,8 +83,11 @@ class ServiceInstance {
 		}
 	}
 
-	public async wrap(func: (serviceInstance: this) => void) {
-		await this.register();
+	public async wrap(
+		{ ipAddress }: { ipAddress?: string },
+		func: (serviceInstance: this) => void,
+	) {
+		await this.register(ipAddress);
 		func(this);
 		await this.scheduleHeartbeat();
 		return this;
