@@ -77,7 +77,7 @@ describe('vpn worker', function () {
 
 	before(() => {
 		nock(`https://${BALENA_API_HOST}`)
-			.post('/v5/service_instance')
+			.post('/v6/service_instance')
 			.reply(200, { id: _.random(1, 1024) });
 	});
 
@@ -184,7 +184,7 @@ describe('VPN proxy', function () {
 	describe('web accessible device', () => {
 		beforeEach(() => {
 			nock(`https://${BALENA_API_HOST}`)
-				.get('/v5/device')
+				.get('/v6/device')
 				.query({
 					$select: 'id,is_connected_to_vpn',
 					$filter: 'uuid eq @uuid',
@@ -200,7 +200,7 @@ describe('VPN proxy', function () {
 				});
 
 			nock(`https://${BALENA_API_HOST}`)
-				.post('/v5/device(@id)/canAccess?@id=1', {
+				.post('/v6/device(@id)/canAccess?@id=1', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(200, {
@@ -244,7 +244,7 @@ describe('VPN proxy', function () {
 	describe('tunnel forwarding', () => {
 		beforeEach(() => {
 			nock(`https://${BALENA_API_HOST}`)
-				.get('/v5/device')
+				.get('/v6/device')
 				.query({
 					$select: 'id,is_connected_to_vpn',
 					$filter: 'uuid eq @uuid',
@@ -260,7 +260,7 @@ describe('VPN proxy', function () {
 				});
 
 			nock(`https://${BALENA_API_HOST}`)
-				.post('/v5/device(@id)/canAccess?@id=2', {
+				.post('/v6/device(@id)/canAccess?@id=2', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(200, {
@@ -275,7 +275,7 @@ describe('VPN proxy', function () {
 		it('should refuse to forward via itself', () => {
 			nock(`https://${BALENA_API_HOST}`)
 				.get(
-					'/v5/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
+					'/v6/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
 				)
 				.reply(200, { d: [{ id: instance.getId(), ip_address: '127.0.0.1' }] });
 
@@ -295,7 +295,7 @@ describe('VPN proxy', function () {
 		it('should detect forward loops', () => {
 			nock(`https://${BALENA_API_HOST}`)
 				.get(
-					'/v5/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
+					'/v6/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
 				)
 				.reply(200, { d: [{ id: 0, ip_address: '127.0.0.1' }] });
 
@@ -321,7 +321,7 @@ describe('VPN proxy', function () {
 	describe('not web accessible device', () => {
 		beforeEach(() => {
 			nock(`https://${BALENA_API_HOST}`)
-				.get('/v5/device')
+				.get('/v6/device')
 				.query({
 					$select: 'id,is_connected_to_vpn',
 					$filter: 'uuid eq @uuid',
@@ -339,7 +339,7 @@ describe('VPN proxy', function () {
 
 		it('should not allow port 8080 without authentication', () => {
 			nock(`https://${BALENA_API_HOST}`)
-				.post('/v5/device(@id)/canAccess?@id=3', {
+				.post('/v6/device(@id)/canAccess?@id=3', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(200, () => {
@@ -361,7 +361,7 @@ describe('VPN proxy', function () {
 
 		it('should allow port 8080 with authentication', () => {
 			nock(`https://${BALENA_API_HOST}`)
-				.post('/v5/device(@id)/canAccess?@id=3', {
+				.post('/v6/device(@id)/canAccess?@id=3', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(200, {

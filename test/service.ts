@@ -29,7 +29,7 @@ const serviceId = 10;
 describe('id', () => {
 	before(() => {
 		nock(`https://${BALENA_API_HOST}`)
-			.post('/v5/service_instance')
+			.post('/v6/service_instance')
 			.reply(200, { id: serviceId });
 	});
 
@@ -47,7 +47,7 @@ describe('sendHeartbeat()', () => {
 
 	before(() => {
 		nock(`https://${BALENA_API_HOST}`)
-			.patch(`/v5/service_instance(${serviceId})`)
+			.patch(`/v6/service_instance(${serviceId})`)
 			.reply(200, (_uri: string, body: any) => {
 				called++;
 				isAlive = body.is_alive;
