@@ -1,4 +1,15 @@
 - commits:
+    - subject: Increase UV_THREADPOOL_SIZE to 128
+      hash: 82f6f83ff61228ac9eb9cac1e2767a3129b5d64f
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 9.14.1
+  date: 2020-07-28T11:20:50.186Z
+- commits:
     - subject: register with api using local interface address if specified
       hash: 1c71590c51d7ef04ed6f7fc45de4d42f2b17a639
       body: ''
