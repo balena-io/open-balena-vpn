@@ -15,7 +15,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Bluebird from 'bluebird';
 import * as _ from 'lodash';
 import * as memoize from 'memoizee';
 
@@ -48,21 +47,23 @@ const getDeviceByUUIDQuery = balenaApi.prepare<{ uuid: string }>({
 		},
 	},
 });
-export const getDeviceByUUID = (
+export const getDeviceByUUID = async (
 	uuid: string,
 	auth?: Buffer,
-): Bluebird<DeviceInfo> =>
-	getDeviceByUUIDQuery({ uuid }, undefined, { headers: authHeader(auth) })
-		.then((devices) => {
-			if (!_.isArray(devices) || devices.length === 0) {
-				throw new Error('invalid api response');
-			}
-			return devices[0] as DeviceInfo;
-		})
-		.catch((err) => {
-			captureException(err, 'device-lookup-error');
-			throw new APIError(err.message);
+): Promise<DeviceInfo> => {
+	try {
+		const devices = await getDeviceByUUIDQuery({ uuid }, undefined, {
+			headers: authHeader(auth),
 		});
+		if (!_.isArray(devices) || devices.length === 0) {
+			throw new Error('invalid api response');
+		}
+		return devices[0] as DeviceInfo;
+	} catch (err) {
+		captureException(err, 'device-lookup-error');
+		throw new APIError(err.message);
+	}
+};
 
 const canAccessDeviceQuery = balenaApi.prepare<{ id: number }>({
 	method: 'POST',
@@ -82,7 +83,7 @@ const $canAccessDevice = (device: DeviceInfo, port: number, auth?: Buffer) =>
 			({ d }: { d?: Array<{ id: number }> }) =>
 				_.isArray(d) && d.length === 1 && d[0].id === device.id,
 		)
-		.catchReturn(false);
+		.catch(() => false);
 export const canAccessDevice = memoize($canAccessDevice, {
 	maxAge: 5 * 1000,
 	normalizer: (args) => `${args[0].id}-${args[1]}-${args[2] ?? 'guest'}`,
@@ -97,7 +98,7 @@ interface VpnHost {
 export const getDeviceVpnHost = (
 	uuid: string,
 	auth?: Buffer,
-): Bluebird<VpnHost> =>
+): Promise<VpnHost> =>
 	balenaApi
 		.get({
 			resource: 'service_instance',
