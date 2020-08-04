@@ -54,7 +54,7 @@ docker cp "./src" "${test_id}:/usr/src/app/src"
 docker cp "./test" "${test_id}:/usr/src/app/test"
 docker cp "./typings" "${test_id}:/usr/src/app/typings"
 docker cp "./tsconfig.json" "${test_id}:/usr/src/app/"
-docker exec "${test_id}" /bin/sh -ec '
+docker exec -t "${test_id}" /bin/sh -ec '
 	echo -n "Waiting for systemd... "
 	while ! systemctl status basic.target >/dev/null 2>&1; do sleep 1; done
 	echo "ok"

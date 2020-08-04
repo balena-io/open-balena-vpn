@@ -16,7 +16,7 @@
 */
 
 import { metrics } from '@balena/node-metrics-gatherer';
-import * as Promise from 'bluebird';
+import * as Bluebird from 'bluebird';
 import * as compression from 'compression';
 import * as express from 'express';
 import * as morgan from 'morgan';
@@ -154,11 +154,11 @@ export const apiFactory = (serviceId: number) => {
 };
 
 interface ExpressAsync extends express.Express {
-	listenAsync(port: number): Promise<ReturnType<express.Express['listen']>>;
+	listenAsync(port: number): Bluebird<ReturnType<express.Express['listen']>>;
 }
 
 export const apiServer = (serviceId: number) => {
-	const app = Promise.promisifyAll(express()) as ExpressAsync;
+	const app = Bluebird.promisifyAll(express()) as ExpressAsync;
 	app.disable('x-powered-by');
 	app.get('/ping', (_req, res) => res.send('OK'));
 	app.use(morgan('combined'));
