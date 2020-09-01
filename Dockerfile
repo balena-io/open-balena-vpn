@@ -16,9 +16,9 @@ FROM base as main
 EXPOSE 80 443 3128
 
 RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/dev/null \
-    && echo deb http://haproxy.debian.net buster-backports-2.0 main > /etc/apt/sources.list.d/haproxy.list \
+    && echo deb http://haproxy.debian.net buster-backports-2.2 main > /etc/apt/sources.list.d/haproxy.list \
     && apt-get update -qq \
-    && apt-get install -qy haproxy=2.0.* iptables --no-install-recommends \
+    && apt-get install -qy haproxy=2.2.* iptables --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
     && ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts \
@@ -34,16 +34,16 @@ RUN tmp="$(mktemp -d)" set -x \
     && sed --in-place --regexp-extended 's|(hosts:\W+)(.*)|\1openvpn \2|' /etc/nsswitch.conf \
     && rm -rf "${tmp}"
 
-ENV NODE_EXPORTER_VERSION 0.18.1
-ENV NODE_EXPORTER_SHA256SUM b2503fd932f85f4e5baf161268854bf5d22001869b84f00fd2d1f57b51b72424
+ENV NODE_EXPORTER_VERSION 1.0.1
+ENV NODE_EXPORTER_SHA256SUM 3369b76cd2b0ba678b6d618deab320e565c3d93ccb5c2a0d5db51a53857768ae
 RUN NODE_EXPORTER_TGZ="/tmp/node_exporter.tar.gz" set -x \
     && curl -Lo "${NODE_EXPORTER_TGZ}" https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz \
     && echo "${NODE_EXPORTER_SHA256SUM}  ${NODE_EXPORTER_TGZ}" | sha256sum -c \
     && tar -xzC /usr/local/bin -f "${NODE_EXPORTER_TGZ}" --strip-components=1 --wildcards '*/node_exporter' \
     && rm "${NODE_EXPORTER_TGZ}"
 
-ENV PROCESS_EXPORTER_VERSION 0.5.0
-ENV PROCESS_EXPORTER_SHA256SUM 1b422f5f26ebefc0928b56fbefc08d0aab3cc7a636627d7d57b200af84e91bb9
+ENV PROCESS_EXPORTER_VERSION 0.6.0
+ENV PROCESS_EXPORTER_SHA256SUM ae0aea4a8ebd7baa0ae434be555a7e0672235b175725f4f6ff8f029136c95f73
 RUN PROCESS_EXPORTER_TGZ="/tmp/process_exporter.tar.gz" set -x \
     && curl -Lo "${PROCESS_EXPORTER_TGZ}" https://github.com/ncabatoff/process-exporter/releases/download/v${PROCESS_EXPORTER_VERSION}/process-exporter-${PROCESS_EXPORTER_VERSION}.linux-amd64.tar.gz \
     && echo "${PROCESS_EXPORTER_SHA256SUM}  ${PROCESS_EXPORTER_TGZ}" | sha256sum -c \

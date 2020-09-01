@@ -16,7 +16,7 @@
 */
 
 import { metrics } from '@balena/node-metrics-gatherer';
-import * as Promise from 'bluebird';
+import * as Bluebird from 'bluebird';
 import * as compression from 'compression';
 import * as express from 'express';
 import * as morgan from 'morgan';
@@ -81,7 +81,7 @@ export const apiFactory = (serviceId: number) => {
 		res.send('OK');
 	});
 
-	api.post('/api/v1/auth/', fromLocalHost, function (req, res) {
+	api.post('/api/v1/auth/', fromLocalHost, async function (req, res) {
 		if (req.body.username == null) {
 			logger.info('AUTH FAIL: UUID not specified.');
 			return res.sendStatus(400);
@@ -92,30 +92,28 @@ export const apiFactory = (serviceId: number) => {
 			return res.sendStatus(400);
 		}
 
-		pooledRequest
-			.get({
+		try {
+			const response = await pooledRequest.get({
 				url: `https://${BALENA_API_HOST}/services/vpn/auth/${req.body.username}`,
 				timeout: 30000,
 				headers: { Authorization: `Bearer ${req.body.password}` },
-			})
-			.then((response) => {
-				if (response.statusCode === 200) {
-					return res.send('OK');
-				} else {
-					logger.info(
-						`AUTH FAIL: API Authentication failed for ${req.body.username}`,
-					);
-					metrics.inc(Metrics.AuthFailures);
-					metrics.inc(Metrics.AuthFailuresByUuid, undefined, {
-						device_uuid: req.body.common_name,
-					});
-					return res.sendStatus(401);
-				}
-			})
-			.catch((err) => {
-				captureException(err, 'api-auth-error', { req });
-				res.sendStatus(401);
 			});
+			if (response.statusCode === 200) {
+				return res.send('OK');
+			} else {
+				logger.info(
+					`AUTH FAIL: API Authentication failed for ${req.body.username}`,
+				);
+				metrics.inc(Metrics.AuthFailures);
+				metrics.inc(Metrics.AuthFailuresByUuid, undefined, {
+					device_uuid: req.body.common_name,
+				});
+				return res.sendStatus(401);
+			}
+		} catch (err) {
+			captureException(err, 'api-auth-error', { req });
+			res.sendStatus(401);
+		}
 	});
 
 	api.delete('/api/v2/:worker/clients/', fromLocalHost, (req, res) => {
@@ -156,11 +154,11 @@ export const apiFactory = (serviceId: number) => {
 };
 
 interface ExpressAsync extends express.Express {
-	listenAsync(port: number): Promise<ReturnType<express.Express['listen']>>;
+	listenAsync(port: number): Bluebird<ReturnType<express.Express['listen']>>;
 }
 
 export const apiServer = (serviceId: number) => {
-	const app = Promise.promisifyAll(express()) as ExpressAsync;
+	const app = Bluebird.promisifyAll(express()) as ExpressAsync;
 	app.disable('x-powered-by');
 	app.get('/ping', (_req, res) => res.send('OK'));
 	app.use(morgan('combined'));

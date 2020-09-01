@@ -66,4 +66,4 @@ export { describeMetrics, Metrics } from './metrics';
 export { Netmask } from './netmask';
 export { VpnManager } from './openvpn';
 export { pooledRequest } from './request';
-export { service } from './service';
+export { ServiceInstance } from './service';
