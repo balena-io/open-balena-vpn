@@ -2,5 +2,5 @@
 src = "server.crt.tmpl"
 dest = "/etc/openvpn/server.crt"
 keys = [
-  "/resin/vpn/openvpn/crt"
+  "VPN_OPENVPN_SERVER_CRT"
 ]

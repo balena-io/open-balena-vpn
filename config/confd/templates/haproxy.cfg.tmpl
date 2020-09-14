@@ -2,11 +2,11 @@
 {{ $maxconn := getenv "VPN_HAPROXY_MAXCONN" "10000" -}}
 {{ $timeout := getenv "VPN_HAPROXY_TIMEOUT" (getenv "VPN_KEEPALIVE_TIMEOUT" "60") -}}
 {{- /* VPN Settings */ -}}
-{{ $vpnPort := getv "/resin/vpn/port" -}}
+{{ $vpnPort := getenv "BALENA_VPN_PORT" -}}
 {{- /* bindOpts = "accept-proxy" unless VPN_HAPROXY_ACCEPT_PROXY == 'false' */ -}}
-{{ $bindOpt := (or (and (eq (getv "/resin/vpn/haproxy/useproxyprotocol" "false") "true") "accept-proxy") "") -}}
+{{ $bindOpt := (or (and (eq (getenv "VPN_HAPROXY_USEPROXYPROTOCOL" "false") "true") "accept-proxy") "") -}}
 {{- /* servers = getenv(VPN_INSTANCE_COUNT, default=getenv(NPROC) if production else 1) */ -}}
-{{ $servers := (getenv "VPN_INSTANCE_COUNT" (or (and (eq (getv "/resin/vpn/production") "true") (getenv "NPROC")) "1")) -}}
+{{ $servers := (getenv "VPN_INSTANCE_COUNT" (or (and (eq (getenv "PRODUCTION_MODE") "true") (getenv "NPROC")) "1")) -}}
 
 global
 	master-worker
@@ -21,9 +21,9 @@ defaults
 	timeout client 10s
 	timeout server 10s
 
-{{ if ne (getv "/balena/monitor/secret-token" "") "" -}}
+{{ if ne (getenv "MONITOR_SECRET_TOKEN") "" -}}
 userlist metrics
-	user monitor insecure-password "{{ getv "/balena/monitor/secret-token" }}"
+	user monitor insecure-password "{{ getenv "MONITOR_SECRET_TOKEN" }}"
 {{- end }}
 
 frontend http-80
@@ -33,7 +33,7 @@ frontend http-80
 	acl vpn_dead nbsrv(vpn-workers) lt 1
 	monitor-uri /ping
 	monitor fail if vpn_dead
-{{- if ne (getv "/balena/monitor/secret-token" "") "" }}
+{{- if ne (getenv "MONITOR_SECRET_TOKEN") "" }}
 	option http-use-htx
 	acl is-haproxy-metrics path /metrics/haproxy
 	acl is-node-metrics path /metrics/node

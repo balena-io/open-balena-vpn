@@ -1,6 +1,0 @@
-[template]
-src = "server.crt.tmpl"
-dest = "/etc/openvpn/server.crt"
-keys = [
-  "VPN_OPENVPN_SERVER_CRT"
-]

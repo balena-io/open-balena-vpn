@@ -1,2 +1,2 @@
 {{ base64Decode (getenv "BALENA_ROOT_CA") }}
-{{ base64Decode (getv "/resin/vpn/openvpn/ca") }}
+{{ base64Decode (getenv "VPN_OPENVPN_CA_CRT") }}
