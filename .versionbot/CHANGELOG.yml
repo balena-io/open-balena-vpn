@@ -1,4 +1,17 @@
 - commits:
+    - subject: update open-balena-base from 9.4.3 to 10.0.2
+      hash: 23c4cab1451283fc4978b37471f0237a54274744
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Will Boyce <will@balena.io>
+        signed-off-by: Will Boyce <will@balena.io>
+      author: Will Boyce
+      nested: []
+  version: 9.16.1
+  date: 2020-09-17T15:11:29.298Z
+- commits:
     - subject: Update dependencies
       hash: 8fd551e584430e2f6ad7a3f07da87fbc6d75e6e2
       body: |
