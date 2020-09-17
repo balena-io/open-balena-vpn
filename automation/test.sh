@@ -55,15 +55,7 @@ docker cp "./test" "${test_id}:/usr/src/app/test"
 docker cp "./typings" "${test_id}:/usr/src/app/typings"
 docker cp "./tsconfig.json" "${test_id}:/usr/src/app/"
 docker exec "${test_id}" /bin/sh -ec '
-	echo -n "Waiting for systemd... "
-	while ! systemctl status basic.target >/dev/null 2>&1; do sleep 1; done
-	echo "ok"
-	systemctl stop confd.service
-	echo "[Service]\nType=oneshot\nExecStart=\nExecStart=-/usr/local/bin/confd -onetime -confdir=/usr/src/app/config/confd_env_backend -backend env -log-level debug\nRemainAfterExit=yes" > /etc/systemd/system/confd.service.d/env-backend.conf
-	ln -fs /etc/docker.env /usr/src/app/config/env
 	echo "127.0.0.1 deadbeef.vpn" >> /etc/hosts
-	systemctl daemon-reload
-	systemctl start haproxy.service
 	npm install
 	npm run test-unit
 	npx mocha test/app.ts'

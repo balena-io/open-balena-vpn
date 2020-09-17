@@ -1,6 +1,0 @@
-[template]
-src = "ca.crt.tmpl"
-dest = "/etc/openvpn/ca.crt"
-keys = [
-  "VPN_OPENVPN_CA_CRT"
-]
