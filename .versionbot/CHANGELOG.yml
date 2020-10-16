@@ -1,4 +1,15 @@
 - commits:
+    - subject: Renew test certificates
+      hash: d24c331a280b23c59bbf7a3f7be0ac9854b0bde9
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 9.16.2
+  date: 2020-10-16T19:05:49.087Z
+- commits:
     - subject: update open-balena-base from 9.4.3 to 10.0.2
       hash: 23c4cab1451283fc4978b37471f0237a54274744
       body: ''
