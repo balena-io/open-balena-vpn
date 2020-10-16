@@ -23,6 +23,7 @@
     "event-stream": "^4.0.1",
     "eventemitter3": "^4.0.4",
     "express": "^4.17.1",
+    "flatstr": "^1.0.12",
     "lodash": "^4.17.20",
     "memoizee": "^0.4.14",
     "middleware-handler": "^0.2.0",

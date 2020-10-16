@@ -21,6 +21,7 @@ import { getLogger } from './utils';
 
 import { HAProxy, Metrics, Netmask, VpnManager } from './utils';
 import { VpnClientBytecountData } from './utils/openvpn';
+import flatstr = require('flatstr');
 
 const BALENA_VPN_GATEWAY = process.env.BALENA_VPN_GATEWAY;
 const VPN_BASE_SUBNET = process.env.VPN_BASE_SUBNET!;
@@ -133,7 +134,9 @@ const worker = async (instanceId: number, serviceId: number) => {
 			`connection established with client_id=${clientId} uuid=${data.username}`,
 		);
 		clientCache[clientId] = {
-			uuid: data.common_name,
+			// We need to flatten the uuid because otherwise it's a sliced string and keeps the
+			// original, rather large, string in memory forever
+			uuid: flatstr(data.common_name),
 			bytes_received: 0,
 			bytes_sent: 0,
 			ts: process.hrtime()[0],
