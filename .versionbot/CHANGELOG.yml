@@ -1,4 +1,27 @@
 - commits:
+    - subject: Update dependencies
+      hash: be866971a3b9f61ef9ac1ca4eb50de64b9ca59d0
+      body: |
+        Update pinejs-client-request from 7.2.1 to 7.2.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update dev dependencies
+              hash: 65948663c760b5b33d5f294adcf555bb57baa11c
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested: []
+          version: pinejs-client-request-7.2.2
+          date: 2020-08-24T12:24:16.294Z
+  version: 9.16.4
+  date: 2020-10-19T14:10:36.305Z
+- commits:
     - subject: Avoid unintentionally keeping large strings in memory
       hash: e4557ced0db25127b06492e29b32d49b2d6bdf08
       body: ''
