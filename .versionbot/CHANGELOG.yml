@@ -1,4 +1,15 @@
 - commits:
+    - subject: Fix string flattening
+      hash: cd7ff431ff8d798086baff33cc3b48ca1dd334af
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 9.16.5
+  date: 2020-10-19T14:55:19.632Z
+- commits:
     - subject: Update dependencies
       hash: be866971a3b9f61ef9ac1ca4eb50de64b9ca59d0
       body: |
