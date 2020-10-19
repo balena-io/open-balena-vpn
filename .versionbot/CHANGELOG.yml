@@ -1,4 +1,15 @@
 - commits:
+    - subject: Avoid unintentionally keeping large strings in memory
+      hash: e4557ced0db25127b06492e29b32d49b2d6bdf08
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 9.16.3
+  date: 2020-10-19T13:51:19.983Z
+- commits:
     - subject: Renew test certificates
       hash: d24c331a280b23c59bbf7a3f7be0ac9854b0bde9
       body: ''
