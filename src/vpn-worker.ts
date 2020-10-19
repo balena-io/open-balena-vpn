@@ -21,7 +21,6 @@ import { getLogger } from './utils';
 
 import { HAProxy, Metrics, Netmask, VpnManager } from './utils';
 import { VpnClientBytecountData } from './utils/openvpn';
-import flatstr = require('flatstr');
 
 const BALENA_VPN_GATEWAY = process.env.BALENA_VPN_GATEWAY;
 const VPN_BASE_SUBNET = process.env.VPN_BASE_SUBNET!;
@@ -44,6 +43,15 @@ const getInstanceSubnet = (instanceId: number) => {
 	const network = new Netmask(netBase, parseInt(netMask, 10));
 	return network.split(VPN_INSTANCE_SUBNET_BITMASK)[instanceId - 1];
 };
+
+/**
+ * This "flattens" a string. It instantiates it in its own memory and removes references
+ * to other strings, eg in the case of a substring it is stored as a reference into that
+ * larger string and will block garbage collection of that larger string by default.
+ * Usually that is more performant as substrings will usually be short lived but in the
+ * case of a long lived substring it can result in unnecessary memory usage.
+ */
+const flatstr = (s: string): string => Buffer.from(s).toString();
 
 const worker = async (instanceId: number, serviceId: number) => {
 	const logger = getLogger('vpn', serviceId, instanceId);
