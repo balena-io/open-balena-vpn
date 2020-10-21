@@ -1,0 +1,68 @@
+# --- base step
+FROM registry2.balena-staging.com/v2/8e018b8acaecc570b2c1e351ea451e9e:latest AS base
+
+
+# --- build step
+FROM base as builder
+COPY package.json package-lock.json /usr/src/app/
+RUN npm ci && npm cache clean --force 2>/dev/null
+COPY tsconfig.json tsconfig.dev.json /usr/src/app/
+COPY typings /usr/src/app/typings
+COPY test /usr/src/app/test
+COPY src /usr/src/app/src
+RUN npm run build
+
+
+# -- runtime step
+FROM base AS main
+
+EXPOSE 80 443 3128
+
+RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/dev/null \
+    && echo deb http://haproxy.debian.net buster-backports-2.0 main > /etc/apt/sources.list.d/haproxy.list \
+    && apt-get update -qq \
+    && apt-get install -qy haproxy=2.0.* iptables --no-install-recommends \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
+    && ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts \
+    && systemctl mask openvpn@.service openvpn.service
+
+ENV LIBNSS_OPENVPN_VERSION 22feb11322182f6fd79f85cd014b65b6c40b7b47
+RUN tmp="$(mktemp -d)" set -x \
+    && git clone -q https://github.com/balena-io-modules/libnss-openvpn.git "${tmp}" \
+    && cd "${tmp}" \
+    && git -C "${tmp}" checkout -q ${LIBNSS_OPENVPN_VERSION} \
+    && make -C "${tmp}" -j "$(nproc)" \
+    && make -C "${tmp}" install \
+    && sed --in-place --regexp-extended 's|(hosts:\W+)(.*)|\1openvpn \2|' /etc/nsswitch.conf \
+    && rm -rf "${tmp}"
+
+COPY sha256sums.txt .
+ENV NODE_EXPORTER_VERSION 1.0.1
+RUN NODE_EXPORTER_TGZ="node_exporter-${NODE_EXPORTER_VERSION}.linux-$(echo '%%BALENA_ARCH%%' | sed 's/amd/x/' | sed 's/aarch/arm/').tar.gz" set -x \
+    && curl -Lo "${NODE_EXPORTER_TGZ}" "https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/${NODE_EXPORTER_TGZ}" \
+    && sha256sum --ignore-missing --check sha256sums.txt \
+    && tar -xzC /usr/local/bin -f "${NODE_EXPORTER_TGZ}" --strip-components=1 --wildcards '*/node_exporter' \
+    && rm "${NODE_EXPORTER_TGZ}"
+
+ENV PROCESS_EXPORTER_VERSION 0.7.2
+COPY process-exporter_${PROCESS_EXPORTER_VERSION}_checksums.txt .
+RUN PROCESS_EXPORTER_TGZ="process-exporter-${PROCESS_EXPORTER_VERSION}.linux-$(echo '%%BALENA_ARCH%%' | sed 's/amd/x/' | sed 's/aarch/arm/').tar.gz" set -x \
+    && curl -Lo "${PROCESS_EXPORTER_TGZ}" "https://github.com/ncabatoff/process-exporter/releases/download/v${PROCESS_EXPORTER_VERSION}/${PROCESS_EXPORTER_TGZ}" \
+    && sha256sum --ignore-missing --check "process-exporter_${PROCESS_EXPORTER_VERSION}_checksums.txt" \
+    && tar -xzC /usr/local/bin -f "${PROCESS_EXPORTER_TGZ}" --strip-components=1 --wildcards '*/process-exporter' \
+    && rm "${PROCESS_EXPORTER_TGZ}"
+
+COPY package.json package-lock.json /usr/src/app/
+RUN npm ci --unsafe-perm --production && npm cache clean --force 2>/dev/null
+
+COPY --from=builder /usr/src/app/build /usr/src/app/build
+COPY bin /usr/src/app/bin
+COPY config /usr/src/app/config
+COPY openvpn /usr/src/app/openvpn
+
+COPY config/services /etc/systemd/system
+RUN systemctl enable \
+    open-balena-vpn.service \
+    node-exporter.service \
+    process-exporter.service

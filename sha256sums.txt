@@ -1,0 +1,17 @@
+eb7feb537a96d518644879f617eaef2c28e9af5878c671c0ba0af11d2c27c791  node_exporter-1.0.1.darwin-386.tar.gz
+e51d39ef14f5c6accee158e94b5e324fa6eb647444234a4be3491fbc3983df47  node_exporter-1.0.1.darwin-amd64.tar.gz
+734e036a849152b185da2080eb8656c36cde862095a464cb17705ca723ea3929  node_exporter-1.0.1.linux-386.tar.gz
+3369b76cd2b0ba678b6d618deab320e565c3d93ccb5c2a0d5db51a53857768ae  node_exporter-1.0.1.linux-amd64.tar.gz
+017514906922fcc4b7d727655690787faed0562bc7a17aa9f72b0651cb1b47fb  node_exporter-1.0.1.linux-arm64.tar.gz
+38413100bfb935c59aea088a0af792134b75972eb90ab2bc6cf1c09ad3b08aea  node_exporter-1.0.1.linux-armv5.tar.gz
+c1d7affbc7762c478c169830c43b4c6177a761bf1d2dd715dbffa55ca772655a  node_exporter-1.0.1.linux-armv6.tar.gz
+e7f4427a25f1870103588e4968c7dc8c1426c00a0c029d0183a9a7afdd61357b  node_exporter-1.0.1.linux-armv7.tar.gz
+43335ccab5728b3c61ea7a0977143719c392ce13a90fa0d14169b5c10e8babd0  node_exporter-1.0.1.linux-mips.tar.gz
+c0109f2f76628d2e25ea78e39d4b95100079ee859863be1471519b5e85a2fe78  node_exporter-1.0.1.linux-mips64.tar.gz
+bcba02058b9ce171b5c3b077f78f371eb7685239f113200d15787c55fb204857  node_exporter-1.0.1.linux-mips64le.tar.gz
+85f0a24c07c5d8237caf36a5c68a63958280dab802b5056ff36d75563d5e5241  node_exporter-1.0.1.linux-mipsle.tar.gz
+43aa5e72f5068d16eb8d33f6b729186bf558d40ec0c734746b40a16902864808  node_exporter-1.0.1.linux-ppc64.tar.gz
+5ae6c772108c877038cd66a761e4ad93edcc8c446120478499412b24e7953146  node_exporter-1.0.1.linux-ppc64le.tar.gz
+2f22d1ce18969017fb32dbd285a264adf3da6252eec05f03f105cf638ec0bb06  node_exporter-1.0.1.linux-s390x.tar.gz
+7766d78638c2f84d1084a79d8cb5d8f036b7ce375390870d5e709673118d1260  node_exporter-1.0.1.netbsd-386.tar.gz
+41cc54f77f860ed19a7b74f132269f810e3c01fbac5320c3fa2e244fa2247d56  node_exporter-1.0.1.netbsd-amd64.tar.gz
