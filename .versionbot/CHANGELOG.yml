@@ -1,4 +1,38 @@
 - commits:
+    - subject: Update open-balena-base to 11.0.0
+      hash: 06f0f0a6af1bbd2a0b7259ef618d09f2b926febf
+      body: |
+        Update open-balena-base from 10.1.0 to 11.0.0
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update to nodejs 14
+              hash: d2c0a6a0549b85ed9daa1d8f4085cd5dd96e6f86
+              body: ''
+              footer:
+                Change-type: major
+                change-type: major
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-11.0.0
+          date: 2020-10-27T16:09:19.043Z
+        - commits:
+            - subject: Fix no-systemd nodejs version
+              hash: 3b3db51c6012342fb70f868b8fa747078c2f2294
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-10.1.1
+          date: 2020-10-09T16:21:15.080Z
+  version: 9.17.0
+  date: 2020-10-28T13:56:08.740Z
+- commits:
     - subject: Update open-balena-base to 10.1.0
       hash: 9364c3f8613ed6356838c1c6edb96c3ed710b20a
       body: |
