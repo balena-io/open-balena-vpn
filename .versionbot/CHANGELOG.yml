@@ -1,4 +1,17 @@
 - commits:
+    - subject: 'meta: remove legacy codeowners'
+      hash: 18488debdde1a09e9246dadffa667f2b57c13507
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Matthew McGinn <matthew@balena.io>
+        signed-off-by: Matthew McGinn <matthew@balena.io>
+      author: Matthew McGinn
+      nested: []
+  version: 9.17.1
+  date: 2020-10-28T16:00:39.466Z
+- commits:
     - subject: Update open-balena-base to 11.0.0
       hash: 06f0f0a6af1bbd2a0b7259ef618d09f2b926febf
       body: |
