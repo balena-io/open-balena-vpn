@@ -31,7 +31,10 @@ export { Sentry };
 export const captureException = (
 	err: Error,
 	fingerprint: string,
-	opts?: { tags?: { [key: string]: string }; req?: { [key: string]: any } },
+	opts?: {
+		tags?: { [key: string]: string };
+		req?: Sentry.Handlers.ExpressRequest;
+	},
 ) => {
 	Sentry.configureScope((scope) => {
 		scope.addEventProcessor((evt) => {

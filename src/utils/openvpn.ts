@@ -292,7 +292,7 @@ export class VpnManager extends EventEmitter {
 		const kill = (signal?: ValueOf<typeof signals>) =>
 			spawn('/bin/kill', signal != null ? [`-${signal}`, pid] : [pid]);
 
-		return new Promise((resolve, reject) => {
+		return new Promise<void>((resolve, reject) => {
 			const start = Date.now();
 			const waitForDeath = (code?: number) => {
 				if (code !== 0) {
