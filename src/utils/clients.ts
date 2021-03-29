@@ -38,7 +38,7 @@ const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const REQUEST_TIMEOUT = 60000;
 
 interface DeviceStateTracker {
-	promise: Bluebird<any>;
+	promise: Promise<any>;
 	currentState: Partial<DeviceState>;
 	targetState: DeviceState;
 }
@@ -54,7 +54,7 @@ const setDeviceState = (() => {
 	const deviceStates: { [key: string]: DeviceStateTracker } = {};
 
 	const applyState = (serviceId: number, uuid: string) =>
-		(deviceStates[uuid].promise = deviceStates[uuid].promise.then(() => {
+		(deviceStates[uuid].promise = deviceStates[uuid].promise.then(async () => {
 			// Get the latest target state at the start of the request
 			const { targetState, currentState } = deviceStates[uuid];
 			if (_.isEqual(targetState, currentState)) {
@@ -63,42 +63,40 @@ const setDeviceState = (() => {
 			}
 
 			const eventType = targetState.connected ? 'connect' : 'disconnect';
-			return pooledRequest
-				.post({
-					url: `https://${BALENA_API_HOST}/services/vpn/client-${eventType}`,
-					timeout: REQUEST_TIMEOUT,
-					form: { service_id: serviceId, ...targetState },
-					headers: { Authorization: `Bearer ${apiKey}` },
-				})
-				.promise()
-				.timeout(REQUEST_TIMEOUT)
-				.then((response: IncomingMessage) => {
-					if (response.statusCode !== 200) {
-						throw new Error(
-							`Status code was '${response.statusCode}', expected '200'`,
-						);
-					}
-					// Update the current state on success
-					deviceStates[uuid].currentState = targetState;
-					return targetState;
-				})
-				.catch((err) => {
-					captureException(err, 'device-state-update-error', {
-						tags: { uuid },
-					});
-					// Add a 60 second delay in case of failure to avoid a crazy flood
-					return Bluebird.delay(60000).then(() => {
-						// Trigger another apply, to retry the failed update
-						applyState(serviceId, uuid);
-						// Since we are recursing and this function always extends
-						// the promise chain (deviceStates[uuid].promise.then ->..)
-						// we need to return targetState to make this promise resolve
-						// and let it continue with the recursion. If we just
-						// returned applyState() instead, the whole thing would
-						// deadlock
-						return targetState;
-					});
+			try {
+				const response: IncomingMessage = await pooledRequest
+					.post({
+						url: `https://${BALENA_API_HOST}/services/vpn/client-${eventType}`,
+						timeout: REQUEST_TIMEOUT,
+						form: { service_id: serviceId, ...targetState },
+						headers: { Authorization: `Bearer ${apiKey}` },
+					})
+					.promise()
+					.timeout(REQUEST_TIMEOUT);
+				if (response.statusCode !== 200) {
+					throw new Error(
+						`Status code was '${response.statusCode}', expected '200'`,
+					);
+				}
+				// Update the current state on success
+				deviceStates[uuid].currentState = targetState;
+				return targetState;
+			} catch (err) {
+				captureException(err, 'device-state-update-error', {
+					tags: { uuid },
 				});
+				// Add a 60 second delay in case of failure to avoid a crazy flood
+				await Bluebird.delay(60000);
+				// Trigger another apply, to retry the failed update
+				applyState(serviceId, uuid);
+				// Since we are recursing and this function always extends
+				// the promise chain (deviceStates[uuid].promise.then ->..)
+				// we need to return targetState to make this promise resolve
+				// and let it continue with the recursion. If we just
+				// returned applyState() instead or awaited it, the whole thing would
+				// deadlock
+				return targetState;
+			}
 		}));
 
 	return (serviceId: number, state: DeviceState) => {
@@ -107,7 +105,7 @@ const setDeviceState = (() => {
 			deviceStates[uuid] = {
 				targetState: state,
 				currentState: {},
-				promise: Bluebird.resolve(),
+				promise: Promise.resolve(),
 			};
 		} else {
 			deviceStates[uuid].targetState = state;

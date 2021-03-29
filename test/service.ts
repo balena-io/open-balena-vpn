@@ -37,8 +37,10 @@ describe('id', () => {
 		expect(() => service.getId()).to.throw('Not Registered');
 	});
 
-	it('should return the service id once registered on the api', () =>
-		service.register().then(() => expect(service.getId()).to.equal(serviceId)));
+	it('should return the service id once registered on the api', async () => {
+		await service.register();
+		expect(service.getId()).to.equal(serviceId);
+	});
 });
 
 describe('sendHeartbeat()', () => {
@@ -55,10 +57,10 @@ describe('sendHeartbeat()', () => {
 			});
 	});
 
-	it('should trigger a patch request on service_instance using PineJS', () =>
-		service.sendHeartbeat().then((registered) => {
-			expect(registered).to.be.equal(true);
-			expect(called).to.equal(1);
-			expect(isAlive).to.be.equal(true);
-		}));
+	it('should trigger a patch request on service_instance using PineJS', async () => {
+		const registered = await service.sendHeartbeat();
+		expect(registered).to.be.equal(true);
+		expect(called).to.equal(1);
+		expect(isAlive).to.be.equal(true);
+	});
 });
