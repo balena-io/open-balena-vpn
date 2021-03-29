@@ -1,4 +1,18 @@
 - commits:
+    - subject: Remove linting on prepush as it's already handled on commit
+      hash: 76e330fc790d07b9f874150550fa2116892bb32c
+      body: |
+        Also the linting on prepush works very poorly on windows due to
+        complaints around line endings even if the committed line endings are
+        fine
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 9.17.9
+  date: 2021-03-29T14:47:20.774Z
+- commits:
     - subject: Make more use of native promises and async/await
       hash: 7c9ea783420216ee4877a2c8ab2b1bfeeb518bb3
       body: ''
