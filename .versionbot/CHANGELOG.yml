@@ -1,4 +1,124 @@
 - commits:
+    - subject: Update dependencies
+      hash: 09c8aac7845800a3b0bfa77146638f179ac25205
+      body: |
+        Update pinejs-client-request from 7.2.2 to 7.3.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Enable typescript strict mode
+              hash: 23d43e8d6974f87745d7c7ef04084223c4a9556f
+              body: |
+                Update pinejs-client-core from 6.9.3 to 6.9.5
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested:
+                - commits:
+                    - subject: Enable strict tsconfig options by default
+                      hash: 8ad51e0af76b9e6c1676a0e4069d851f7b3c5211
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-6.9.5
+                  date: 2021-03-22T14:28:40.467Z
+                - commits:
+                    - subject: Update dependencies
+                      hash: 764a29ab100601362e2018c8867be7e66ea10c71
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-6.9.4
+                  date: 2021-03-10T20:28:20.915Z
+          version: pinejs-client-request-7.3.1
+          date: 2021-03-22T15:00:22.209Z
+        - commits:
+            - subject: Update dependencies
+              hash: 0ed7686c1efca57f95034dd084e070859d7955b9
+              body: |
+                Update pinejs-client-core from 6.7.2 to 6.9.3
+              footer:
+                Change-type: minor
+                change-type: minor
+              author: Pagan Gazzard
+              nested:
+                - commits:
+                    - subject: Explicitly specify return types for all functions
+                      hash: d53b6cef4ba00527b889d49a6567b8964457025e
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-6.9.3
+                  date: 2020-11-20T14:26:20.412Z
+                - commits:
+                    - subject: Update dev dependencies
+                      hash: 0af301426da52e51d50789394b19d7af205fc735
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-6.9.2
+                  date: 2020-10-23T12:21:29.017Z
+                - commits:
+                    - subject: Improve typings
+                      hash: c8cd644f5e9d8eb43895086cd9ca453b9d651fd6
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-6.9.1
+                  date: 2020-09-17T18:15:44.916Z
+                - commits:
+                    - subject: Add 'getOrCreate' method supporting natural keys
+                      hash: 5aa39b34fef7c7a4bbb27c2c81bb1c8ee4ee2c94
+                      body: ''
+                      footer:
+                        Change-type: minor
+                        change-type: minor
+                        Signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+                        signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+                      author: Thodoris Greasidis
+                  version: pinejs-client-js-6.9.0
+                  date: 2020-09-07T10:54:14.786Z
+                - commits:
+                    - subject: Add support for $format
+                      hash: aa85327cb7910c74b1bed5323f7ae708aeb2d2b9
+                      body: ''
+                      footer:
+                        Change-type: minor
+                        change-type: minor
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-6.8.0
+                  date: 2020-09-03T15:46:49.095Z
+                - commits:
+                    - subject: >-
+                        Improve $orderby typing to allow `[{a: 'desc'}, {b:
+                        'asc'}]`
+                      hash: 3f66006790c0ace813dd902125b22cf79f2a3095
+                      body: ''
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-6.7.3
+                  date: 2020-08-26T15:41:19.488Z
+          version: pinejs-client-request-7.3.0
+          date: 2020-11-20T14:46:49.312Z
+  version: 9.17.7
+  date: 2021-03-29T12:40:00.914Z
+- commits:
     - subject: Update open-balena-base to 11.1.0
       hash: 5eff2c700bcaa429c5d738ab600d55e295333de6
       body: |
