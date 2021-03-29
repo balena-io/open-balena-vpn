@@ -1,4 +1,15 @@
 - commits:
+    - subject: Make more use of native promises and async/await
+      hash: 7c9ea783420216ee4877a2c8ab2b1bfeeb518bb3
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 9.17.8
+  date: 2021-03-29T14:36:10.131Z
+- commits:
     - subject: Update dependencies
       hash: 09c8aac7845800a3b0bfa77146638f179ac25205
       body: |
