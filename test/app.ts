@@ -58,8 +58,8 @@ const vpnDefaultOpts = [
 ];
 
 interface HttpServerAsync {
-	listenAsync(port: number): Bluebird<HttpServerAsync>;
-	closeAsync(): Bluebird<HttpServerAsync>;
+	listenAsync(port: number): Promise<HttpServerAsync>;
+	closeAsync(): Promise<HttpServerAsync>;
 }
 
 before(() => {
@@ -163,11 +163,14 @@ describe('VPN proxy', function () {
 			}),
 		) as any) as HttpServerAsync;
 
-		return Bluebird.using(vpnClient.connect(credentials, vpnDefaultOpts), () =>
-			server
-				.listenAsync(8080)
-				.tap(() => func())
-				.tap(() => server.closeAsync()),
+		return Bluebird.using(
+			vpnClient.connect(credentials, vpnDefaultOpts),
+			async () => {
+				const s = await server.listenAsync(8080);
+				await func();
+				await server.closeAsync();
+				return s;
+			},
 		);
 	};
 
@@ -213,32 +216,30 @@ describe('VPN proxy', function () {
 		});
 
 		it('should allow port 8080 without authentication (.balena)', () =>
-			vpnTest({ user: 'user3', pass: 'pass' }, () =>
-				pooledRequest({
+			vpnTest({ user: 'user3', pass: 'pass' }, async () => {
+				const response = await pooledRequest({
 					url: 'http://deadbeef.balena:8080/test',
 					proxy: 'http://localhost:3128',
 					tunnel: true,
-				}).then((response) => {
-					expect(response).to.have.property('statusCode').that.equals(200);
-					expect(response)
-						.to.have.property('body')
-						.that.equals('hello from 8080');
-				}),
-			));
+				});
+				expect(response).to.have.property('statusCode').that.equals(200);
+				expect(response)
+					.to.have.property('body')
+					.that.equals('hello from 8080');
+			}));
 
 		it('should allow port 8080 without authentication (.resin)', () =>
-			vpnTest({ user: 'user3', pass: 'pass' }, () =>
-				pooledRequest({
+			vpnTest({ user: 'user3', pass: 'pass' }, async () => {
+				const response = await pooledRequest({
 					url: 'http://deadbeef.resin:8080/test',
 					proxy: 'http://localhost:3128',
 					tunnel: true,
-				}).then((response) => {
-					expect(response).to.have.property('statusCode').that.equals(200);
-					expect(response)
-						.to.have.property('body')
-						.that.equals('hello from 8080');
-				}),
-			));
+				});
+				expect(response).to.have.property('statusCode').that.equals(200);
+				expect(response)
+					.to.have.property('body')
+					.that.equals('hello from 8080');
+			}));
 	});
 
 	describe('tunnel forwarding', () => {
@@ -372,18 +373,17 @@ describe('VPN proxy', function () {
 					],
 				});
 
-			return vpnTest({ user: 'user5', pass: 'pass' }, () =>
-				pooledRequest({
+			return vpnTest({ user: 'user5', pass: 'pass' }, async () => {
+				const response = await pooledRequest({
 					url: 'http://deadbeef.balena:8080/test',
 					proxy: 'http://BALENA_api:test_api_key@localhost:3128',
 					tunnel: true,
-				}).then((response) => {
-					expect(response).to.have.property('statusCode').that.equals(200);
-					expect(response)
-						.to.have.property('body')
-						.that.equals('hello from 8080');
-				}),
-			);
+				});
+				expect(response).to.have.property('statusCode').that.equals(200);
+				expect(response)
+					.to.have.property('body')
+					.that.equals('hello from 8080');
+			});
 		});
 	});
 });

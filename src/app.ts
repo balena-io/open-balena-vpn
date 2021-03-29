@@ -146,7 +146,7 @@ if (cluster.isMaster) {
 			app.disable('x-powered-by');
 			app.get('/ping', (_req, res) => res.send('OK'));
 			app
-				.get('/cluster_metrics', (_req, res) => {
+				.get('/cluster_metrics', async (_req, res) => {
 					for (const clientMetrics of Object.values(workerMetrics)) {
 						metrics.histogram(
 							Metrics.SessionRxBitrate,
@@ -157,22 +157,20 @@ if (cluster.isMaster) {
 							_.mean(clientMetrics.txBitrate),
 						);
 					}
-					return new prometheus.AggregatorRegistry()
-						.clusterMetrics()
-						.then((clusterMetrics: string) => {
-							res.set('Content-Type', prometheus.register.contentType);
-							res.write(prometheus.register.metrics());
-							res.write('\n');
-							res.write(clusterMetrics);
-							res.end();
-							workerMetrics = {};
-							metrics.reset(Metrics.SessionRxBitrate);
-							metrics.reset(Metrics.SessionTxBitrate);
-						})
-						.catch((err: Error) => {
-							serviceLogger.warning(`error in /cluster_metrics: ${err}`);
-							res.status(500).send();
-						});
+					try {
+						const clusterMetrics = await new prometheus.AggregatorRegistry().clusterMetrics();
+						res.set('Content-Type', prometheus.register.contentType);
+						res.write(prometheus.register.metrics());
+						res.write('\n');
+						res.write(clusterMetrics);
+						res.end();
+						workerMetrics = {};
+						metrics.reset(Metrics.SessionRxBitrate);
+						metrics.reset(Metrics.SessionTxBitrate);
+					} catch (err) {
+						serviceLogger.warning(`error in /cluster_metrics: ${err}`);
+						res.status(500).send();
+					}
 				})
 				.listen(8080);
 
