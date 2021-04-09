@@ -1,4 +1,38 @@
 - commits:
+    - subject: Update open-balena-base to 11.1.2
+      hash: 6a010a804e01986f9fad941eff905b94aef6e2f6
+      body: |
+        Update open-balena-base from 11.1.0 to 11.1.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update nodejs to 14.16.1 and npm to 6.14.12
+              hash: 602c54358898ca38005824c748a0682df814d5a8
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-11.1.2
+          date: 2021-04-08T16:53:39.920Z
+        - commits:
+            - subject: Drop CircleCI
+              hash: 35e8f707fac5767b1d85c30d3ad9244caef1efd1
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: ab77
+              nested: []
+          version: open-balena-base-11.1.1
+          date: 2021-03-17T18:24:28.365Z
+  version: 9.17.10
+  date: 2021-04-09T12:34:10.364Z
+- commits:
     - subject: Remove linting on prepush as it's already handled on commit
       hash: 76e330fc790d07b9f874150550fa2116892bb32c
       body: |
