@@ -1,4 +1,15 @@
 - commits:
+    - subject: Delete CODEOWNERS
+      hash: 50c104752af5234efe3e32b4b5f67e4bd218dd04
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: dfunckt
+      nested: []
+  version: 9.17.12
+  date: 2021-07-01T11:23:30.200Z
+- commits:
     - subject: Update open-balena-base to 11.2.0
       hash: 94a5b8cf954e9f460045dcfa98ca3095e795308b
       body: |
