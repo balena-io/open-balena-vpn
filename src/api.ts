@@ -158,7 +158,7 @@ interface ExpressAsync extends express.Express {
 }
 
 export const apiServer = (serviceId: number) => {
-	const app = Bluebird.promisifyAll(express()) as ExpressAsync;
+	const app = Bluebird.promisifyAll(express()) as any as ExpressAsync;
 	app.disable('x-powered-by');
 	app.get('/ping', (_req, res) => res.send('OK'));
 	app.use(morgan('combined'));
