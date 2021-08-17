@@ -156,12 +156,12 @@ describe('VPN proxy', function () {
 		credentials: { user: string; pass: string },
 		func: () => any,
 	): Bluebird<HttpServerAsync> => {
-		const server = (Bluebird.promisifyAll(
+		const server = Bluebird.promisifyAll(
 			http.createServer((_req, res) => {
 				res.writeHead(200, { 'Content-type': 'text/plain' });
 				res.end('hello from 8080');
 			}),
-		) as any) as HttpServerAsync;
+		) as any as HttpServerAsync;
 
 		return Bluebird.using(
 			vpnClient.connect(credentials, vpnDefaultOpts),

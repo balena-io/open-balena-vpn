@@ -158,7 +158,8 @@ if (cluster.isMaster) {
 						);
 					}
 					try {
-						const clusterMetrics = await new prometheus.AggregatorRegistry().clusterMetrics();
+						const clusterMetrics =
+							await new prometheus.AggregatorRegistry().clusterMetrics();
 						res.set('Content-Type', prometheus.register.contentType);
 						res.write(prometheus.register.metrics());
 						res.write('\n');
