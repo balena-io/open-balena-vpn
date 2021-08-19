@@ -1,4 +1,53 @@
 - commits:
+    - subject: Update open-balena-base to 11.3.12
+      hash: feb57669f1096393a840d6ebdef6802d9b19fd7d
+      body: |
+        Update open-balena-base from 11.3.9 to 11.3.12
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Add hosts
+              hash: 19693644e1a255f602229c0cd9ba7d88ded29843
+              body: |
+                * loki
+                * alertmanager
+                * remove duplicate host
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: ab77
+              nested: []
+          version: open-balena-base-11.3.12
+          date: 2021-08-13T23:22:49.151Z
+        - commits:
+            - subject: Remove deprecated etcd config
+              hash: 00d595b6e7e525c692c522c4e3dca13e5e09015d
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: ab77
+              nested: []
+          version: open-balena-base-11.3.11
+          date: 2021-08-13T18:17:35.128Z
+        - commits:
+            - subject: Add missing init script
+              hash: e794f58cb352c0b5b8a42e946edfd0c6c07a3f66
+              body: |
+                * balena-root-ca
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: ab77
+              nested: []
+          version: open-balena-base-11.3.10
+          date: 2021-08-13T16:35:37.479Z
+  version: 9.17.19
+  date: 2021-08-19T13:04:49.891Z
+- commits:
     - subject: Update dependencies
       hash: 2f46e4e7985df2bb84907a0868f0fe888e7b189c
       body: ''
