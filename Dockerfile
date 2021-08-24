@@ -34,8 +34,8 @@ RUN tmp="$(mktemp -d)" set -x \
     && sed --in-place --regexp-extended 's|(hosts:\W+)(.*)|\1openvpn \2|' /etc/nsswitch.conf \
     && rm -rf "${tmp}"
 
-ENV NODE_EXPORTER_VERSION 0.18.1
-ENV NODE_EXPORTER_SHA256SUM b2503fd932f85f4e5baf161268854bf5d22001869b84f00fd2d1f57b51b72424
+ENV NODE_EXPORTER_VERSION 1.2.2
+ENV NODE_EXPORTER_SHA256SUM 344bd4c0bbd66ff78f14486ec48b89c248139cdd485e992583ea30e89e0e5390
 RUN NODE_EXPORTER_TGZ="/tmp/node_exporter.tar.gz" set -x \
     && curl -Lo "${NODE_EXPORTER_TGZ}" https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz \
     && echo "${NODE_EXPORTER_SHA256SUM}  ${NODE_EXPORTER_TGZ}" | sha256sum -c \
