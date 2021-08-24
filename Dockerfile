@@ -42,8 +42,8 @@ RUN NODE_EXPORTER_TGZ="/tmp/node_exporter.tar.gz" set -x \
     && tar -xzC /usr/local/bin -f "${NODE_EXPORTER_TGZ}" --strip-components=1 --wildcards '*/node_exporter' \
     && rm "${NODE_EXPORTER_TGZ}"
 
-ENV PROCESS_EXPORTER_VERSION 0.5.0
-ENV PROCESS_EXPORTER_SHA256SUM 1b422f5f26ebefc0928b56fbefc08d0aab3cc7a636627d7d57b200af84e91bb9
+ENV PROCESS_EXPORTER_VERSION 0.7.5
+ENV PROCESS_EXPORTER_SHA256SUM 27f133596205654a67b4a3e3af11db640f7d4609a457f48c155901835bd349c6
 RUN PROCESS_EXPORTER_TGZ="/tmp/process_exporter.tar.gz" set -x \
     && curl -Lo "${PROCESS_EXPORTER_TGZ}" https://github.com/ncabatoff/process-exporter/releases/download/v${PROCESS_EXPORTER_VERSION}/process-exporter-${PROCESS_EXPORTER_VERSION}.linux-amd64.tar.gz \
     && echo "${PROCESS_EXPORTER_SHA256SUM}  ${PROCESS_EXPORTER_TGZ}" | sha256sum -c \
