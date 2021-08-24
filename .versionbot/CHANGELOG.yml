@@ -1,4 +1,27 @@
 - commits:
+    - subject: Update open-balena-base to 12.0.2
+      hash: 313ce5cbe9ae207fe7b65ceb18678bbb280b9284
+      body: |
+        Update open-balena-base from 12.0.1 to 12.0.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Use multi-user.target as the default target
+              hash: 9006b9eb301b9a315b7fbde5fe4100681f3f4eac
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-12.0.2
+          date: 2021-08-24T17:26:10.620Z
+  version: 9.20.1
+  date: 2021-08-24T17:38:37.252Z
+- commits:
     - subject: Update node exporter to 1.2.2
       hash: 484709230283361754d769938d4cce907dd01ae4
       body: ''
