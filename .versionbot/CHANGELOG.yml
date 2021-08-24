@@ -1,4 +1,15 @@
 - commits:
+    - subject: Update node exporter to 1.2.2
+      hash: 484709230283361754d769938d4cce907dd01ae4
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 9.20.0
+  date: 2021-08-24T15:24:51.288Z
+- commits:
     - subject: Update process exporter to 0.7.5
       hash: 1088c2385dc4c27653ff27bd9891047092d81028
       body: ''
