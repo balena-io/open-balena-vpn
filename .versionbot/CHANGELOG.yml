@@ -1,4 +1,15 @@
 - commits:
+    - subject: Update process exporter to 0.7.5
+      hash: 1088c2385dc4c27653ff27bd9891047092d81028
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 9.19.0
+  date: 2021-08-24T15:10:35.486Z
+- commits:
     - subject: Update open-balena-base to 12.0.1
       hash: 934b9488c9ca6e9b3121c45e94cbe2cf40e15d6c
       body: |
