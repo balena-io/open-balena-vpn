@@ -2,7 +2,7 @@
 {{ $maxconn := getenv "VPN_HAPROXY_MAXCONN" "10000" -}}
 {{ $timeout := getenv "VPN_HAPROXY_TIMEOUT" (getenv "VPN_KEEPALIVE_TIMEOUT" "60") -}}
 {{- /* VPN Settings */ -}}
-{{ $vpnPort := getenv "BALENA_VPN_PORT" -}}
+{{ $vpnPort := getenv "VPN_PORT" -}}
 {{- /* bindOpts = "accept-proxy" unless VPN_HAPROXY_ACCEPT_PROXY == 'false' */ -}}
 {{ $bindOpt := (or (and (eq (getenv "VPN_HAPROXY_USEPROXYPROTOCOL" "false") "true") "accept-proxy") "") -}}
 {{- /* servers = getenv(VPN_INSTANCE_COUNT, default=getenv(NPROC) if production else 1) */ -}}
