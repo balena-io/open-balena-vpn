@@ -1,4 +1,15 @@
 - commits:
+    - subject: Remove BALENA_|RESIN_ prefixes
+      hash: e1a9a83ed58fcc7d48a547d9a3a4500d2788b336
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: ab77
+      nested: []
+  version: 9.21.0
+  date: 2021-08-25T15:48:41.560Z
+- commits:
     - subject: Update open-balena-base to 12.0.2
       hash: 313ce5cbe9ae207fe7b65ceb18678bbb280b9284
       body: |
