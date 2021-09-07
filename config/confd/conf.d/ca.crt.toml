@@ -2,5 +2,6 @@
 src = "ca.crt.tmpl"
 dest = "/etc/openvpn/ca.crt"
 keys = [
+  "ROOT_CA",
   "VPN_OPENVPN_CA_CRT"
 ]

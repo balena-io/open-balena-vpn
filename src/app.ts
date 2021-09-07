@@ -56,11 +56,16 @@ const VPN_INSTANCE_COUNT = getInstanceCount('VPN_INSTANCE_COUNT');
 const VPN_API_PORT = intVar('VPN_API_PORT');
 const VPN_VERBOSE_LOGS = process.env.DEFAULT_VERBOSE_LOGS === 'true';
 
-const VPN_SERVICE_ADDRESS =
-	process.env.VPN_SERVICE_REGISTER_INTERFACE != null
-		? os.networkInterfaces()[process.env.VPN_SERVICE_REGISTER_INTERFACE]?.[0]
-				?.address
-		: undefined;
+const getIPv4InterfaceInfo = (iface?: string): os.NetworkInterfaceInfo[] => {
+	return Object.entries(os.networkInterfaces())
+		.filter(([nic]) => nic === iface)
+		.flatMap(([, ips]) => ips || [])
+		.filter((ip) => !ip.internal && ip.family === 'IPv4');
+};
+
+const VPN_SERVICE_ADDRESS = getIPv4InterfaceInfo(
+	process.env.VPN_SERVICE_REGISTER_INTERFACE,
+)?.[0]?.address;
 
 describeMetrics();
 
@@ -109,7 +114,7 @@ if (cluster.isMaster) {
 	service.wrap({ ipAddress: VPN_SERVICE_ADDRESS }, (serviceInstance) => {
 		const serviceLogger = getLogger('master', serviceInstance.getId());
 		serviceLogger.info(
-			`registered as service instance with id=${serviceInstance.getId()}`,
+			`registered as service instance with id=${serviceInstance.getId()} ipAddress=${VPN_SERVICE_ADDRESS}`,
 		);
 
 		serviceLogger.info('spawning vpn authentication api server...');
