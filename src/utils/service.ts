@@ -84,7 +84,7 @@ class ServiceInstance {
 	}
 
 	public async wrap(
-		{ ipAddress }: { ipAddress?: string },
+		{ ipAddress }: { ipAddress: string | undefined },
 		func: (serviceInstance: this) => void,
 	) {
 		await this.register(ipAddress);

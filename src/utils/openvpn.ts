@@ -126,7 +126,7 @@ export declare interface VpnManager {
 export class VpnManager extends EventEmitter {
 	private process?: ChildProcess;
 	private readonly connector = new VpnConnector();
-	private buf?: string;
+	private buf: string | undefined;
 	private readonly pidFile: string;
 
 	constructor(
