@@ -1,4 +1,15 @@
 - commits:
+    - subject: Update dependencies
+      hash: 41364b517e96ac2f902a8a91c693e8e285195899
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 9.21.1
+  date: 2021-09-13T16:22:10.197Z
+- commits:
     - subject: Remove BALENA_|RESIN_ prefixes
       hash: e1a9a83ed58fcc7d48a547d9a3a4500d2788b336
       body: ''
