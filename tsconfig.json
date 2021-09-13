@@ -14,7 +14,7 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,
-		"strictNullChecks": true,
+		"useUnknownInCatchVariables": false,
 		"target": "es2020"
 	},
 	"exclude": [
