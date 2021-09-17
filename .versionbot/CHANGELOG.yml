@@ -1,4 +1,15 @@
 - commits:
+    - subject: Fix losing the ip address to register when retrying on error
+      hash: 9e8551e37d9bd8610dd4df66d7aebef7dfd235ec
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 9.21.2
+  date: 2021-09-17T17:03:40.460Z
+- commits:
     - subject: Update dependencies
       hash: 41364b517e96ac2f902a8a91c693e8e285195899
       body: ''
