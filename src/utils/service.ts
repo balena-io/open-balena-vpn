@@ -52,7 +52,7 @@ class ServiceInstance {
 		} catch (err) {
 			this.captureException(err, 'service-registration-error');
 			await Bluebird.delay(this.interval);
-			return await this.register();
+			return await this.register(ipAddress);
 		}
 	}
 
