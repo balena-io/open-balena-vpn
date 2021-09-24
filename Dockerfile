@@ -1,4 +1,4 @@
-FROM balena/open-balena-base:v12.0.2 as base
+FROM balena/open-balena-base:v12.1.0 as base
 
 
 FROM base as builder
@@ -16,9 +16,9 @@ FROM base as main
 EXPOSE 80 443 3128
 
 RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/dev/null \
-	&& echo deb http://haproxy.debian.net bullseye-backports-2.4 main > /etc/apt/sources.list.d/haproxy.list \
+    && echo deb http://haproxy.debian.net bullseye-backports-2.4 main > /etc/apt/sources.list.d/haproxy.list \
     && apt-get update -qq \
-	&& apt-get install -qy haproxy=2.4.* iptables --no-install-recommends \
+    && apt-get install -qy haproxy=2.4.* iptables --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
     && ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts \
@@ -57,6 +57,8 @@ COPY --from=builder /usr/src/app/build /usr/src/app/build
 COPY bin /usr/src/app/bin
 COPY config /usr/src/app/config
 COPY openvpn /usr/src/app/openvpn
+
+COPY docker-hc /usr/src/app/
 
 COPY config/services /etc/systemd/system
 RUN systemctl enable \

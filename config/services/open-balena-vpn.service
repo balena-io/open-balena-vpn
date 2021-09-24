@@ -15,8 +15,8 @@
 
 [Unit]
 Description=open-balena-vpn
-Requires=confd.service haproxy.service balena-root-ca.service
-After=confd.service balena-root-ca.service
+Requires=confd.service haproxy.service
+After=confd.service
 StartLimitIntervalSec=0
 
 [Service]
