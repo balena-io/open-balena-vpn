@@ -1,4 +1,88 @@
 - commits:
+    - subject: Update open-balena-base to 12.1.0
+      hash: 106be67176b92f45a328b9fca8b349423564fb76
+      body: |
+        * resolve VPN_SERVICE_ADDRESS via a promise
+        * log ipAddress during service registration
+        * use auto-resolved Sentry DSN is present
+        * add Docker healthcheck
+
+        Update open-balena-base from 12.0.2 to 12.1.0
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: ab77
+      nested:
+        - commits:
+            - subject: Auto-configure balenaMachine(bob)
+              hash: efb8da155b7bedec44558dfcd55cb6b535099c01
+              body: >
+                + allows balenaMachine(s)/BoB(s) to automatically configure
+                itself (without bob-cli)
+
+                + auto-configuration requires balena-ca and cert-manager to do
+                the heavy lifting prior
+
+                + corresponding [balena-on-balena
+                PR](https://github.com/balena-io/balena-on-balena/pull/261)
+
+
+                * refactor confd.service to include both root-ca and
+                host-envvars handling
+
+                * add systemd path watcher to restart confd if keys/certs change
+                during runtime
+
+                * store stack configuration available to all services in a
+                persistent/shared volume (/balena)
+
+                * change resolver order to dns => mdns (ipv4) => mdns (ipv6) =>
+                return
+
+                * configure API key and JOSE/JWT key id
+
+                * configure open-balena-vpn (PKI) environment variables
+
+                * configure Sentry DSNs
+
+                * configure API keys/tokens
+
+                * configure proxy and devices SSH keys
+
+                * bundle Git SSH keys
+
+                * refactor environment handling in non-systemd variant
+
+                * deprecate BALENA_ prefixes from confd
+              footer:
+                Change-type: minor
+                change-type: minor
+                Co-authored-by: dfunckt <dfunckt@users.noreply.github.com>
+                co-authored-by: dfunckt <dfunckt@users.noreply.github.com>
+              author: ab77
+              nested: []
+          version: open-balena-base-12.1.0
+          date: 2021-09-24T16:30:37.661Z
+        - commits:
+            - subject: Attempt to load root CA certificate bundle from file
+              hash: 493bb446e99fc7a5b6ecaa4e796942aa65ad03d0
+              body: >
+                * allows dynamic certificate generation and loading within the
+                stack
+
+                * if a (volume|directory) /certs exists, set up a notification
+                to watch
+                  for /certs/ca-bundle.pem and update CA certificates/restart confd
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: ab77
+              nested: []
+          version: open-balena-base-12.0.3
+          date: 2021-09-01T21:12:04.483Z
+  version: 9.22.0
+  date: 2021-09-24T19:17:19.742Z
+- commits:
     - subject: Fix losing the ip address to register when retrying on error
       hash: 9e8551e37d9bd8610dd4df66d7aebef7dfd235ec
       body: ''
