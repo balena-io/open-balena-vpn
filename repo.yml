@@ -5,7 +5,7 @@ upstream:
   - repo: 'node-tunnel'
     url: 'https://github.com/balena-io-modules/node-tunnel'
   - repo: 'open-balena-base'
-    url: 'https://github.com/balena-io/open-balena-base'
+    url: 'https://github.com/balena-io-modules/open-balena-base'
   - repo: 'pinejs-client-request'
     url: 'https://github.com/balena-io-modules/pinejs-client-request'
   - repo: 'typed-error'
