@@ -1,4 +1,15 @@
 - commits:
+    - subject: Update dependencies
+      hash: 0fba5b792fecb127ba8cfaa2f1718b353661f391
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 9.23.1
+  date: 2021-11-01T16:11:57.303Z
+- commits:
     - subject: Update open-balena-base to 13.0.0
       hash: 5e59ce408662e4c2f856fce4b5fc9141a6bfd8b5
       body: |
