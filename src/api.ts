@@ -28,6 +28,7 @@ import {
 	Metrics,
 	pooledRequest,
 } from './utils';
+import { TRUST_PROXY } from './utils/config';
 import { Sentry } from './utils/errors';
 import { hasDurationData, isTrusted } from './utils/openvpn';
 
@@ -159,6 +160,7 @@ interface ExpressAsync extends express.Express {
 
 export const apiServer = (serviceId: number) => {
 	const app = Bluebird.promisifyAll(express()) as any as ExpressAsync;
+	app.set('trust proxy', TRUST_PROXY);
 	app.disable('x-powered-by');
 	app.get('/ping', (_req, res) => res.send('OK'));
 	app.use(morgan('combined'));

@@ -24,7 +24,7 @@ import * as prometheus from 'prom-client';
 
 import { apiServer } from './api';
 import { describeMetrics, getLogger, Metrics, service, VERSION } from './utils';
-import { getInstanceCount, intVar } from './utils/config';
+import { getInstanceCount, intVar, TRUST_PROXY } from './utils/config';
 
 import proxyWorker from './proxy-worker';
 import vpnWorker from './vpn-worker';
@@ -148,6 +148,7 @@ if (cluster.isMaster) {
 			});
 
 			const app = express();
+			app.set('trust proxy', TRUST_PROXY);
 			app.disable('x-powered-by');
 			app.get('/ping', (_req, res) => res.send('OK'));
 			app
