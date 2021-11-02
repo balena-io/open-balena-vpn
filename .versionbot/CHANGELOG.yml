@@ -1,4 +1,15 @@
 - commits:
+    - subject: Add support for setting trust proxy via an env var
+      hash: f6c049a1ec1f804726a0bfd1506e4180b5e1c48f
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 9.24.0
+  date: 2021-11-02T17:21:43.157Z
+- commits:
     - subject: Update dependencies
       hash: 0fba5b792fecb127ba8cfaa2f1718b353661f391
       body: ''
