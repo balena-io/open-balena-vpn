@@ -1,4 +1,15 @@
 - commits:
+    - subject: Enforce minimum TLS v1.2
+      hash: f643c32c265859938dd0ffc7bae340dbce14148f
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: ab77
+      nested: []
+  version: 9.25.0
+  date: 2021-11-08T19:41:39.514Z
+- commits:
     - subject: Add support for setting trust proxy via an env var
       hash: f6c049a1ec1f804726a0bfd1506e4180b5e1c48f
       body: ''
