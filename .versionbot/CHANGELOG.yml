@@ -1,4 +1,15 @@
 - commits:
+    - subject: Allow ciphers to be configured
+      hash: f9cb89e87c75bac770a9b01af150c55dd54565ba
+      body: ''
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 9.26.0
+  date: 2021-11-09T19:26:10.329Z
+- commits:
     - subject: Add data-ciphers-fallback to allow older openvpn clients to connect
       hash: f53af5f9d485d56615f057b817583b0255bd9cd7
       body: ''
