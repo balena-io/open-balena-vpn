@@ -27,9 +27,7 @@ tls-server
 # accept TLS v1.2 minimum
 tls-version-min 1.2
 
-data-ciphers AES-128-GCM:AES-192-GCM:AES-256-GCM:AES-128-CBC:AES-192-CBC:AES-256-CBC
-# allow older openvpn installations to connect
-data-ciphers-fallback BF-CBC
+data-ciphers {{ getenv "VPN_DATA_CIPHERS" "AES-128-GCM:AES-192-GCM:AES-256-GCM:AES-128-CBC:AES-192-CBC:AES-256-CBC" }}
 
 group nogroup
 user nobody
