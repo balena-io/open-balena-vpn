@@ -1,4 +1,15 @@
 - commits:
+    - subject: Raise soft open files limit for HAProxy
+      hash: 29f889456b0bb8bab7831ac9218b94ee06b0e67f
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 9.26.1
+  date: 2021-11-13T17:30:52.852Z
+- commits:
     - subject: Allow ciphers to be configured
       hash: f9cb89e87c75bac770a9b01af150c55dd54565ba
       body: ''
