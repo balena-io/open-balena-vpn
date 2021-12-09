@@ -1,4 +1,51 @@
 - commits:
+    - subject: Update open-balena-base to 13.0.3
+      hash: 6e957d539b79be5c60e6d05f8366dbae0c804c9a
+      body: |
+        Update open-balena-base from 13.0.0 to 13.0.3
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update to nodejs 16.13.1 and npm 8.2.0
+              hash: f755bed613e3c18383ba032df6c179be06e5b1d9
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-13.0.3
+          date: 2021-12-08T08:29:52.680Z
+        - commits:
+            - subject: Stage stack global environment
+              hash: 1e11429dd099dbdb92dec93d11edd715fb640526
+              body: |
+                * cache environment on volume
+                * read hosts, tokens and sentry config from environment
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: ab77
+              nested: []
+          version: open-balena-base-13.0.2
+          date: 2021-11-19T02:02:07.272Z
+        - commits:
+            - subject: Install python3 for node-gyp 8.x which is used by npm 8
+              hash: 9b42d099d82c8c8249aef3a38ecacbcdb501c15f
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-13.0.1
+          date: 2021-11-01T16:33:58.305Z
+  version: 9.26.2
+  date: 2021-12-09T11:27:23.701Z
+- commits:
     - subject: Raise soft open files limit for HAProxy
       hash: 29f889456b0bb8bab7831ac9218b94ee06b0e67f
       body: ''
