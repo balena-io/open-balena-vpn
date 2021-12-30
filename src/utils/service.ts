@@ -15,8 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Bluebird from 'bluebird';
-
+import { setTimeout } from 'timers/promises';
 import { apiKey, balenaApi, captureException } from '.';
 import { ServiceRegistrationError } from './errors';
 
@@ -51,13 +50,13 @@ class ServiceInstance {
 			return this;
 		} catch (err) {
 			this.captureException(err, 'service-registration-error');
-			await Bluebird.delay(this.interval);
+			await setTimeout(this.interval);
 			return await this.register(ipAddress);
 		}
 	}
 
 	public async scheduleHeartbeat() {
-		await Bluebird.delay(this.interval);
+		await setTimeout(this.interval);
 		try {
 			return await this.sendHeartbeat();
 		} finally {
