@@ -25,9 +25,9 @@
 // Reset does not happen by actually resending all the events,
 // the API has a special endpoint that first sets all clients as offline.
 
-import * as Bluebird from 'bluebird';
 import { IncomingMessage } from 'http';
 import * as _ from 'lodash';
+import { setTimeout } from 'timers/promises';
 
 import { apiKey, captureException } from './index';
 
@@ -86,7 +86,7 @@ const setDeviceState = (() => {
 					tags: { uuid },
 				});
 				// Add a 60 second delay in case of failure to avoid a crazy flood
-				await Bluebird.delay(60000);
+				await setTimeout(60000);
 				// Trigger another apply, to retry the failed update
 				applyState(serviceId, uuid);
 				// Since we are recursing and this function always extends
