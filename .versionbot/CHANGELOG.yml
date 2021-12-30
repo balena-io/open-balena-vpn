@@ -1,4 +1,15 @@
 - commits:
+    - subject: Use timers/promises instead of Bluebird.delay
+      hash: 017c0dc7a160670969a8a8646c20f6e0b92e519c
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 9.26.4
+  date: 2021-12-30T14:43:43.464Z
+- commits:
     - subject: Update dependencies
       hash: d318aaf15d56168c780615f034ead5fab831f3ad
       body: ''
