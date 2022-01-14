@@ -1,4 +1,27 @@
 - commits:
+    - subject: Update open-balena-base to 13.0.4
+      hash: 5183d2b93bdff66d3449058fd745b86b109cf7d7
+      body: |
+        Update open-balena-base from 13.0.3 to 13.0.4
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update to nodejs 16.13.2 and npm 8.3.0
+              hash: 34eb13df1c1132857f1adf8c4f77a41b3f674677
+              body: ''
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-13.0.4
+          date: 2022-01-11T20:01:46.378Z
+  version: 9.26.5
+  date: 2022-01-13T15:40:02.769Z
+- commits:
     - subject: Use timers/promises instead of Bluebird.delay
       hash: 017c0dc7a160670969a8a8646c20f6e0b92e519c
       body: ''
