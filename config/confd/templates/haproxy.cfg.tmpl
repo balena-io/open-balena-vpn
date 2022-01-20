@@ -11,6 +11,8 @@
 global
 	master-worker
 	maxconn {{$maxconn}}
+	# Manually set the ulimit to the max we allow
+	ulimit-n 1048576
 	user haproxy
 	group haproxy
 	stats socket /var/run/haproxy.sock mode 600 level admin
