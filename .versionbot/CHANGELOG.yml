@@ -1,4 +1,18 @@
 - commits:
+    - subject: Manually specify ulimit in haproxy.cfg
+      hash: 501e5e4d31781b3536255e7dd105a3b9aec473f4
+      body: |
+        This avoids issues where it's auto-calculated from max connections but
+        ends up too small in practice and causes problems with the soft limit
+        even though the hard limit is much higher
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 9.26.6
+  date: 2022-01-20T17:54:17.893Z
+- commits:
     - subject: Update open-balena-base to 13.0.4
       hash: 5183d2b93bdff66d3449058fd745b86b109cf7d7
       body: |
