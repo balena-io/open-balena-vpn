@@ -59,9 +59,12 @@ COPY config /usr/src/app/config
 COPY openvpn /usr/src/app/openvpn
 
 COPY docker-hc /usr/src/app/
+COPY entry.sh /usr/src/app/entry.sh
 
 COPY config/services /etc/systemd/system
-RUN systemctl enable \
-    open-balena-vpn.service \
-    node-exporter.service \
-    process-exporter.service
+# RUN systemctl enable \
+#     open-balena-vpn.service \
+#     node-exporter.service \
+#     process-exporter.service
+
+CMD [ "/usr/src/app/entry.sh" ]
