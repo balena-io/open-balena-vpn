@@ -1,3 +1,4 @@
+#!/bin/bash
 # Run confd --onetime
 confd -onetime -confdir /usr/src/app/config/confd -backend env
 
@@ -12,6 +13,7 @@ set -m
 # Start openvpn
 /bin/bash -c 'mkdir -p /dev/net; if [ ! -c /dev/net/tun ]; then mknod /dev/net/tun c 10 200; fi' && \
 /usr/sbin/iptables-legacy -P FORWARD ${IPTABLES_FORWARD_POLICY} && \
+mkdir /var/run/openvpn && \
 /usr/src/app/bin/start.sh & \
 
 # Start haproxy

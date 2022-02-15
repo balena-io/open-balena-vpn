@@ -1,8 +1,9 @@
-FROM balena/open-balena-base:v13.0.4 as base
+FROM balena/open-balena-base:no-systemd-13.0.4 as base
 
 
 FROM base as builder
 COPY package.json package-lock.json /usr/src/app/
+WORKDIR /usr/src/app
 RUN npm ci && npm cache clean --force 2>/dev/null
 COPY tsconfig.json tsconfig.dev.json /usr/src/app/
 COPY typings /usr/src/app/typings
@@ -21,10 +22,11 @@ RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/d
     && apt-get install -qy haproxy=2.4.* iptables --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
-    && ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts \
-    && systemctl mask openvpn@.service openvpn.service
+    && mkdir /etc/openvpn/ \
+    && ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts
 
 ENV LIBNSS_OPENVPN_VERSION 22feb11322182f6fd79f85cd014b65b6c40b7b47
+RUN apt update && apt install git make gcc libc6-dev openvpn
 RUN tmp="$(mktemp -d)" set -x \
     && git clone -q https://github.com/balena-io-modules/libnss-openvpn.git "${tmp}" \
     && cd "${tmp}" \
@@ -51,6 +53,7 @@ RUN PROCESS_EXPORTER_TGZ="/tmp/process_exporter.tar.gz" set -x \
     && rm "${PROCESS_EXPORTER_TGZ}"
 
 COPY package.json package-lock.json /usr/src/app/
+WORKDIR /usr/src/app
 RUN npm ci --unsafe-perm --production && npm cache clean --force 2>/dev/null
 
 COPY --from=builder /usr/src/app/build /usr/src/app/build
@@ -60,11 +63,8 @@ COPY openvpn /usr/src/app/openvpn
 
 COPY docker-hc /usr/src/app/
 COPY entry.sh /usr/src/app/entry.sh
+RUN chmod +x /usr/src/app/entry.sh
 
 COPY config/services /etc/systemd/system
-# RUN systemctl enable \
-#     open-balena-vpn.service \
-#     node-exporter.service \
-#     process-exporter.service
 
 CMD [ "/usr/src/app/entry.sh" ]
