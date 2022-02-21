@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update haproxy to 2.5
+      hash: 7188d02a2a31b8a52f78d35f7e24e5aec9e3c1ac
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 9.27.0
+  title: "'Update haproxy to 2.5'"
+  date: 2022-02-21T17:58:56.038Z
+- commits:
     - subject: Update open-balena-base to 13.1.0
       hash: 7cfae4b978cd4a59d7d060583fc3d62e11814c5f
       body: |
