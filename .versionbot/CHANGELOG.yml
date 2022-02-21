@@ -1,4 +1,69 @@
 - commits:
+    - subject: Update open-balena-base to 13.1.0
+      hash: 7cfae4b978cd4a59d7d060583fc3d62e11814c5f
+      body: |
+        Update open-balena-base from 13.0.4 to 13.1.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update nodejs to 16.14.0 and npm to 8.5.1
+              hash: 96344108de1f79799132f47ad59643658590d582
+              body: ""
+              footer:
+                Change-type: minor
+                change-type: minor
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-13.1.0
+          title: "'Update nodejs to 16.14.0 and npm to 8.5.1'"
+          date: 2022-02-21T16:05:34.829Z
+        - commits:
+            - subject: Avoid cryptic names and rename bcr to registry-proxy
+              hash: c3d6787df9412883b8706f6edf7db80ed885b71f
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-13.0.7
+          title: "'Avoid cryptic names and rename bcr to registry-proxy'"
+          date: 2022-02-16T16:48:08.416Z
+        - commits:
+            - subject: Add new balena container registry (bcr) host
+              hash: 67769b8c23c562120aeee32ce38e3f80519370cb
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-13.0.6
+          title: "'Add new balena container registry (bcr) host'"
+          date: 2022-02-15T19:56:44.683Z
+        - commits:
+            - subject: Refactor ROOT_CA handling/resolution
+              hash: 2c26140eab961b5f6eac6e69fabfed3f35175dbf
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: ab77
+              nested: []
+          version: open-balena-base-13.0.5
+          title: Refactor ROOT_CA handling
+          date: 2022-02-01T20:10:39.392Z
+  version: 9.26.7
+  title: "'Update open-balena-base to 13.1.0'"
+  date: 2022-02-21T16:30:19.439Z
+- commits:
     - subject: Manually specify ulimit in haproxy.cfg
       hash: 501e5e4d31781b3536255e7dd105a3b9aec473f4
       body: |
@@ -25,7 +90,7 @@
         - commits:
             - subject: Update to nodejs 16.13.2 and npm 8.3.0
               hash: 34eb13df1c1132857f1adf8c4f77a41b3f674677
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -38,7 +103,7 @@
 - commits:
     - subject: Use timers/promises instead of Bluebird.delay
       hash: 017c0dc7a160670969a8a8646c20f6e0b92e519c
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -49,7 +114,7 @@
 - commits:
     - subject: Update dependencies
       hash: d318aaf15d56168c780615f034ead5fab831f3ad
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -70,7 +135,7 @@
         - commits:
             - subject: Update to nodejs 16.13.1 and npm 8.2.0
               hash: f755bed613e3c18383ba032df6c179be06e5b1d9
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -94,7 +159,7 @@
         - commits:
             - subject: Install python3 for node-gyp 8.x which is used by npm 8
               hash: 9b42d099d82c8c8249aef3a38ecacbcdb501c15f
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -107,7 +172,7 @@
 - commits:
     - subject: Raise soft open files limit for HAProxy
       hash: 29f889456b0bb8bab7831ac9218b94ee06b0e67f
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -118,7 +183,7 @@
 - commits:
     - subject: Allow ciphers to be configured
       hash: f9cb89e87c75bac770a9b01af150c55dd54565ba
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -129,7 +194,7 @@
 - commits:
     - subject: Add data-ciphers-fallback to allow older openvpn clients to connect
       hash: f53af5f9d485d56615f057b817583b0255bd9cd7
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -140,7 +205,7 @@
 - commits:
     - subject: Enforce minimum TLS v1.2
       hash: f643c32c265859938dd0ffc7bae340dbce14148f
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -151,7 +216,7 @@
 - commits:
     - subject: Add support for setting trust proxy via an env var
       hash: f6c049a1ec1f804726a0bfd1506e4180b5e1c48f
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -162,7 +227,7 @@
 - commits:
     - subject: Update dependencies
       hash: 0fba5b792fecb127ba8cfaa2f1718b353661f391
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -183,7 +248,7 @@
         - commits:
             - subject: Update nodejs to 16.13.0 and npm 8.1.1
               hash: ed92e55bd095696e03115761f3c396b72c801a33
-              body: ''
+              body: ""
               footer:
                 Change-type: major
                 change-type: major
@@ -206,7 +271,7 @@
         - commits:
             - subject: Update nodejs to 14.18.1 and npm to 6.14.15
               hash: 613f0a4462227bc8dc2bb16aa91b3306c1c87b16
-              body: ''
+              body: ""
               footer:
                 Change-type: minor
                 change-type: minor
@@ -215,11 +280,9 @@
           version: open-balena-base-12.2.0
           date: 2021-10-18T10:48:20.444Z
         - commits:
-            - subject: >-
-                Simplify config by baking the device UUID into the DNS_TLD if
-                available
+            - subject: Simplify config by baking the device UUID into the DNS_TLD if available
               hash: 140aaf311c000963c51f3304a04221d386209c5a
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -262,24 +325,18 @@
                 + allows balenaMachine(s)/BoB(s) to automatically configure
                 itself (without bob-cli)
 
-                + auto-configuration requires balena-ca and cert-manager to do
-                the heavy lifting prior
+                + auto-configuration requires balena-ca and cert-manager to do the heavy lifting prior
 
-                + corresponding [balena-on-balena
-                PR](https://github.com/balena-io/balena-on-balena/pull/261)
+                + corresponding [balena-on-balena PR](https://github.com/balena-io/balena-on-balena/pull/261)
 
 
-                * refactor confd.service to include both root-ca and
-                host-envvars handling
+                * refactor confd.service to include both root-ca and host-envvars handling
 
-                * add systemd path watcher to restart confd if keys/certs change
-                during runtime
+                * add systemd path watcher to restart confd if keys/certs change during runtime
 
-                * store stack configuration available to all services in a
-                persistent/shared volume (/balena)
+                * store stack configuration available to all services in a persistent/shared volume (/balena)
 
-                * change resolver order to dns => mdns (ipv4) => mdns (ipv6) =>
-                return
+                * change resolver order to dns => mdns (ipv4) => mdns (ipv6) => return
 
                 * configure API key and JOSE/JWT key id
 
@@ -312,8 +369,7 @@
                 * allows dynamic certificate generation and loading within the
                 stack
 
-                * if a (volume|directory) /certs exists, set up a notification
-                to watch
+                * if a (volume|directory) /certs exists, set up a notification to watch
                   for /certs/ca-bundle.pem and update CA certificates/restart confd
               footer:
                 Change-type: patch
@@ -327,7 +383,7 @@
 - commits:
     - subject: Fix losing the ip address to register when retrying on error
       hash: 9e8551e37d9bd8610dd4df66d7aebef7dfd235ec
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -338,7 +394,7 @@
 - commits:
     - subject: Update dependencies
       hash: 41364b517e96ac2f902a8a91c693e8e285195899
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -349,7 +405,7 @@
 - commits:
     - subject: Remove BALENA_|RESIN_ prefixes
       hash: e1a9a83ed58fcc7d48a547d9a3a4500d2788b336
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -370,7 +426,7 @@
         - commits:
             - subject: Use multi-user.target as the default target
               hash: 9006b9eb301b9a315b7fbde5fe4100681f3f4eac
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -383,7 +439,7 @@
 - commits:
     - subject: Update node exporter to 1.2.2
       hash: 484709230283361754d769938d4cce907dd01ae4
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -394,7 +450,7 @@
 - commits:
     - subject: Update process exporter to 0.7.5
       hash: 1088c2385dc4c27653ff27bd9891047092d81028
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -415,7 +471,7 @@
         - commits:
             - subject: Use basic.target as the default target
               hash: 8e886caf096ab5559f0e841b25e781549d686ce2
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -426,7 +482,7 @@
         - commits:
             - subject: Update to debian bullseye
               hash: ab2063d323d09fcc7f9ea86bb8228eab9b543fd0
-              body: ''
+              body: ""
               footer:
                 Change-type: major
                 change-type: major
@@ -463,7 +519,7 @@
         - commits:
             - subject: Remove deprecated etcd config
               hash: 00d595b6e7e525c692c522c4e3dca13e5e09015d
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -488,7 +544,7 @@
 - commits:
     - subject: Update dependencies
       hash: 2f46e4e7985df2bb84907a0868f0fe888e7b189c
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -534,7 +590,7 @@
         - commits:
             - subject: Update nodejs to 14.17.5
               hash: f53fdc6772da9353cd131053f350f266940997f5
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -545,7 +601,7 @@
         - commits:
             - subject: Use DNS_TLD internally
               hash: 90ce2fde5004cf4f3e69af4eaac19947b024b9c3
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -581,7 +637,7 @@
         - commits:
             - subject: Update nodejs to 14.17.4 and npm to 6.14.14
               hash: a4ebaa82f22a5aa4dc134c659e6aa117364d116d
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -595,8 +651,7 @@
               body: >
                 * TOKEN_AUTH_REALM => REGISTRY2_TOKEN_AUTH_REALM
 
-                * REGISTRY2_TOKEN_AUTH_REALM is the new name for
-                BALENA_TOKEN_AUTH_REALM
+                * REGISTRY2_TOKEN_AUTH_REALM is the new name for BALENA_TOKEN_AUTH_REALM
               footer:
                 Change-type: patch
                 change-type: patch
@@ -646,7 +701,7 @@
         - commits:
             - subject: Update nodejs to 14.17.2
               hash: cc11cc5654ee0bf85af40882a567c9b7fb644f48
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -657,7 +712,7 @@
         - commits:
             - subject: Delete .github directory
               hash: d4d32ee5b021b1dd8864e2a2285530f1f4a85829
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -668,7 +723,7 @@
         - commits:
             - subject: Update nodejs to 14.17.1
               hash: e0471dbbe042d4416ad3bba67ea50dcc4565de9f
-              body: ''
+              body: ""
               footer:
                 Change-type: minor
                 change-type: minor
@@ -683,7 +738,7 @@
 - commits:
     - subject: Delete CODEOWNERS
       hash: 50c104752af5234efe3e32b4b5f67e4bd218dd04
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -704,7 +759,7 @@
         - commits:
             - subject: Update nodejs to 14.17.0 and npm to 6.14.13
               hash: d4a35f84c95db475b972aab4ed7781ce47515f39
-              body: ''
+              body: ""
               footer:
                 Change-type: minor
                 change-type: minor
@@ -727,7 +782,7 @@
         - commits:
             - subject: Update nodejs to 14.16.1 and npm to 6.14.12
               hash: 602c54358898ca38005824c748a0682df814d5a8
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -738,7 +793,7 @@
         - commits:
             - subject: Drop CircleCI
               hash: 35e8f707fac5767b1d85c30d3ad9244caef1efd1
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -765,7 +820,7 @@
 - commits:
     - subject: Make more use of native promises and async/await
       hash: 7c9ea783420216ee4877a2c8ab2b1bfeeb518bb3
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -796,7 +851,7 @@
                 - commits:
                     - subject: Enable strict tsconfig options by default
                       hash: 8ad51e0af76b9e6c1676a0e4069d851f7b3c5211
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -806,7 +861,7 @@
                 - commits:
                     - subject: Update dependencies
                       hash: 764a29ab100601362e2018c8867be7e66ea10c71
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -828,7 +883,7 @@
                 - commits:
                     - subject: Explicitly specify return types for all functions
                       hash: d53b6cef4ba00527b889d49a6567b8964457025e
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -838,7 +893,7 @@
                 - commits:
                     - subject: Update dev dependencies
                       hash: 0af301426da52e51d50789394b19d7af205fc735
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -848,7 +903,7 @@
                 - commits:
                     - subject: Improve typings
                       hash: c8cd644f5e9d8eb43895086cd9ca453b9d651fd6
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -858,7 +913,7 @@
                 - commits:
                     - subject: Add 'getOrCreate' method supporting natural keys
                       hash: 5aa39b34fef7c7a4bbb27c2c81bb1c8ee4ee2c94
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
@@ -870,7 +925,7 @@
                 - commits:
                     - subject: Add support for $format
                       hash: aa85327cb7910c74b1bed5323f7ae708aeb2d2b9
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
@@ -878,11 +933,9 @@
                   version: pinejs-client-js-6.8.0
                   date: 2020-09-03T15:46:49.095Z
                 - commits:
-                    - subject: >-
-                        Improve $orderby typing to allow `[{a: 'desc'}, {b:
-                        'asc'}]`
+                    - subject: "Improve $orderby typing to allow `[{a: 'desc'}, {b: 'asc'}]`"
                       hash: 3f66006790c0ace813dd902125b22cf79f2a3095
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -906,7 +959,7 @@
         - commits:
             - subject: Update nodejs to 14.16.0
               hash: ed8a58f5db73244f75d2e10b6b8df9d883247558
-              body: ''
+              body: ""
               footer:
                 Change-type: minor
                 change-type: minor
@@ -929,7 +982,7 @@
         - commits:
             - subject: Update nodejs to 14.15.5 and npm to 6.14.11
               hash: 2e812ae8993ad13b1ac0d7a760e4c45ab8b8bd9d
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -952,7 +1005,7 @@
         - commits:
             - subject: Update nodejs to 14.15.4 and npm to 6.14.10
               hash: 0a52eb67b211fdc31d73e279e6e871b2e803f485
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -975,7 +1028,7 @@
         - commits:
             - subject: Update nodejs to 14.15.3 and npm to 6.14.9
               hash: 6d9ed96133ca1b4783eafc8b8698f10cd88aaad2
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -998,7 +1051,7 @@
         - commits:
             - subject: Update nodejs to 14.15.1
               hash: cf533d8fa978bddd6650f129a010b285be485070
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1009,7 +1062,7 @@
         - commits:
             - subject: Publish tagged versions of the no-systemd image
               hash: 30cd15a4e5fa065635b76f18b842a0dd43320778
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1020,9 +1073,9 @@
   version: 9.17.2
   date: 2020-11-20T11:17:21.613Z
 - commits:
-    - subject: 'meta: remove legacy codeowners'
+    - subject: "meta: remove legacy codeowners"
       hash: 18488debdde1a09e9246dadffa667f2b57c13507
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -1045,7 +1098,7 @@
         - commits:
             - subject: Update to nodejs 14
               hash: d2c0a6a0549b85ed9daa1d8f4085cd5dd96e6f86
-              body: ''
+              body: ""
               footer:
                 Change-type: major
                 change-type: major
@@ -1056,7 +1109,7 @@
         - commits:
             - subject: Fix no-systemd nodejs version
               hash: 3b3db51c6012342fb70f868b8fa747078c2f2294
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1079,7 +1132,7 @@
         - commits:
             - subject: Update nodejs to 12.19.0
               hash: 8431b0e087367ac38454017f86bd1d6f8e8eb814
-              body: ''
+              body: ""
               footer:
                 Change-type: minor
                 change-type: minor
@@ -1092,7 +1145,7 @@
 - commits:
     - subject: Fix string flattening
       hash: cd7ff431ff8d798086baff33cc3b48ca1dd334af
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -1113,7 +1166,7 @@
         - commits:
             - subject: Update dev dependencies
               hash: 65948663c760b5b33d5f294adcf555bb57baa11c
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1126,7 +1179,7 @@
 - commits:
     - subject: Avoid unintentionally keeping large strings in memory
       hash: e4557ced0db25127b06492e29b32d49b2d6bdf08
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -1137,7 +1190,7 @@
 - commits:
     - subject: Renew test certificates
       hash: d24c331a280b23c59bbf7a3f7be0ac9854b0bde9
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -1148,7 +1201,7 @@
 - commits:
     - subject: update open-balena-base from 9.4.3 to 10.0.2
       hash: 23c4cab1451283fc4978b37471f0237a54274744
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -1182,7 +1235,7 @@
                 - commits:
                     - subject: Fix prepare $count typings
                       hash: fe63b2ba648b0ef545afe9fd18d433faca4af6a2
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -1192,7 +1245,7 @@
                 - commits:
                     - subject: Improve typings for request/post/put/patch/delete
                       hash: 32c0d5b40c14e44155391099a9051255c38b1c05
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
@@ -1215,7 +1268,7 @@
                 - commits:
                     - subject: Update dependencies
                       hash: dc41949015399154efb4529183daa0dfc9269b52
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -1223,11 +1276,9 @@
                   version: typed-error-3.2.1
                   date: 2020-08-05T12:34:06.377Z
                 - commits:
-                    - subject: >-
-                        Fix typing when id is specified to be `AnyObject |
-                        undefined`
+                    - subject: Fix typing when id is specified to be `AnyObject | undefined`
                       hash: c4802cb748b1552345f036120c3aa6254e6cc946
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -1235,18 +1286,16 @@
                   version: pinejs-client-js-6.6.1
                   date: 2020-08-11T17:10:09.498Z
                 - commits:
-                    - subject: 'Deprecate `$expand: { ''a/$count'': {...} }`'
+                    - subject: "Deprecate `$expand: { 'a/$count': {...} }`"
                       hash: 8be33ad064905476e3f21978b7e1d760f5e27f4e
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
                       author: Pagan Gazzard
-                    - subject: >-
-                        Deprecate `resource: 'a/$count'` and update typings to
-                        reflect it
+                    - subject: "Deprecate `resource: 'a/$count'` and update typings to reflect it"
                       hash: 779cc424cb6d2562aa9a98a3ff083b68308d9797
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
@@ -1254,20 +1303,16 @@
                   version: pinejs-client-js-6.6.0
                   date: 2020-08-11T16:18:59.088Z
                 - commits:
-                    - subject: >-
-                        Add `options: { $count: { ... } }` sugar for top level
-                        $count
+                    - subject: "Add `options: { $count: { ... } }` sugar for top level $count"
                       hash: 13072f715da6c0ca3eab08584eaa48f39ea985b2
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
                       author: Pagan Gazzard
-                    - subject: >-
-                        Add `$expand: { a: { $count: { ... } } }` sugar for
-                        $count in expands
+                    - subject: "Add `$expand: { a: { $count: { ... } } }` sugar for $count in expands"
                       hash: b2afb397c09a31c9ab3c1c370846c1b8762db32d
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
@@ -1277,7 +1322,7 @@
                 - commits:
                     - subject: Improve return typing of `subscribe` method
                       hash: 2311fe03b04f4e6149693a9e5c392f9f0bb2a549
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
@@ -1287,30 +1332,28 @@
                 - commits:
                     - subject: Fix Poll.on typings
                       hash: 315697d9c2c0e59652bcceddb7f36cb498269f64
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
                       author: Pagan Gazzard
                     - subject: Improve return typing when id is passed to GET methods
                       hash: 2d174f758314a20c01a171ac5826b71e4f623dcc
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
                       author: Pagan Gazzard
-                    - subject: >-
-                        Remove `PromiseResult` type, use
-                        `Promise<PromiseResultTypes>` instead
+                    - subject: Remove `PromiseResult` type, use `Promise<PromiseResultTypes>` instead
                       hash: 905f275731af6ce2560c37f41343052f05365cd1
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
                       author: Pagan Gazzard
-                    - subject: 'Remove `PromiseObj` type, use `Promise<{}>` instead'
+                    - subject: Remove `PromiseObj` type, use `Promise<{}>` instead
                       hash: 78aa2410aa86bf73cc4831f2149fc85e28a6ea23
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
@@ -1318,11 +1361,9 @@
                   version: pinejs-client-js-6.3.0
                   date: 2020-08-11T08:57:09.655Z
                 - commits:
-                    - subject: >-
-                        Add `$filter: { a: { $count: 1 } }` sugar for $count in
-                        filters
+                    - subject: "Add `$filter: { a: { $count: 1 } }` sugar for $count in filters"
                       hash: f2fef3833f321bf81543c62a9a3db09d7fbc0a4a
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
@@ -1332,7 +1373,7 @@
                 - commits:
                     - subject: Remove redundant ParamsObj/SubscribeParamsObj types
                       hash: f5fc6762aa8f1918424fb5e1c1a05435f07af285
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -1342,16 +1383,14 @@
                 - commits:
                     - subject: Make use of `mapObj` helper in more places
                       hash: 2189f9918cb515071d2f6ecb941b0d838ee6c5ea
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
                       author: Pagan Gazzard
-                    - subject: >-
-                        Use `Object.keys` in preference to `hasOwnProperty`
-                        where applicable
+                    - subject: Use `Object.keys` in preference to `hasOwnProperty` where applicable
                       hash: 2ea0e9549974150ef9e7f82206f25000407e37ba
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -1373,7 +1412,7 @@
                 - commits:
                     - subject: Add support for using named ids
                       hash: f6035bf5240e8aea1b92997d976cebd9a1857a61
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
@@ -1401,7 +1440,7 @@
         - commits:
             - subject: Increase default timeout to 59s
               hash: fc17266fe147bf40086feb81b6c96a344bf74f29
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1411,7 +1450,7 @@
           date: 2020-07-28T10:29:41.385Z
     - subject: Update to use api v6
       hash: a4c05ec7c2d15ab721fa731396c1c141b22e352d
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -1432,35 +1471,35 @@
         - commits:
             - subject: Empty commit to attempt republish
               hash: 72c0214672a1e552cb8fa63f9a96aa47b5db19b1
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
               author: Pagan Gazzard
             - subject: Switch from bluebird-lru-cache to lru-cache for caching
               hash: e69b9cb202140de25f5b6cc9258cccb71854fd6f
-              body: ''
+              body: ""
               footer:
                 Change-type: major
                 change-type: major
               author: Pagan Gazzard
             - subject: Update target to es2018
               hash: 1c2e8725305219f0c144cca583a1e8225d64c503
-              body: ''
+              body: ""
               footer:
                 Change-type: major
                 change-type: major
               author: Pagan Gazzard
             - subject: Remove bluebird dependency
               hash: b066e578427c179c9cb7fca6dda2e2e17da01a46
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
               author: Pagan Gazzard
             - subject: Convert to async/await
               hash: 3ca7a939c2e25861cf3484b1ef31f7ccbec9369a
-              body: ''
+              body: ""
               footer:
                 Change-type: major
                 change-type: major
@@ -1477,56 +1516,56 @@
                 - commits:
                     - subject: Increase minimum es version to es2015
                       hash: 52f3a97dc2b5aba07090a688fcd7afa2d2d789d8
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: major
                         change-type: major
                       author: Pagan Gazzard
                     - subject: Convert to async/await
                       hash: b6c6d1f1dc9e9b05e60964a87e1677b0b4cc74eb
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: major
                         change-type: major
                       author: Pagan Gazzard
                     - subject: Remove now unnecessary PinejsClientCoreFactory
                       hash: 35adea3c7c33a74920652ea547e8d649592e86fc
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: major
                         change-type: major
                       author: Pagan Gazzard
                     - subject: Switch to using native promises
                       hash: d87e4570be580dccb1e511068beaf79878e66d06
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: major
                         change-type: major
                       author: Pagan Gazzard
                     - subject: Drop support for deprecated request overrides
                       hash: 5aa89779bb06b9437382439b324f91d5fa9061b7
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: major
                         change-type: major
                       author: Pagan Gazzard
                     - subject: Drop support for deprecated `query` method
                       hash: 2a0d315b111832c0a15a4cc581cd3f3cb5c32cd7
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: major
                         change-type: major
                       author: Pagan Gazzard
                     - subject: Drop support for deprecated string based requests
                       hash: 493a2bc970923eb8d79e684e10d4ec433803a20c
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: major
                         change-type: major
                       author: Pagan Gazzard
                     - subject: Use `;` for expand options instead of `&`
                       hash: 62f0f4c406ce87b2ba6d4a7f74c88107ac3144cb
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: major
                         change-type: major
@@ -1538,7 +1577,7 @@
         - commits:
             - subject: Lazy load bluebird-lru-cache and lodash
               hash: a2b6b74600b9ddecc98cb90a5d2d9ca28495b835
-              body: ''
+              body: ""
               footer:
                 Change-type: minor
                 change-type: minor
@@ -1548,7 +1587,7 @@
         - commits:
             - subject: Convert some lodash usage to native versions
               hash: 93aaa1f518859bbe08a5746fbb1668c9fd446ae3
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1558,7 +1597,7 @@
         - commits:
             - subject: Remove unused dependencies
               hash: 58a13f0fbe9692be029812db19f22aac7bd6f0f9
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1576,11 +1615,9 @@
               author: Pagan Gazzard
               nested:
                 - commits:
-                    - subject: >-
-                        Generate optional builds for es2015/es2018 as well as
-                        the default es5
+                    - subject: Generate optional builds for es2015/es2018 as well as the default es5
                       hash: 510682b0e2a9d2a338aa977bd4782ec60fc5b196
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
@@ -1590,7 +1627,7 @@
                 - commits:
                     - subject: Update dependencies
                       hash: 8141a6dfe6edd4c7e432d85c3533e6e02a43e2ff
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -1598,16 +1635,14 @@
                   version: pinejs-client-js-5.7.1
                   date: 2020-05-25T16:57:46.154Z
                 - commits:
-                    - subject: >-
-                        Make transformGetResult a method , to ease overriding
-                        the get method
+                    - subject: Make transformGetResult a method , to ease overriding the get method
                       hash: f267d4bfc006d1aabfb0ed1f79c9234ecb5c7d5f
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
-                        See: 'https://github.com/balena-io/balena-api/pull/2532'
-                        see: 'https://github.com/balena-io/balena-api/pull/2532'
+                        See: https://github.com/balena-io/balena-api/pull/2532
+                        see: https://github.com/balena-io/balena-api/pull/2532
                       author: Thodoris Greasidis
                   version: pinejs-client-js-5.7.0
                   date: 2020-04-15T13:13:28.186Z
@@ -1628,7 +1663,7 @@
         - commits:
             - subject: Update nodejs to 12.18.3 and npm to 6.14.7
               hash: 4155244b8964625dac10c55f8e3cf7a6010e1ebc
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1640,7 +1675,7 @@
 - commits:
     - subject: Increase UV_THREADPOOL_SIZE to 128
       hash: 82f6f83ff61228ac9eb9cac1e2767a3129b5d64f
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -1651,7 +1686,7 @@
 - commits:
     - subject: register with api using local interface address if specified
       hash: 1c71590c51d7ef04ed6f7fc45de4d42f2b17a639
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -1674,7 +1709,7 @@
         - commits:
             - subject: Update nodejs to 12.18.2
               hash: 7ca9da66bd3de13616642235a342f5b45feae96e
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1684,7 +1719,7 @@
         - commits:
             - subject: Update nodejs to 12.18.1
               hash: 94c1803d479d80d3f9c1450bf0c3ea0d4639478b
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1694,7 +1729,7 @@
         - commits:
             - subject: Update nodejs to 12.18.0
               hash: f7bf6f487ea64af6ffce821974ccddc5646bb6d8
-              body: ''
+              body: ""
               footer:
                 Change-type: minor
                 change-type: minor
@@ -1704,9 +1739,9 @@
   version: 9.13.7
   date: 2020-06-30T22:34:32.923Z
 - commits:
-    - subject: 'dockerfile: explicitly disable os-provided openvpn services'
+    - subject: "dockerfile: explicitly disable os-provided openvpn services"
       hash: 5c87bedb9e1c526109abc3210fd33f68e92b5550
-      body: ''
+      body: ""
       footer:
         Connects-to: balena-io/balena-on-balena#191
         connects-to: balena-io/balena-on-balena#191
@@ -1730,7 +1765,7 @@
         - commits:
             - subject: Update nodejs to 12.17.0 and npm to 6.14.5
               hash: 66675b45ed52a14775a1d0d01bcf6658ee9f0aca
-              body: ''
+              body: ""
               footer:
                 Change-type: minor
                 change-type: minor
@@ -1742,7 +1777,7 @@
 - commits:
     - subject: Update dependencies
       hash: a87997efd23a73e7bfb35a7b61e56c70be27c95e
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -1762,7 +1797,7 @@
         - commits:
             - subject: Update nodejs to 12.16.3
               hash: 069780c6c88a8247c684a574e57bf885c3b45be9
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1772,7 +1807,7 @@
         - commits:
             - subject: Forward log from journald to console by default
               hash: 60d85f6207929eb0426979fb56e5238439a3a5b8
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1808,9 +1843,9 @@
       author: Pagan Gazzard
       nested:
         - commits:
-            - subject: 'Update nodejs to 12.16.2, npm to 6.14.4'
+            - subject: Update nodejs to 12.16.2, npm to 6.14.4
               hash: 116bbb6bf4f9a548a68b959c39d54c8abc2d5bd7
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1822,7 +1857,7 @@
 - commits:
     - subject: resolve service instance count from podinfo
       hash: 2cb39faa9c7e492c0fe5e7570fa34570c8e4bc0d
-      body: ''
+      body: ""
       footer:
         Co-Authored-By: Page- <pjgazzard@googlemail.com>
         co-authored-by: Page- <pjgazzard@googlemail.com>
@@ -1846,7 +1881,7 @@
         - commits:
             - subject: Add linting
               hash: 988d58f708da1bd1a4389a1a2129fa5d30706065
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1856,7 +1891,7 @@
         - commits:
             - subject: Move require-npm4-to-publish to dev dependencies
               hash: 084a19f61c408643d9a9448c1d656bed7791fec5
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1874,7 +1909,7 @@
                 - commits:
                     - subject: update deps and specify minimum engine requirements
                       hash: 22f293afc187e67b88dab280951eb6e2bb504b24
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
@@ -1884,7 +1919,7 @@
                   version: typed-error-3.2.0
                   date: 2019-11-20T09:52:39.017Z
                 - commits:
-                    - subject: "\U0001F41B: Fix missing `deprecated.getStringParams` function"
+                    - subject: "🐛: Fix missing `deprecated.getStringParams` function"
                       hash: 53edb7e7485acd4310e9b04291894f6ab746285a
                       body: |
                         The function `deprecated.getStringParams` was used, but
@@ -1900,7 +1935,7 @@
                 - commits:
                     - subject: Update to resin-lint 3.x
                       hash: f1b415154cc21b9880ad8ee1134ea9340220aba2
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -1908,9 +1943,9 @@
                   version: pinejs-client-js-5.6.10
                   date: 2020-02-14T15:37:12.741Z
                 - commits:
-                    - subject: 'CircleCI: Remove deploy job as it''s handled by balenaCI'
+                    - subject: "CircleCI: Remove deploy job as it's handled by balenaCI"
                       hash: d6c9a485e0da5f6aa600597b6d076a8dce411df7
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -1933,21 +1968,21 @@
                 - commits:
                     - subject: Deprecate request overrides
                       hash: 84fa00ab60a98bbe56885ee5fabcccfc876a86d6
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
                       author: Pagan Gazzard
                     - subject: Deprecate queries using a string url
                       hash: 8cd9be6b0642ff5b1cba0596f827a74fd76bbff5
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
                       author: Pagan Gazzard
                     - subject: Deprecate `query` in favor of `get`
                       hash: ab77d10cad0a57914018b76c9755deddb3e078ef
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -1957,7 +1992,7 @@
                 - commits:
                     - subject: Allow resource/$count in $filter
                       hash: 7eac38f1ed6a3bcdf1e6c4be5dde50aca953359e
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -1967,7 +2002,7 @@
                 - commits:
                     - subject: Remove `defaults` helper in favour of `??`
                       hash: 806852bceb07a858572511609dc88ea0b748038e
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -1977,7 +2012,7 @@
                 - commits:
                     - subject: Avoid allocations when destroying a poll
                       hash: 8f397a83803ae43d19331f4c32952384ba9e7fe6
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -1987,7 +2022,7 @@
                 - commits:
                     - subject: Improve `RawFilter` typing
                       hash: 2006d4e7f0fecbb99357b82215da28978194db41
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -1997,7 +2032,7 @@
                 - commits:
                     - subject: Update dependencies
                       hash: e7314acbdd029ece267a4568bf15cb5dc333eec1
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -2007,7 +2042,7 @@
                 - commits:
                     - subject: Switch most CODEOWNERS entries to a team
                       hash: 3ef7e0db285ae54f96aee3f52319ac8d8c4d61e8
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -2015,17 +2050,15 @@
                   version: pinejs-client-js-5.6.1
                   date: 2020-01-22T16:38:22.045Z
                 - commits:
-                    - subject: >-
-                        Add 'upsert' method supporting natural keys, requires
-                        Pinejs ^10.19.1
+                    - subject: Add 'upsert' method supporting natural keys, requires Pinejs ^10.19.1
                       hash: c8ebfceec3ecc1cc57ee6942db35730c6d993192
                       body: |
                         Detects unique constrain errors by 409 statusCodes.
                         Because of this, the upsert() method is only
                         supported when Pinejs ^10.19.0 is used.
                       footer:
-                        Resolves: '#77'
-                        resolves: '#77'
+                        Resolves: "#77"
+                        resolves: "#77"
                         Change-type: minor
                         change-type: minor
                         Signed-off-by: Thodoris Greasidis <thodoris@balena.io>
@@ -2034,11 +2067,9 @@
                   version: pinejs-client-js-5.6.0
                   date: 2019-07-12T20:46:17.091Z
                 - commits:
-                    - subject: >-
-                        Remove unnecessary `string` type that is handled by the
-                        `Params` type
+                    - subject: Remove unnecessary `string` type that is handled by the `Params` type
                       hash: 0ab1242860aa8b3ed4162a5ee25081c640297676
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -2046,11 +2077,9 @@
                   version: pinejs-client-js-5.5.4
                   date: 2019-06-18T14:46:38.983Z
                 - commits:
-                    - subject: >-
-                        Use an .npmrc to prevent creating a package-lock on each
-                        install
+                    - subject: Use an .npmrc to prevent creating a package-lock on each install
                       hash: 993c4ae09c3ba50e1d48e4156e86a7c890e54749
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -2060,14 +2089,12 @@
                   version: pinejs-client-js-5.5.3
                   date: 2019-06-18T10:24:38.995Z
                 - commits:
-                    - subject: >-
-                        Add some type casting so that it compiles on TypeScript
-                        3.5
+                    - subject: Add some type casting so that it compiles on TypeScript 3.5
                       hash: 695c053ceab9b146a8b755f9b041eb03e70b5914
-                      body: ''
+                      body: ""
                       footer:
-                        Resolves: '#79'
-                        resolves: '#79'
+                        Resolves: "#79"
+                        resolves: "#79"
                         Change-type: patch
                         change-type: patch
                         Signed-off-by: Thodoris Greasidis <thodoris@balena.io>
@@ -2076,11 +2103,9 @@
                   version: pinejs-client-js-5.5.2
                   date: 2019-06-10T10:48:07.772Z
                 - commits:
-                    - subject: >-
-                        Fix downstream declaration creation errors due to
-                        `Dictionary`
+                    - subject: Fix downstream declaration creation errors due to `Dictionary`
                       hash: a8a39edff8cc7e1d05fb9b67037718970e94296c
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -2088,11 +2113,9 @@
                   version: pinejs-client-js-5.5.1
                   date: 2019-05-15T13:32:13.920Z
                 - commits:
-                    - subject: >-
-                        Add a prepare method that prepares a query into a
-                        function
+                    - subject: Add a prepare method that prepares a query into a function
                       hash: eb7eccca7d90c453710575ebdf3adb9ef56835a7
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
@@ -2102,7 +2125,7 @@
                 - commits:
                     - subject: Add CODEOWNERS
                       hash: e01174008f812e0c24ec1036aa1f9ff0bc716e85
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -2114,7 +2137,7 @@
                 - commits:
                     - subject: Add support for parameter aliases in resource ids
                       hash: a4e6a640a3ced56bcd3ef7bf22770338e089a90d
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: minor
                         change-type: minor
@@ -2124,7 +2147,7 @@
                 - commits:
                     - subject: Deduplicate transformation of GET results
                       hash: dd856e24072f652684adf63af97408ee0ba7389c
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -2132,11 +2155,9 @@
                   version: pinejs-client-js-5.3.10
                   date: 2019-05-10T09:44:09.422Z
                 - commits:
-                    - subject: >-
-                        Simplify how we expose types, which means `subscribe` is
-                        now exposed
+                    - subject: Simplify how we expose types, which means `subscribe` is now exposed
                       hash: f81e0cc59e75e0f9ffc71d9f122b9cfab9c05165
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -2146,7 +2167,7 @@
                 - commits:
                     - subject: Add automatic formatting via prettier
                       hash: a345d32f295acfa8ed4e5b815c24e1e7fdb335f2
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -2154,16 +2175,16 @@
                   version: pinejs-client-js-5.3.8
                   date: 2019-05-09T17:38:43.260Z
                 - commits:
-                    - subject: 'Remove node 4 build, add node 12'
+                    - subject: Remove node 4 build, add node 12
                       hash: 8d549277d80746feadbdd8a6bba37eb076270440
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
                       author: Pagan Gazzard
                     - subject: Add .versionbot/CHANGELOG.yml for downstream changelogs
                       hash: 067bedf65e86a902b7334ed6e5f117d6ac41afde
-                      body: ''
+                      body: ""
                       footer:
                         Change-type: patch
                         change-type: patch
@@ -2175,7 +2196,7 @@
         - commits:
             - subject: Add CODEOWNERS
               hash: efc40c853d4392b866eb3784839871fad086fccd
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -2185,9 +2206,9 @@
   version: 9.13.0
   date: 2020-04-08T11:35:32.581Z
 - commits:
-    - subject: 'circleci: fix/optimise deploy to staging job'
+    - subject: "circleci: fix/optimise deploy to staging job"
       hash: 7367866b2dbe4cd3eeed5300b8a96acce095d41b
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2197,9 +2218,9 @@
   version: 9.12.4
   date: 2020-03-17T18:42:38.889Z
 - commits:
-    - subject: 'circleci: fix deploy to staging job'
+    - subject: "circleci: fix deploy to staging job"
       hash: 697e82023875abe07f66e922cb81e82ee83158f5
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2209,9 +2230,9 @@
   version: 9.12.3
   date: 2020-03-17T18:20:42.675Z
 - commits:
-    - subject: 'circleci: fix deploy to staging job'
+    - subject: "circleci: fix deploy to staging job"
       hash: 46460f19b6f961f248a00862d94fcb79cd615985
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2221,18 +2242,18 @@
   version: 9.12.2
   date: 2020-03-17T17:51:38.891Z
 - commits:
-    - subject: 'circleci: update config to v2.1 syntax'
+    - subject: "circleci: update config to v2.1 syntax"
       hash: 1ef58d9d4db55286a1f886ba951d1914540f8fbd
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'circleci: use `library/docker:19-git` image and enable layer caching'
+    - subject: "circleci: use `library/docker:19-git` image and enable layer caching"
       hash: 80466d1ffb54aeeb31caf60b6a4dd10b9511af76
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2242,54 +2263,54 @@
   version: 9.12.1
   date: 2020-03-17T15:05:33.325Z
 - commits:
-    - subject: 'proxy-worker: track a tunnel transmission errors metric'
+    - subject: "proxy-worker: track a tunnel transmission errors metric"
       hash: 2c1991246669fef3b05824da59d363d8dc870057
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'nss: prioritise openvpn provider for dns lookups'
+    - subject: "nss: prioritise openvpn provider for dns lookups"
       hash: bb2c834d59168da4159c5eea7d494c8807f2577a
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'proxy-worker: improve device connection error handling'
+    - subject: "proxy-worker: improve device connection error handling"
       hash: 4fc8be34f298b8b4b40c6189b928902fd4b6e1dc
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'utils: use `VPN_GUEST_API_KEY`, if provided, for anonymous queries'
+    - subject: "utils: use `VPN_GUEST_API_KEY`, if provided, for anonymous queries"
       hash: 4f3f822bb9f146dfb2abddc2f7d2fd6d0c51bbcd
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'proxy-worker: do not blindly attempt to forward requests on error'
+    - subject: "proxy-worker: do not blindly attempt to forward requests on error"
       hash: 5efa19a13aa1e42592b179956c565716e2b339a0
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'proxy-worker: gracefully handle failed tunnelling request when possible'
+    - subject: "proxy-worker: gracefully handle failed tunnelling request when possible"
       hash: 01bca067e8342844073ad6f7b12ca6c3b8ef6fbc
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2325,7 +2346,7 @@
         - commits:
             - subject: Update nodejs to 12.16.1
               hash: 7662b09a46f2f24cfd0e9bf863132e318c997a30
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -2347,7 +2368,7 @@
         - commits:
             - subject: Update nodejs to 12.16.0
               hash: 2d290c934fae54993e435f82b22943570b1a106e
-              body: ''
+              body: ""
               footer:
                 Change-type: minor
                 change-type: minor
@@ -2357,7 +2378,7 @@
         - commits:
             - subject: Update nodejs to 12.15.0 and npm to 6.13.7
               hash: 4d1e2434b642a8f892246b0e9c3fd08bca774488
-              body: ''
+              body: ""
               footer:
                 Change-type: minor
                 change-type: minor
@@ -2369,7 +2390,7 @@
 - commits:
     - subject: Remove *.md from dockerignore so the changelog is included
       hash: 392c60b90cf31c19632f1d02f53238f100336f6d
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2389,7 +2410,7 @@
         - commits:
             - subject: Update nodejs to 12.14.1 and npm to 6.13.6
               hash: b2405095eadada2e8d8f23f258247482c99ea564
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -2399,7 +2420,7 @@
         - commits:
             - subject: Mask apt-daily-upgrade.timer
               hash: a714a4bebb2263baef4082c75ac42cf3e5fdf005
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -2409,9 +2430,9 @@
   version: 9.10.1
   date: 2020-01-25T00:24:02.777Z
 - commits:
-    - subject: 'utils: cache `canAccess` lookups for 5s'
+    - subject: "utils: cache `canAccess` lookups for 5s"
       hash: d46d9aa44ba982a4eb45f899c7bb7a60bf042700
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -2421,18 +2442,18 @@
   version: 9.10.0
   date: 2020-01-20T14:05:02.457Z
 - commits:
-    - subject: 'service: convert promise chains to async/await'
+    - subject: "service: convert promise chains to async/await"
       hash: 34804eda95210ffde70dbcc856e58c6f3f04447f
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'proxy-worker: convert promise chains to async/await'
+    - subject: "proxy-worker: convert promise chains to async/await"
       hash: 886ec228bfc129505cbfe707d467d0d0b3d863ea
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -2454,7 +2475,7 @@
         - commits:
             - subject: Update nodejs to 12.14.0 and npm to 6.13.4
               hash: 8fad0b4262e0991b52dbe217c2df80fe533b628a
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -2464,7 +2485,7 @@
         - commits:
             - subject: Don't use UID used in node archive when unpacking as root
               hash: fa41cbe4adbb1355705f30d934fa4f8885d86d88
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -2476,7 +2497,7 @@
         - commits:
             - subject: Update node to 12 in no systemd variant
               hash: 3de89559505f2a10d94e4f0cc955c02651bdb8a3
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -2488,9 +2509,9 @@
   version: 9.8.4
   date: 2019-12-24T14:11:02.702Z
 - commits:
-    - subject: 'vpn-worker: convert promise chains to async/await'
+    - subject: "vpn-worker: convert promise chains to async/await"
       hash: ef13afa66094f70d2d8ec5251be47f7ed538e6d2
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2500,7 +2521,7 @@
   version: 9.8.3
   date: 2019-11-18T17:00:18.475Z
 - commits:
-    - subject: 'deps: update dependencies'
+    - subject: "deps: update dependencies"
       hash: 0b893bff3472097e3753518f13945a6729aa0dc5
       body: |
         Update @balena/node-metrics-gatherer from 3.0.2 to 4.0.1
@@ -2513,9 +2534,9 @@
   version: 9.8.2
   date: 2019-11-18T16:24:38.277Z
 - commits:
-    - subject: 'proxy: fix incorrect headers inserted into stream'
+    - subject: "proxy: fix incorrect headers inserted into stream"
       hash: 39df7b6c0593c0cbbf079aa9dc1e5f41e7370f78
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2525,14 +2546,14 @@
   version: 9.8.1
   date: 2019-10-23T14:46:38.013Z
 - commits:
-    - subject: 'device-metrics: create timeseries per-device with device_uuid tag'
+    - subject: "device-metrics: create timeseries per-device with device_uuid tag"
       hash: 8946c3f204c524875b726df7da7b522615382eb1
-      body: ''
+      body: ""
       footer:
-        Connects-to: 'https://github.com/balena-io/balena-monitor/pull/94'
-        connects-to: 'https://github.com/balena-io/balena-monitor/pull/94'
-        HQ: 'https://github.com/balena-io/balena/issues/1869'
-        hq: 'https://github.com/balena-io/balena/issues/1869'
+        Connects-to: https://github.com/balena-io/balena-monitor/pull/94
+        connects-to: https://github.com/balena-io/balena-monitor/pull/94
+        HQ: https://github.com/balena-io/balena/issues/1869
+        hq: https://github.com/balena-io/balena/issues/1869
         Change-type: minor
         change-type: minor
         Signed-off-by: Matthew McGinn <matthew@balena.io>
@@ -2553,7 +2574,7 @@
         - commits:
             - subject: Update to nodejs 12
               hash: cde7021d266cfba7e6b7055421c7afb0c0dd2781
-              body: ''
+              body: ""
               footer:
                 Change-type: major
                 change-type: major
@@ -2563,7 +2584,7 @@
         - commits:
             - subject: Respect BALENA_TLD env variable in nosystemd variant
               hash: 66ad0ec93fadc749c3104443a3313ff73bf04946
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -2572,7 +2593,7 @@
               author: Roman Mazur
             - subject: Optimize for caching
               hash: 652a3e18545079de46bfe21c3891523467d6163f
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -2581,7 +2602,7 @@
               author: Roman Mazur
             - subject: Use balena node base image
               hash: b7c1e12773a414a5f843cfaaba943eabf3425e71
-              body: ''
+              body: ""
               footer:
                 Change-type: minor
                 change-type: minor
@@ -2606,7 +2627,7 @@
 - commits:
     - subject: Update dependencies
       hash: 0240b4c876972e50e8a73b609437733620adcb85
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2614,18 +2635,18 @@
   version: 9.6.8
   date: 2019-10-15T11:13:26.493Z
 - commits:
-    - subject: 'vpn: gracefully handle orphan server process refusing to die'
+    - subject: "vpn: gracefully handle orphan server process refusing to die"
       hash: f3646eab1b09762245263ad6b9ded3c594535329
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'vpn: kill orphan server processes on startup'
+    - subject: "vpn: kill orphan server processes on startup"
       hash: c4771a63cef0e251d0ae0a18489f9f1f062bdb95
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2637,7 +2658,7 @@
 - commits:
     - subject: Remove unused api keys
       hash: 1e1462bf9242e4984d9a6147ebdd799ccd7a117e
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2645,9 +2666,9 @@
   version: 9.6.6
   date: 2019-10-11T14:39:08.250Z
 - commits:
-    - subject: 'config: add switch for default verbose logging'
+    - subject: "config: add switch for default verbose logging"
       hash: 4db4258645a53de2961922c704a7d484076e05b5
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2657,18 +2678,18 @@
   version: 9.6.5
   date: 2019-10-08T16:38:32.838Z
 - commits:
-    - subject: 'metrics: fix over-eager online count decrement'
+    - subject: "metrics: fix over-eager online count decrement"
       hash: bc269942db8c908e818ddef7c831f004887c445c
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'api: fix typo in logger call'
+    - subject: "api: fix typo in logger call"
       hash: de8bac11f17a3d956ef0e6ed6027faec05293909
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2678,18 +2699,18 @@
   version: 9.6.4
   date: 2019-10-07T19:05:25.549Z
 - commits:
-    - subject: 'metrics: always decrement online count on client-disconnect event'
+    - subject: "metrics: always decrement online count on client-disconnect event"
       hash: 5b525d2b1e14f814ab419473510a6609215953ae
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'api: increase verbosity of out-of-sync event reporting'
+    - subject: "api: increase verbosity of out-of-sync event reporting"
       hash: 988703fad9f9f5455b1dbd4d51015dbca4385151
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2699,9 +2720,9 @@
   version: 9.6.3
   date: 2019-10-07T18:08:02.371Z
 - commits:
-    - subject: 'api: filter client state updates by worker id'
+    - subject: "api: filter client state updates by worker id"
       hash: 689fa2c2132f3d41f3f72861cebc3326604bd1fe
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2711,9 +2732,9 @@
   version: 9.6.2
   date: 2019-10-07T11:28:05.024Z
 - commits:
-    - subject: 'logging: include worker_id in state update messages'
+    - subject: "logging: include worker_id in state update messages"
       hash: ecc2829fa330cadcd1782334b0105ee75d4e87be
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2723,18 +2744,18 @@
   version: 9.6.1
   date: 2019-10-02T08:30:25.462Z
 - commits:
-    - subject: 'logging: include openvpn pid in major events'
+    - subject: "logging: include openvpn pid in major events"
       hash: 88a96c8f92b66243c6625f9575e52bdd16e73761
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'api: use single auth api server with shared pool'
+    - subject: "api: use single auth api server with shared pool"
       hash: 01ebda27857af636e1f2ce5ab81051db28d2b4c4
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -2744,12 +2765,12 @@
   version: 9.6.0
   date: 2019-10-01T16:46:50.002Z
 - commits:
-    - subject: 'proxy: refuse to forward tunnels via self and detect forwarding loops'
+    - subject: "proxy: refuse to forward tunnels via self and detect forwarding loops"
       hash: 19dab19c7cb354f589a29e27fc3f5b35d3511270
-      body: ''
+      body: ""
       footer:
-        Connects-to: '#17'
-        connects-to: '#17'
+        Connects-to: "#17"
+        connects-to: "#17"
         Change-type: minor
         change-type: minor
         Signed-off-by: Will Boyce <will@balena.io>
@@ -2758,9 +2779,9 @@
   version: 9.5.0
   date: 2019-09-30T16:06:03.900Z
 - commits:
-    - subject: 'circleci: Rename deploy job'
+    - subject: "circleci: Rename deploy job"
       hash: f3067545f98f1a1d2d1e82ebcae6dca01b76d17f
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2770,18 +2791,18 @@
   version: 9.4.1
   date: 2019-09-30T15:09:13.414Z
 - commits:
-    - subject: 'logging: stream openvpn logs from process stdout/stderr'
+    - subject: "logging: stream openvpn logs from process stdout/stderr"
       hash: afdf787f398f87499775e42b80bc06f3fafed203
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'logging: allow enabling openvpn verbose logging by default'
+    - subject: "logging: allow enabling openvpn verbose logging by default"
       hash: a93202a41c1787b7d14af62849bd60b117b65cc5
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2793,7 +2814,7 @@
 - commits:
     - subject: Remove redundant code
       hash: 9f928b79575f8f5ec31ae3437b2afd919d364920
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2801,9 +2822,9 @@
   version: 9.3.1
   date: 2019-09-27T19:10:43.068Z
 - commits:
-    - subject: 'haproxy: disable checks on vpn workers'
+    - subject: "haproxy: disable checks on vpn workers"
       hash: 9330d09479726d7966f47cd68797a64cd9404996
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -2813,7 +2834,7 @@
   version: 9.3.0
   date: 2019-09-27T12:54:43.883Z
 - commits:
-    - subject: 'npm: update dependencies'
+    - subject: "npm: update dependencies"
       hash: fb1d0a89eb1fb6bddda1acdf37df085726732ef7
       body: |
         * Update @balena/node-metrics-gatherer from 2.4.1 to 3.0.2
@@ -2826,9 +2847,9 @@
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'npm: update dev dependencies'
+    - subject: "npm: update dev dependencies"
       hash: b821d2cab36686effc81c609a5124af5c67b8a19
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2838,9 +2859,9 @@
   version: 9.2.2
   date: 2019-09-23T14:16:47.445Z
 - commits:
-    - subject: 'CircleCI: Fix staging auto-deployments'
+    - subject: "CircleCI: Fix staging auto-deployments"
       hash: 549d5d9841700172fc5af44574e9251d22388d5f
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2852,16 +2873,16 @@
 - commits:
     - subject: add `process-exporter` to collect stats on haproxy/node/openvpn
       hash: 31093016be077123e0073c033ee5806da129477c
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'haproxy: update to 2.0 & expose internal stats to prometheus'
+    - subject: "haproxy: update to 2.0 & expose internal stats to prometheus"
       hash: 4af64e646a1c6fe8241b2a6168ffd6364350a243
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -2870,7 +2891,7 @@
       author: Will Boyce
     - subject: add `node-exporter` to collect network statistics
       hash: 434b03e1c05370a81f4f31400fd4a38523cac192
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -2880,9 +2901,9 @@
   version: 9.2.0
   date: 2019-09-03T14:03:46.732Z
 - commits:
-    - subject: 'haproxy: remove proxy process metrics config'
+    - subject: "haproxy: remove proxy process metrics config"
       hash: 95cd7bf8a3482c459c024316d717c5e4bb9e417d
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -2892,23 +2913,23 @@
   version: 9.1.0
   date: 2019-08-29T11:05:57.511Z
 - commits:
-    - subject: 'proxy: prevent forwarding request to self'
+    - subject: "proxy: prevent forwarding request to self"
       hash: 096c8fbdfcd34919f161255caf6d876ff6bd5e42
-      body: ''
+      body: ""
       footer:
-        Connects-to: '#50'
-        connects-to: '#50'
+        Connects-to: "#50"
+        connects-to: "#50"
         Change-type: minor
         change-type: minor
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'refactor: merge systemd services'
+    - subject: "refactor: merge systemd services"
       hash: 0774408a8c8607f3c999a591d7e927428d147288
-      body: ''
+      body: ""
       footer:
-        Connects-to: '#48'
-        connects-to: '#48'
+        Connects-to: "#48"
+        connects-to: "#48"
         Change-type: major
         change-type: major
         Signed-off-by: Will Boyce <will@balena.io>
@@ -2927,14 +2948,14 @@
       author: Pagan Gazzard
       nested:
         - commits:
-            - subject: "\U0001F512: Update Node to 10.16.3 and NPM to 6.10.3"
+            - subject: "🔒: Update Node to 10.16.3 and NPM to 6.10.3"
               hash: 8714ca3fee1ff44187e0a0c4b6c648d0c2fe550c
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
-                Connects-to: '#91'
-                connects-to: '#91'
+                Connects-to: "#91"
+                connects-to: "#91"
                 Signed-off-by: Andreas Fitzek <andreas@balena.io>
                 signed-off-by: Andreas Fitzek <andreas@balena.io>
               author: Andreas Fitzek
@@ -2945,14 +2966,14 @@
 - commits:
     - subject: Change syslog identifier from 'open-balena' to 'vpn'
       hash: cd66a0c3be6258875c6e85720ee17b91d37b8fa2
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
       author: Pagan Gazzard
     - subject: Reduce log length for proxying messages
       hash: 81e4cdde1a913dd0cc7b0f734fe7482ba924562b
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -2972,7 +2993,7 @@
         - commits:
             - subject: Update nodejs to 10.16.1 and npm to 6.10.2
               hash: 11a141feb88985b698d5f4358505767e9065a200
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -2982,7 +3003,7 @@
   version: 8.20.2
   date: 2019-08-06T15:42:32.182Z
 - commits:
-    - subject: 'service: Ensure captureException does not throw'
+    - subject: "service: Ensure captureException does not throw"
       hash: 5756684de3befaaa2514d44d7e1dbcb22d522a02
       body: |
         The code in the captureException() method 'try's
@@ -3007,7 +3028,7 @@
 - commits:
     - subject: Combine the worker id into the service name
       hash: a08217989f16f60addc898940a0a21f0a1389934
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -3015,9 +3036,9 @@
   version: 8.20.0
   date: 2019-07-30T12:34:21.595Z
 - commits:
-    - subject: 'haproxy: restore logs and fix timeout configs'
+    - subject: "haproxy: restore logs and fix timeout configs"
       hash: f50703c6e01f191f4f0c6e6f9149f4b3f2cf7a8f
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -3027,18 +3048,18 @@
   version: 8.19.1
   date: 2019-07-22T21:47:36.759Z
 - commits:
-    - subject: 'vpn-api: enable openvpn logging via management console'
+    - subject: "vpn-api: enable openvpn logging via management console"
       hash: 7e89228c0ba7c249e649351a224725575460f2fe
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'openvpn: set txqueuelen=1000 on interfaces at startup'
+    - subject: "openvpn: set txqueuelen=1000 on interfaces at startup"
       hash: 3039d85ec922fe94232bcdfe45e94db9ce279e2f
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -3048,9 +3069,9 @@
   version: 8.19.0
   date: 2019-07-22T17:37:52.533Z
 - commits:
-    - subject: 'vpn-api: reduce default log verbosity'
+    - subject: "vpn-api: reduce default log verbosity"
       hash: 2105146966fe19996e087686bb4f8ef5044e39ec
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -3060,7 +3081,7 @@
   version: 8.18.0
   date: 2019-07-20T18:53:15.449Z
 - commits:
-    - subject: 'openvpn: Remove override files for service'
+    - subject: "openvpn: Remove override files for service"
       hash: 0a352be9f47202c67691c89f8dda1087f99936fd
       body: |
         We no longer use the openvpn@server.service unit,
@@ -3075,9 +3096,9 @@
   version: 8.17.4
   date: 2019-07-19T15:17:38.830Z
 - commits:
-    - subject: 'config: fix typo in env template'
+    - subject: "config: fix typo in env template"
       hash: a05fe21cdf546f95507474d4a0510a7dd5f0ddcb
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -3097,7 +3118,7 @@
       author: Pagan Gazzard
       nested:
         - commits:
-            - subject: 'mdns: Ensure multipart subdomains are allowed'
+            - subject: "mdns: Ensure multipart subdomains are allowed"
               hash: bc5903d77867c3c969f1e7193cbef69dab12eeef
               body: |
                 Debian Buster now uses Avahi 0.7 instead of
@@ -3117,7 +3138,7 @@
 - commits:
     - subject: replace deprecated raven package with @sentry/node
       hash: 2d4598fb2bd437b7cad138583d9a121d0f2e5b52
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -3127,27 +3148,27 @@
   version: 8.17.1
   date: 2019-07-16T18:36:25.927Z
 - commits:
-    - subject: 'dev: fix unit test mocks'
+    - subject: "dev: fix unit test mocks"
       hash: 03b2746d4dcae1e12706ac0e772f5eb944d10bac
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'deps: update dependencies'
+    - subject: "deps: update dependencies"
       hash: 2bdc9375b23ae5d187ee138ac1363f0a21da09c7
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'config: allow overriding `VPN_INSTANCE_COUNT`'
+    - subject: "config: allow overriding `VPN_INSTANCE_COUNT`"
       hash: 4f607062fc9a38ca364713f2ad671163ad3547e7
-      body: ''
+      body: ""
       footer:
         Connects-to: balena-io/open-balena#57
         connects-to: balena-io/open-balena#57
@@ -3156,9 +3177,9 @@
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'metrics: fix up metrics naming'
+    - subject: "metrics: fix up metrics naming"
       hash: 50401ef2bcd142973c297c905410137ee90aaa80
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -3168,9 +3189,9 @@
   version: 8.17.0
   date: 2019-07-16T18:05:45.750Z
 - commits:
-    - subject: 'systemd: move StartLimitIntervalSec to proper section'
+    - subject: "systemd: move StartLimitIntervalSec to proper section"
       hash: 4bb3b82e246d77813df682eee54009b687c955dd
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -3192,7 +3213,7 @@
         - commits:
             - subject: Upgrade to debian buster
               hash: d090290e87b279482d7e3884a0a9e93a845152fe
-              body: ''
+              body: ""
               footer:
                 Change-type: major
                 change-type: major
@@ -3204,14 +3225,14 @@
 - commits:
     - subject: Use a prepared query for `canAccessDevice`
       hash: 83b75052b03d06eec18f8b1ec0f2794f0110ad08
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
       author: Pagan Gazzard
     - subject: Use a prepared query for getDeviceByUUID
       hash: 64d124ce94ce9b7e6ecc71002f0af77a0e1b1b51
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -3221,7 +3242,7 @@
 - commits:
     - subject: Only try to forward to the correct vpn instance if lookup fails
       hash: a73829f2ef32d8972bc8db1944efc9c7980f0bb0
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -3229,21 +3250,20 @@
   version: 8.15.1
   date: 2019-06-25T17:00:32.627Z
 - commits:
-    - subject: 'subnets: add config opts for vpn subnets and default to RFC6598 block'
+    - subject: "subnets: add config opts for vpn subnets and default to RFC6598 block"
       hash: 7a1653d86c7ad9306a172abdd91fb7acdbf2aa09
       body: >
         Using CGN address space should eliminate all instances of addressing
         clashes
 
-        regardless of device placement and without the necessity of a dedicated
-        and
+        regardless of device placement and without the necessity of a dedicated and
 
         public `BALENA_VPN_GATEWAY` ipv4 address for the remote peer.
       footer:
-        Refs: 'https://tools.ietf.org/html/rfc6598'
-        refs: 'https://tools.ietf.org/html/rfc6598'
-        Connects-to: '#67'
-        connects-to: '#67'
+        Refs: https://tools.ietf.org/html/rfc6598
+        refs: https://tools.ietf.org/html/rfc6598
+        Connects-to: "#67"
+        connects-to: "#67"
         Change-type: minor
         change-type: minor
         Signed-off-by: Will Boyce <will@balena.io>
@@ -3252,9 +3272,9 @@
   version: 8.15.0
   date: 2019-06-24T13:48:52.856Z
 - commits:
-    - subject: 'circle: fix deploy to staging job'
+    - subject: "circle: fix deploy to staging job"
       hash: 3ead4d4546d09c773cbd4188ebb5d5ef4cfff908
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -3264,7 +3284,7 @@
   version: 8.14.2
   date: 2019-06-24T13:28:22.260Z
 - commits:
-    - subject: 'deps: update dependencies'
+    - subject: "deps: update dependencies"
       hash: 15b0b54b9d6a5a926d5ae722bde2a595c56861f3
       body: |
         * update @balena/node-metrics-gatherer from 2.3.1 to 2.4.1
@@ -3279,50 +3299,50 @@
         - commits:
             - subject: Add node 12 tests
               hash: 624b1efadfbb920d718bd2f54f99e8eef0e5c645
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
               author: Pagan Gazzard
             - subject: Add upstream for pinejs-client-core
               hash: 33dc1299939483534686f52e903bb27f8a08b543
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
               author: Pagan Gazzard
           version: pinejs-client-request-6.0.2
           date: 2019-05-08T15:57:24.879Z
-    - subject: 'dockerfile: remove extraneous apt-get installs'
+    - subject: "dockerfile: remove extraneous apt-get installs"
       hash: 1821ea4a850c6556b8c116cb5a59a1df9eeac566
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'tests: fix canAccess mocks to account for tunnel-any perms'
+    - subject: "tests: fix canAccess mocks to account for tunnel-any perms"
       hash: 7c753dce1cf58d6e68cb7e9a274145f5fd788530
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'tests: kill openvpn process when complete to prevent hanging'
+    - subject: "tests: kill openvpn process when complete to prevent hanging"
       hash: b5bd7043b3b8f3ec530c0e0442ba944aba3d8f15
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'dev: configure circle to test prs and deploy new versions to staging'
+    - subject: "dev: configure circle to test prs and deploy new versions to staging"
       hash: 4567c7ca9aa085282adfa88a24bf82d2ee60845f
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -3332,9 +3352,9 @@
   version: 8.14.1
   date: 2019-06-24T12:52:04.066Z
 - commits:
-    - subject: 'dev: move typescript+@types dependencies to devDependencies'
+    - subject: "dev: move typescript+@types dependencies to devDependencies"
       hash: 8f2be4a3366739088d53ffed30b6a6fad10364e4
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
@@ -3354,9 +3374,9 @@
       author: Pagan Gazzard
       nested:
         - commits:
-            - subject: 'systemd: move StartLimitIntervalSec to proper conf section'
+            - subject: "systemd: move StartLimitIntervalSec to proper conf section"
               hash: d8e86fb27e02975a98ff271ec5c7f30c6f1dcd03
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -3380,7 +3400,7 @@
         - commits:
             - subject: Fix adding htoprc
               hash: 24f7afc3559227e3c58cfcf1483aab91f034be5f
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -3390,7 +3410,7 @@
   version: 8.13.2
   date: 2019-06-06T18:48:12.410Z
 - commits:
-    - subject: 'perms: Add tunnel-any check when tunnelling ports'
+    - subject: "perms: Add tunnel-any check when tunnelling ports"
       hash: a2340e7ad8e000e0fcf8b76ca8ea98c682c6f43d
       body: |
         Add an additional check to the actions allowed when tunnelling
@@ -3418,7 +3438,7 @@
         - commits:
             - subject: Add default htop settings to hide threads and use a tree view
               hash: c5d98f753b326b2b684ad997d470b0510eac86d2
-              body: ''
+              body: ""
               footer:
                 Change-type: minor
                 change-type: minor
@@ -3428,7 +3448,7 @@
         - commits:
             - subject: Update nodejs to 10.16.0 and npm to 6.9.0
               hash: 74815baf4ab2f617d2cd3301609ef21ea8aa4079
-              body: ''
+              body: ""
               footer:
                 Change-type: minor
                 change-type: minor
@@ -3440,7 +3460,7 @@
 - commits:
     - subject: Disable the service start limits
       hash: 8953b91ac98a3c14244e45fd71e4287eabe2335a
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -3457,7 +3477,7 @@
         - commits:
             - subject: Disable the apt daily timer
               hash: bbcc74a1b72886272bbec3071d79e0240c14a174
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -3467,7 +3487,7 @@
         - commits:
             - subject: Disable start limit for confd.service
               hash: 8ef586e573f77b06adaead91f47093757cc0584b
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -3477,12 +3497,12 @@
   version: 8.12.4
   date: 2019-05-08T13:32:41.667Z
 - commits:
-    - subject: 'vpn: use pooled request workers for client authentication via api'
+    - subject: "vpn: use pooled request workers for client authentication via api"
       hash: 57b1dcd5fc022f168a7fecd087589a0e3e643687
-      body: ''
+      body: ""
       footer:
-        Connects-to: '#51'
-        connects-to: '#51'
+        Connects-to: "#51"
+        connects-to: "#51"
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
@@ -3491,9 +3511,9 @@
   version: 8.12.3
   date: 2019-04-24T15:19:07.482Z
 - commits:
-    - subject: 'metrics: increase granularity of bitrate buckets'
+    - subject: "metrics: increase granularity of bitrate buckets"
       hash: 5ac408741a69ec1dcbef86177aeb0c58b13cf1bc
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -3503,7 +3523,7 @@
   version: 8.12.2
   date: 2019-04-24T10:21:09.453Z
 - commits:
-    - subject: 'pinejs-client-request: update to v6.0.1'
+    - subject: "pinejs-client-request: update to v6.0.1"
       hash: c4fff08972d97e1f626f74979c07ef52ce7126f7
       body: |
         Update pinejs-client-request from 6.0.0 to 6.0.1
@@ -3515,9 +3535,9 @@
       author: Will Boyce
       nested:
         - commits:
-            - subject: 'Update target to es2016, part of/fixing the typed-error bump'
+            - subject: Update target to es2016, part of/fixing the typed-error bump
               hash: 6025bf882f6f2675b321571f327f59a4908da539
-              body: ''
+              body: ""
               footer:
                 Change-type: patch
                 change-type: patch
@@ -3527,16 +3547,16 @@
   version: 8.12.1
   date: 2019-04-24T09:25:18.363Z
 - commits:
-    - subject: 'vpn: revert to script/curl/api based client auth'
+    - subject: "vpn: revert to script/curl/api based client auth"
       hash: 7e3c9c582ecb394172176f8f900e33498944ae0a
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'pinejs-client-request: update to v6.0.0'
+    - subject: "pinejs-client-request: update to v6.0.0"
       hash: 0f0f5d035793e12272c4d1a184f2415453b4e0c7
       body: |
         Update pinejs-client-request from 5.1.0 to 6.0.0
@@ -3548,7 +3568,7 @@
       author: Will Boyce
       nested:
         - commits:
-            - subject: 'typed-error: Update to v3.1.0'
+            - subject: "typed-error: Update to v3.1.0"
               hash: 82e50ac9992b3a157360eef5163f43a90fa9feea
               body: |
                 Update typed error from 2.0.0 to 3.1.0
@@ -3562,15 +3582,15 @@
           date: 2019-04-17T15:08:00.745Z
         - commits:
             - author: Cameron Diver
-              body: ''
+              body: ""
               footers:
                 change-type: minor
                 signed-off-by: Cameron Diver <cameron@balena.io>
               hash: e0874db1e45f6059a14494255986b293ae3af2e5
               subject: Export the StatusError from module
-          date: '2019-02-12T11:27:25Z'
+          date: 2019-02-12T11:27:25Z
           version: pinejs-client-request-5.2.0
-    - subject: 'node-tunnel: update to v3.0.0'
+    - subject: "node-tunnel: update to v3.0.0"
       hash: 0eaeea7ee44d926547891612265ad96bde85dee0
       body: |
         Update node-tunnel from 2.1.2 to 3.0.0
@@ -3582,11 +3602,9 @@
       author: Will Boyce
       nested:
         - commits:
-            - subject: >-
-                Switch to `eventemitter3.EventEmitter` from the stdlib
-                EventEmitter
+            - subject: Switch to `eventemitter3.EventEmitter` from the stdlib EventEmitter
               hash: 87ab668c5f16456e8d71f625c3fab507ffc8c161
-              body: ''
+              body: ""
               footer:
                 Change-type: major
                 change-type: major
@@ -3595,12 +3613,12 @@
               author: Will Boyce
           version: node-tunnel-3.0.0
           date: 2019-04-17T10:19:39.204Z
-    - subject: 'vpn: switch to eventemitter3 in openvpn management class-'
+    - subject: "vpn: switch to eventemitter3 in openvpn management class-"
       hash: f9cf06fa2700445b22ce579f253bf2187f975a8a
-      body: ''
+      body: ""
       footer:
-        Connects-to: '#49'
-        connects-to: '#49'
+        Connects-to: "#49"
+        connects-to: "#49"
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
@@ -3609,9 +3627,9 @@
   version: 8.12.0
   date: 2019-04-23T09:55:11.923Z
 - commits:
-    - subject: 'vpn: guard against writing bandwidth metrics for unknown clients'
+    - subject: "vpn: guard against writing bandwidth metrics for unknown clients"
       hash: 98fecca29a7455029bb15a00436b74a28eaca002
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -3621,9 +3639,9 @@
   version: 8.11.3
   date: 2019-04-19T13:46:00.500Z
 - commits:
-    - subject: 'metrics: reduce cardinality of session bitrate metrics'
+    - subject: "metrics: reduce cardinality of session bitrate metrics"
       hash: 511cdc08fd84666b4e5f18895d93655f23dfda5a
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -3633,18 +3651,18 @@
   version: 8.11.2
   date: 2019-04-19T12:37:02.349Z
 - commits:
-    - subject: 'openvpn: discard process output'
+    - subject: "openvpn: discard process output"
       hash: 0521fbecf3b7cdbde54f67480ef8fabc2d7b28c7
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'haproxy: log backend events'
+    - subject: "haproxy: log backend events"
       hash: 1844f39c89c2ae1e2000e012b0b37fdeb36b8d9f
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -3654,55 +3672,53 @@
   version: 8.11.1
   date: 2019-04-16T15:43:33.754Z
 - commits:
-    - subject: 'proxy: collect tunnel count stats for prometheus'
+    - subject: "proxy: collect tunnel count stats for prometheus"
       hash: 1c6efdc44190df5b607768164e50122149ce8ed4
-      body: ''
+      body: ""
       footer:
         Change-type: minor
         change-type: minor
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'logging: unify logging formats and practices'
+    - subject: "logging: unify logging formats and practices"
       hash: b2eb17f2b0d06dbd0329cf4d92fe0304135f91f9
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
-    - subject: 'vpn: use management interface to manage openvpn processes'
+    - subject: "vpn: use management interface to manage openvpn processes"
       hash: 7929e28854b0cde2c70e6dc88abe650427dc7d36
       body: >
         * Handle client authentication via management events.
 
         * Generate custom, more fine grained, logs; openvpn log verbosity can be
           toggled with SIGUSR2.
-        * Use `child_process.spawn` in place of `forever.Monitor` meaning a
-        process
+        * Use `child_process.spawn` in place of `forever.Monitor` meaning a process
           exit will cause the worker process it be restarted meaning the restart will
           pass through the initialisation flow again.
-        * Gather client events and publish for Prometheus (session bitrate +
-        length,
+        * Gather client events and publish for Prometheus (session bitrate + length,
           total bytes rx/tx, online clients, total clients, auth failures).
       footer:
         Change-type: minor
         change-type: minor
-        Connects-to: '#31'
-        connects-to: '#31'
+        Connects-to: "#31"
+        connects-to: "#31"
         Signed-off-by: Will Boyce <will@balena.io>
         signed-off-by: Will Boyce <will@balena.io>
       author: Will Boyce
   version: 8.11.0
   date: 2019-04-16T12:38:02.095Z
 - commits:
-    - subject: 'versionist: set repo type to docker'
+    - subject: "versionist: set repo type to docker"
       hash: 26232f761a231f3391c0e22a4207f52220d1d4c9
-      body: ''
+      body: ""
       footer:
-        Connects-to: '#44'
-        connects-to: '#44'
+        Connects-to: "#44"
+        connects-to: "#44"
         Change-type: patch
         change-type: patch
         Signed-off-by: Will Boyce <will@balena.io>
@@ -3711,9 +3727,9 @@
   version: 8.10.3
   date: 2019-04-15T15:06:32.219Z
 - commits:
-    - subject: 'versionbot: add structured CHANGELOG.yml'
+    - subject: "versionbot: add structured CHANGELOG.yml"
       hash: df95589845e8c7ebab1e502dc20bf83d18186877
-      body: ''
+      body: ""
       footer:
         Change-type: patch
         change-type: patch
@@ -3724,162 +3740,162 @@
   date: 2019-04-15T10:34:50.186Z
 - commits:
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: patch
         signed-off-by: Will Boyce <will@balena.io>
       hash: 7f42afe0e189573e06f2bc753a4a05442285db5d
-      subject: 'npm: Update dependencies'
+      subject: "npm: Update dependencies"
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: patch
         signed-off-by: Will Boyce <will@balena.io>
       hash: 0e26bcb20f9f15b235075d3ba5cf3192986ee724
-      subject: 'connect-proxy: Reduce log verbosity'
+      subject: "connect-proxy: Reduce log verbosity"
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: patch
-        connects-to: '#39'
+        connects-to: "#39"
         signed-off-by: Will Boyce <will@balena.io>
       hash: 2b556c3ee0b46cd2982fd186d3b6ff69a304d78b
-      subject: 'connect-proxy: Only query API for online devices'
-  date: '2019-04-01T16:08:21Z'
+      subject: "connect-proxy: Only query API for online devices"
+  date: 2019-04-01T16:08:21Z
   version: 8.10.1
 - commits:
     - author: Heds Simons
-      body: ''
+      body: ""
       footers:
         change-type: minor
-        connects-to: '#37'
+        connects-to: "#37"
         signed-off-by: Heds Simons <heds@balena.io>
       hash: 52888837325f77361527ed7c7fa2ce0e4ab05348
-      subject: 'open-balena-base: Update open-balena-base to v7.0.0'
-  date: '2019-03-14T17:14:04Z'
+      subject: "open-balena-base: Update open-balena-base to v7.0.0"
+  date: 2019-03-14T17:14:04Z
   version: 8.10.0
 - commits:
     - author: Heds Simons
-      body: ''
+      body: ""
       footers:
         change-type: minor
-        connects-to: '#35'
+        connects-to: "#35"
         signed-off-by: Heds Simons <heds@balena.io>
       hash: 4b67cae004fd0ed3ea2c1ba0658535d333376c2a
-      subject: 'open-balena-base: Update open-balena-base to v6.0.0'
-  date: '2019-03-12T11:22:30Z'
+      subject: "open-balena-base: Update open-balena-base to v6.0.0"
+  date: 2019-03-12T11:22:30Z
   version: 8.9.0
 - commits:
     - author: Heds Simons
-      body: ''
+      body: ""
       footers:
         change-type: patch
-        connects-to: '#33'
+        connects-to: "#33"
         signed-off-by: Heds Simons <heds@balena.io>
       hash: dffdcd6660aaf1bc3ec69d39e62e251760ce0985
       subject: "codeowners: Update with\t@Page- & @hedss"
-  date: '2019-03-09T13:10:55Z'
+  date: 2019-03-09T13:10:55Z
   version: 8.8.1
 - commits:
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: patch
         signed-off-by: Will Boyce <will@balena.io>
       hash: 24594f09ab8a375e270e977d2fccea7c74be4eac
-      subject: 'openvpn: Reduce log verbosity'
+      subject: "openvpn: Reduce log verbosity"
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: minor
         signed-off-by: Will Boyce <will@balena.io>
       hash: 79ca141d9325b4fd7db32e2c8a9876c871c14c6b
-      subject: 'core: Update dev dependencies'
+      subject: "core: Update dev dependencies"
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: minor
         signed-off-by: Will Boyce <will@balena.io>
       hash: 5d6b3d21d6d73a9995b9fb79b1c1c730009e9ee8
-      subject: 'core: Update typescript and @types'
+      subject: "core: Update typescript and @types"
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: minor
         signed-off-by: Will Boyce <will@balena.io>
       hash: 63917573ca5c4234ff8bc2a68893c8c97aa8e378
-      subject: 'core: Update dependencies'
+      subject: "core: Update dependencies"
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: patch
         signed-off-by: Will Boyce <will@balena.io>
       hash: 9250616f5c5008735e8b5aecee2a3b4ce37e6fd0
-      subject: 'core: Add sourcemap support when running javascript'
-  date: '2019-03-08T11:27:40Z'
+      subject: "core: Add sourcemap support when running javascript"
+  date: 2019-03-08T11:27:40Z
   version: 8.8.0
 - commits:
     - author: Pagan Gazzard
-      body: ''
+      body: ""
       footers:
         change-type: minor
       hash: 4e1c153e009b85dc96a7cc6fb8cfdd66d9a28de5
       subject: Update open-balena-base to v5.3.1
-  date: '2019-03-06T18:04:57Z'
+  date: 2019-03-06T18:04:57Z
   version: 8.7.0
 - commits:
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: minor
-        connects-to: '#28'
+        connects-to: "#28"
         signed-off-by: Will Boyce <will@balena.io>
       hash: 19448a123fa5293a3d14e62ecd1b7b5e6960d18e
-      subject: 'vpn-api: set FORWARD chain policy on startup'
-  date: '2019-02-28T19:32:47Z'
+      subject: "vpn-api: set FORWARD chain policy on startup"
+  date: 2019-02-28T19:32:47Z
   version: 8.6.0
 - commits:
     - author: Pagan Gazzard
-      body: ''
+      body: ""
       footers:
         change-type: minor
       hash: deddaa0d6643a3abd4bb503d887382d40ef836ce
       subject: Switch to a https.Agent instance for limiting concurrent requests
-  date: '2019-02-21T11:42:16Z'
+  date: 2019-02-21T11:42:16Z
   version: 8.5.0
 - commits:
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: minor
-        connects-to: '#19'
+        connects-to: "#19"
         signed-off-by: Will Boyce <will@balena.io>
       hash: 360ed60d1d681a0aec948918310e576bb673673a
-      subject: 'core: Precompile typescript and run javascript in production'
+      subject: "core: Precompile typescript and run javascript in production"
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: patch
         signed-off-by: Will Boyce <will@balena.io>
       hash: b3d694d45178013bb2c27adc12a87c63e6013bde
-      subject: 'core: Update npm dependencies'
+      subject: "core: Update npm dependencies"
     - author: Will Boyce
       body: This is a workaround for BalenaCI not running any tests.
       footers:
         change-type: patch
         signed-off-by: Will Boyce <will@balena.io>
       hash: ae7c8f2bd7678eb54d906e57c33631e17a9edbf5
-      subject: 'core: Run unit tests when building docker image'
-  date: '2018-12-18T23:30:40Z'
+      subject: "core: Run unit tests when building docker image"
+  date: 2018-12-18T23:30:40Z
   version: 8.4.0
 - commits:
     - author: Pagan Gazzard
-      body: ''
+      body: ""
       footers:
         change-type: patch
       hash: b3ca354ec46639382eccbb435a503e0055a6a3cc
       subject: Update open-balena-base to v5.0.1
-  date: '2018-12-03T13:01:09Z'
+  date: 2018-12-03T13:01:09Z
   version: 8.3.1
 - commits:
     - author: Will Boyce
@@ -3889,40 +3905,40 @@
         transparently establish the tunnel via that server.
       footers:
         change-type: minor
-        connects-to: '#20'
+        connects-to: "#20"
         signed-off-by: Will Boyce <will@balena.io>
       hash: d3a1b1bf458960fc33dd7ecef12a7dac6ef6f9de
-      subject: 'connect-proxy: Route non local requests via the relevant instance'
+      subject: "connect-proxy: Route non local requests via the relevant instance"
     - author: Will Boyce
       body: |-
         Capture fewer errors in sentry, tidy up logging and handling of
         expected errors.
       footers:
         change-type: minor
-        connects-to: '#22'
+        connects-to: "#22"
         signed-off-by: Will Boyce <will@balena.io>
       hash: a9a1ffc8dababd2492e2469017bfc0bd8447894a
-      subject: 'connect-proxy: Improve error handling'
+      subject: "connect-proxy: Improve error handling"
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: patch
-        connects-to: '#13'
+        connects-to: "#13"
         signed-off-by: Will Boyce <will@balena.io>
       hash: be3dbf1b77384a113bf5dd480e3e044ddbf6b020
-      subject: 'lint: Auto-prettify staged changes using husky/lint-staged'
-  date: '2018-11-22T13:49:40Z'
+      subject: "lint: Auto-prettify staged changes using husky/lint-staged"
+  date: 2018-11-22T13:49:40Z
   version: 8.3.0
 - commits:
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: patch
-        connects-to: '#15'
+        connects-to: "#15"
         signed-off-by: Will Boyce <will@balena.io>
       hash: 023f83dc6faed5494f67a0b34a84a500eb041c04
-      subject: 'api: Remove references to `is_web_accessible` device attr'
-  date: '2018-11-06T11:12:14Z'
+      subject: "api: Remove references to `is_web_accessible` device attr"
+  date: 2018-11-06T11:12:14Z
   version: 8.2.1
 - commits:
     - author: Will Boyce
@@ -3932,88 +3948,88 @@
         * Configure CODEOWNERS
       footers:
         change-type: patch
-        connects-to: '#6'
+        connects-to: "#6"
         signed-off-by: Will Boyce <will@balena.io>
       hash: 6b05bd28931a6b759146898bc1342fd8df4261fc
-      subject: 'open-sourcing: Prepare for open-sourcing repository'
+      subject: "open-sourcing: Prepare for open-sourcing repository"
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: patch
-        connects-to: '#6'
+        connects-to: "#6"
         signed-off-by: Will Boyce <will@balena.io>
       hash: 915aa78967bbf954df2e0d2f80830df0bddedc3f
-      subject: 'core: Update npm dependencies'
+      subject: "core: Update npm dependencies"
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: patch
-        connects-to: '#6'
+        connects-to: "#6"
         signed-off-by: Will Boyce <will@balena.io>
       hash: e7a478e56b498d71bae2075e7c39c4f66d02798b
-      subject: 'rename: Tidy up some remaining resin references'
+      subject: "rename: Tidy up some remaining resin references"
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: minor
-        connects-to: '#6'
+        connects-to: "#6"
         signed-off-by: Will Boyce <will@balena.io>
       hash: ee180d06ac0728427f9a59213e56805977b4a6fd
-      subject: 'api: Use balenaAPI v5 endpoint'
+      subject: "api: Use balenaAPI v5 endpoint"
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: patch
-        connects-to: '#6'
+        connects-to: "#6"
         signed-off-by: Will Boyce <will@balena.io>
       hash: c547d938ac68a76291ac5aa32a8210fdc77e7dfa
-      subject: 'lint: Enforce `prettier` coding standards'
+      subject: "lint: Enforce `prettier` coding standards"
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: patch
-        connects-to: '#12'
+        connects-to: "#12"
         signed-off-by: Will Boyce <will@balena.io>
       hash: 4759cd425cd04598345f9eaf965fc06d194caa9e
-      subject: 'logging: Fix a few incomplete log messages'
-  date: '2018-10-31T10:43:46Z'
+      subject: "logging: Fix a few incomplete log messages"
+  date: 2018-10-31T10:43:46Z
   version: 8.2.0
 - commits:
     - author: Pagan Gazzard
-      body: ''
+      body: ""
       footers:
         change-type: minor
       hash: 94db6104fc7eae1b4eb2719bdbbdd168c08e84f1
-      subject: 'Update to open-balena-base 5.0.0, including nodejs 10'
+      subject: Update to open-balena-base 5.0.0, including nodejs 10
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: patch
-        connects-to: '#5'
+        connects-to: "#5"
         signed-off-by: Will Boyce <will@balena.io>
       hash: ea0e26128f1618d11d2fc9e2af1fca8f87468c3f
-      subject: 'rename: Rename remaining `RESIN_` variables to `BALENA_`'
-  date: '2018-10-30T14:30:41Z'
+      subject: "rename: Rename remaining `RESIN_` variables to `BALENA_`"
+  date: 2018-10-30T14:30:41Z
   version: 8.1.0
 - commits:
     - author: Heds Simons
-      body: ''
+      body: ""
       footers:
         change-type: patch
-        connects-to: '#3'
+        connects-to: "#3"
         signed-off-by: Heds Simons <heds@balena.io>
       hash: da353bd706bd4a97d6e26019b707f66a53d19a84
-      subject: 'base: Update resin-base version to autoset subdomain envvars'
-  date: '2018-10-26T13:24:08Z'
+      subject: "base: Update resin-base version to autoset subdomain envvars"
+  date: 2018-10-26T13:24:08Z
   version: 8.0.2
 - commits:
     - author: Will Boyce
-      body: ''
+      body: ""
       footers:
         change-type: patch
-        connects-to: '#1'
+        connects-to: "#1"
         signed-off-by: Will Boyce <will@balena.io>
       hash: 5a946289f63a3f6acf85036ed43213695d28fff8
-      subject: 'dockerfile: Use `balena/open-balena-base` base image'
-  date: '2018-10-23T18:34:05Z'
+      subject: "dockerfile: Use `balena/open-balena-base` base image"
+  date: 2018-10-23T18:34:05Z
   version: 8.0.1
