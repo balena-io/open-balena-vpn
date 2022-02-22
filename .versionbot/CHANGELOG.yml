@@ -1,4 +1,16 @@
 - commits:
+    - subject: Avoid an issue with failing to mount namespaces
+      hash: ce8f4fc6ec8dc762c40c74b8134b6abf035244ea
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 9.27.2
+  title: "'Avoid an issue with failing to mount namespaces'"
+  date: 2022-02-22T16:40:43.009Z
+- commits:
     - subject: Remove `http-use-htx` option, it's now the default and only option
       hash: 58d053644e44d642d2f85769138ed742917238ce
       body: ""
