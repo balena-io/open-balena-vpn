@@ -36,7 +36,6 @@ frontend http-80
 	monitor-uri /ping
 	monitor fail if vpn_dead
 {{- if ne (getenv "MONITOR_SECRET_TOKEN") "" }}
-	option http-use-htx
 	acl is-haproxy-metrics path /metrics/haproxy
 	acl is-node-metrics path /metrics/node
 	acl is-process-metrics path /metrics/process
