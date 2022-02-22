@@ -1,4 +1,16 @@
 - commits:
+    - subject: Remove `http-use-htx` option, it's now the default and only option
+      hash: 58d053644e44d642d2f85769138ed742917238ce
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 9.27.1
+  title: "'Remove  option, it's now the default and only option'"
+  date: 2022-02-22T15:19:39.126Z
+- commits:
     - subject: Update haproxy to 2.5
       hash: 7188d02a2a31b8a52f78d35f7e24e5aec9e3c1ac
       body: ""
