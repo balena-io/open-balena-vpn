@@ -1,4 +1,29 @@
 - commits:
+    - subject: Update open-balena-base to 13.2.0
+      hash: c7d49985f84c11d57bef1782f2f8edf7d806462d
+      body: |
+        Update open-balena-base from 13.1.0 to 13.2.0
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Consistent SENTRY environment names
+              hash: 6677d1a2cc99657dc9070f2b392d39eddfe72a08
+              body: ""
+              footer:
+                Change-type: minor
+                change-type: minor
+              author: ab77
+              nested: []
+          version: open-balena-base-13.2.0
+          title: "'Consistent SENTRY environment names'"
+          date: 2022-02-22T23:30:35.932Z
+  version: 9.28.0
+  title: "'Update open-balena-base to 13.2.0'"
+  date: 2022-02-24T19:35:18.069Z
+- commits:
     - subject: Avoid an issue with failing to mount namespaces
       hash: ce8f4fc6ec8dc762c40c74b8134b6abf035244ea
       body: ""
