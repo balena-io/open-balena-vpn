@@ -37,17 +37,17 @@ import { pooledRequest } from './request';
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const REQUEST_TIMEOUT = 60000;
 
-interface DeviceStateTracker {
-	promise: Promise<any>;
+export interface DeviceStateTracker {
+	promise: Promise<DeviceState & { workerId: string }>;
 	currentState: Partial<DeviceState>;
 	targetState: DeviceState;
+	workerId: string;
 }
 
 export interface DeviceState {
 	common_name: string;
 	connected: boolean;
 	virtual_address?: string;
-	worker_id: string;
 }
 
 const setDeviceState = (() => {
@@ -56,10 +56,10 @@ const setDeviceState = (() => {
 	const applyState = (serviceId: number, uuid: string) =>
 		(deviceStates[uuid].promise = deviceStates[uuid].promise.then(async () => {
 			// Get the latest target state at the start of the request
-			const { targetState, currentState } = deviceStates[uuid];
+			const { targetState, currentState, workerId } = deviceStates[uuid];
 			if (_.isEqual(targetState, currentState)) {
 				// If the states match then we don't have to do anything
-				return targetState;
+				return { ...targetState, workerId };
 			}
 
 			const eventType = targetState.connected ? 'connect' : 'disconnect';
@@ -80,7 +80,7 @@ const setDeviceState = (() => {
 				}
 				// Update the current state on success
 				deviceStates[uuid].currentState = targetState;
-				return targetState;
+				return { ...targetState, workerId };
 			} catch (err) {
 				captureException(err, 'device-state-update-error', {
 					tags: { uuid },
@@ -95,17 +95,18 @@ const setDeviceState = (() => {
 				// and let it continue with the recursion. If we just
 				// returned applyState() instead or awaited it, the whole thing would
 				// deadlock
-				return targetState;
+				return { ...targetState, workerId };
 			}
 		}));
 
-	return (serviceId: number, state: DeviceState) => {
+	return (serviceId: number, workerId: string, state: DeviceState) => {
 		const uuid = state.common_name;
 		if (deviceStates[uuid] == null) {
 			deviceStates[uuid] = {
 				targetState: state,
 				currentState: {},
-				promise: Promise.resolve(),
+				workerId,
+				promise: Promise.resolve({ ...state, workerId }),
 			};
 		} else {
 			deviceStates[uuid].targetState = state;
@@ -123,9 +124,8 @@ export const connected = (
 		common_name: data.common_name,
 		connected: true,
 		virtual_address: data.ifconfig_pool_remote_ip,
-		worker_id: workerId,
 	};
-	return setDeviceState(serviceId, state);
+	return setDeviceState(serviceId, workerId, state);
 };
 
 export const disconnected = (
@@ -136,7 +136,6 @@ export const disconnected = (
 	const state: DeviceState = {
 		common_name: data.common_name,
 		connected: false,
-		worker_id: workerId,
 	};
-	return setDeviceState(serviceId, state);
+	return setDeviceState(serviceId, workerId, state);
 };
