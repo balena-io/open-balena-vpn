@@ -38,8 +38,6 @@ export interface VpnClientUntrustedData {
 export interface VpnClientTrustedData {
 	common_name: string;
 	ifconfig_pool_remote_ip: string;
-	trusted_ip: string;
-	trusted_port: number;
 }
 export interface VpnClientBytecountData {
 	bytes_received: number;
