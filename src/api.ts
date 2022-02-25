@@ -51,8 +51,10 @@ export const apiFactory = (serviceId: number) => {
 
 	const logger = getLogger('vpn', serviceId);
 
-	const logStateUpdate = (state: clients.DeviceState) => {
-		let stateMsg = `uuid=${state.common_name} worker_id=${state.worker_id} connected=${state.connected}`;
+	const logStateUpdate = (
+		state: Awaited<clients.DeviceStateTracker['promise']>,
+	) => {
+		let stateMsg = `uuid=${state.common_name} worker_id=${state.workerId} connected=${state.connected}`;
 		if (state.virtual_address != null) {
 			stateMsg = `${stateMsg} virtual_address=${state.virtual_address}`;
 		}
