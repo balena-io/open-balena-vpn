@@ -1,4 +1,16 @@
 - commits:
+    - subject: Avoid passing unused data from openvpn connect scripts to nodejs
+      hash: 4d2021959745fef98002d1f4859531fec2aac298
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 9.28.3
+  title: "'Avoid passing unused data from openvpn connect scripts to nodejs'"
+  date: 2022-02-25T14:34:06.351Z
+- commits:
     - subject: Ignore the worker id when deciding if we have a state change to report
       hash: e8bcd63e600b166d5bd5eb85b107406cb9aaf0f6
       body: |
