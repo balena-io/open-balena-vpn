@@ -1,4 +1,16 @@
 - commits:
+    - subject: Stop sending virtual_address on connect events
+      hash: a5059f427f9207de8084ad041820021dd0d7eb80
+      body: ""
+      footer:
+        Change-type: major
+        change-type: major
+      author: Pagan Gazzard
+      nested: []
+  version: 10.0.0
+  title: "'Stop sending virtual_address on connect events'"
+  date: 2022-02-25T14:53:49.687Z
+- commits:
     - subject: Avoid passing unused data from openvpn connect scripts to nodejs
       hash: 4d2021959745fef98002d1f4859531fec2aac298
       body: ""
