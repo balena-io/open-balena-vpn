@@ -47,7 +47,6 @@ export interface DeviceStateTracker {
 export interface DeviceState {
 	common_name: string;
 	connected: boolean;
-	virtual_address?: string;
 }
 
 const setDeviceState = (() => {
@@ -123,7 +122,6 @@ export const connected = (
 	const state: DeviceState = {
 		common_name: data.common_name,
 		connected: true,
-		virtual_address: data.ifconfig_pool_remote_ip,
 	};
 	return setDeviceState(serviceId, workerId, state);
 };
