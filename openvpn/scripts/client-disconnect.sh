@@ -24,7 +24,6 @@ curl -s -X DELETE $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -d @- "h
 {
 	"event": "client-disconnect",
 	"common_name": "$common_name",
-	"ifconfig_pool_remote_ip": "$ifconfig_pool_remote_ip",
 	"bytes_received": $bytes_received,
 	"bytes_sent": $bytes_sent,
 	"time_duration": $time_duration

@@ -26,7 +26,6 @@ fi
 curl -s -X POST $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF || true
 {
 	"event": "client-connect",
-	"common_name": "$common_name",
-	"ifconfig_pool_remote_ip": "$ifconfig_pool_remote_ip"
+	"common_name": "$common_name"
 }
 EOF

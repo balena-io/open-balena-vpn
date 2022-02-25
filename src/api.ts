@@ -54,11 +54,9 @@ export const apiFactory = (serviceId: number) => {
 	const logStateUpdate = (
 		state: Awaited<clients.DeviceStateTracker['promise']>,
 	) => {
-		let stateMsg = `uuid=${state.common_name} worker_id=${state.workerId} connected=${state.connected}`;
-		if (state.virtual_address != null) {
-			stateMsg = `${stateMsg} virtual_address=${state.virtual_address}`;
-		}
-		logger.debug(`successfully updated state for device: ${stateMsg}`);
+		logger.debug(
+			`successfully updated state for device: uuid=${state.common_name} worker_id=${state.workerId} connected=${state.connected}`,
+		);
 	};
 
 	api.use(express.json());
