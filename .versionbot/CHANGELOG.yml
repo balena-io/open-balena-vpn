@@ -1,4 +1,19 @@
 - commits:
+    - subject: Ignore the worker id when deciding if we have a state change to report
+      hash: e8bcd63e600b166d5bd5eb85b107406cb9aaf0f6
+      body: |
+        We never send the worker id to the api so even if it changes there's
+        still nothing to report and so we can potentially avoid unnecessary
+        state reports
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 9.28.2
+  title: "'Ignore the worker id when deciding if we have a state change to report'"
+  date: 2022-02-25T13:31:25.386Z
+- commits:
     - subject: Update dependencies
       hash: 50b8fffa6cdca41a5ddce1dbaaafc15449c05ede
       body: ""
