@@ -108,6 +108,7 @@ const setDeviceState = (() => {
 				promise: Promise.resolve({ ...state, workerId }),
 			};
 		} else {
+			deviceStates[uuid].workerId = workerId;
 			deviceStates[uuid].targetState = state;
 		}
 		return applyState(serviceId, uuid);
