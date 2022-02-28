@@ -1,4 +1,19 @@
 - commits:
+    - subject: Only compare the connected state when deciding if we need to report it
+      hash: 8c55271acb8d157254b7f6a9a8699e6db7105dd4
+      body: |
+        Since the connected/disconnected status is the only thing that is
+        important to the api then comparing just that allows us to simplify the
+        code and ensure we only update when truly necessary
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 10.0.1
+  title: "'Only compare the connected state when deciding if we need to report it'"
+  date: 2022-02-28T18:10:27.082Z
+- commits:
     - subject: Stop sending virtual_address on connect events
       hash: a5059f427f9207de8084ad041820021dd0d7eb80
       body: ""
