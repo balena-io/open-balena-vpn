@@ -26,48 +26,45 @@
 // the API has a special endpoint that first sets all clients as offline.
 
 import { IncomingMessage } from 'http';
-import * as _ from 'lodash';
 import { setTimeout } from 'timers/promises';
 
 import { apiKey, captureException } from './index';
-
-import { VpnClientTrustedData } from './openvpn';
 import { pooledRequest } from './request';
 
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const REQUEST_TIMEOUT = 60000;
 
 export interface DeviceStateTracker {
-	promise: Promise<DeviceState & { workerId: string }>;
-	currentState: Partial<DeviceState>;
-	targetState: DeviceState;
+	promise: Promise<{ uuid: string; connected: boolean; workerId: string }>;
+	currentConnected?: boolean;
+	targetConnected: boolean;
 	workerId: string;
 }
 
-export interface DeviceState {
-	common_name: string;
-	connected: boolean;
-}
-
-const setDeviceState = (() => {
+export const setConnected = (() => {
 	const deviceStates: { [key: string]: DeviceStateTracker } = {};
 
 	const applyState = (serviceId: number, uuid: string) =>
 		(deviceStates[uuid].promise = deviceStates[uuid].promise.then(async () => {
 			// Get the latest target state at the start of the request
-			const { targetState, currentState, workerId } = deviceStates[uuid];
-			if (_.isEqual(targetState, currentState)) {
+			const { targetConnected, currentConnected, workerId } =
+				deviceStates[uuid];
+			if (targetConnected === currentConnected) {
 				// If the states match then we don't have to do anything
-				return { ...targetState, workerId };
+				return { uuid, connected: targetConnected, workerId };
 			}
 
-			const eventType = targetState.connected ? 'connect' : 'disconnect';
+			const eventType = targetConnected ? 'connect' : 'disconnect';
 			try {
 				const response: IncomingMessage = await pooledRequest
 					.post({
 						url: `https://${BALENA_API_HOST}/services/vpn/client-${eventType}`,
 						timeout: REQUEST_TIMEOUT,
-						form: { service_id: serviceId, ...targetState },
+						form: {
+							service_id: serviceId,
+							common_name: uuid,
+							connected: targetConnected,
+						},
 						headers: { Authorization: `Bearer ${apiKey}` },
 					})
 					.promise()
@@ -78,8 +75,8 @@ const setDeviceState = (() => {
 					);
 				}
 				// Update the current state on success
-				deviceStates[uuid].currentState = targetState;
-				return { ...targetState, workerId };
+				deviceStates[uuid].currentConnected = targetConnected;
+				return { uuid, connected: targetConnected, workerId };
 			} catch (err) {
 				captureException(err, 'device-state-update-error', {
 					tags: { uuid },
@@ -94,46 +91,27 @@ const setDeviceState = (() => {
 				// and let it continue with the recursion. If we just
 				// returned applyState() instead or awaited it, the whole thing would
 				// deadlock
-				return { ...targetState, workerId };
+				return { uuid, connected: targetConnected, workerId };
 			}
 		}));
 
-	return (serviceId: number, workerId: string, state: DeviceState) => {
-		const uuid = state.common_name;
+	return (
+		uuid: string,
+		serviceId: number,
+		workerId: string,
+		connected: boolean,
+	) => {
 		if (deviceStates[uuid] == null) {
 			deviceStates[uuid] = {
-				targetState: state,
-				currentState: {},
+				targetConnected: connected,
+				currentConnected: undefined,
 				workerId,
-				promise: Promise.resolve({ ...state, workerId }),
+				promise: Promise.resolve({ uuid, connected, workerId }),
 			};
 		} else {
-			deviceStates[uuid].targetState = state;
+			deviceStates[uuid].workerId = workerId;
+			deviceStates[uuid].targetConnected = connected;
 		}
 		return applyState(serviceId, uuid);
 	};
 })();
-
-export const connected = (
-	serviceId: number,
-	workerId: string,
-	data: VpnClientTrustedData,
-) => {
-	const state: DeviceState = {
-		common_name: data.common_name,
-		connected: true,
-	};
-	return setDeviceState(serviceId, workerId, state);
-};
-
-export const disconnected = (
-	serviceId: number,
-	workerId: string,
-	data: VpnClientTrustedData,
-) => {
-	const state: DeviceState = {
-		common_name: data.common_name,
-		connected: false,
-	};
-	return setDeviceState(serviceId, workerId, state);
-};

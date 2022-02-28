@@ -55,7 +55,7 @@ export const apiFactory = (serviceId: number) => {
 		state: Awaited<clients.DeviceStateTracker['promise']>,
 	) => {
 		logger.debug(
-			`successfully updated state for device: uuid=${state.common_name} worker_id=${state.workerId} connected=${state.connected}`,
+			`successfully updated state for device: uuid=${state.uuid} worker_id=${state.workerId} connected=${state.connected}`,
 		);
 	};
 
@@ -77,7 +77,7 @@ export const apiFactory = (serviceId: number) => {
 
 		workerMap[req.body.common_name] = req.params.worker;
 		clients
-			.connected(serviceId, req.params.worker, req.body)
+			.setConnected(req.body.common_name, serviceId, req.params.worker, true)
 			.then(logStateUpdate);
 		res.send('OK');
 	});
@@ -146,7 +146,7 @@ export const apiFactory = (serviceId: number) => {
 		metrics.dec(Metrics.OnlineDevices);
 
 		clients
-			.disconnected(serviceId, req.params.worker, req.body)
+			.setConnected(req.body.common_name, serviceId, req.params.worker, false)
 			.then(logStateUpdate);
 		res.send('OK');
 	});
