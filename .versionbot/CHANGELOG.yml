@@ -1,4 +1,16 @@
 - commits:
+    - subject: Simplify logging of successful updates
+      hash: 848916d50691ac68d1fa1fc17ad77f1c3d0f2422
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 10.0.2
+  title: "'Simplify logging of successful updates'"
+  date: 2022-03-01T13:17:38.467Z
+- commits:
     - subject: Only compare the connected state when deciding if we need to report it
       hash: 8c55271acb8d157254b7f6a9a8699e6db7105dd4
       body: |
