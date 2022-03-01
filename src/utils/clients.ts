@@ -50,6 +50,9 @@ export const setConnected = (() => {
 		logger: Logger,
 	) => {
 		try {
+			if (uuids.length === 0) {
+				return;
+			}
 			const eventType = connected ? 'connect' : 'disconnect';
 			const response: IncomingMessage = await request
 				.post({
