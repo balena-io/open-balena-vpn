@@ -27,6 +27,7 @@
 
 import { IncomingMessage } from 'http';
 import { setTimeout } from 'timers/promises';
+import { Logger } from 'winston';
 
 import { apiKey, captureException } from './index';
 import { pooledRequest } from './request';
@@ -35,23 +36,21 @@ const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const REQUEST_TIMEOUT = 60000;
 
 export interface DeviceStateTracker {
-	promise: Promise<{ uuid: string; connected: boolean; workerId: string }>;
+	promise: Promise<void>;
 	currentConnected?: boolean;
 	targetConnected: boolean;
-	workerId: string;
 }
 
 export const setConnected = (() => {
 	const deviceStates: { [key: string]: DeviceStateTracker } = {};
 
-	const applyState = (serviceId: number, uuid: string) =>
+	const applyState = (serviceId: number, uuid: string, logger: Logger) =>
 		(deviceStates[uuid].promise = deviceStates[uuid].promise.then(async () => {
 			// Get the latest target state at the start of the request
-			const { targetConnected, currentConnected, workerId } =
-				deviceStates[uuid];
+			const { targetConnected, currentConnected } = deviceStates[uuid];
 			if (targetConnected === currentConnected) {
 				// If the states match then we don't have to do anything
-				return { uuid, connected: targetConnected, workerId };
+				return;
 			}
 
 			const eventType = targetConnected ? 'connect' : 'disconnect';
@@ -76,7 +75,10 @@ export const setConnected = (() => {
 				}
 				// Update the current state on success
 				deviceStates[uuid].currentConnected = targetConnected;
-				return { uuid, connected: targetConnected, workerId };
+				logger.debug(
+					`successfully updated state for device: uuid=${uuid} connected=${targetConnected}`,
+				);
+				return;
 			} catch (err) {
 				captureException(err, 'device-state-update-error', {
 					tags: { uuid },
@@ -84,34 +86,32 @@ export const setConnected = (() => {
 				// Add a 60 second delay in case of failure to avoid a crazy flood
 				await setTimeout(60000);
 				// Trigger another apply, to retry the failed update
-				applyState(serviceId, uuid);
+				applyState(serviceId, uuid, logger);
 				// Since we are recursing and this function always extends
 				// the promise chain (deviceStates[uuid].promise.then ->..)
-				// we need to return targetState to make this promise resolve
+				// we need to return to make this promise resolve
 				// and let it continue with the recursion. If we just
 				// returned applyState() instead or awaited it, the whole thing would
 				// deadlock
-				return { uuid, connected: targetConnected, workerId };
+				return;
 			}
 		}));
 
 	return (
 		uuid: string,
 		serviceId: number,
-		workerId: string,
 		connected: boolean,
+		logger: Logger,
 	) => {
 		if (deviceStates[uuid] == null) {
 			deviceStates[uuid] = {
 				targetConnected: connected,
 				currentConnected: undefined,
-				workerId,
-				promise: Promise.resolve({ uuid, connected, workerId }),
+				promise: Promise.resolve(),
 			};
 		} else {
-			deviceStates[uuid].workerId = workerId;
 			deviceStates[uuid].targetConnected = connected;
 		}
-		return applyState(serviceId, uuid);
+		applyState(serviceId, uuid, logger);
 	};
 })();

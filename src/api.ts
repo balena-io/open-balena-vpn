@@ -51,14 +51,6 @@ export const apiFactory = (serviceId: number) => {
 
 	const logger = getLogger('vpn', serviceId);
 
-	const logStateUpdate = (
-		state: Awaited<clients.DeviceStateTracker['promise']>,
-	) => {
-		logger.debug(
-			`successfully updated state for device: uuid=${state.uuid} worker_id=${state.workerId} connected=${state.connected}`,
-		);
-	};
-
 	api.use(express.json());
 
 	api.post('/api/v2/:worker/clients/', fromLocalHost, (req, res) => {
@@ -68,17 +60,14 @@ export const apiFactory = (serviceId: number) => {
 		metrics.inc(Metrics.OnlineDevices);
 		metrics.inc(Metrics.TotalDevices);
 
-		if (
-			workerMap[req.body.common_name] != null &&
-			workerMap[req.body.common_name] !== req.params.worker
-		) {
+		const workerId = req.params.worker;
+		const uuid = req.body.common_name;
+		if (workerMap[uuid] != null && workerMap[uuid] !== req.params.worker) {
 			metrics.dec(Metrics.OnlineDevices);
 		}
 
-		workerMap[req.body.common_name] = req.params.worker;
-		clients
-			.setConnected(req.body.common_name, serviceId, req.params.worker, true)
-			.then(logStateUpdate);
+		workerMap[uuid] = workerId;
+		clients.setConnected(uuid, serviceId, true, logger);
 		res.send('OK');
 	});
 
@@ -126,28 +115,25 @@ export const apiFactory = (serviceId: number) => {
 			metrics.histogram(Metrics.SessionDuration, req.body.time_duration);
 		}
 
-		if (workerMap[req.body.common_name] !== req.params.worker) {
+		const workerId = req.params.worker;
+		const uuid = req.body.common_name;
+
+		if (workerMap[uuid] !== workerId) {
 			logger.warning(
-				`dropping oos disconnect event for uuid=${
-					req.body.common_name
-				} worker=${req.params.worker} (expected=${
-					workerMap[req.body.common_name]
-				})`,
+				`dropping oos disconnect event for uuid=${uuid} worker=${workerId} (expected=${workerMap[uuid]})`,
 			);
 			captureException(
 				new Error('Out of Sync OpenVPN Client Event Received'),
 				'openvpn-oos-event',
-				{ tags: { uuid: req.body.common_name }, req },
+				{ tags: { uuid }, req },
 			);
 			return res.sendStatus(400);
 		}
-		delete workerMap[req.body.common_name];
+		delete workerMap[uuid];
 
 		metrics.dec(Metrics.OnlineDevices);
 
-		clients
-			.setConnected(req.body.common_name, serviceId, req.params.worker, false)
-			.then(logStateUpdate);
+		clients.setConnected(uuid, serviceId, false, logger);
 		res.send('OK');
 	});
 
