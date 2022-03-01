@@ -1,4 +1,16 @@
 - commits:
+    - subject: Report connecting/disconnecting clients in batches
+      hash: e3bdac8340a5c059b128d705b978ace44196f6bb
+      body: ""
+      footer:
+        Change-type: major
+        change-type: major
+      author: Pagan Gazzard
+      nested: []
+  version: 11.0.0
+  title: "'Report connecting/disconnecting clients in batches'"
+  date: 2022-03-01T15:36:23.050Z
+- commits:
     - subject: Simplify logging of successful updates
       hash: 848916d50691ac68d1fa1fc17ad77f1c3d0f2422
       body: ""
