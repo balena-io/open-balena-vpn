@@ -1,4 +1,16 @@
 - commits:
+    - subject: Only try to report if there's at least one uuid changed
+      hash: 781af17c1a5a28791445ff70f1e3dcd4414628f9
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.0.1
+  title: "'Only try to report if there's at least one uuid changed'"
+  date: 2022-03-01T17:15:03.047Z
+- commits:
     - subject: Report connecting/disconnecting clients in batches
       hash: e3bdac8340a5c059b128d705b978ace44196f6bb
       body: ""
