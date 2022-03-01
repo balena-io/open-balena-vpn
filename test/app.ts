@@ -22,7 +22,6 @@ import * as http from 'http';
 import * as _ from 'lodash';
 import * as nock from 'nock';
 import * as vpnClient from 'openvpn-client';
-import * as querystring from 'querystring';
 
 const { expect } = chai;
 
@@ -103,7 +102,7 @@ describe('VPN Events', function () {
 	const getEvent = (name: string) =>
 		new Bluebird<string>((resolve) => {
 			nock(`https://${process.env.BALENA_API_HOST}`)
-				.post(`/services/vpn/client-${name}`, /common_name=user2/g)
+				.post(`/services/vpn/client-${name}`, /"uuids":.*"user2"/g)
 				.reply(200, (_uri: string, body: any) => {
 					resolve(body);
 					return 'OK';
@@ -118,13 +117,10 @@ describe('VPN Events', function () {
 
 	it('should send a client-connect event', function () {
 		const connectEvent = getEvent('connect').then((body) => {
-			const data = querystring.parse(body);
-			expect(data)
-				.to.have.property('service_id')
-				.that.equals(`${instance.getId()}`);
-			expect(data).to.have.property('common_name').that.equals('user2');
-			expect(data).to.not.have.property('real_address');
-			expect(data).to.not.have.property('virtual_address');
+			expect(body).to.have.property('serviceId').that.equals(instance.getId());
+			expect(body).to.have.property('uuids').that.deep.equals(['user2']);
+			expect(body).to.not.have.property('real_address');
+			expect(body).to.not.have.property('virtual_address');
 		});
 
 		this.client = vpnClient.create(vpnDefaultOpts);
@@ -134,13 +130,10 @@ describe('VPN Events', function () {
 
 	it('should send a client-disconnect event', function () {
 		const disconnectEvent = getEvent('disconnect').then((body) => {
-			const data = querystring.parse(body);
-			expect(data)
-				.to.have.property('service_id')
-				.that.equals(`${instance.getId()}`);
-			expect(data).to.have.property('common_name').that.equals('user2');
-			expect(data).to.not.have.property('real_address');
-			expect(data).to.not.have.property('virtual_address');
+			expect(body).to.have.property('serviceId').that.equals(instance.getId());
+			expect(body).to.have.property('uuids').that.deep.equals(['user2']);
+			expect(body).to.not.have.property('real_address');
+			expect(body).to.not.have.property('virtual_address');
 		});
 
 		return this.client.disconnect().return(disconnectEvent);
