@@ -88,6 +88,15 @@ if (cluster.isMaster) {
 		});
 	});
 
+	process.on('SIGTERM', () => {
+		masterLogger.notice('received SIGTERM');
+		_.each(cluster.workers, (clusterWorker) => {
+			if (clusterWorker != null) {
+				clusterWorker.send('prepareShutdown');
+			}
+		});
+	});
+
 	cluster.on(
 		'message',
 		(_worker, msg: { type: string; data: WorkerMetric }) => {

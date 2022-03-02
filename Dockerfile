@@ -15,6 +15,10 @@ FROM base as main
 
 EXPOSE 80 443 3128
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    socat \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/dev/null \
     && echo deb http://haproxy.debian.net bullseye-backports-2.5 main > /etc/apt/sources.list.d/haproxy.list \
     && apt-get update -qq \
@@ -57,9 +61,7 @@ COPY --from=builder /usr/src/app/build /usr/src/app/build
 COPY bin /usr/src/app/bin
 COPY config /usr/src/app/config
 COPY openvpn /usr/src/app/openvpn
-
 COPY docker-hc /usr/src/app/
-
 COPY config/services /etc/systemd/system
 RUN systemctl enable \
     open-balena-vpn.service \

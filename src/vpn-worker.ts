@@ -16,6 +16,7 @@
 */
 
 import { metrics } from '@balena/node-metrics-gatherer';
+import { setTimeout } from 'timers/promises';
 
 import { getLogger } from './utils';
 
@@ -33,6 +34,10 @@ const VPN_BASE_MANAGEMENT_PORT = parseInt(
 	process.env.VPN_BASE_MANAGEMENT_PORT!,
 	10,
 );
+
+// milliseconds
+const DEFAULT_SIGTERM_TIMEOUT =
+	parseInt(process.env.DEFAULT_SIGTERM_TIMEOUT!, 10) * 1000;
 
 // disable verbose logs and bytecount reporting by default
 const VPN_BYTECOUNT_INTERVAL =
@@ -116,6 +121,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 		mgtPort,
 		getInstanceSubnet(instanceId),
 		BALENA_VPN_GATEWAY,
+		verbose,
 	);
 
 	vpn.on('log', (level, message) => {
@@ -135,6 +141,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 		}
 		fatalErrorHandler(new Error(msg));
 	});
+
 	vpn.on('process:error', fatalErrorHandler);
 
 	vpn.on('client:established', (clientId, data) => {
@@ -175,6 +182,46 @@ const worker = async (instanceId: number, serviceId: number) => {
 	} catch (err) {
 		fatalErrorHandler(err);
 	}
+
+	process.on('message', async (msg) => {
+		if (msg === 'prepareShutdown') {
+			logger.notice(`received: ${msg}`);
+
+			const clientCount = Object.keys(clientCache).length;
+
+			if (clientCount > 0) {
+				const delayMs = DEFAULT_SIGTERM_TIMEOUT / clientCount;
+				logger.info(
+					`disconnecting ${clientCount} clients, spaced by ${delayMs}ms`,
+				);
+				let timeToKill = DEFAULT_SIGTERM_TIMEOUT;
+
+				for (let clientId = 0; clientId < clientCount; clientId++) {
+					try {
+						const cn = clientCache[clientId].uuid;
+						logger.info(`disconnecting ${cn}`);
+						await vpn.killClient(cn);
+					} catch (err) {
+						logger.warning(`'${err}' error trying to disconnect client`);
+					}
+					// last client disconnected
+					if (clientCount - clientId === 1) {
+						logger.info(
+							`${clientCount} client(s) disconnected, waiting for SIGKILL`,
+						);
+						// ensure workers are not restarted by service manager
+						await setTimeout(DEFAULT_SIGTERM_TIMEOUT * 2);
+					}
+					await setTimeout(delayMs);
+					timeToKill = timeToKill - delayMs;
+				}
+			} else {
+				logger.info(`${clientCount} clients connected, waiting for SIGKILL`);
+				await setTimeout(DEFAULT_SIGTERM_TIMEOUT * 2);
+			}
+		}
+	});
+
 	logger.notice(`waiting for clients...`);
 	return vpn;
 };
