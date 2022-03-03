@@ -1,4 +1,21 @@
 - commits:
+    - subject: VPN connection draining
+      hash: 450fbc37f16b20f7ec926ea909f429923cfad2ac
+      body: >
+        * implements connectiosn draining between SIGTERM and SIGKILL signals
+
+        * defaults DEFAULT_SIGTERM_TIMEOUT to 120s
+
+        * spaces VPN clients disconnects by DEFAULT_SIGTERM_TIMEOUT / clientCount (millisecs)
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: ab77
+      nested: []
+  version: 11.1.0
+  title: "'VPN connection draining'"
+  date: 2022-03-03T15:29:19.917Z
+- commits:
     - subject: Add a 1s delay between batch reports to increase the chance of batching
       hash: 903950b69a89b02fe1dc3320993a6ad1c9604c4a
       body: |
