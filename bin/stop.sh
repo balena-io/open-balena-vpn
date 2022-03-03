@@ -7,7 +7,7 @@ WORK_DIR="$(readlink -e "$(dirname "$0")"/..)"
 PATH="${WORK_DIR}/node_modules/.bin:${PATH}"
 
 function cleanup() {
-	echo 'show servers state' | socat - /var/run/haproxy.sock
+	echo 'show servers state' | socat - "${VPN_HAPROXY_SOCKET}"
 }
 
 trap 'cleanup' EXIT
@@ -19,11 +19,14 @@ test -f "${WORK_DIR}/config/env" && source "${WORK_DIR}/config/env"
 
 # prevent new VPN connections by setting backend VPN workers to DRAIN mode
 # https://cbonte.github.io/haproxy-dconv/2.5/snapshot/management.html#9.3
-for vpn_worker in $(echo 'show servers conn' | socat - /run/haproxy.sock \
+# shellcheck disable=SC1001
+for vpn_worker in $(echo 'show servers conn' | socat - "${VPN_HAPROXY_SOCKET}" \
   | grep -E ^vpn-workers\/vpn \
   | awk '{print $1}'); do
-       echo "set server ${vpn_worker} state drain" | socat - /run/haproxy.sock
+       echo "set server ${vpn_worker} state drain" | socat - "${VPN_HAPROXY_SOCKET}"
 done
 
-# signal master to prepare for termination
-pgrep -f app.js && pgrep -f app.js | head -n 1 | xargs kill --signal TERM
+# signal cluster to prepare for termination
+if pgrep -af "${VPN_PROCESS_MASK}"; then
+    pgrep -f "${VPN_PROCESS_MASK}" | head -n 1 | xargs kill --signal TERM
+fi

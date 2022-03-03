@@ -13,6 +13,13 @@ RUN npm run build
 
 FROM base as main
 
+# Docker/systemd socialisation hack to handle SIGTERM=>SIGKILL
+# https://stackoverflow.com/q/43486361/1559300
+# https://bugzilla.redhat.com/show_bug.cgi?id=1201657
+# https://unix.stackexchange.com/a/572819/78029
+# https://engineeringblog.yelp.com/2016/01/dumb-init-an-init-for-docker.html
+STOPSIGNAL SIGRTMIN+3
+
 EXPOSE 80 443 3128
 
 RUN apt-get update && apt-get install -y --no-install-recommends \

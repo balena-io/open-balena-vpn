@@ -54,7 +54,10 @@ export const captureException = (
 			}
 		}
 
-		Sentry.captureException(err);
+		// avoid spamming logs if no DSN configured
+		if (process.env.SENTRY_DSN) {
+			Sentry.captureException(err);
+		}
 	});
 };
 

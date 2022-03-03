@@ -7,6 +7,7 @@
 {{ $bindOpt := (or (and (eq (getenv "VPN_HAPROXY_USEPROXYPROTOCOL" "false") "true") "accept-proxy") "") -}}
 {{- /* servers = getenv(VPN_INSTANCE_COUNT, default=getenv(NPROC) if production else 1) */ -}}
 {{ $servers := (getenv "VPN_INSTANCE_COUNT" (or (and (eq (getenv "PRODUCTION_MODE") "true") (getenv "NPROC")) "1")) -}}
+{{ $socket := getenv "VPN_HAPROXY_SOCKET" "/run/haproxy.sock" -}}
 
 global
 	master-worker
@@ -15,7 +16,7 @@ global
 	ulimit-n 1048576
 	user haproxy
 	group haproxy
-	stats socket /var/run/haproxy.sock mode 600 level admin
+	stats socket {{$socket}} mode 600 level admin
 	log /dev/log local0
 
 defaults
