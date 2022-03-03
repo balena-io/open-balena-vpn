@@ -1,4 +1,20 @@
 - commits:
+    - subject: Add a 1s delay between batch reports to increase the chance of batching
+      hash: 903950b69a89b02fe1dc3320993a6ad1c9604c4a
+      body: |
+        This will make it more likely for reports to be batched and increase
+        the batch size, reducing the number of requests necessary without
+        adding a significant delay for reporting, this will also help throttle
+        in the case of report failures
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.0.2
+  title: "'Add a 1s delay between batch reports to increase the chance of batching'"
+  date: 2022-03-03T12:05:20.774Z
+- commits:
     - subject: Only try to report if there's at least one uuid changed
       hash: 781af17c1a5a28791445ff70f1e3dcd4414628f9
       body: ""
