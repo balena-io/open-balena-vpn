@@ -26,6 +26,7 @@
 // the API has a special endpoint that first sets all clients as offline.
 
 import { IncomingMessage } from 'http';
+import { setTimeout } from 'timers/promises';
 import { Logger } from 'winston';
 
 import { apiKey, captureException } from './index';
@@ -119,6 +120,7 @@ export const setConnected = (() => {
 				reportUpdates(serviceId, connects, true, logger),
 			]);
 		} finally {
+			await setTimeout(1000);
 			currentlyReporting = false;
 			// Check if any pending updates have come in whilst we were reporting
 			updateLoop(serviceId, logger);
