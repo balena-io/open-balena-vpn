@@ -24,9 +24,14 @@ StandardOutput=journal+console
 StandardError=journal+console
 WorkingDirectory=/usr/src/app
 EnvironmentFile=/usr/src/app/config/env
-ExecStartPre=/bin/bash -c 'mkdir -p /dev/net; if [ ! -c /dev/net/tun ]; then mknod /dev/net/tun c 10 200; fi'
-ExecStartPre=/usr/sbin/iptables-legacy -P FORWARD ${IPTABLES_FORWARD_POLICY}
 ExecStart=/usr/src/app/bin/start.sh
+ExecStop=-/usr/src/app/bin/stop.sh
+# https://www.freedesktop.org/software/systemd/man/systemd.kill.html#KillMode=
+# only send SIGTERM to master process, send SIGKILL to all remaining processes in the
+# group after TimeoutStopSec has elapsed
+KillMode=mixed
+# ensure TimeoutStopSec >= DEFAULT_SIGTERM_TIMEOUT to allow VPN connection draining to complete
+TimeoutStopSec=120
 Restart=always
 SyslogIdentifier=vpn
 

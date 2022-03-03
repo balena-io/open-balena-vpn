@@ -22,7 +22,6 @@ import { EventEmitter } from 'eventemitter3';
 import * as fs from 'fs';
 import * as net from 'net';
 import VpnConnector = require('telnet-openvpn');
-
 import { Netmask } from './netmask';
 
 const parsePossibleInt = (s: string): number | string => {
@@ -393,5 +392,13 @@ export class VpnManager extends EventEmitter {
 
 	public releaseHold() {
 		return this.exec('hold release');
+	}
+
+	public getStatus() {
+		return this.exec('status');
+	}
+
+	public killClient(cn: string) {
+		return this.exec(`kill ${cn}`);
 	}
 }
