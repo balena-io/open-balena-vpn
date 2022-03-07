@@ -1,5 +1,20 @@
 - commits:
     - subject: VPN connection draining
+      hash: cb9a339620c08d805fa655166a5eb23a7057cbe4
+      body: |
+        * Node.js cluster worker<=>master SIGTERM signalling
+        * Docker=>systemd SIGTERM mapping via SIGRTMIN+3
+        * keep auxiliary services up during VPN draining
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: ab77
+      nested: []
+  version: 11.2.0
+  title: "'Additional debug output'"
+  date: 2022-03-07T22:37:15.592Z
+- commits:
+    - subject: VPN connection draining
       hash: 450fbc37f16b20f7ec926ea909f429923cfad2ac
       body: >
         * implements connectiosn draining between SIGTERM and SIGKILL signals
