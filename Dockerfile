@@ -14,12 +14,23 @@ RUN npm run build
 
 FROM base as main
 
+# Docker/systemd socialisation hack to handle SIGTERM=>SIGKILL
+# https://stackoverflow.com/q/43486361/1559300
+# https://bugzilla.redhat.com/show_bug.cgi?id=1201657
+# https://unix.stackexchange.com/a/572819/78029
+# https://engineeringblog.yelp.com/2016/01/dumb-init-an-init-for-docker.html
+STOPSIGNAL SIGRTMIN+3
+
 EXPOSE 80 443 3128
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    socat \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/dev/null \
-    && echo deb http://haproxy.debian.net bullseye-backports-2.4 main > /etc/apt/sources.list.d/haproxy.list \
+    && echo deb http://haproxy.debian.net bullseye-backports-2.5 main > /etc/apt/sources.list.d/haproxy.list \
     && apt-get update -qq \
-    && apt-get install -qy haproxy=2.4.* iptables --no-install-recommends \
+    && apt-get install -qy haproxy=2.5.* iptables --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
     && mkdir /etc/openvpn/ \
@@ -60,11 +71,9 @@ COPY --from=builder /usr/src/app/build /usr/src/app/build
 COPY bin /usr/src/app/bin
 COPY config /usr/src/app/config
 COPY openvpn /usr/src/app/openvpn
-
 COPY docker-hc /usr/src/app/
+
 COPY entry.sh /usr/src/app/entry.sh
 RUN chmod +x /usr/src/app/entry.sh
-
-COPY config/services /etc/systemd/system
 
 CMD [ "/usr/src/app/entry.sh" ]

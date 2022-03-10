@@ -52,6 +52,10 @@ const masterLogger = getLogger('master');
 		}
 	});
 
+// milliseconds
+const DEFAULT_SIGTERM_TIMEOUT =
+	parseInt(process.env.DEFAULT_SIGTERM_TIMEOUT!, 10) * 1000;
+
 const VPN_INSTANCE_COUNT = getInstanceCount('VPN_INSTANCE_COUNT');
 const VPN_API_PORT = intVar('VPN_API_PORT');
 const VPN_VERBOSE_LOGS = process.env.DEFAULT_VERBOSE_LOGS === 'true';
@@ -76,7 +80,14 @@ if (cluster.isMaster) {
 		txBitrate: number[];
 	}
 	let workerMetrics: { [key: string]: WorkerMetric } = {};
+
 	let verbose = VPN_VERBOSE_LOGS;
+
+	type WorkerState = {
+		instanceId: number;
+		finished: boolean;
+	};
+	const workerStates: { [instanceId: number]: WorkerState } = {};
 
 	process.on('SIGUSR2', () => {
 		masterLogger.notice('caught SIGUSR2, toggling log verbosity');
@@ -88,24 +99,67 @@ if (cluster.isMaster) {
 		});
 	});
 
+	process.on('SIGTERM', async () => {
+		masterLogger.notice('received SIGTERM');
+		_.each(cluster.workers, (clusterWorker) => {
+			if (clusterWorker != null) {
+				clusterWorker.send('prepareShutdown');
+			}
+		});
+		masterLogger.notice(
+			`waiting ${DEFAULT_SIGTERM_TIMEOUT}ms for workers to finish`,
+		);
+	});
+
 	cluster.on(
 		'message',
 		(_worker, msg: { type: string; data: WorkerMetric }) => {
 			const { data, type } = msg;
-			if (type !== 'bitrate') {
+			if (type === 'bitrate') {
+				workerMetrics[data.uuid] = _.mergeWith(
+					workerMetrics[data.uuid] || { rxBitrate: [], txBitrate: [] },
+					data,
+					(obj, src) => {
+						if (_.isArray(obj)) {
+							return obj.concat([src]);
+						}
+					},
+				);
+			} else {
 				return;
 			}
-			workerMetrics[data.uuid] = _.mergeWith(
-				workerMetrics[data.uuid] || { rxBitrate: [], txBitrate: [] },
-				data,
-				(obj, src) => {
-					if (_.isArray(obj)) {
-						return obj.concat([src]);
-					}
-				},
-			);
 		},
 	);
+
+	cluster.on('message', (_worker, msg: { type: string; data: WorkerState }) => {
+		const { data, type } = msg;
+
+		// worker finished connection draining
+		if (type === 'drain') {
+			try {
+				workerStates[data.instanceId] = data;
+				const drainCount = Object.keys(workerStates).length;
+				masterLogger.notice(
+					`total: ${VPN_INSTANCE_COUNT} drained: ${drainCount}`,
+				);
+				for (const key in workerStates) {
+					if (key != null) {
+						const value: WorkerState = workerStates[key];
+						const workerState = value.finished;
+						masterLogger.notice(`instanceId:${key} finished:${workerState}`);
+					}
+				}
+				if (drainCount >= VPN_INSTANCE_COUNT) {
+					masterLogger.notice(`all ${drainCount} worker(s) drained`);
+					process.exit(0);
+				}
+			} catch (err) {
+				masterLogger.warning(`${err} handling message from worker`);
+			}
+		} else {
+			return;
+		}
+	});
 
 	masterLogger.notice(
 		`open-balena-vpn@${VERSION} process started with pid=${process.pid}`,

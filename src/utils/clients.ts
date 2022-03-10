@@ -26,117 +26,122 @@
 // the API has a special endpoint that first sets all clients as offline.
 
 import { IncomingMessage } from 'http';
-import * as _ from 'lodash';
 import { setTimeout } from 'timers/promises';
+import { Logger } from 'winston';
 
 import { apiKey, captureException } from './index';
-
-import { VpnClientTrustedData } from './openvpn';
-import { pooledRequest } from './request';
+import { request } from './request';
 
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const REQUEST_TIMEOUT = 60000;
 
 interface DeviceStateTracker {
-	promise: Promise<any>;
-	currentState: Partial<DeviceState>;
-	targetState: DeviceState;
+	currentConnected?: boolean;
+	targetConnected: boolean;
 }
 
-export interface DeviceState {
-	common_name: string;
-	connected: boolean;
-	virtual_address?: string;
-	worker_id: string;
-}
-
-const setDeviceState = (() => {
+export const setConnected = (() => {
 	const deviceStates: { [key: string]: DeviceStateTracker } = {};
+	const pendingUpdates = new Set<string>();
 
-	const applyState = (serviceId: number, uuid: string) =>
-		(deviceStates[uuid].promise = deviceStates[uuid].promise.then(async () => {
-			// Get the latest target state at the start of the request
-			const { targetState, currentState } = deviceStates[uuid];
-			if (_.isEqual(targetState, currentState)) {
-				// If the states match then we don't have to do anything
-				return targetState;
+	const reportUpdates = async (
+		serviceId: number,
+		uuids: string[],
+		connected: boolean,
+		logger: Logger,
+	) => {
+		try {
+			if (uuids.length === 0) {
+				return;
 			}
+			const eventType = connected ? 'connect' : 'disconnect';
+			const response: IncomingMessage = await request
+				.post({
+					url: `https://${BALENA_API_HOST}/services/vpn/client-${eventType}`,
+					timeout: REQUEST_TIMEOUT,
+					json: true,
+					body: {
+						serviceId,
+						uuids,
+						connected,
+					},
+					headers: { Authorization: `Bearer ${apiKey}` },
+				})
+				.promise()
+				.timeout(REQUEST_TIMEOUT);
+			if (response.statusCode !== 200) {
+				throw new Error(
+					`Status code was '${response.statusCode}', expected '200'`,
+				);
+			}
+			// Update the current state on success
+			for (const uuid of uuids) {
+				deviceStates[uuid].currentConnected = connected;
+				logger.debug(
+					`successfully updated state for device: uuid=${uuid} connected=${connected}`,
+				);
+			}
+			return;
+		} catch (err) {
+			captureException(err, 'device-state-update-error');
+			for (const uuid of uuids) {
+				// If we failed then add the uuids back into the list of pending updates
+				pendingUpdates.add(uuid);
+			}
+		}
+	};
 
-			const eventType = targetState.connected ? 'connect' : 'disconnect';
-			try {
-				const response: IncomingMessage = await pooledRequest
-					.post({
-						url: `https://${BALENA_API_HOST}/services/vpn/client-${eventType}`,
-						timeout: REQUEST_TIMEOUT,
-						form: { service_id: serviceId, ...targetState },
-						headers: { Authorization: `Bearer ${apiKey}` },
-					})
-					.promise()
-					.timeout(REQUEST_TIMEOUT);
-				if (response.statusCode !== 200) {
-					throw new Error(
-						`Status code was '${response.statusCode}', expected '200'`,
-					);
+	let currentlyReporting = false;
+	const updateLoop = async (serviceId: number, logger: Logger) => {
+		if (currentlyReporting || pendingUpdates.size === 0) {
+			// If a report is already in progress or there are no pending updates then do nothing
+			return;
+		}
+		try {
+			currentlyReporting = true;
+			const disconnects = [];
+			const connects = [];
+			for (const uuid of pendingUpdates) {
+				const { targetConnected, currentConnected } = deviceStates[uuid];
+				// We only try to update those where the target/current state differs, any where it matches
+				// will naturally be dropped from pending updates as expected as there is no pending update
+				if (targetConnected !== currentConnected) {
+					if (targetConnected) {
+						connects.push(uuid);
+					} else {
+						disconnects.push(uuid);
+					}
 				}
-				// Update the current state on success
-				deviceStates[uuid].currentState = targetState;
-				return targetState;
-			} catch (err) {
-				captureException(err, 'device-state-update-error', {
-					tags: { uuid },
-				});
-				// Add a 60 second delay in case of failure to avoid a crazy flood
-				await setTimeout(60000);
-				// Trigger another apply, to retry the failed update
-				applyState(serviceId, uuid);
-				// Since we are recursing and this function always extends
-				// the promise chain (deviceStates[uuid].promise.then ->..)
-				// we need to return targetState to make this promise resolve
-				// and let it continue with the recursion. If we just
-				// returned applyState() instead or awaited it, the whole thing would
-				// deadlock
-				return targetState;
 			}
-		}));
+			pendingUpdates.clear();
 
-	return (serviceId: number, state: DeviceState) => {
-		const uuid = state.common_name;
+			await Promise.allSettled([
+				reportUpdates(serviceId, disconnects, false, logger),
+				reportUpdates(serviceId, connects, true, logger),
+			]);
+		} finally {
+			await setTimeout(1000);
+			currentlyReporting = false;
+			// Check if any pending updates have come in whilst we were reporting
+			updateLoop(serviceId, logger);
+		}
+	};
+
+	return (
+		uuid: string,
+		serviceId: number,
+		connected: boolean,
+		logger: Logger,
+	) => {
 		if (deviceStates[uuid] == null) {
 			deviceStates[uuid] = {
-				targetState: state,
-				currentState: {},
-				promise: Promise.resolve(),
+				targetConnected: connected,
+				currentConnected: undefined,
 			};
 		} else {
-			deviceStates[uuid].targetState = state;
+			deviceStates[uuid].targetConnected = connected;
 		}
-		return applyState(serviceId, uuid);
+		pendingUpdates.add(uuid);
+		updateLoop(serviceId, logger);
 	};
 })();
-
-export const connected = (
-	serviceId: number,
-	workerId: string,
-	data: VpnClientTrustedData,
-) => {
-	const state: DeviceState = {
-		common_name: data.common_name,
-		connected: true,
-		virtual_address: data.ifconfig_pool_remote_ip,
-		worker_id: workerId,
-	};
-	return setDeviceState(serviceId, state);
-};
-
-export const disconnected = (
-	serviceId: number,
-	workerId: string,
-	data: VpnClientTrustedData,
-) => {
-	const state: DeviceState = {
-		common_name: data.common_name,
-		connected: false,
-		worker_id: workerId,
-	};
-	return setDeviceState(serviceId, state);
-};
