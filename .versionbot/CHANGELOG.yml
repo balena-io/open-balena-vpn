@@ -1,4 +1,29 @@
 - commits:
+    - subject: Update open-balena-base to 13.2.1
+      hash: 2018a752f0d531b192bf40c32587bcd946ca8f67
+      body: |
+        Update open-balena-base from 13.2.0 to 13.2.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update nodejs to 16.14.2 and npm to 8.5.5
+              hash: 165c44a52b291b9c335d3fe139d82ff0c99a5e96
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-13.2.1
+          title: "'Update nodejs to 16.14.2 and npm to 8.5.5'"
+          date: 2022-03-21T14:38:46.073Z
+  version: 11.2.1
+  title: "'Update open-balena-base to 13.2.1'"
+  date: 2022-03-21T16:55:08.775Z
+- commits:
     - subject: VPN connection draining
       hash: cb9a339620c08d805fa655166a5eb23a7057cbe4
       body: |
