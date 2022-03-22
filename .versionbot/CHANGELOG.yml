@@ -1,4 +1,16 @@
 - commits:
+    - subject: "CircleCI: Remove docker layer caching"
+      hash: 8a1d469d9e638b167440ca0584193cf7e178f8c1
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.2.2
+  title: "'CircleCI: Remove docker layer caching'"
+  date: 2022-03-22T14:58:50.526Z
+- commits:
     - subject: Update open-balena-base to 13.2.1
       hash: 2018a752f0d531b192bf40c32587bcd946ca8f67
       body: |
