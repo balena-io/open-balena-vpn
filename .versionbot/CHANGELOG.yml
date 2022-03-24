@@ -1,4 +1,16 @@
 - commits:
+    - subject: Use Sentry.withScope instead of Sentry.configureScope as it fits better
+      hash: 1ee927985bf98fda1e3ead4d76a76dc758874f08
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.2.4
+  title: "'Use Sentry.withScope instead of Sentry.configureScope as it fits better'"
+  date: 2022-03-24T16:17:00.534Z
+- commits:
     - subject: Update dependencies
       hash: 387a47a016153e3d9ffec0a49ef67e12f8deb913
       body: ""
