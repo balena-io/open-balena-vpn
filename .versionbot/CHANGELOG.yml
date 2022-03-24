@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update dependencies
+      hash: 387a47a016153e3d9ffec0a49ef67e12f8deb913
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.2.3
+  title: "'Update dependencies'"
+  date: 2022-03-24T14:38:25.763Z
+- commits:
     - subject: "CircleCI: Remove docker layer caching"
       hash: 8a1d469d9e638b167440ca0584193cf7e178f8c1
       body: ""
