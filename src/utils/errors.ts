@@ -36,7 +36,7 @@ export const captureException = (
 		req?: Sentry.Handlers.ExpressRequest;
 	},
 ) => {
-	Sentry.configureScope((scope) => {
+	Sentry.withScope((scope) => {
 		scope.addEventProcessor((evt) => {
 			evt.fingerprint = [fingerprint];
 			return evt;
