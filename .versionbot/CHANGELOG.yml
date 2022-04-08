@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update open-balena-base to 13.2.1 Update open-balena-base from 13.2.1
+        to 13.2.3
+      hash: d5072994f324e0e456b1edb37a9ce58c9647101d
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 11.2.5
+  title: "'Update open-balena-base'"
+  date: 2022-04-08T19:43:57.659Z
+- commits:
     - subject: Use Sentry.withScope instead of Sentry.configureScope as it fits better
       hash: 1ee927985bf98fda1e3ead4d76a76dc758874f08
       body: ""
