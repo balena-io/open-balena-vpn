@@ -1,4 +1,128 @@
 - commits:
+    - subject: Update dependencies
+      hash: d67675b1c3275ff6747a07ee682826e4c25b90bd
+      body: |
+        Update @balena/node-metrics-gatherer from 5.7.5 to 6.0.3
+        Update pinejs-client-request from 7.3.4 to 7.3.5
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Add an `aggregateRequestWorker` that must be called on cluster workers
+              hash: 76b12cdc4d8316e8e976959fac06e5513e031158
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-6.0.3
+          title: "'Add an  that must be called on cluster workers'"
+          date: 2022-04-07T13:53:03.644Z
+        - commits:
+            - subject: Use async/await for aggregateRequestHandler
+              hash: acd097834fbee00ae4f77582b8be14bc7348f5f4
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-6.0.2
+          title: "'Use async/await for aggregateRequestHandler'"
+          date: 2022-04-07T13:23:55.631Z
+        - commits:
+            - subject: Add missing await
+              hash: 97ed30f9cc16c2350e3c0233d5024e8a70db9431
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Josh Bowling <josh@balena.io>
+                signed-off-by: Josh Bowling <josh@balena.io>
+              author: Josh Bowling
+          version: node-metrics-gatherer-6.0.1
+          title: "'Add missing await'"
+          date: 2022-04-06T02:08:06.136Z
+        - commits:
+            - subject: Update prom-client to 14.x
+              hash: 81a8d36fa6c62c5dfec892a4a0c17f8596bd5873
+              body: ""
+              footer:
+                Change-type: major
+                change-type: major
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-6.0.0
+          title: "'Update prom-client to 14.x'"
+          date: 2022-04-05T14:58:33.322Z
+        - commits:
+            - subject: Update dependencies
+              hash: 0a8aefe639904a36cf3608f6aebc8a2c7bd9a25b
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-5.7.6
+          title: "'Update dependencies'"
+          date: 2022-04-05T14:43:06.093Z
+        - commits:
+            - subject: Update dependencies
+              hash: b972f9bba9510ebe4b4a4e80359f6bad178d61b8
+              body: |
+                Update pinejs-client-core from 6.10.0 to 6.10.2
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested:
+                - commits:
+                    - subject: Update dependencies
+                      hash: edc7575ac0976037506deb076d034e7cf08ce5bb
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                    - subject: Remove circleci
+                      hash: 59c5a36292a80149b305d83a4d22b4d2dbe3001d
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-6.10.2
+                  title: "'Remove circleci/update deps'"
+                  date: 2022-04-08T13:22:23.848Z
+                - commits:
+                    - subject: Do not await the _request() result to allow enhanced promises
+                        downstream
+                      hash: a209138f928809869d68e05cdcea4c2bf0d1fac1
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                        Signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+                        signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+                      author: Thodoris Greasidis
+                  version: pinejs-client-js-6.10.1
+                  title: "'Avoid modifying the resulting promise when retries are not used'"
+                  date: 2022-02-08T23:33:07.778Z
+            - subject: Remove circleci
+              hash: 26c3fe11664ccd1d2cf61a8183580e3cd58e5159
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested: []
+          version: pinejs-client-request-7.3.5
+          title: "'Remove circleci/update deps'"
+          date: 2022-04-08T13:43:09.450Z
+  version: 11.2.6
+  title: "'Update dependencies'"
+  date: 2022-04-14T10:49:04.456Z
+- commits:
     - subject: Update open-balena-base to 13.2.1 Update open-balena-base from 13.2.1
         to 13.2.3
       hash: d5072994f324e0e456b1edb37a9ce58c9647101d
