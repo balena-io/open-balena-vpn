@@ -27,7 +27,7 @@ fi
 /usr/sbin/iptables-legacy -P FORWARD "${IPTABLES_FORWARD_POLICY}"
 
 command="$(command -v node)"
-args=("-r" "source-map-support/register")
+args=("--enable-source-maps")
 entrypoint="build/src/app.js"
 if [ "${NODE_ENV}" = "development" ]; then
 	tsnode="$(command -v ts-node || true)"
