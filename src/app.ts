@@ -73,7 +73,7 @@ const VPN_SERVICE_ADDRESS = getIPv4InterfaceInfo(
 
 describeMetrics();
 
-if (cluster.isMaster) {
+if (cluster.isPrimary) {
 	interface WorkerMetric {
 		uuid: string;
 		rxBitrate: number[];
@@ -201,6 +201,8 @@ if (cluster.isMaster) {
 				restartWorker();
 			});
 
+			const aggregatorRegistry = new prometheus.AggregatorRegistry();
+
 			const app = express();
 			app.set('trust proxy', TRUST_PROXY);
 			app.disable('x-powered-by');
@@ -218,10 +220,12 @@ if (cluster.isMaster) {
 						);
 					}
 					try {
-						const clusterMetrics =
-							await new prometheus.AggregatorRegistry().clusterMetrics();
+						const [promMetrics, clusterMetrics] = await Promise.all([
+							prometheus.register.metrics(),
+							aggregatorRegistry.clusterMetrics(),
+						]);
 						res.set('Content-Type', prometheus.register.contentType);
-						res.write(prometheus.register.metrics());
+						res.write(promMetrics);
 						res.write('\n');
 						res.write(clusterMetrics);
 						res.end();
@@ -241,6 +245,10 @@ if (cluster.isMaster) {
 }
 
 if (cluster.isWorker) {
+	// Ensure the prom-client worker listener is registered by instantiating the class
+	// tslint:disable-next-line:no-unused-expression-chai
+	new prometheus.AggregatorRegistry();
+
 	const instanceId = parseInt(process.env.WORKER_ID!, 10);
 	const serviceId = parseInt(process.env.SERVICE_ID!, 10);
 	getLogger('worker', serviceId, instanceId).notice(
