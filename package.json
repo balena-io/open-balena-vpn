@@ -15,8 +15,8 @@
     "test": "docker build -t test-balena-vpn . && IMAGE_NAME=test-balena-vpn ./automation/test.sh"
   },
   "dependencies": {
-    "@balena/node-metrics-gatherer": "^5.7.5",
-    "@sentry/node": "^6.19.2",
+    "@balena/node-metrics-gatherer": "^6.0.3",
+    "@sentry/node": "^6.19.6",
     "bluebird": "^3.7.2",
     "compression": "^1.7.4",
     "event-stream": "^4.0.1",
@@ -27,28 +27,28 @@
     "morgan": "^1.10.0",
     "netmask": "^2.0.2",
     "node-tunnel": "^4.0.1",
-    "pinejs-client-request": "^7.3.4",
+    "pinejs-client-request": "^7.3.5",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "source-map-support": "^0.5.21",
     "telnet-openvpn": "^0.1.9",
     "typed-error": "^3.2.1",
-    "winston": "^3.6.0"
+    "winston": "^3.7.2"
   },
   "devDependencies": {
     "@balena/lint": "^6.2.0",
     "@types/bluebird": "^3.5.36",
-    "@types/chai": "^4.3.0",
+    "@types/chai": "^4.3.1",
     "@types/chai-as-promised": "^7.1.5",
     "@types/compression": "^1.7.2",
     "@types/event-stream": "^4.0.0",
     "@types/express": "^4.17.13",
-    "@types/lodash": "^4.14.180",
+    "@types/lodash": "^4.14.181",
     "@types/memoizee": "^0.4.7",
     "@types/mocha": "^9.1.0",
     "@types/morgan": "^1.9.3",
     "@types/netmask": "^1.0.30",
-    "@types/node": "^16.11.26",
+    "@types/node": "^16.11.27",
     "@types/request-promise": "^4.1.48",
     "chai": "^4.3.6",
     "chai-as-promised": "^7.1.1",
@@ -58,7 +58,7 @@
     "nock": "^13.2.4",
     "openvpn-client": "0.0.2",
     "ts-node": "^10.7.0",
-    "typescript": "^4.6.2"
+    "typescript": "^4.6.3"
   },
   "engines": {
     "node": "^16.13.0",
