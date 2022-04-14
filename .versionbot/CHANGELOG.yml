@@ -1,4 +1,16 @@
 - commits:
+    - subject: Use nodejs source map support rather than source-map-support module
+      hash: f083f2cbff219482ca76567bdec6086f455746e9
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.2.7
+  title: "'Use nodejs source map support rather than source-map-support module'"
+  date: 2022-04-14T11:21:41.966Z
+- commits:
     - subject: Update dependencies
       hash: d67675b1c3275ff6747a07ee682826e4c25b90bd
       body: |
