@@ -22,6 +22,7 @@ import { EventEmitter } from 'eventemitter3';
 import * as fs from 'fs';
 import * as net from 'net';
 import VpnConnector = require('telnet-openvpn');
+import { VPN_API_PORT } from './config';
 import { Netmask } from './netmask';
 
 const parsePossibleInt = (s: string): number | string => {
@@ -189,11 +190,12 @@ export class VpnManager extends EventEmitter {
 			'/etc/openvpn/plugins/openvpn-plugin-auth-script.so',
 			'/etc/openvpn/scripts/auth.sh',
 			`${this.instanceId}`,
+			`${VPN_API_PORT}`,
 			'via-env',
 			'--client-connect',
-			`scripts/client-connect.sh ${this.instanceId}`,
+			`scripts/client-connect.sh ${this.instanceId} ${VPN_API_PORT}`,
 			'--client-disconnect',
-			`scripts/client-disconnect.sh ${this.instanceId}`,
+			`scripts/client-disconnect.sh ${this.instanceId} ${VPN_API_PORT}`,
 		];
 	}
 

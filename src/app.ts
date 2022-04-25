@@ -24,7 +24,7 @@ import * as prometheus from 'prom-client';
 
 import { apiServer } from './api';
 import { describeMetrics, getLogger, Metrics, service, VERSION } from './utils';
-import { getInstanceCount, intVar, TRUST_PROXY } from './utils/config';
+import { getInstanceCount, TRUST_PROXY, VPN_API_PORT } from './utils/config';
 
 import proxyWorker from './proxy-worker';
 import vpnWorker from './vpn-worker';
@@ -41,7 +41,6 @@ const masterLogger = getLogger('master');
 	'VPN_BASE_SUBNET',
 	'VPN_BASE_PORT',
 	'VPN_BASE_MANAGEMENT_PORT',
-	'VPN_API_PORT',
 	'VPN_INSTANCE_SUBNET_BITMASK',
 ]
 	.filter((key) => process.env[key] == null)
@@ -57,7 +56,6 @@ const DEFAULT_SIGTERM_TIMEOUT =
 	parseInt(process.env.DEFAULT_SIGTERM_TIMEOUT!, 10) * 1000;
 
 const VPN_INSTANCE_COUNT = getInstanceCount('VPN_INSTANCE_COUNT');
-const VPN_API_PORT = intVar('VPN_API_PORT');
 const VPN_VERBOSE_LOGS = process.env.DEFAULT_VERBOSE_LOGS === 'true';
 
 const getIPv4InterfaceInfo = (iface?: string): os.NetworkInterfaceInfo[] => {

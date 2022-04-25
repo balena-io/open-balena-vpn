@@ -96,3 +96,5 @@ if (trustProxy === 'true') {
 	}
 }
 export const TRUST_PROXY = trustProxyValue;
+
+export const VPN_API_PORT = intVar('VPN_API_PORT');

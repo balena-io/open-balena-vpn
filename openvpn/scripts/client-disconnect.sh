@@ -16,13 +16,10 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 VPN_INSTANCE_ID=$1
-if [ -f /usr/src/app/config/env ]; then
-	source /usr/src/app/config/env
-fi
+VPN_API_PORT=$2
 
-curl -s -X DELETE $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF || true
+curl -s -X DELETE -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF || true
 {
-	"event": "client-disconnect",
 	"common_name": "$common_name",
 	"bytes_received": $bytes_received,
 	"bytes_sent": $bytes_sent,

@@ -30,12 +30,12 @@ import { pooledRequest, service, VpnManager } from '../src/utils';
 
 import proxyWorker from '../src/proxy-worker';
 import vpnWorker from '../src/vpn-worker';
+import { VPN_API_PORT } from '../src/utils/config';
 
 const vpnHost = process.env.VPN_HOST || '127.0.0.1';
 const vpnPort = process.env.VPN_PORT || '443';
 const caCertPath = process.env.CA_CERT_PATH || '/etc/openvpn/ca.crt';
 const BALENA_API_HOST = process.env.BALENA_API_HOST!;
-const VPN_API_PORT = parseInt(process.env.VPN_API_PORT!, 10);
 
 let instance: typeof service;
 let manager: VpnManager;
