@@ -1,4 +1,18 @@
 - commits:
+    - subject: Limit batching connectivity updates to avoid Payload Too Large errors
+      hash: f51610321637c05ed962425b7cbfd93ed268c76a
+      body: ""
+      footer:
+        Connects-to: "#224"
+        connects-to: "#224"
+        Change-type: patch
+        change-type: patch
+      author: Thodoris Greasidis
+      nested: []
+  version: 11.3.3
+  title: "'Limit batching connectivity updates to avoid Payload Too Large errors'"
+  date: 2022-04-25T18:06:04.865Z
+- commits:
     - subject: Avoid passing an unnecessary `event` property from the openvpn scripts
       hash: 7239dcb5aa53f53cc7ce07c340999ed58cffbf41
       body: |
