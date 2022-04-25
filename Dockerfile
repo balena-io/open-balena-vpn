@@ -10,6 +10,19 @@ COPY test /usr/src/app/test
 COPY src /usr/src/app/src
 RUN npm run build
 
+FROM base as auth-plugin
+
+RUN apt-get update \
+	&& apt-get install \
+		libssl-dev \
+		openvpn \
+	&& rm -rf /var/lib/apt/lists/*
+
+ENV AUTH_PLUGIN_COMMIT=623982a5d63dd2b7b2b9f9295d10d96a56d58894
+RUN git clone https://github.com/fac/auth-script-openvpn.git \
+	&& cd auth-script-openvpn \
+	&& git checkout ${AUTH_PLUGIN_COMMIT} \
+	&& C_INCLUDE_PATH=/usr/include/openvpn/ make plugin
 
 FROM base as main
 
@@ -64,6 +77,7 @@ RUN PROCESS_EXPORTER_TGZ="/tmp/process_exporter.tar.gz" set -x \
 COPY package.json package-lock.json /usr/src/app/
 RUN npm ci --unsafe-perm --production && npm cache clean --force 2>/dev/null
 
+COPY --from=auth-plugin /usr/src/app/auth-script-openvpn/openvpn-plugin-auth-script.so /etc/openvpn/plugins/
 COPY --from=builder /usr/src/app/build /usr/src/app/build
 COPY bin /usr/src/app/bin
 COPY config /usr/src/app/config
