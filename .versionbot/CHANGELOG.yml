@@ -1,4 +1,40 @@
 - commits:
+    - subject: Avoid passing an unnecessary `event` property from the openvpn scripts
+      hash: 7239dcb5aa53f53cc7ce07c340999ed58cffbf41
+      body: |
+        It gets ignored anyway so we can save some processing time by removing
+        it altogether
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+    - subject: Pass VPN_API_PORT into openvpn scripts to avoid the need to source env
+      hash: a652b6b20039639c52b5164c1025b41576551096
+      body: |
+        This helps to simplify the openvpn scripts and avoid the need to read
+        and load in a bunch of unnecessary env vars which will hopefully make
+        the scripts faster and lighter weight
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+    - subject: Remove `CURL_EXTRA_FLAGS` concept since requests go to a local node now
+      hash: 5ad7b42c1fdf12b3f7ce0a826dc9b35c6b9b2e75
+      body: |
+        These made sense when the requests were sent directly to the api but
+        they are now handled by a local nodejs server and as such it makes
+        sense that any retry logic we would want should live in there
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.3.2
+  title: "'Simplify openvpn scripts'"
+  date: 2022-04-25T17:54:18.322Z
+- commits:
     - subject: Remove `BALENA_` prefix from `VPN_GATEWAY` env var
       hash: d74712b3febae36572088fa7e41f91f0f777115b
       body: ""
