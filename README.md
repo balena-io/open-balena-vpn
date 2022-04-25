@@ -17,7 +17,7 @@ openBalena VPN augments an OpenVPN server with the following components/features
 
 Networking is configured by a number of environmental variables:
 
-* `BALENA_VPN_GATEWAY` (*optional*) dictates the server end of the p2p connection
+* `VPN_GATEWAY` (*optional*) dictates the server end of the p2p connection
 * `VPN_BASE_SUBNET` in CIDR notation is the entire subnet used for all servers
 * `VPN_INSTANCE_SUBNET_BITMASK` is the VLSM to split `VPN_BASE_SUBNET` into
   `VPN_BASE_PORT` and `VPN_BASE_MANAGEMENT_PORT`
@@ -26,7 +26,7 @@ Given a base subnet of `100.64.0.0/10` and a per-instance VLSM of `20` a server
 the first instance subnet would be `100.64.0.0/20` and the second would be
 `100.64.16.0/20`, and so forth up to `100.127.240.1/20` for the 1024th instance.
 
-If `BALENA_VPN_GATEWAY` is not defined then the first usable address of the
+If `VPN_GATEWAY` is not defined then the first usable address of the
 instance subnet will be used in its place. This address, and the second usable
 address, are used to facilitate the virtual p2p connections by openvpn.
 

@@ -23,7 +23,7 @@ import { clients, getLogger } from './utils';
 import { HAProxy, Metrics, Netmask, VpnManager } from './utils';
 import { VpnClientBytecountData } from './utils/openvpn';
 
-const BALENA_VPN_GATEWAY = process.env.BALENA_VPN_GATEWAY;
+const { VPN_GATEWAY } = process.env;
 const VPN_BASE_SUBNET = process.env.VPN_BASE_SUBNET!;
 const VPN_INSTANCE_SUBNET_BITMASK = parseInt(
 	process.env.VPN_INSTANCE_SUBNET_BITMASK!,
@@ -187,7 +187,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 		vpnPort,
 		mgtPort,
 		getInstanceSubnet(instanceId),
-		BALENA_VPN_GATEWAY,
+		VPN_GATEWAY,
 		verbose,
 	);
 
