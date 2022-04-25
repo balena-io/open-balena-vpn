@@ -22,9 +22,11 @@ fi
 
 RESP=$(curl -s $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -X POST -d '{ "username": "'$username'", "password": "'$password'"}' http://127.0.0.1:${VPN_API_PORT}/api/v1/auth/)
 
-# Exiting with 0 status code authorises login.
+# Writing 1 authorizes login.
 if [ "$RESP" = "OK" ]; then
-	exit 0
+	echo 1 > $auth_control_file
 else
-	exit 1
+	echo 0 > $auth_control_file
 fi
+
+exit 0
