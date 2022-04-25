@@ -1,4 +1,21 @@
 - commits:
+    - subject: Use a plugin to handle auth asynchronously rather than synchronously
+      hash: 2fabc1a43a8bf954330483cd61bf27b23ed1309c
+      body: |
+        Using an auth-user-pass-verify script it is executed synchronously and
+        will block all VPN traffic for the duration which is far from ideal
+        when there are many clients authenticating concurrently and it also
+        needs to authenticate against the remote api server so switching to a
+        plugin that allows async authorization should provide large benefits
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 11.3.0
+  title: "'Use a plugin to handle auth asynchronously rather than synchronously'"
+  date: 2022-04-25T13:36:11.482Z
+- commits:
     - subject: Use nodejs source map support rather than source-map-support module
       hash: f083f2cbff219482ca76567bdec6086f455746e9
       body: ""
