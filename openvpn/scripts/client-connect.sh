@@ -23,7 +23,6 @@ VPN_API_PORT=$2
 
 curl -s -X POST -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF || true
 {
-	"event": "client-connect",
 	"common_name": "$common_name"
 }
 EOF
