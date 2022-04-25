@@ -1,4 +1,16 @@
 - commits:
+    - subject: Remove `BALENA_` prefix from `VPN_GATEWAY` env var
+      hash: d74712b3febae36572088fa7e41f91f0f777115b
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.3.1
+  title: "'Remove  prefix from  env var'"
+  date: 2022-04-25T13:50:41.278Z
+- commits:
     - subject: Use a plugin to handle auth asynchronously rather than synchronously
       hash: 2fabc1a43a8bf954330483cd61bf27b23ed1309c
       body: |
