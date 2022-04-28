@@ -21,7 +21,7 @@ set -o errexit
 VPN_INSTANCE_ID=$1
 VPN_API_PORT=$2
 
-curl -s -X POST -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF || true
+curl -s -X POST -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF
 {
 	"common_name": "$common_name"
 }
