@@ -1,4 +1,19 @@
 - commits:
+    - subject: Allow the client-connect/disconnect script to fail if necessary
+      hash: fad3c089d5d53be0fe3fdbe5cb5524dfcd3e99df
+      body: |
+        These curl commands should never fail as they're talking to the local
+        nodejs instance, but if for some reason they do it's better to reject
+        the client than pretend things are ok because they're really not
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.3.4
+  title: "'Allow the client-connect/disconnect script to fail if necessary'"
+  date: 2022-04-28T10:24:46.490Z
+- commits:
     - subject: Limit batching connectivity updates to avoid Payload Too Large errors
       hash: f51610321637c05ed962425b7cbfd93ed268c76a
       body: ""
