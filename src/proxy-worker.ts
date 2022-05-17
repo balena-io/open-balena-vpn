@@ -91,7 +91,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 				return socket;
 			} else {
 				const vpnHost = await device.getDeviceVpnHost(uuid, auth);
-				if (vpnHost.id === this.serviceId) {
+				if (vpnHost.id !== this.serviceId) {
 					client.end(HTTP_500);
 					throw new errors.HandledTunnelingError(
 						'device is not available on registered service instance',
