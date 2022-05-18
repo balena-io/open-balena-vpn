@@ -251,7 +251,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 			const proxyData = (chunk: Buffer) => {
 				// read 'data' chunks until full HTTP status line has been read
 				tunnelProxyResponse += chunk.toString();
-				if (!_.includes(tunnelProxyResponse, '\r\n\r\n')) {
+				if (!tunnelProxyResponse.includes('\r\n\r\n')) {
 					return;
 				}
 				socket.removeListener('data', proxyData);
