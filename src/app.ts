@@ -118,7 +118,7 @@ if (cluster.isPrimary) {
 					workerMetrics[data.uuid] || { rxBitrate: [], txBitrate: [] },
 					data,
 					(obj, src) => {
-						if (_.isArray(obj)) {
+						if (Array.isArray(obj)) {
 							return obj.concat([src]);
 						}
 					},

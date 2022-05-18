@@ -55,7 +55,7 @@ export const getDeviceByUUID = async (
 		const devices = await getDeviceByUUIDQuery({ uuid }, undefined, {
 			headers: authHeader(auth),
 		});
-		if (!_.isArray(devices) || devices.length === 0) {
+		if (!Array.isArray(devices) || devices.length === 0) {
 			throw new Error('invalid api response');
 		}
 		return devices[0] as DeviceInfo;
@@ -84,7 +84,7 @@ const $canAccessDevice = async (
 			},
 			{ headers: authHeader(auth) },
 		)) as { d?: Array<{ id: number }> };
-		return _.isArray(d) && d.length === 1 && d[0].id === device.id;
+		return Array.isArray(d) && d.length === 1 && d[0].id === device.id;
 	} catch (e) {
 		return false;
 	}
@@ -120,7 +120,7 @@ export const getDeviceVpnHost = async (
 			},
 			passthrough: { headers: authHeader(auth) },
 		})) as { d?: Array<{ id: number }> };
-		if (!_.isArray(services) || services.length === 0) {
+		if (!Array.isArray(services) || services.length === 0) {
 			throw new Error('invalid api response');
 		}
 		return services[0] as VpnHost;
