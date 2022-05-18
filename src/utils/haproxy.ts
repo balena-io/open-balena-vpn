@@ -20,8 +20,8 @@ import * as net from 'net';
 export class HAProxy {
 	constructor(private sockPath: string) {}
 
-	protected connect(): Promise<net.Socket> {
-		return new Promise((resolve, reject) => {
+	protected async connect(): Promise<net.Socket> {
+		return await new Promise((resolve, reject) => {
 			const socket = net.createConnection(this.sockPath);
 			socket.on('connect', () => resolve(socket));
 			socket.on('error', reject);
