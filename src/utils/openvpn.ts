@@ -292,7 +292,7 @@ export class VpnManager extends EventEmitter {
 		const kill = (signal?: ValueOf<typeof signals>) =>
 			spawn('/bin/kill', signal != null ? [`-${signal}`, pid] : [pid]);
 
-		return new Promise<void>((resolve, reject) => {
+		return await new Promise<void>((resolve, reject) => {
 			const start = Date.now();
 			const waitForDeath = (code?: number) => {
 				if (code !== 0) {
@@ -386,23 +386,23 @@ export class VpnManager extends EventEmitter {
 		await this.connector.exec(command);
 	}
 
-	public enableLogging() {
-		return this.exec('log on all');
+	public async enableLogging() {
+		await this.exec('log on all');
 	}
 
-	public enableBytecountReporting(interval: number) {
-		return this.exec(`bytecount ${interval}`);
+	public async enableBytecountReporting(interval: number) {
+		await this.exec(`bytecount ${interval}`);
 	}
 
-	public releaseHold() {
-		return this.exec('hold release');
+	public async releaseHold() {
+		await this.exec('hold release');
 	}
 
-	public getStatus() {
-		return this.exec('status');
+	public async getStatus() {
+		await this.exec('status');
 	}
 
-	public killClient(cn: string) {
-		return this.exec(`kill ${cn}`);
+	public async killClient(cn: string) {
+		await this.exec(`kill ${cn}`);
 	}
 }
