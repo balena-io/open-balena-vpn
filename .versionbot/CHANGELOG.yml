@@ -1,4 +1,16 @@
 - commits:
+    - subject: Remove some unnecessary lodash usage
+      hash: da6732d70d3d149dd1260e8388dd2c0ac1712f4b
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.3.7
+  title: "'Remove some unnecessary lodash usage'"
+  date: 2022-05-18T11:49:43.827Z
+- commits:
     - subject: Update open-balena-base to 13.3.1
       hash: 514c486b4ebe0bdd771200084fd82dd08fbd6dbb
       body: |
