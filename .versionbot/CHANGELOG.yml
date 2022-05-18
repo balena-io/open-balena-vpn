@@ -1,4 +1,16 @@
 - commits:
+    - subject: Use await in all relevant places for async stack traces
+      hash: 8a5c582c94a642ed67669529cf44c2c4cc5cb5ee
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.3.8
+  title: "'Use await in all relevant places for async stack traces'"
+  date: 2022-05-18T12:17:10.939Z
+- commits:
     - subject: Remove some unnecessary lodash usage
       hash: da6732d70d3d149dd1260e8388dd2c0ac1712f4b
       body: ""
