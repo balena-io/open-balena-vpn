@@ -18,13 +18,13 @@
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as nock from 'nock';
+import { BALENA_API_HOST } from '../../src/utils/config';
 
 import { getDeviceByUUID } from '../../src/utils/device';
 
 const { expect } = chai;
 nock.disableNetConnect();
 
-const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const VPN_SERVICE_API_KEY = Buffer.from(
 	process.env.VPN_SERVICE_API_KEY || 'test_vpn_string',
 );

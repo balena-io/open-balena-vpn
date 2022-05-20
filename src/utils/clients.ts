@@ -29,11 +29,10 @@ import * as _ from 'lodash';
 import { setTimeout } from 'timers/promises';
 import { Logger } from 'winston';
 
-import { apiKey, captureException } from './index';
+import { captureException } from './index';
 import { request, Response } from './request';
-import { intVar } from './config';
+import { BALENA_API_HOST, intVar, VPN_SERVICE_API_KEY } from './config';
 
-const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 const REQUEST_TIMEOUT = 60000;
 // As of writing this, using a chunk of 8000 62-char UUIDs results a content-length
 // that is bellow the 512KiB threshold that would trigger a 413 http error.
@@ -75,7 +74,7 @@ export const setConnected = (() => {
 								uuids: uuidChunk,
 								connected,
 							},
-							headers: { Authorization: `Bearer ${apiKey}` },
+							headers: { Authorization: `Bearer ${VPN_SERVICE_API_KEY}` },
 						})
 						.promise()
 						.timeout(REQUEST_TIMEOUT);

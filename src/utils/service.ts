@@ -16,7 +16,8 @@
 */
 
 import { setTimeout } from 'timers/promises';
-import { apiKey, balenaApi, captureException } from '.';
+import { balenaApi, captureException } from '.';
+import { VPN_SERVICE_API_KEY } from './config';
 import { ServiceRegistrationError } from './errors';
 
 class ServiceInstance {
@@ -38,7 +39,9 @@ class ServiceInstance {
 		try {
 			const { id } = (await balenaApi.post({
 				resource: 'service_instance',
-				passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
+				passthrough: {
+					headers: { Authorization: `Bearer ${VPN_SERVICE_API_KEY}` },
+				},
 				body: ipAddress != null ? { ip_address: ipAddress } : {},
 			})) as { id?: number };
 			if (id == null) {
@@ -73,7 +76,9 @@ class ServiceInstance {
 					// Just indicate being online, api handles the timestamp with hooks
 					is_alive: true,
 				},
-				passthrough: { headers: { Authorization: `Bearer ${apiKey}` } },
+				passthrough: {
+					headers: { Authorization: `Bearer ${VPN_SERVICE_API_KEY}` },
+				},
 			});
 			return true;
 		} catch (err) {

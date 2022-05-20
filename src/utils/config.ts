@@ -18,24 +18,13 @@
 import * as fs from 'fs';
 import * as os from 'os';
 
-export const getEnv = <T extends string>(
-	...args: T[]
-): { [key in T]: string } => {
-	args
-		.filter((key) => process.env[key] == null)
-		.forEach((key, idx, keys) => {
-			console.log(`${key} env variable is not set.`);
-			if (idx === keys.length - 1) {
-				process.exit(1);
-			}
-		});
-
-	type Env = { [key in T]: string };
-	const env: Partial<Env> = {};
-	args.forEach((key: T) => {
-		env[key] = process.env[key]!;
-	});
-	return env as Env;
+const requiredVar = (varName: string): string => {
+	const s = process.env[varName];
+	if (s == null) {
+		process.exitCode = 1;
+		throw new Error(`Missing environment variable: ${varName}`);
+	}
+	return s;
 };
 
 // Code copied from our open source API
@@ -44,7 +33,7 @@ export function intVar(varName: string): number;
 export function intVar<R>(varName: string, defaultValue: R): number | R;
 export function intVar<R>(varName: string, defaultValue?: R): number | R {
 	if (arguments.length === 1) {
-		getEnv(varName);
+		requiredVar(varName);
 	}
 
 	const s = process.env[varName];
@@ -59,7 +48,7 @@ export function intVar<R>(varName: string, defaultValue?: R): number | R {
 }
 
 // resolve number of workers based on number of CPUs assigned to pods or available CPUs
-export const getInstanceCount = (varName: string) => {
+const getInstanceCount = (varName: string) => {
 	let instanceCount = intVar(varName, null);
 	if (instanceCount != null && instanceCount > 0) {
 		return instanceCount;
@@ -76,6 +65,13 @@ export const getInstanceCount = (varName: string) => {
 		console.log(`Defaulting to all cores: ${instanceCount}`);
 	}
 	return instanceCount;
+};
+
+const getIPv4InterfaceInfo = (iface?: string): os.NetworkInterfaceInfo[] => {
+	return Object.entries(os.networkInterfaces())
+		.filter(([nic]) => nic === iface)
+		.flatMap(([, ips]) => ips || [])
+		.filter((ip) => !ip.internal && ip.family === 'IPv4');
 };
 
 const { TRUST_PROXY: trustProxy = 'true' } = process.env;
@@ -98,3 +94,35 @@ if (trustProxy === 'true') {
 export const TRUST_PROXY = trustProxyValue;
 
 export const VPN_API_PORT = intVar('VPN_API_PORT');
+
+// milliseconds
+export const DEFAULT_SIGTERM_TIMEOUT = intVar('DEFAULT_SIGTERM_TIMEOUT') * 1000;
+
+export const VPN_INSTANCE_COUNT = getInstanceCount('VPN_INSTANCE_COUNT');
+export const VPN_VERBOSE_LOGS = process.env.DEFAULT_VERBOSE_LOGS === 'true';
+
+export const VPN_SERVICE_ADDRESS = getIPv4InterfaceInfo(
+	process.env.VPN_SERVICE_REGISTER_INTERFACE,
+)?.[0]?.address;
+
+export const { VPN_GATEWAY } = process.env;
+const VPN_BASE_SUBNET = requiredVar('VPN_BASE_SUBNET');
+export const [VPN_BASE_IP, netMask] = VPN_BASE_SUBNET.split('/');
+export const VPN_BASE_MASK = parseInt(netMask, 10);
+
+export const VPN_INSTANCE_SUBNET_BITMASK = intVar(
+	'VPN_INSTANCE_SUBNET_BITMASK',
+);
+export const VPN_BASE_PORT = intVar('VPN_BASE_PORT');
+export const VPN_BASE_MANAGEMENT_PORT = intVar('VPN_BASE_MANAGEMENT_PORT');
+
+// disable bytecount reporting by default
+export const VPN_BYTECOUNT_INTERVAL = intVar('VPN_BYTECOUNT_INTERVAL', 0);
+
+export const BALENA_API_HOST = requiredVar('BALENA_API_HOST');
+
+export const VPN_SERVICE_API_KEY = Buffer.from(
+	requiredVar('VPN_SERVICE_API_KEY'),
+);
+export const VPN_CONNECT_PROXY_PORT = intVar('VPN_CONNECT_PROXY_PORT');
+export const VPN_FORWARD_PROXY_PORT = intVar('VPN_FORWARD_PROXY_PORT');

@@ -28,11 +28,9 @@ import {
 	Metrics,
 	pooledRequest,
 } from './utils';
-import { TRUST_PROXY } from './utils/config';
+import { BALENA_API_HOST, TRUST_PROXY } from './utils/config';
 import { Sentry } from './utils/errors';
 import { hasDurationData, isTrusted } from './utils/openvpn';
-
-const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 
 // Private endpoints should use the `fromLocalHost` middleware.
 const fromLocalHost: express.RequestHandler = (req, res, next) => {
