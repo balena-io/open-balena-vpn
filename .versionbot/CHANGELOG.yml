@@ -1,4 +1,16 @@
 - commits:
+    - subject: Extract more config vars to their own module
+      hash: de0541a44a2ae38fc56acde1b3e8ecfc165142bd
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.3.9
+  title: "'Extract more config vars to their own module'"
+  date: 2022-05-20T12:41:43.143Z
+- commits:
     - subject: Use await in all relevant places for async stack traces
       hash: 8a5c582c94a642ed67669529cf44c2c4cc5cb5ee
       body: ""
