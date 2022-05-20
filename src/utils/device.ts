@@ -125,6 +125,7 @@ export const getDeviceVpnHost = async (
 		}
 		return services[0] as VpnHost;
 	} catch (err) {
+		// TODO: Handle `Unauthorized` errors explicitly
 		captureException(err, 'device-vpn-host-lookup-error');
 		throw new APIError(`cannot find device vpn host (${err.message})`);
 	}

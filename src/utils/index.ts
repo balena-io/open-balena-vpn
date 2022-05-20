@@ -18,15 +18,15 @@
 import * as winston from 'winston';
 
 import { PinejsClientRequest } from 'pinejs-client-request';
+import { BALENA_API_HOST } from './config';
 
 export { version as VERSION } from '../../package.json';
 
 export { captureException } from './errors';
 
 export const balenaApi = new PinejsClientRequest({
-	apiPrefix: `https://${process.env.BALENA_API_HOST}/v6/`,
+	apiPrefix: `https://${BALENA_API_HOST}/v6/`,
 });
-export const apiKey = process.env.VPN_SERVICE_API_KEY;
 
 export const getLogger = (
 	service: string,

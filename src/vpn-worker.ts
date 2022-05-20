@@ -17,35 +17,25 @@
 
 import { metrics } from '@balena/node-metrics-gatherer';
 import { setTimeout } from 'timers/promises';
+import {
+	DEFAULT_SIGTERM_TIMEOUT,
+	VPN_BASE_IP,
+	VPN_BASE_MANAGEMENT_PORT,
+	VPN_BASE_MASK,
+	VPN_BASE_PORT,
+	VPN_BYTECOUNT_INTERVAL,
+	VPN_GATEWAY,
+	VPN_INSTANCE_SUBNET_BITMASK,
+	VPN_VERBOSE_LOGS,
+} from './utils/config';
 
 import { clients, getLogger } from './utils';
 
 import { HAProxy, Metrics, Netmask, VpnManager } from './utils';
 import { VpnClientBytecountData } from './utils/openvpn';
 
-const { VPN_GATEWAY } = process.env;
-const VPN_BASE_SUBNET = process.env.VPN_BASE_SUBNET!;
-const VPN_INSTANCE_SUBNET_BITMASK = parseInt(
-	process.env.VPN_INSTANCE_SUBNET_BITMASK!,
-	10,
-);
-const VPN_BASE_PORT = parseInt(process.env.VPN_BASE_PORT!, 10);
-const VPN_BASE_MANAGEMENT_PORT = parseInt(
-	process.env.VPN_BASE_MANAGEMENT_PORT!,
-	10,
-);
-
-// milliseconds
-const DEFAULT_SIGTERM_TIMEOUT =
-	parseInt(process.env.DEFAULT_SIGTERM_TIMEOUT!, 10) * 1000;
-
-// disable verbose logs and bytecount reporting by default
-const VPN_BYTECOUNT_INTERVAL =
-	parseInt(process.env.VPN_BYTECOUNT_INTERVAL!, 10) || 0;
-
 const getInstanceSubnet = (instanceId: number) => {
-	const [netBase, netMask] = VPN_BASE_SUBNET.split('/');
-	const network = new Netmask(netBase, parseInt(netMask, 10));
+	const network = new Netmask(VPN_BASE_IP, VPN_BASE_MASK);
 	return network.split(VPN_INSTANCE_SUBNET_BITMASK)[instanceId - 1];
 };
 
@@ -104,7 +94,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 		clientCache[clientId].ts += timeDelta;
 	};
 
-	let verbose = process.env.VPN_VERBOSE_LOGS === 'true';
+	let verbose = VPN_VERBOSE_LOGS;
 	process.on('message', (msg) => {
 		if (msg === 'toggleVerbosity') {
 			verbose = !verbose;

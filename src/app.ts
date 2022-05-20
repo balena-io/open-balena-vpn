@@ -19,55 +19,23 @@ import { metrics } from '@balena/node-metrics-gatherer';
 import * as cluster from 'cluster';
 import * as express from 'express';
 import * as _ from 'lodash';
-import * as os from 'os';
 import * as prometheus from 'prom-client';
 
 import { apiServer } from './api';
 import { describeMetrics, getLogger, Metrics, service, VERSION } from './utils';
-import { getInstanceCount, TRUST_PROXY, VPN_API_PORT } from './utils/config';
+import {
+	DEFAULT_SIGTERM_TIMEOUT,
+	TRUST_PROXY,
+	VPN_API_PORT,
+	VPN_INSTANCE_COUNT,
+	VPN_SERVICE_ADDRESS,
+	VPN_VERBOSE_LOGS,
+} from './utils/config';
 
 import proxyWorker from './proxy-worker';
 import vpnWorker from './vpn-worker';
 
 const masterLogger = getLogger('master');
-
-[
-	'VPN_INSTANCE_COUNT',
-
-	'BALENA_API_HOST',
-	'VPN_SERVICE_API_KEY',
-	'VPN_HOST',
-
-	'VPN_BASE_SUBNET',
-	'VPN_BASE_PORT',
-	'VPN_BASE_MANAGEMENT_PORT',
-	'VPN_INSTANCE_SUBNET_BITMASK',
-]
-	.filter((key) => process.env[key] == null)
-	.forEach((key, idx, keys) => {
-		masterLogger.emerg(`${key} env variable is not set.`);
-		if (idx === keys.length - 1) {
-			process.exit(1);
-		}
-	});
-
-// milliseconds
-const DEFAULT_SIGTERM_TIMEOUT =
-	parseInt(process.env.DEFAULT_SIGTERM_TIMEOUT!, 10) * 1000;
-
-const VPN_INSTANCE_COUNT = getInstanceCount('VPN_INSTANCE_COUNT');
-const VPN_VERBOSE_LOGS = process.env.DEFAULT_VERBOSE_LOGS === 'true';
-
-const getIPv4InterfaceInfo = (iface?: string): os.NetworkInterfaceInfo[] => {
-	return Object.entries(os.networkInterfaces())
-		.filter(([nic]) => nic === iface)
-		.flatMap(([, ips]) => ips || [])
-		.filter((ip) => !ip.internal && ip.family === 'IPv4');
-};
-
-const VPN_SERVICE_ADDRESS = getIPv4InterfaceInfo(
-	process.env.VPN_SERVICE_REGISTER_INTERFACE,
-)?.[0]?.address;
 
 describeMetrics();
 
