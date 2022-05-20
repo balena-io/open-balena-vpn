@@ -1,4 +1,16 @@
 - commits:
+    - subject: Limit the VPN_INSTANCE_SUBNET_BITMASK to at most a /16
+      hash: 3988a6fad1bef1832c77a300ee74458df2636ad2
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.1
+  title: "'Limit the VPN_INSTANCE_SUBNET_BITMASK to at most a /16'"
+  date: 2022-05-20T14:45:43.248Z
+- commits:
     - subject: Default to assigning the maximum possible subnet per openvpn process
       hash: f3bfa63f0491d18470178ec3da134c6f5b31e2d0
       body: ""
