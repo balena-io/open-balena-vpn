@@ -112,6 +112,8 @@ export const VPN_BASE_MASK = parseInt(netMask, 10);
 
 export const VPN_INSTANCE_SUBNET_BITMASK = intVar(
 	'VPN_INSTANCE_SUBNET_BITMASK',
+	// Default to assigning as much of the subnet per openvpn process as possible
+	VPN_BASE_MASK + Math.ceil(Math.log2(VPN_INSTANCE_COUNT)),
 );
 export const VPN_BASE_PORT = intVar('VPN_BASE_PORT');
 export const VPN_BASE_MANAGEMENT_PORT = intVar('VPN_BASE_MANAGEMENT_PORT');
