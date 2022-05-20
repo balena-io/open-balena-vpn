@@ -1,4 +1,16 @@
 - commits:
+    - subject: Default to assigning the maximum possible subnet per openvpn process
+      hash: f3bfa63f0491d18470178ec3da134c6f5b31e2d0
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.0
+  title: "'Default max subnet per process'"
+  date: 2022-05-20T12:53:42.246Z
+- commits:
     - subject: Extract more config vars to their own module
       hash: de0541a44a2ae38fc56acde1b3e8ecfc165142bd
       body: ""
