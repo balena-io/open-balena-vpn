@@ -36,7 +36,7 @@ import { hasDurationData, isTrusted } from './utils/openvpn';
 const fromLocalHost: express.RequestHandler = (req, res, next) => {
 	// '::ffff:127.0.0.1' is the ipv4 mapped ipv6 address and ::1 is the ipv6 loopback
 	if (!['127.0.0.1', '::ffff:127.0.0.1', '::1'].includes(req.ip)) {
-		return res.sendStatus(401);
+		return res.status(401).end();
 	}
 
 	next();
@@ -53,8 +53,11 @@ export const apiFactory = (serviceId: number) => {
 
 	api.post('/api/v2/:worker/clients/', fromLocalHost, (req, res) => {
 		if (!isTrusted(req.body)) {
-			return res.sendStatus(400);
+			return res.status(400).end();
 		}
+		// Immediately respond to minimize time in the client-connect script
+		res.status(200).end();
+
 		metrics.inc(Metrics.OnlineDevices);
 		metrics.inc(Metrics.TotalDevices);
 
@@ -66,18 +69,17 @@ export const apiFactory = (serviceId: number) => {
 
 		workerMap[uuid] = workerId;
 		clients.setConnected(uuid, serviceId, true, logger);
-		res.send('OK');
 	});
 
 	api.post('/api/v1/auth/', fromLocalHost, async function (req, res) {
 		if (req.body.username == null) {
 			logger.info('AUTH FAIL: UUID not specified.');
-			return res.sendStatus(400);
+			return res.status(400).end();
 		}
 
 		if (req.body.password == null) {
 			logger.info('AUTH FAIL: API Key not specified.');
-			return res.sendStatus(400);
+			return res.status(400).end();
 		}
 
 		try {
@@ -96,17 +98,17 @@ export const apiFactory = (serviceId: number) => {
 				metrics.inc(Metrics.AuthFailuresByUuid, undefined, {
 					device_uuid: req.body.common_name,
 				});
-				return res.sendStatus(401);
+				return res.status(401).end();
 			}
 		} catch (err) {
 			captureException(err, 'api-auth-error', { req });
-			res.sendStatus(401);
+			res.status(401).end();
 		}
 	});
 
 	api.delete('/api/v2/:worker/clients/', fromLocalHost, (req, res) => {
 		if (!isTrusted(req.body)) {
-			return res.sendStatus(400);
+			return res.status(400).end();
 		}
 
 		if (hasDurationData(req.body)) {
@@ -125,14 +127,15 @@ export const apiFactory = (serviceId: number) => {
 				'openvpn-oos-event',
 				{ tags: { uuid }, req },
 			);
-			return res.sendStatus(400);
+			return res.status(400).end();
 		}
+		res.status(200).end();
+
 		delete workerMap[uuid];
 
 		metrics.dec(Metrics.OnlineDevices);
 
 		clients.setConnected(uuid, serviceId, false, logger);
-		res.send('OK');
 	});
 
 	return api;
