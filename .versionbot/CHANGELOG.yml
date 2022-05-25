@@ -1,4 +1,18 @@
 - commits:
+    - subject: Minimize time spent responding to openvpn scripts
+      hash: d1a3868e3da4ec209753b4331aaefc341a05c3bd
+      body: |
+        Some of these can be blocking so the faster we respond the faster
+        openvpn will continue processing other clients
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.2
+  title: "'Minimize time spent responding to openvpn scripts'"
+  date: 2022-05-25T16:01:44.917Z
+- commits:
     - subject: Limit the VPN_INSTANCE_SUBNET_BITMASK to at most a /16
       hash: 3988a6fad1bef1832c77a300ee74458df2636ad2
       body: ""
