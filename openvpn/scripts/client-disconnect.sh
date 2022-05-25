@@ -18,7 +18,7 @@
 VPN_INSTANCE_ID=$1
 VPN_API_PORT=$2
 
-curl -s -X DELETE -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF
+nohup curl -s -X DELETE -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF &
 {
 	"common_name": "$common_name",
 	"bytes_received": $bytes_received,
