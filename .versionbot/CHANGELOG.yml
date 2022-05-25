@@ -1,4 +1,18 @@
 - commits:
+    - subject: Run the client connect/disconnect `curl`s in the background
+      hash: 930d81719e7b489f1cb6649714a5037de0a08fd5
+      body: |
+        There's no need to wait for them at all since we always treat it as
+        successful
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.3
+  title: "'Run the client connect/disconnect s in the background'"
+  date: 2022-05-25T18:23:34.758Z
+- commits:
     - subject: Minimize time spent responding to openvpn scripts
       hash: d1a3868e3da4ec209753b4331aaefc341a05c3bd
       body: |
