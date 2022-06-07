@@ -85,7 +85,6 @@ export const apiFactory = (serviceId: number) => {
 		try {
 			const response = await pooledRequest.get({
 				url: `https://${BALENA_API_HOST}/services/vpn/auth/${req.body.username}`,
-				timeout: 30000,
 				headers: { Authorization: `Bearer ${req.body.password}` },
 			});
 			if (response.statusCode === 200) {
