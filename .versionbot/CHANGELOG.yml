@@ -1,4 +1,19 @@
 - commits:
+    - subject: Add an auth cache matching the API side cache
+      hash: 88c5a7e0495a47f259b7f9f7dc87f7a36fe0542b
+      body: |
+        This will allow the VPN to quickly reject devices that fail auth but
+        keep retrying requests, as well as helping with the less common case
+        of a successful device that keeps reconnecting for some reason
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.5
+  title: "'Add an auth cache matching the API side cache'"
+  date: 2022-06-07T13:39:13.793Z
+- commits:
     - subject: Standardize request timeout to 59s
       hash: 2ca5159befc4a093b854cd13ce72f8e53cca96dc
       body: ""
