@@ -1,4 +1,16 @@
 - commits:
+    - subject: Standardize request timeout to 59s
+      hash: 2ca5159befc4a093b854cd13ce72f8e53cca96dc
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.4
+  title: "'Standardize request timeout to 59s'"
+  date: 2022-06-07T13:11:37.294Z
+- commits:
     - subject: Run the client connect/disconnect `curl`s in the background
       hash: 930d81719e7b489f1cb6649714a5037de0a08fd5
       body: |
