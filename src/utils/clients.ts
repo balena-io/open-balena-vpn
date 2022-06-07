@@ -30,10 +30,9 @@ import { setTimeout } from 'timers/promises';
 import { Logger } from 'winston';
 
 import { captureException } from './index';
-import { request, Response } from './request';
+import { request, REQUEST_TIMEOUT, Response } from './request';
 import { BALENA_API_HOST, intVar, VPN_SERVICE_API_KEY } from './config';
 
-const REQUEST_TIMEOUT = 60000;
 // As of writing this, using a chunk of 8000 62-char UUIDs results a content-length
 // that is bellow the 512KiB threshold that would trigger a 413 http error.
 const API_DEVICE_STATE_POST_BATCH_SIZE = intVar(
@@ -67,7 +66,6 @@ export const setConnected = (() => {
 					const response: Response = await request
 						.post({
 							url: `https://${BALENA_API_HOST}/services/vpn/client-${eventType}`,
-							timeout: REQUEST_TIMEOUT,
 							json: true,
 							body: {
 								serviceId,
