@@ -19,6 +19,7 @@ import { metrics } from '@balena/node-metrics-gatherer';
 import * as Bluebird from 'bluebird';
 import * as compression from 'compression';
 import * as express from 'express';
+import * as memoize from 'memoizee';
 import * as morgan from 'morgan';
 
 import {
@@ -28,7 +29,11 @@ import {
 	Metrics,
 	pooledRequest,
 } from './utils';
-import { BALENA_API_HOST, TRUST_PROXY } from './utils/config';
+import {
+	BALENA_API_HOST,
+	TRUST_PROXY,
+	VPN_AUTH_CACHE_TIMEOUT,
+} from './utils/config';
 import { Sentry } from './utils/errors';
 import { hasDurationData, isTrusted } from './utils/openvpn';
 
@@ -41,6 +46,24 @@ const fromLocalHost: express.RequestHandler = (req, res, next) => {
 
 	next();
 };
+
+const checkDeviceAuth = memoize(
+	async (username: string, password: string) => {
+		const { statusCode } = await pooledRequest.get({
+			url: `https://${BALENA_API_HOST}/services/vpn/auth/${username}`,
+			headers: { Authorization: `Bearer ${password}` },
+		});
+		if ([200, 401, 403].includes(statusCode)) {
+			return statusCode;
+		}
+		throw new Error(`Unexpected status code from the API: ${statusCode}`);
+	},
+	{
+		maxAge: VPN_AUTH_CACHE_TIMEOUT,
+		primitive: true,
+		promise: true,
+	},
+);
 
 export const apiFactory = (serviceId: number) => {
 	const api = express.Router();
@@ -83,11 +106,11 @@ export const apiFactory = (serviceId: number) => {
 		}
 
 		try {
-			const response = await pooledRequest.get({
-				url: `https://${BALENA_API_HOST}/services/vpn/auth/${req.body.username}`,
-				headers: { Authorization: `Bearer ${req.body.password}` },
-			});
-			if (response.statusCode === 200) {
+			const statusCode = await checkDeviceAuth(
+				req.body.username,
+				req.body.password,
+			);
+			if (statusCode === 200) {
 				return res.send('OK');
 			} else {
 				logger.info(

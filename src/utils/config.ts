@@ -132,3 +132,8 @@ export const VPN_SERVICE_API_KEY = Buffer.from(
 );
 export const VPN_CONNECT_PROXY_PORT = intVar('VPN_CONNECT_PROXY_PORT');
 export const VPN_FORWARD_PROXY_PORT = intVar('VPN_FORWARD_PROXY_PORT');
+
+export const VPN_AUTH_CACHE_TIMEOUT = intVar(
+	'VPN_AUTH_CACHE_TIMEOUT',
+	1 * 60 * 1000,
+);
