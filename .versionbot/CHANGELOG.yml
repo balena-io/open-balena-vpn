@@ -1,4 +1,16 @@
 - commits:
+    - subject: Handle client connect events asynchronously
+      hash: 62d98b5823415b13cb14bf3abed1b56c833c3332
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.6
+  title: "'Handle client connect events asynchronously'"
+  date: 2022-06-08T12:58:07.124Z
+- commits:
     - subject: Add an auth cache matching the API side cache
       hash: 88c5a7e0495a47f259b7f9f7dc87f7a36fe0542b
       body: |
