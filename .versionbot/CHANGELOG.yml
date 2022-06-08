@@ -1,4 +1,93 @@
 - commits:
+    - subject: Update @sentry/node from 6.19.7 to 7.3.1
+      hash: fc12b0b180f7d8940822ee0d6f770dd8d32e8122
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Renovate Bot
+      nested: []
+  version: 11.6.0
+  title: "'Update @sentry/node from 6.19.7 to 7.3.1'"
+  date: 2022-06-28T17:44:43.128Z
+- commits:
+    - subject: Correct/refactor draining logic
+      hash: d0a48515cc05c8d7418edcf3758de9fbd5736c44
+      body: |
+        Co-authored-by: Page- <page@balena.io>
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: ab77
+      nested: []
+  version: 11.5.0
+  title: "'Don't restart workers while draining'"
+  date: 2022-06-28T16:39:36.114Z
+- commits:
+    - subject: Update dependencies
+      hash: c0da193e6edf49ee0a16095dc089ba7b07ab6efa
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.9
+  title: "'Update dependencies'"
+  date: 2022-06-28T12:54:58.456Z
+- commits:
+    - subject: Update balena/open-balena-base from 13.3.1 to 13.3.2
+      hash: 11ca303d716702b149e61ce10c8d4135f5cc1b22
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Renovate Bot
+      nested: []
+  version: 11.4.8
+  title: "'Update balena/open-balena-base from 13.3.1 to 13.3.2'"
+  date: 2022-06-22T00:48:52.310Z
+- commits:
+    - subject: Remove superfluous process signaling
+      hash: f7c51a40cf8f66ea060bc5fdefdf86ab390cf3f6
+      body: |
+        * add debug logging during connection draining
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 11.4.7
+  title: "'Remove superfluous process signaling'"
+  date: 2022-06-21T23:23:37.775Z
+- commits:
+    - subject: Handle client connect events asynchronously
+      hash: 62d98b5823415b13cb14bf3abed1b56c833c3332
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.6
+  title: "'Handle client connect events asynchronously'"
+  date: 2022-06-08T12:58:07.124Z
+- commits:
+    - subject: Add an auth cache matching the API side cache
+      hash: 88c5a7e0495a47f259b7f9f7dc87f7a36fe0542b
+      body: |
+        This will allow the VPN to quickly reject devices that fail auth but
+        keep retrying requests, as well as helping with the less common case
+        of a successful device that keeps reconnecting for some reason
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.5
+  title: "'Add an auth cache matching the API side cache'"
+  date: 2022-06-07T13:39:13.793Z
+- commits:
     - subject: Standardize request timeout to 59s
       hash: 2ca5159befc4a093b854cd13ce72f8e53cca96dc
       body: ""
