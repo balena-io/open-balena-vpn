@@ -43,7 +43,7 @@
     "@types/event-stream": "^4.0.0",
     "@types/express": "^4.17.13",
     "@types/lodash": "^4.14.181",
-    "@types/memoizee": "^0.4.7",
+    "@types/memoizee": "0.4.8",
     "@types/mocha": "^9.1.0",
     "@types/morgan": "^1.9.3",
     "@types/netmask": "^1.0.30",
