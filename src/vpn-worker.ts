@@ -107,6 +107,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 		logger.info(`${clientCount} clients connected`);
 
 		if (clientCount > 0) {
+			logger.debug(JSON.stringify(clientCache));
 			const delayMs = DEFAULT_SIGTERM_TIMEOUT / clientCount;
 			logger.info(
 				`disconnecting ${clientCount} clients, spaced by ${delayMs}ms`,
@@ -116,6 +117,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 
 			for (let clientId = 0; clientId < clientCount; clientId++) {
 				try {
+					logger.debug(JSON.stringify(clientCache[clientId]));
 					const cn = clientCache[clientId].uuid;
 					logger.info(`disconnecting ${cn}`);
 					// update device state

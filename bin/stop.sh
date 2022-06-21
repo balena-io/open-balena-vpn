@@ -25,8 +25,3 @@ for vpn_worker in $(echo 'show servers conn' | socat - "${VPN_HAPROXY_SOCKET}" \
   | awk '{print $1}'); do
        echo "set server ${vpn_worker} state drain" | socat - "${VPN_HAPROXY_SOCKET}"
 done
-
-# signal cluster to prepare for termination
-if pgrep -af "${VPN_PROCESS_MASK}"; then
-    pgrep -f "${VPN_PROCESS_MASK}" | head -n 1 | xargs kill --signal TERM
-fi
