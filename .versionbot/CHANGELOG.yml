@@ -1,4 +1,17 @@
 - commits:
+    - subject: Remove superfluous process signaling
+      hash: f7c51a40cf8f66ea060bc5fdefdf86ab390cf3f6
+      body: |
+        * add debug logging during connection draining
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 11.4.7
+  title: "'Remove superfluous process signaling'"
+  date: 2022-06-21T23:23:37.775Z
+- commits:
     - subject: Handle client connect events asynchronously
       hash: 62d98b5823415b13cb14bf3abed1b56c833c3332
       body: ""
