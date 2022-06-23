@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update balena/open-balena-base from 13.3.1 to 13.3.2
+      hash: 11ca303d716702b149e61ce10c8d4135f5cc1b22
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Renovate Bot
+      nested: []
+  version: 11.4.8
+  title: "'Update balena/open-balena-base from 13.3.1 to 13.3.2'"
+  date: 2022-06-22T00:48:52.310Z
+- commits:
     - subject: Remove superfluous process signaling
       hash: f7c51a40cf8f66ea060bc5fdefdf86ab390cf3f6
       body: |
