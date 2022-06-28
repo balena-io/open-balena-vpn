@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update @sentry/node from 6.19.7 to 7.3.1
+      hash: fc12b0b180f7d8940822ee0d6f770dd8d32e8122
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Renovate Bot
+      nested: []
+  version: 11.6.0
+  title: "'Update @sentry/node from 6.19.7 to 7.3.1'"
+  date: 2022-06-28T17:44:43.128Z
+- commits:
     - subject: Correct/refactor draining logic
       hash: d0a48515cc05c8d7418edcf3758de9fbd5736c44
       body: |
