@@ -1,4 +1,17 @@
 - commits:
+    - subject: Correct/refactor draining logic
+      hash: d0a48515cc05c8d7418edcf3758de9fbd5736c44
+      body: |
+        Co-authored-by: Page- <page@balena.io>
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: ab77
+      nested: []
+  version: 11.5.0
+  title: "'Don't restart workers while draining'"
+  date: 2022-06-28T16:39:36.114Z
+- commits:
     - subject: Update dependencies
       hash: c0da193e6edf49ee0a16095dc089ba7b07ab6efa
       body: ""
