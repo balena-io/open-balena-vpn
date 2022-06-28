@@ -31,8 +31,9 @@ ExecStop=-/usr/src/app/bin/stop.sh
 # group after TimeoutStopSec has elapsed; this setting prevents VPN worker(s) from
 # restarting after SIGTERM is received and before SIGKILL
 KillMode=mixed
-# note k8s/terminationGracePeriodSeconds and DEFAULT_SIGTERM_TIMEOUT environment variable
-TimeoutStopSec=120
+# https://www.freedesktop.org/software/systemd/man/systemd.service.html#TimeoutStopSec=
+# ensure k8s/terminationGracePeriodSeconds matches
+TimeoutStopSec=${DEFAULT_SIGTERM_TIMEOUT}
 
 Restart=always
 SyslogIdentifier=vpn
