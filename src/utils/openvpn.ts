@@ -192,6 +192,8 @@ export class VpnManager extends EventEmitter {
 			`${this.instanceId}`,
 			`${VPN_API_PORT}`,
 			'via-env',
+			'--client-connect',
+			`scripts/client-connect.sh ${this.instanceId} ${VPN_API_PORT}`,
 			'--client-disconnect',
 			`scripts/client-disconnect.sh ${this.instanceId} ${VPN_API_PORT}`,
 		];

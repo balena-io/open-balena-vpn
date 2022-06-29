@@ -19,7 +19,6 @@ import { metrics } from '@balena/node-metrics-gatherer';
 import { setTimeout } from 'timers/promises';
 import {
 	DEFAULT_SIGTERM_TIMEOUT,
-	VPN_API_PORT,
 	VPN_BASE_IP,
 	VPN_BASE_MANAGEMENT_PORT,
 	VPN_BASE_MASK,
@@ -34,7 +33,6 @@ import { clients, getLogger } from './utils';
 
 import { HAProxy, Metrics, Netmask, VpnManager } from './utils';
 import { VpnClientBytecountData } from './utils/openvpn';
-import { request } from './utils/request';
 
 const getInstanceSubnet = (instanceId: number) => {
 	const network = new Netmask(VPN_BASE_IP, VPN_BASE_MASK);
@@ -199,23 +197,14 @@ const worker = async (instanceId: number, serviceId: number) => {
 		logger.info(
 			`connection established with client_id=${clientId} uuid=${data.username}`,
 		);
-		// We need to flatten the uuid because otherwise it's a sliced string and keeps the
-		// original, rather large, string in memory forever
-		const uuid = flatstr(data.common_name);
 		clientCache[clientId] = {
-			uuid,
+			// We need to flatten the uuid because otherwise it's a sliced string and keeps the
+			// original, rather large, string in memory forever
+			uuid: flatstr(data.common_name),
 			bytes_received: 0,
 			bytes_sent: 0,
 			ts: process.hrtime()[0],
 		};
-
-		request.post({
-			uri: `http://127.0.0.1:${VPN_API_PORT}/api/v2/${instanceId}/clients`,
-			json: true,
-			body: {
-				common_name: uuid,
-			},
-		});
 	});
 
 	vpn.on('client:bytecount', (clientId, data) => {
