@@ -1,4 +1,16 @@
 - commits:
+    - subject: Revert "Handle client connect events asynchronously"
+      hash: 2bf4f6965ff4c14ff3af406dbdd9f0eabe239c8e
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Page-
+      nested: []
+  version: 11.6.1
+  title: "'Revert \"Handle client connect events asynchronously\"'"
+  date: 2022-06-29T16:22:10.057Z
+- commits:
     - subject: Update @sentry/node from 6.19.7 to 7.3.1
       hash: fc12b0b180f7d8940822ee0d6f770dd8d32e8122
       body: ""
