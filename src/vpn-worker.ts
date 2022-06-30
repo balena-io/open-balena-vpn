@@ -156,7 +156,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 		process.exit(0);
 	};
 
-	const eventTypes = [`SIGINT`, `uncaughtException`, `SIGTERM`];
+	const eventTypes = [`SIGINT`, `SIGTERM`];
 	eventTypes.forEach(async (eventType) => {
 		process.on(eventType, await drainConnections);
 	});
