@@ -1,4 +1,18 @@
 - commits:
+    - subject: Handle uncaughtException(s)
+      hash: 09e8740720a13495f6d2075ec063cb2a9318a4e1
+      body: |
+        * prevent restart loops during draining
+        * check drain process is already in progress
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 11.6.3
+  title: "'Handle uncaughtException(s)'"
+  date: 2022-06-30T22:09:17.749Z
+- commits:
     - subject: Don't drain on unhandled exceptions
       hash: 6ee46effc02c787440e4f11f977fd850d73734b9
       body: ""
