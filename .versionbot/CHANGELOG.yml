@@ -1,4 +1,16 @@
 - commits:
+    - subject: Don't drain on unhandled exceptions
+      hash: 6ee46effc02c787440e4f11f977fd850d73734b9
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 11.6.2
+  title: "'Don't drain on unhandled exceptions'"
+  date: 2022-06-30T15:58:35.718Z
+- commits:
     - subject: Revert "Handle client connect events asynchronously"
       hash: 2bf4f6965ff4c14ff3af406dbdd9f0eabe239c8e
       body: ""
