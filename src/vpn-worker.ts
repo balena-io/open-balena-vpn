@@ -102,61 +102,70 @@ const worker = async (instanceId: number, serviceId: number) => {
 		}
 	});
 
+	let draining = false;
 	const drainConnections = async () => {
 		const drainQueue = Object.values(clientCache);
 		const clientCount = drainQueue.length;
 
-		if (clientCount > 0) {
-			logger.info(
-				`attempt to drain ${clientCount} connected clients in ${DEFAULT_SIGTERM_TIMEOUT}ms`,
-			);
-			const delayMs = DEFAULT_SIGTERM_TIMEOUT / clientCount;
-			logger.info(
-				`disconnecting ${clientCount} clients, spaced by ${delayMs}ms`,
-			);
+		if (draining) {
+			logger.warning(`worker ${serviceId} is already draining`);
+		} else {
+			draining = true;
 
-			for (const client of drainQueue) {
-				try {
-					const cn = client.uuid;
+			if (clientCount > 0) {
+				logger.info(
+					`attempt to drain ${clientCount} connected clients in ${DEFAULT_SIGTERM_TIMEOUT}ms`,
+				);
+				const delayMs = DEFAULT_SIGTERM_TIMEOUT / clientCount;
+				logger.info(
+					`disconnecting ${clientCount} clients, spaced by ${delayMs}ms`,
+				);
+
+				for (const client of drainQueue) {
 					try {
-						logger.info(`disconnecting ${cn}`);
-						// update device state
-						clients.setConnected(cn, serviceId, false, logger);
-						// disconnect client from VPN
-						await vpn.killClient(cn);
+						const cn = client.uuid;
+						try {
+							logger.info(`disconnecting ${cn}`);
+							// update device state
+							clients.setConnected(cn, serviceId, false, logger);
+							// disconnect client from VPN
+							await vpn.killClient(cn);
+						} catch (err) {
+							logger.warning(
+								`${err} while killing ${cn} on worker ${serviceId}`,
+							);
+						}
 					} catch (err) {
-						logger.warning(`${err} while killing ${cn} on worker ${serviceId}`);
+						logger.warning(`received '${err}' trying to disconnect client`);
 					}
-				} catch (err) {
-					logger.warning(`received '${err}' trying to disconnect client`);
+					// otherwise keep disconnecting clients
+					await setTimeout(delayMs);
 				}
-				// otherwise keep disconnecting clients
-				await setTimeout(delayMs);
 			}
+
+			// all clients disconnected
+			logger.info(
+				`all ${clientCount} client(s) disconnected, signalling cluster`,
+			);
+
+			// signal drain status to master
+			if (typeof process.send === 'function') {
+				process.send({
+					type: 'drain',
+					data: {
+						instanceId,
+						finished: true,
+					},
+				});
+			}
+
+			// wait here, the master should exit when all workers have signaled completion
+			await setTimeout(DEFAULT_SIGTERM_TIMEOUT);
+			process.exit(0);
 		}
-
-		// all clients disconnected
-		logger.info(
-			`all ${clientCount} client(s) disconnected, signalling cluster`,
-		);
-
-		// signal drain status to master
-		if (typeof process.send === 'function') {
-			process.send({
-				type: 'drain',
-				data: {
-					instanceId,
-					finished: true,
-				},
-			});
-		}
-
-		// wait here, the master should exit when all workers have signaled completion
-		await setTimeout(DEFAULT_SIGTERM_TIMEOUT);
-		process.exit(0);
 	};
 
-	const eventTypes = [`SIGINT`, `SIGTERM`];
+	const eventTypes = [`SIGINT`, `uncaughtException`, `SIGTERM`];
 	eventTypes.forEach(async (eventType) => {
 		process.on(eventType, await drainConnections);
 	});
