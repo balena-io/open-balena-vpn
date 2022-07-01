@@ -10,13 +10,23 @@ COPY test /usr/src/app/test
 COPY src /usr/src/app/src
 RUN npm run build
 
-FROM base as auth-plugin
+FROM base as plugin-builder
 
 RUN apt-get update \
 	&& apt-get install \
 		libssl-dev \
 		openvpn \
 	&& rm -rf /var/lib/apt/lists/*
+
+FROM plugin-builder as connect-disconnect-plugin
+
+ENV CONNECT_DISCONNECT_PLUGIN_COMMIT=7c958d8b33a87a06b5a8fa096397fc623494013a
+RUN git clone https://github.com/balena-io-modules/connect-disconnect-script-openvpn.git \
+	&& cd connect-disconnect-script-openvpn \
+	&& git checkout ${CONNECT_DISCONNECT_PLUGIN_COMMIT} \
+	&& C_INCLUDE_PATH=/usr/include/openvpn/ make plugin
+
+FROM plugin-builder as auth-plugin
 
 ENV AUTH_PLUGIN_COMMIT=623982a5d63dd2b7b2b9f9295d10d96a56d58894
 RUN git clone https://github.com/fac/auth-script-openvpn.git \
@@ -79,6 +89,7 @@ RUN npm ci --unsafe-perm --production && npm cache clean --force 2>/dev/null
 
 COPY --from=auth-plugin /usr/src/app/auth-script-openvpn/openvpn-plugin-auth-script.so /etc/openvpn/plugins/
 COPY --from=builder /usr/src/app/build /usr/src/app/build
+COPY --from=connect-disconnect-plugin /usr/src/app/connect-disconnect-script-openvpn/openvpn-plugin-connect-disconnect-script.so /etc/openvpn/plugins/
 COPY bin /usr/src/app/bin
 COPY config /usr/src/app/config
 COPY openvpn /usr/src/app/openvpn
