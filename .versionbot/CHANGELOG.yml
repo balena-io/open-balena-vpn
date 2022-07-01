@@ -1,4 +1,17 @@
 - commits:
+    - subject: Use a plugin to run connect/disconnect scripts in the background
+      hash: 6da28ace10fcd366b92d039b169b791a632c7028
+      body: |
+        This avoids them blocking the openvpn process
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.6.4
+  title: "'Use a plugin to run connect/disconnect scripts in the background'"
+  date: 2022-07-01T16:16:59.583Z
+- commits:
     - subject: Handle uncaughtException(s)
       hash: 09e8740720a13495f6d2075ec063cb2a9318a4e1
       body: |
