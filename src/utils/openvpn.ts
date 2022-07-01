@@ -187,15 +187,16 @@ export class VpnManager extends EventEmitter {
 			'--push',
 			`route ${gateway}`,
 			'--plugin',
+			'/etc/openvpn/plugins/openvpn-plugin-connect-disconnect-script.so',
+			'/etc/openvpn/scripts/client-connect-disconnect.sh',
+			`${this.instanceId}`,
+			`${VPN_API_PORT}`,
+			'--plugin',
 			'/etc/openvpn/plugins/openvpn-plugin-auth-script.so',
 			'/etc/openvpn/scripts/auth.sh',
 			`${this.instanceId}`,
 			`${VPN_API_PORT}`,
 			'via-env',
-			'--client-connect',
-			`scripts/client-connect.sh ${this.instanceId} ${VPN_API_PORT}`,
-			'--client-disconnect',
-			`scripts/client-disconnect.sh ${this.instanceId} ${VPN_API_PORT}`,
 		];
 	}
 

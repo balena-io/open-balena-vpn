@@ -18,7 +18,14 @@
 VPN_INSTANCE_ID=$1
 VPN_API_PORT=$2
 
-nohup curl -s -X DELETE -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF &
+if [[ -z "${bytes_received}" ]]; then
+	curl -s -X POST -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF &
+{
+	"common_name": "$common_name"
+}
+EOF
+else
+	curl -s -X DELETE -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF &
 {
 	"common_name": "$common_name",
 	"bytes_received": $bytes_received,
@@ -26,3 +33,4 @@ nohup curl -s -X DELETE -H 'Content-type: application/json' -d @- "http://127.0.
 	"time_duration": $time_duration
 }
 EOF
+fi
