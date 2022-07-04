@@ -21,7 +21,7 @@ import * as es from 'event-stream';
 import { EventEmitter } from 'eventemitter3';
 import * as fs from 'fs';
 import * as net from 'net';
-import VpnConnector = require('telnet-openvpn');
+import { Telnet } from 'telnet-client';
 import { VPN_API_PORT } from './config';
 import { Netmask } from './netmask';
 
@@ -122,7 +122,7 @@ export declare interface VpnManager {
 
 export class VpnManager extends EventEmitter {
 	private process?: ChildProcess;
-	private readonly connector = new VpnConnector();
+	private readonly connector = new Telnet();
 	private buf: string = '';
 	private readonly pidFile: string;
 
@@ -137,7 +137,7 @@ export class VpnManager extends EventEmitter {
 		super();
 		this.pidFile = `/var/run/openvpn/server-${this.instanceId}.pid`;
 		// proxy `data` events from connector, splitting at newlines
-		this.connector.connection.on('data', (data) => {
+		this.connector.on('data', (data) => {
 			const lines = (this.buf + data.toString()).split(/\r?\n/);
 			this.buf = lines.pop()!;
 			for (const line of lines) {
@@ -378,14 +378,18 @@ export class VpnManager extends EventEmitter {
 
 	public async connect() {
 		await this.connector.connect({
+			host: '127.0.0.1',
 			port: this.mgtPort,
 			shellPrompt: '',
+			negotiationMandatory: true,
+			ors: '\r\n',
+			sendTimeout: 3000,
 		});
 		this.emit('manager:connect');
 	}
 
 	public async exec(command: string) {
-		await this.connector.exec(command);
+		await this.connector.send(command);
 	}
 
 	public async enableLogging() {
