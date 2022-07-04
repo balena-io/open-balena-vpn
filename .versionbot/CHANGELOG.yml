@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update to haproxy 2.6
+      hash: 62bec607eec27ce6a3bbfcd81ec07ab2c2e95967
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 11.7.0
+  title: "'Update to haproxy 2.6'"
+  date: 2022-07-04T14:08:19.016Z
+- commits:
     - subject: Use a plugin to run connect/disconnect scripts in the background
       hash: 6da28ace10fcd366b92d039b169b791a632c7028
       body: |
