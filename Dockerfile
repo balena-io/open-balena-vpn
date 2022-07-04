@@ -50,9 +50,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/dev/null \
-    && echo deb http://haproxy.debian.net bullseye-backports-2.5 main > /etc/apt/sources.list.d/haproxy.list \
+    && echo deb http://haproxy.debian.net bullseye-backports-2.6 main > /etc/apt/sources.list.d/haproxy.list \
     && apt-get update -qq \
-    && apt-get install -qy haproxy=2.5.* iptables --no-install-recommends \
+    && apt-get install -qy haproxy=2.6.* iptables --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
     && ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts \
