@@ -1,4 +1,16 @@
 - commits:
+    - subject: Fix docker cp paths for tests when re-running locally
+      hash: 3bdd4a9f3a97f0796954aa927c1635b60c5fc013
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.8.1
+  title: "'Fix docker cp paths for tests when re-running locally'"
+  date: 2022-07-04T15:30:08.372Z
+- commits:
     - subject: Enable configuring of the `VPN_BYTECOUNT_INTERVAL`
       hash: 4b057a15842e5dee87806256cdd6bc8576191bc1
       body: ""
