@@ -53,9 +53,9 @@ test_id=$(docker run --privileged -d \
 	-e TS_NODE_FILES=true \
 	"${IMAGE_NAME-test-open-balena-vpn}")
 
-docker cp "./src" "${test_id}:/usr/src/app/src"
-docker cp "./test" "${test_id}:/usr/src/app/test"
-docker cp "./typings" "${test_id}:/usr/src/app/typings"
+docker cp "./src" "${test_id}:/usr/src/app/"
+docker cp "./test" "${test_id}:/usr/src/app/"
+docker cp "./typings" "${test_id}:/usr/src/app/"
 docker cp "./tsconfig.json" "${test_id}:/usr/src/app/"
 docker exec "${test_id}" /bin/sh -ec '
 	echo "127.0.0.1 deadbeef.vpn" >> /etc/hosts
