@@ -1,4 +1,16 @@
 - commits:
+    - subject: Enable configuring of the `VPN_BYTECOUNT_INTERVAL`
+      hash: 4b057a15842e5dee87806256cdd6bc8576191bc1
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 11.8.0
+  title: "'Enable configuring of the '"
+  date: 2022-07-04T15:19:33.775Z
+- commits:
     - subject: Minor optimizations to the management stream parsing
       hash: c9d5c0c44559b2abdd31e3d46753434fe1f90542
       body: ""
