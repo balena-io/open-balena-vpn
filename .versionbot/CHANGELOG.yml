@@ -1,4 +1,21 @@
 - commits:
+    - subject: Switch to using telnet-client directly
+      hash: 210b3e4c2330382c1c561fb6a3f6be920ae487c8
+      body: |
+        Previously we were going via telnet-openvpn but only really using the
+        underlying telnet-client connection functionality so this means we can
+        use a newer version that is natively typescript with the correct
+        typings/native promises and avoid the telnet-openvpn parsing that we
+        weren't actually using
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.8.2
+  title: "'Switch to using telnet-client directly'"
+  date: 2022-07-04T16:08:56.069Z
+- commits:
     - subject: Fix docker cp paths for tests when re-running locally
       hash: 3bdd4a9f3a97f0796954aa927c1635b60c5fc013
       body: ""
