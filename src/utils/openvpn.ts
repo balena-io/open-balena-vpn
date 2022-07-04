@@ -123,7 +123,7 @@ export declare interface VpnManager {
 export class VpnManager extends EventEmitter {
 	private process?: ChildProcess;
 	private readonly connector = new VpnConnector();
-	private buf: string | undefined;
+	private buf: string = '';
 	private readonly pidFile: string;
 
 	constructor(
@@ -138,8 +138,8 @@ export class VpnManager extends EventEmitter {
 		this.pidFile = `/var/run/openvpn/server-${this.instanceId}.pid`;
 		// proxy `data` events from connector, splitting at newlines
 		this.connector.connection.on('data', (data) => {
-			const lines = ((this.buf || '') + data.toString()).split(/\r?\n/);
-			this.buf = lines.pop();
+			const lines = (this.buf + data.toString()).split(/\r?\n/);
+			this.buf = lines.pop()!;
 			for (const line of lines) {
 				this.emit('manager:data', line.trim());
 			}
@@ -203,7 +203,7 @@ export class VpnManager extends EventEmitter {
 	private dataHandler = (data: string) => {
 		if (data.startsWith('>LOG:')) {
 			// >LOG:{timestamp},{level},{message}
-			const logData = data.substr(5);
+			const logData = data.slice(5);
 			const [, level, ...message] = logData.split(',');
 			this.emit(
 				'log',
@@ -214,16 +214,16 @@ export class VpnManager extends EventEmitter {
 			// >CLIENT:{event},{clientId},{...args}
 			// >CLIENT:ENV,{key}={value}
 			// >CLIENT:END
-			const eventData = data.substr('>CLIENT:'.length);
+			const eventData = data.slice('>CLIENT:'.length);
 			for (const eventType of [
-				'connect',
-				'address',
-				'established',
-				'disconnect',
+				'CONNECT',
+				'ADDRESS',
+				'ESTABLISHED',
+				'DISCONNECT',
 			]) {
-				if (eventData.startsWith(eventType.toUpperCase())) {
+				if (eventData.startsWith(eventType)) {
 					const [clientId, ...eventArgs] = eventData
-						.substr(eventType.length + 1)
+						.slice(eventType.length + 1)
 						.split(',');
 					this.off('manager:data', this.dataHandler);
 					this.on(
@@ -234,12 +234,13 @@ export class VpnManager extends EventEmitter {
 							eventArgs,
 						),
 					);
+					return;
 				}
 			}
 		} else if (data.startsWith('>BYTECOUNT_CLI:')) {
 			// >BYTECOUNT_CLI:{clientId},{bytesRx},{bytesTx}
 			const [clientId, bytesReceived, bytesSent] = data
-				.substr('>BYTECOUNT_CLI:'.length)
+				.slice('>BYTECOUNT_CLI:'.length)
 				.split(',');
 			this.emit('client:bytecount', parseInt(clientId, 10), {
 				bytes_received: parseInt(bytesReceived, 10),
@@ -257,7 +258,7 @@ export class VpnManager extends EventEmitter {
 		const emitter = (data: string) => {
 			if (data.startsWith('>CLIENT:ENV') && data !== '>CLIENT:ENV,END') {
 				// >CLIENT:ENV,key=val
-				const envData = data.substr('>CLIENT:ENV'.length + 1);
+				const envData = data.slice('>CLIENT:ENV'.length + 1);
 				const [key, val] = envData.split('=');
 				env[key] = parsePossibleInt(val);
 			} else {
