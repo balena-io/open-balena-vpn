@@ -1,4 +1,16 @@
 - commits:
+    - subject: Minor optimizations to the management stream parsing
+      hash: c9d5c0c44559b2abdd31e3d46753434fe1f90542
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.7.1
+  title: "'Minor optimizations to the management stream parsing'"
+  date: 2022-07-04T14:51:45.051Z
+- commits:
     - subject: Update to haproxy 2.6
       hash: 62bec607eec27ce6a3bbfcd81ec07ab2c2e95967
       body: ""
