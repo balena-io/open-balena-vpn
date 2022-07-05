@@ -216,9 +216,9 @@ export class VpnManager extends EventEmitter {
 			// >CLIENT:END
 			const eventData = data.slice('>CLIENT:'.length);
 			for (const eventType of [
+				'ESTABLISHED',
 				'CONNECT',
 				'ADDRESS',
-				'ESTABLISHED',
 				'DISCONNECT',
 			]) {
 				if (eventData.startsWith(eventType)) {
@@ -229,7 +229,7 @@ export class VpnManager extends EventEmitter {
 					this.on(
 						'manager:data',
 						this.clientEventEmitterFactory(
-							eventType,
+							eventType.toLowerCase(),
 							parseInt(clientId, 10),
 							eventArgs,
 						),
