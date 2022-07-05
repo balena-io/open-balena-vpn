@@ -1,4 +1,16 @@
 - commits:
+    - subject: Emitted events should be in lowercase
+      hash: 0123f0d7a2a4e0f3c242fb4d4c32e79aec1d9b85
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.8.3
+  title: "'Emitted events should be in lowercase'"
+  date: 2022-07-05T16:26:48.703Z
+- commits:
     - subject: Switch to using telnet-client directly
       hash: 210b3e4c2330382c1c561fb6a3f6be920ae487c8
       body: |
