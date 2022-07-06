@@ -15,6 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import * as _ from 'lodash';
 import { metrics } from '@balena/node-metrics-gatherer';
 import { setTimeout } from 'timers/promises';
 import {
@@ -102,68 +103,67 @@ const worker = async (instanceId: number, serviceId: number) => {
 		}
 	});
 
-	let draining = false;
-	const drainConnections = async () => {
+	const drainConnections = _.once(async () => {
 		const drainQueue = Object.values(clientCache);
 		const clientCount = drainQueue.length;
 
-		if (draining) {
-			logger.warning(`worker ${serviceId} is already draining`);
-		} else {
-			draining = true;
+		if (verbose) {
+			logger.info(
+				`drainQueue: ${JSON.stringify(drainQueue)} clientCount: ${clientCount}`,
+			);
+		}
 
-			if (clientCount > 0) {
-				logger.info(
-					`attempt to drain ${clientCount} connected clients in ${DEFAULT_SIGTERM_TIMEOUT}ms`,
-				);
-				const delayMs = DEFAULT_SIGTERM_TIMEOUT / clientCount;
-				logger.info(
-					`disconnecting ${clientCount} clients, spaced by ${delayMs}ms`,
-				);
-
-				for (const client of drainQueue) {
+		if (clientCount > 0) {
+			logger.info(
+				`attempt to drain ${clientCount} connected clients in ${DEFAULT_SIGTERM_TIMEOUT}ms`,
+			);
+			const delayMs = DEFAULT_SIGTERM_TIMEOUT / clientCount;
+			logger.info(
+				`disconnecting ${clientCount} clients, spaced by ${delayMs}ms`,
+			);
+			let timeToKill = DEFAULT_SIGTERM_TIMEOUT;
+			for (const client of drainQueue) {
+				try {
+					const cn = client.uuid;
 					try {
-						const cn = client.uuid;
-						try {
-							logger.info(`disconnecting ${cn}`);
-							// update device state
-							clients.setConnected(cn, serviceId, false, logger);
-							// disconnect client from VPN
-							await vpn.killClient(cn);
-						} catch (err) {
-							logger.warning(
-								`${err} while killing ${cn} on worker ${serviceId}`,
-							);
-						}
+						logger.info(`disconnecting ${cn}`);
+						// update device state
+						clients.setConnected(cn, serviceId, false, logger);
+						// disconnect client from VPN
+						await vpn.killClient(cn);
 					} catch (err) {
-						logger.warning(`received '${err}' trying to disconnect client`);
+						logger.warning(`${err} while killing ${cn} on worker ${serviceId}`);
 					}
+				} catch (err) {
+					logger.warning(`received '${err}' trying to disconnect client`);
+				}
+				timeToKill = timeToKill - delayMs;
+				// skip if last client
+				if (timeToKill > delayMs) {
 					// otherwise keep disconnecting clients
 					await setTimeout(delayMs);
 				}
 			}
-
-			// all clients disconnected
-			logger.info(
-				`all ${clientCount} client(s) disconnected, signalling cluster`,
-			);
-
-			// signal drain status to master
-			if (typeof process.send === 'function') {
-				process.send({
-					type: 'drain',
-					data: {
-						instanceId,
-						finished: true,
-					},
-				});
-			}
-
-			// wait here, the master should exit when all workers have signaled completion
-			await setTimeout(DEFAULT_SIGTERM_TIMEOUT);
-			process.exit(0);
 		}
-	};
+
+		// all clients disconnected
+		logger.info(`${clientCount} client(s) disconnected, signalling cluster`);
+
+		// signal drain status to master
+		if (typeof process.send === 'function') {
+			process.send({
+				type: 'drain',
+				data: {
+					instanceId,
+					finished: true,
+				},
+			});
+		}
+
+		// wait here, the master should exit when all workers have signaled completion
+		await setTimeout(DEFAULT_SIGTERM_TIMEOUT);
+		process.exit(0);
+	});
 
 	const eventTypes = [`SIGINT`, `uncaughtException`, `SIGTERM`];
 	eventTypes.forEach(async (eventType) => {
@@ -246,6 +246,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 			logger.notice(`received: ${msg}`);
 
 			if (verbose) {
+				logger.info(`clientCache: ${JSON.stringify(clientCache)}`);
 				vpn.getStatus();
 			}
 
