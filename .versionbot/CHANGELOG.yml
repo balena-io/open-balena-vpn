@@ -1,4 +1,21 @@
 - commits:
+    - subject: correct HAProxy service TERM=>KILL flow
+      hash: cf736da11104d566718173bc1d03a2b7af8a1af3
+      body: |
+        * handle last client case
+        * optional verbose logging
+        * ensure draining called only once
+      footer:
+        Co-authored-by: Page- <page@balena.io>
+        co-authored-by: Page- <page@balena.io>
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 11.8.4
+  title: "'correct HAProxy service TERM=>KILL flow'"
+  date: 2022-07-05T22:04:59.142Z
+- commits:
     - subject: Emitted events should be in lowercase
       hash: 0123f0d7a2a4e0f3c242fb4d4c32e79aec1d9b85
       body: ""
