@@ -17,7 +17,7 @@ global
 	user haproxy
 	group haproxy
 	stats socket {{$socket}} mode 600 level admin
-	log /dev/log local0
+	log /dev/log local0 {{if ne (getenv "VPN_VERBOSE_LOGS") "true"}}notice{{end}}
 
 defaults
 	timeout connect 10s
@@ -75,7 +75,7 @@ frontend tcp-{{$vpnPort}}
 	maxconn {{$maxconn}}
 	timeout client {{$timeout}}s
 	# Routing <client-ip:port>@<frontend> to <backend>/<server>:<port> [Conns Queues Times]
-	log-format "Routing %ci:%cp@%ft to %b/%s:%bp [C:%bc/%sc Q:%bq/%sq T:%Tw/%Tc]"
+	{{if eq (getenv "VPN_VERBOSE_LOGS") "true"}}log-format "Routing %ci:%cp@%ft to %b/%s:%bp [C:%bc/%sc Q:%bq/%sq T:%Tw/%Tc]"{{end}}
 	default_backend vpn-workers
 
 backend vpn-workers
