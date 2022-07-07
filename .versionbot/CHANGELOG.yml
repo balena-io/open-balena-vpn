@@ -1,4 +1,19 @@
 - commits:
+    - subject: Shard haproxy's VPN connection listener to the number of threads
+      hash: f2bb76261bab9468f838e008054df4f2af1a9d48
+      body: |
+        This will create 1 listening socket per thread and avoids lock
+        contention for the threads, at the cost of increasing the CPU usage
+        per thread slightly
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.8.5
+  title: "'Shard haproxy's VPN connection listener to the number of threads'"
+  date: 2022-07-07T11:17:21.629Z
+- commits:
     - subject: correct HAProxy service TERM=>KILL flow
       hash: cf736da11104d566718173bc1d03a2b7af8a1af3
       body: |
