@@ -3,7 +3,7 @@ version: 2.1
 jobs:
   build:
     docker:
-      - image: library/docker:19-git
+      - image: library/docker:20-git
     working_directory: /tmp/open-balena-vpn
     environment:
       DOCKER_IMAGE: balena/open-balena-vpn
