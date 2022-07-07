@@ -1,4 +1,19 @@
 - commits:
+    - subject: Update dependency docker to 20
+      hash: c5645075fa222fc4445c8d5ae1936d6af22c322a
+      body: |
+        Update docker to 20
+
+        Update docker from 19 to 20
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Renovate Bot
+      nested: []
+  version: 11.9.0
+  title: "'Update dependency docker to 20'"
+  date: 2022-07-07T11:47:16.917Z
+- commits:
     - subject: Shard haproxy's VPN connection listener to the number of threads
       hash: f2bb76261bab9468f838e008054df4f2af1a9d48
       body: |
