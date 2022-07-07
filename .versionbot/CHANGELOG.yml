@@ -1,4 +1,16 @@
 - commits:
+    - subject: Reduce haproxy logging when verbose logging is disabled
+      hash: f71ca8dc218fd9b188226556c0ed6a7c416637bc
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.9.1
+  title: "'Reduce haproxy logging when verbose logging is disabled'"
+  date: 2022-07-07T16:21:26.476Z
+- commits:
     - subject: Update dependency docker to 20
       hash: c5645075fa222fc4445c8d5ae1936d6af22c322a
       body: |
