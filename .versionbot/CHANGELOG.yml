@@ -1,4 +1,16 @@
 - commits:
+    - subject: Use a rust binary rather than bash for handling openvpn auth
+      hash: 911bd0c5395e33be4644732bcad190b3621dd5e8
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.9.4
+  title: "'Use a rust binary rather than bash for handling openvpn auth'"
+  date: 2022-07-08T14:48:42.615Z
+- commits:
     - subject: Avoid passing unnecessary arguments to the auth script
       hash: 39b8c222e7f9d190de9b3b16c548ffd65dcf9187
       body: ""
