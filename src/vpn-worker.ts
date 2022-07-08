@@ -166,8 +166,8 @@ const worker = async (instanceId: number, serviceId: number) => {
 	});
 
 	const eventTypes = [`SIGINT`, `uncaughtException`, `SIGTERM`];
-	eventTypes.forEach(async (eventType) => {
-		process.on(eventType, await drainConnections);
+	eventTypes.forEach((eventType) => {
+		process.on(eventType, drainConnections);
 	});
 
 	const vpnPort = VPN_BASE_PORT + instanceId;
