@@ -1,4 +1,16 @@
 - commits:
+    - subject: Avoid passing unnecessary arguments to the auth script
+      hash: 39b8c222e7f9d190de9b3b16c548ffd65dcf9187
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.9.3
+  title: "'Avoid passing unnecessary arguments to the auth script'"
+  date: 2022-07-08T13:42:21.631Z
+- commits:
     - subject: Update dependency husky to 8.0.1
       hash: 26fae2d46d977e336ec63d61a37d60011950d60b
       body: |
