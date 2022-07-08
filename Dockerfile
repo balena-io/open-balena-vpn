@@ -34,6 +34,12 @@ RUN git clone https://github.com/fac/auth-script-openvpn.git \
 	&& git checkout ${AUTH_PLUGIN_COMMIT} \
 	&& C_INCLUDE_PATH=/usr/include/openvpn/ make plugin
 
+FROM rust:1-bullseye as rust-builder
+
+WORKDIR /usr/src/app
+COPY auth .
+RUN cargo build --release
+
 FROM base as main
 
 # Docker/systemd socialisation hack to handle SIGTERM=>SIGKILL
@@ -90,6 +96,7 @@ RUN npm ci --unsafe-perm --production && npm cache clean --force 2>/dev/null
 COPY --from=auth-plugin /usr/src/app/auth-script-openvpn/openvpn-plugin-auth-script.so /etc/openvpn/plugins/
 COPY --from=builder /usr/src/app/build /usr/src/app/build
 COPY --from=connect-disconnect-plugin /usr/src/app/connect-disconnect-script-openvpn/openvpn-plugin-connect-disconnect-script.so /etc/openvpn/plugins/
+COPY --from=rust-builder /usr/src/app/target/release/auth /usr/src/app/openvpn/scripts/auth
 COPY bin /usr/src/app/bin
 COPY config /usr/src/app/config
 COPY openvpn /usr/src/app/openvpn
