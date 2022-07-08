@@ -15,8 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-VPN_INSTANCE_ID=$1
-VPN_API_PORT=$2
+VPN_API_PORT=$1
 
 RESP=$(curl -s -H 'Content-type: application/json' -X POST -d '{ "username": "'$username'", "password": "'$password'"}' http://127.0.0.1:${VPN_API_PORT}/api/v1/auth/)
 

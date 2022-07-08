@@ -194,9 +194,7 @@ export class VpnManager extends EventEmitter {
 			'--plugin',
 			'/etc/openvpn/plugins/openvpn-plugin-auth-script.so',
 			'/etc/openvpn/scripts/auth.sh',
-			`${this.instanceId}`,
 			`${VPN_API_PORT}`,
-			'via-env',
 		];
 	}
 
