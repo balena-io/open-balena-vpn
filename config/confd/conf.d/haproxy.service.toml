@@ -1,0 +1,6 @@
+[template]
+src = "haproxy.conf.tmpl"
+dest = "/etc/systemd/system/haproxy.service.d/haproxy.conf"
+keys = [
+  "DEFAULT_SIGTERM_TIMEOUT"
+]

@@ -1,4 +1,4 @@
-# Copyright (C) 2017 Balena Ltd.
+# Copyright (C) 2022 Balena Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
@@ -25,7 +25,7 @@ BindReadOnlyPaths=
 EnvironmentFile=/usr/src/app/config/env
 # wait for open-balena-vpn master to exit
 ExecStop=-/bin/bash -c 'set -x; while curl -sfo/dev/null localhost:8080/ping; do sleep $(( (RANDOM % 3) + 3 ))s; done;'
-TimeoutStopSec=${DEFAULT_SIGTERM_TIMEOUT}
+TimeoutStopSec={{ if getenv "DEFAULT_SIGTERM_TIMEOUT" }}{{ getenv "DEFAULT_SIGTERM_TIMEOUT" }}{{ else }}120{{ end }}
 
 [Install]
 WantedBy=
