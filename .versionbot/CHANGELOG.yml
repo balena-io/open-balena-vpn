@@ -1,4 +1,17 @@
 - commits:
+    - subject: Switch to telnet-client 1.x to avoid memory leak
+      hash: b3316535d19743b0a0f71c87334eba5b380697f1
+      body: |
+        See: https://github.com/mkozjak/node-telnet-client/issues/217
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.9.5
+  title: "'Switch to telnet-client 1.x to avoid memory leak'"
+  date: 2022-07-11T13:25:40.003Z
+- commits:
     - subject: Use a rust binary rather than bash for handling openvpn auth
       hash: 911bd0c5395e33be4644732bcad190b3621dd5e8
       body: ""
