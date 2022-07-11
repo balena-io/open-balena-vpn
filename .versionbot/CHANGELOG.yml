@@ -1,4 +1,20 @@
 - commits:
+    - subject: Template systemd services
+      hash: ca3560df0c44d82df79c5915040db04623b3c3f2
+      body: |
+        Allow setting custom DEFAULT_SIGTERM_TIMEOUT in open-balena-vpn
+        and haproxy services to properly drain VNP connections, since
+        systemd default is 90s and systemd doesn't support ${var} stanzas
+        in service config files.
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 11.9.6
+  title: "'Template systemd services'"
+  date: 2022-07-11T21:44:03.493Z
+- commits:
     - subject: Switch to telnet-client 1.x to avoid memory leak
       hash: b3316535d19743b0a0f71c87334eba5b380697f1
       body: |
