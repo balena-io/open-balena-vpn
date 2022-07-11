@@ -21,7 +21,11 @@ import * as es from 'event-stream';
 import { EventEmitter } from 'eventemitter3';
 import * as fs from 'fs';
 import * as net from 'net';
-import { Telnet } from 'telnet-client';
+const Telnet =
+	// This weird import is because telnet-client uses `export =` but the typings use `export default`
+	// tslint:disable-next-line:no-var-requires
+	require('telnet-client') as typeof import('telnet-client').default;
+
 import { VPN_API_PORT } from './config';
 import { Netmask } from './netmask';
 
