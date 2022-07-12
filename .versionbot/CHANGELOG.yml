@@ -1,4 +1,29 @@
 - commits:
+    - subject: Update open-balena-base to 13.4.0
+      hash: c5954da2204fd67694298e9599d8f4a8eef85f5a
+      body: |
+        Update open-balena-base from 13.3.2 to 13.4.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update nodejs to 16.16.0 and npm to 8.13.2
+              hash: 1e2f05bb44e7d25fbb52f8a738e2707d2915d340
+              body: ""
+              footer:
+                Change-type: minor
+                change-type: minor
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-13.4.0
+          title: "'Update nodejs to 16.16.0 and npm to 8.13.2'"
+          date: 2022-07-09T08:32:33.121Z
+  version: 11.9.7
+  title: "'Update open-balena-base to 13.4.0'"
+  date: 2022-07-12T13:02:55.347Z
+- commits:
     - subject: Template systemd services
       hash: ca3560df0c44d82df79c5915040db04623b3c3f2
       body: |
