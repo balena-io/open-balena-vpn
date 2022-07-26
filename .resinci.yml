@@ -5,3 +5,6 @@ docker:
     - path: .
       dockerfile: Dockerfile
       docker_repo: balena/open-balena-vpn
+    - path: .
+      dockerfile: Dockerfile.no-systemd
+      docker_repo: balena/open-balena-vpn:no-systemd
