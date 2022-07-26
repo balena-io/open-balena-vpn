@@ -23,16 +23,11 @@ import * as nodeTunnel from 'node-tunnel';
 import * as winston from 'winston';
 
 import { captureException, device, errors, getLogger, Metrics } from './utils';
-
-const VPN_SERVICE_API_KEY = Buffer.from(process.env.VPN_SERVICE_API_KEY!);
-const VPN_CONNECT_PROXY_PORT = parseInt(
-	process.env.VPN_CONNECT_PROXY_PORT!,
-	10,
-);
-const VPN_FORWARD_PROXY_PORT = parseInt(
-	process.env.VPN_FORWARD_PROXY_PORT!,
-	10,
-);
+import {
+	VPN_CONNECT_PROXY_PORT,
+	VPN_FORWARD_PROXY_PORT,
+	VPN_SERVICE_API_KEY,
+} from './utils/config';
 
 const HTTP_500 = 'HTTP/1.0 500 Internal Server Error\r\n\r\n';
 
@@ -251,7 +246,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 			const proxyData = (chunk: Buffer) => {
 				// read 'data' chunks until full HTTP status line has been read
 				tunnelProxyResponse += chunk.toString();
-				if (!_.includes(tunnelProxyResponse, '\r\n\r\n')) {
+				if (!tunnelProxyResponse.includes('\r\n\r\n')) {
 					return;
 				}
 				socket.removeListener('data', proxyData);

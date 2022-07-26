@@ -15,37 +15,28 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import * as _ from 'lodash';
 import { metrics } from '@balena/node-metrics-gatherer';
 import { setTimeout } from 'timers/promises';
+import {
+	DEFAULT_SIGTERM_TIMEOUT,
+	VPN_BASE_IP,
+	VPN_BASE_MANAGEMENT_PORT,
+	VPN_BASE_MASK,
+	VPN_BASE_PORT,
+	VPN_BYTECOUNT_INTERVAL,
+	VPN_GATEWAY,
+	VPN_INSTANCE_SUBNET_BITMASK,
+	VPN_VERBOSE_LOGS,
+} from './utils/config';
 
 import { clients, getLogger } from './utils';
 
 import { HAProxy, Metrics, Netmask, VpnManager } from './utils';
 import { VpnClientBytecountData } from './utils/openvpn';
 
-const BALENA_VPN_GATEWAY = process.env.BALENA_VPN_GATEWAY;
-const VPN_BASE_SUBNET = process.env.VPN_BASE_SUBNET!;
-const VPN_INSTANCE_SUBNET_BITMASK = parseInt(
-	process.env.VPN_INSTANCE_SUBNET_BITMASK!,
-	10,
-);
-const VPN_BASE_PORT = parseInt(process.env.VPN_BASE_PORT!, 10);
-const VPN_BASE_MANAGEMENT_PORT = parseInt(
-	process.env.VPN_BASE_MANAGEMENT_PORT!,
-	10,
-);
-
-// milliseconds
-const DEFAULT_SIGTERM_TIMEOUT =
-	parseInt(process.env.DEFAULT_SIGTERM_TIMEOUT!, 10) * 1000;
-
-// disable verbose logs and bytecount reporting by default
-const VPN_BYTECOUNT_INTERVAL =
-	parseInt(process.env.VPN_BYTECOUNT_INTERVAL!, 10) || 0;
-
 const getInstanceSubnet = (instanceId: number) => {
-	const [netBase, netMask] = VPN_BASE_SUBNET.split('/');
-	const network = new Netmask(netBase, parseInt(netMask, 10));
+	const network = new Netmask(VPN_BASE_IP, VPN_BASE_MASK);
 	return network.split(VPN_INSTANCE_SUBNET_BITMASK)[instanceId - 1];
 };
 
@@ -104,7 +95,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 		clientCache[clientId].ts += timeDelta;
 	};
 
-	let verbose = process.env.VPN_VERBOSE_LOGS === 'true';
+	let verbose = VPN_VERBOSE_LOGS;
 	process.on('message', (msg) => {
 		if (msg === 'toggleVerbosity') {
 			verbose = !verbose;
@@ -112,71 +103,71 @@ const worker = async (instanceId: number, serviceId: number) => {
 		}
 	});
 
-	const drainConnections = async () => {
-		const clientCount = Object.keys(clientCache).length;
-		logger.info(`${clientCount} clients connected`);
+	const drainConnections = _.once(async () => {
+		const drainQueue = Object.values(clientCache);
+		const clientCount = drainQueue.length;
+
+		if (verbose) {
+			logger.info(
+				`drainQueue: ${JSON.stringify(drainQueue)} clientCount: ${clientCount}`,
+			);
+		}
 
 		if (clientCount > 0) {
+			logger.info(
+				`attempt to drain ${clientCount} connected clients in ${DEFAULT_SIGTERM_TIMEOUT}ms`,
+			);
 			const delayMs = DEFAULT_SIGTERM_TIMEOUT / clientCount;
 			logger.info(
 				`disconnecting ${clientCount} clients, spaced by ${delayMs}ms`,
 			);
-
 			let timeToKill = DEFAULT_SIGTERM_TIMEOUT;
-
-			for (let clientId = 0; clientId < clientCount; clientId++) {
+			for (const client of drainQueue) {
 				try {
-					const cn = clientCache[clientId].uuid;
-					logger.info(`disconnecting ${cn}`);
-					// update device state
-					clients.setConnected(cn, serviceId, false, logger);
-					// disconnect client from VPN
-					await vpn.killClient(cn);
+					const cn = client.uuid;
+					try {
+						logger.info(`disconnecting ${cn}`);
+						// update device state
+						clients.setConnected(cn, serviceId, false, logger);
+						// disconnect client from VPN
+						await vpn.killClient(cn);
+					} catch (err) {
+						logger.warning(`${err} while killing ${cn} on worker ${serviceId}`);
+					}
 				} catch (err) {
 					logger.warning(`received '${err}' trying to disconnect client`);
 				}
-				// last client disconnected
-				if (clientCount - clientId === 1) {
-					logger.info(
-						`all ${clientCount} client(s) disconnected, signalling cluster`,
-					);
-					// signal drain status to master
-					if (typeof process.send === 'function') {
-						process.send({
-							type: 'drain',
-							data: {
-								instanceId,
-								finished: true,
-							},
-						});
-					}
-				}
-				// otherwise keep disconnecting clients
-				await setTimeout(delayMs);
 				timeToKill = timeToKill - delayMs;
-			}
-		} else {
-			logger.info(`${clientCount} clients connected, signalling cluster`);
-			// signal drain status to master
-			if (typeof process.send === 'function') {
-				process.send({
-					type: 'drain',
-					data: {
-						instanceId,
-						finished: true,
-					},
-				});
+				// skip if last client
+				if (timeToKill > delayMs) {
+					// otherwise keep disconnecting clients
+					await setTimeout(delayMs);
+				}
 			}
 		}
-		// wait here, the master should exit when all workers have signaled completion
-		await setTimeout(process.exit(0), DEFAULT_SIGTERM_TIMEOUT);
-	};
 
-	process.on('SIGTERM', async () => {
-		logger.notice(
-			`received SIGTERM, waiting ${DEFAULT_SIGTERM_TIMEOUT}ms for worker to drain`,
-		);
-		await drainConnections();
+		// all clients disconnected
+		logger.info(`${clientCount} client(s) disconnected, signalling cluster`);
+
+		// signal drain status to master
+		if (typeof process.send === 'function') {
+			process.send({
+				type: 'drain',
+				data: {
+					instanceId,
+					finished: true,
+				},
+			});
+		}
+
+		// wait here, the master should exit when all workers have signaled completion
+		await setTimeout(DEFAULT_SIGTERM_TIMEOUT);
+		process.exit(0);
+	});
+
+	const eventTypes = [`SIGINT`, `uncaughtException`, `SIGTERM`];
+	eventTypes.forEach((eventType) => {
+		process.on(eventType, drainConnections);
 	});
 
 	const vpnPort = VPN_BASE_PORT + instanceId;
@@ -187,7 +178,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 		vpnPort,
 		mgtPort,
 		getInstanceSubnet(instanceId),
-		BALENA_VPN_GATEWAY,
+		VPN_GATEWAY,
 		verbose,
 	);
 
@@ -255,6 +246,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 			logger.notice(`received: ${msg}`);
 
 			if (verbose) {
+				logger.info(`clientCache: ${JSON.stringify(clientCache)}`);
 				vpn.getStatus();
 			}
 

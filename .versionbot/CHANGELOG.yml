@@ -1,4 +1,827 @@
 - commits:
+    - subject: Update open-balena-base to 13.4.0
+      hash: c5954da2204fd67694298e9599d8f4a8eef85f5a
+      body: |
+        Update open-balena-base from 13.3.2 to 13.4.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update nodejs to 16.16.0 and npm to 8.13.2
+              hash: 1e2f05bb44e7d25fbb52f8a738e2707d2915d340
+              body: ""
+              footer:
+                Change-type: minor
+                change-type: minor
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-13.4.0
+          title: "'Update nodejs to 16.16.0 and npm to 8.13.2'"
+          date: 2022-07-09T08:32:33.121Z
+  version: 11.9.7
+  title: "'Update open-balena-base to 13.4.0'"
+  date: 2022-07-12T13:02:55.347Z
+- commits:
+    - subject: Template systemd services
+      hash: ca3560df0c44d82df79c5915040db04623b3c3f2
+      body: |
+        Allow setting custom DEFAULT_SIGTERM_TIMEOUT in open-balena-vpn
+        and haproxy services to properly drain VNP connections, since
+        systemd default is 90s and systemd doesn't support ${var} stanzas
+        in service config files.
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 11.9.6
+  title: "'Template systemd services'"
+  date: 2022-07-11T21:44:03.493Z
+- commits:
+    - subject: Switch to telnet-client 1.x to avoid memory leak
+      hash: b3316535d19743b0a0f71c87334eba5b380697f1
+      body: |
+        See: https://github.com/mkozjak/node-telnet-client/issues/217
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.9.5
+  title: "'Switch to telnet-client 1.x to avoid memory leak'"
+  date: 2022-07-11T13:25:40.003Z
+- commits:
+    - subject: Use a rust binary rather than bash for handling openvpn auth
+      hash: 911bd0c5395e33be4644732bcad190b3621dd5e8
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.9.4
+  title: "'Use a rust binary rather than bash for handling openvpn auth'"
+  date: 2022-07-08T14:48:42.615Z
+- commits:
+    - subject: Avoid passing unnecessary arguments to the auth script
+      hash: 39b8c222e7f9d190de9b3b16c548ffd65dcf9187
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.9.3
+  title: "'Avoid passing unnecessary arguments to the auth script'"
+  date: 2022-07-08T13:42:21.631Z
+- commits:
+    - subject: Update dependency husky to 8.0.1
+      hash: 26fae2d46d977e336ec63d61a37d60011950d60b
+      body: |
+        Update husky to 8.0.1
+
+        Update husky from 4.3.8 to 8.0.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Renovate Bot
+      nested: []
+  version: 11.9.2
+  title: "'Update dependency husky to 8.0.1'"
+  date: 2022-07-07T20:51:52.627Z
+- commits:
+    - subject: Reduce haproxy logging when verbose logging is disabled
+      hash: f71ca8dc218fd9b188226556c0ed6a7c416637bc
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.9.1
+  title: "'Reduce haproxy logging when verbose logging is disabled'"
+  date: 2022-07-07T16:21:26.476Z
+- commits:
+    - subject: Update dependency docker to 20
+      hash: c5645075fa222fc4445c8d5ae1936d6af22c322a
+      body: |
+        Update docker to 20
+
+        Update docker from 19 to 20
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Renovate Bot
+      nested: []
+  version: 11.9.0
+  title: "'Update dependency docker to 20'"
+  date: 2022-07-07T11:47:16.917Z
+- commits:
+    - subject: Shard haproxy's VPN connection listener to the number of threads
+      hash: f2bb76261bab9468f838e008054df4f2af1a9d48
+      body: |
+        This will create 1 listening socket per thread and avoids lock
+        contention for the threads, at the cost of increasing the CPU usage
+        per thread slightly
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.8.5
+  title: "'Shard haproxy's VPN connection listener to the number of threads'"
+  date: 2022-07-07T11:17:21.629Z
+- commits:
+    - subject: correct HAProxy service TERM=>KILL flow
+      hash: cf736da11104d566718173bc1d03a2b7af8a1af3
+      body: |
+        * handle last client case
+        * optional verbose logging
+        * ensure draining called only once
+      footer:
+        Co-authored-by: Page- <page@balena.io>
+        co-authored-by: Page- <page@balena.io>
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 11.8.4
+  title: "'correct HAProxy service TERM=>KILL flow'"
+  date: 2022-07-05T22:04:59.142Z
+- commits:
+    - subject: Emitted events should be in lowercase
+      hash: 0123f0d7a2a4e0f3c242fb4d4c32e79aec1d9b85
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.8.3
+  title: "'Emitted events should be in lowercase'"
+  date: 2022-07-05T16:26:48.703Z
+- commits:
+    - subject: Switch to using telnet-client directly
+      hash: 210b3e4c2330382c1c561fb6a3f6be920ae487c8
+      body: |
+        Previously we were going via telnet-openvpn but only really using the
+        underlying telnet-client connection functionality so this means we can
+        use a newer version that is natively typescript with the correct
+        typings/native promises and avoid the telnet-openvpn parsing that we
+        weren't actually using
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.8.2
+  title: "'Switch to using telnet-client directly'"
+  date: 2022-07-04T16:08:56.069Z
+- commits:
+    - subject: Fix docker cp paths for tests when re-running locally
+      hash: 3bdd4a9f3a97f0796954aa927c1635b60c5fc013
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.8.1
+  title: "'Fix docker cp paths for tests when re-running locally'"
+  date: 2022-07-04T15:30:08.372Z
+- commits:
+    - subject: Enable configuring of the `VPN_BYTECOUNT_INTERVAL`
+      hash: 4b057a15842e5dee87806256cdd6bc8576191bc1
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 11.8.0
+  title: "'Enable configuring of the '"
+  date: 2022-07-04T15:19:33.775Z
+- commits:
+    - subject: Minor optimizations to the management stream parsing
+      hash: c9d5c0c44559b2abdd31e3d46753434fe1f90542
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.7.1
+  title: "'Minor optimizations to the management stream parsing'"
+  date: 2022-07-04T14:51:45.051Z
+- commits:
+    - subject: Update to haproxy 2.6
+      hash: 62bec607eec27ce6a3bbfcd81ec07ab2c2e95967
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 11.7.0
+  title: "'Update to haproxy 2.6'"
+  date: 2022-07-04T14:08:19.016Z
+- commits:
+    - subject: Use a plugin to run connect/disconnect scripts in the background
+      hash: 6da28ace10fcd366b92d039b169b791a632c7028
+      body: |
+        This avoids them blocking the openvpn process
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.6.4
+  title: "'Use a plugin to run connect/disconnect scripts in the background'"
+  date: 2022-07-01T16:16:59.583Z
+- commits:
+    - subject: Handle uncaughtException(s)
+      hash: 09e8740720a13495f6d2075ec063cb2a9318a4e1
+      body: |
+        * prevent restart loops during draining
+        * check drain process is already in progress
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 11.6.3
+  title: "'Handle uncaughtException(s)'"
+  date: 2022-06-30T22:09:17.749Z
+- commits:
+    - subject: Don't drain on unhandled exceptions
+      hash: 6ee46effc02c787440e4f11f977fd850d73734b9
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 11.6.2
+  title: "'Don't drain on unhandled exceptions'"
+  date: 2022-06-30T15:58:35.718Z
+- commits:
+    - subject: Revert "Handle client connect events asynchronously"
+      hash: 2bf4f6965ff4c14ff3af406dbdd9f0eabe239c8e
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Page-
+      nested: []
+  version: 11.6.1
+  title: "'Revert \"Handle client connect events asynchronously\"'"
+  date: 2022-06-29T16:22:10.057Z
+- commits:
+    - subject: Update @sentry/node from 6.19.7 to 7.3.1
+      hash: fc12b0b180f7d8940822ee0d6f770dd8d32e8122
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Renovate Bot
+      nested: []
+  version: 11.6.0
+  title: "'Update @sentry/node from 6.19.7 to 7.3.1'"
+  date: 2022-06-28T17:44:43.128Z
+- commits:
+    - subject: Correct/refactor draining logic
+      hash: d0a48515cc05c8d7418edcf3758de9fbd5736c44
+      body: |
+        Co-authored-by: Page- <page@balena.io>
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: ab77
+      nested: []
+  version: 11.5.0
+  title: "'Don't restart workers while draining'"
+  date: 2022-06-28T16:39:36.114Z
+- commits:
+    - subject: Update dependencies
+      hash: c0da193e6edf49ee0a16095dc089ba7b07ab6efa
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.9
+  title: "'Update dependencies'"
+  date: 2022-06-28T12:54:58.456Z
+- commits:
+    - subject: Update balena/open-balena-base from 13.3.1 to 13.3.2
+      hash: 11ca303d716702b149e61ce10c8d4135f5cc1b22
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Renovate Bot
+      nested: []
+  version: 11.4.8
+  title: "'Update balena/open-balena-base from 13.3.1 to 13.3.2'"
+  date: 2022-06-22T00:48:52.310Z
+- commits:
+    - subject: Remove superfluous process signaling
+      hash: f7c51a40cf8f66ea060bc5fdefdf86ab390cf3f6
+      body: |
+        * add debug logging during connection draining
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 11.4.7
+  title: "'Remove superfluous process signaling'"
+  date: 2022-06-21T23:23:37.775Z
+- commits:
+    - subject: Handle client connect events asynchronously
+      hash: 62d98b5823415b13cb14bf3abed1b56c833c3332
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.6
+  title: "'Handle client connect events asynchronously'"
+  date: 2022-06-08T12:58:07.124Z
+- commits:
+    - subject: Add an auth cache matching the API side cache
+      hash: 88c5a7e0495a47f259b7f9f7dc87f7a36fe0542b
+      body: |
+        This will allow the VPN to quickly reject devices that fail auth but
+        keep retrying requests, as well as helping with the less common case
+        of a successful device that keeps reconnecting for some reason
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.5
+  title: "'Add an auth cache matching the API side cache'"
+  date: 2022-06-07T13:39:13.793Z
+- commits:
+    - subject: Standardize request timeout to 59s
+      hash: 2ca5159befc4a093b854cd13ce72f8e53cca96dc
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.4
+  title: "'Standardize request timeout to 59s'"
+  date: 2022-06-07T13:11:37.294Z
+- commits:
+    - subject: Run the client connect/disconnect `curl`s in the background
+      hash: 930d81719e7b489f1cb6649714a5037de0a08fd5
+      body: |
+        There's no need to wait for them at all since we always treat it as
+        successful
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.3
+  title: "'Run the client connect/disconnect s in the background'"
+  date: 2022-05-25T18:23:34.758Z
+- commits:
+    - subject: Minimize time spent responding to openvpn scripts
+      hash: d1a3868e3da4ec209753b4331aaefc341a05c3bd
+      body: |
+        Some of these can be blocking so the faster we respond the faster
+        openvpn will continue processing other clients
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.2
+  title: "'Minimize time spent responding to openvpn scripts'"
+  date: 2022-05-25T16:01:44.917Z
+- commits:
+    - subject: Limit the VPN_INSTANCE_SUBNET_BITMASK to at most a /16
+      hash: 3988a6fad1bef1832c77a300ee74458df2636ad2
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.1
+  title: "'Limit the VPN_INSTANCE_SUBNET_BITMASK to at most a /16'"
+  date: 2022-05-20T14:45:43.248Z
+- commits:
+    - subject: Default to assigning the maximum possible subnet per openvpn process
+      hash: f3bfa63f0491d18470178ec3da134c6f5b31e2d0
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 11.4.0
+  title: "'Default max subnet per process'"
+  date: 2022-05-20T12:53:42.246Z
+- commits:
+    - subject: Extract more config vars to their own module
+      hash: de0541a44a2ae38fc56acde1b3e8ecfc165142bd
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.3.9
+  title: "'Extract more config vars to their own module'"
+  date: 2022-05-20T12:41:43.143Z
+- commits:
+    - subject: Use await in all relevant places for async stack traces
+      hash: 8a5c582c94a642ed67669529cf44c2c4cc5cb5ee
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.3.8
+  title: "'Use await in all relevant places for async stack traces'"
+  date: 2022-05-18T12:17:10.939Z
+- commits:
+    - subject: Remove some unnecessary lodash usage
+      hash: da6732d70d3d149dd1260e8388dd2c0ac1712f4b
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.3.7
+  title: "'Remove some unnecessary lodash usage'"
+  date: 2022-05-18T11:49:43.827Z
+- commits:
+    - subject: Update open-balena-base to 13.3.1
+      hash: 514c486b4ebe0bdd771200084fd82dd08fbd6dbb
+      body: |
+        Update open-balena-base from 13.3.0 to 13.3.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Add SystemMaxUse for journald.conf
+              hash: 59543bf6b8b1faf2914be1ff2302982c0d269b33
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-13.3.1
+          title: "'Add SystemMaxUse for journald.conf'"
+          date: 2022-05-05T09:33:37.847Z
+  version: 11.3.6
+  title: "'Update open-balena-base to 13.3.1'"
+  date: 2022-05-05T10:26:17.090Z
+- commits:
+    - subject: Update open-balena-base to 13.3.0
+      hash: 1674a6f77866c82b4d47d76f5b67f993652abafd
+      body: |
+        Update open-balena-base from 13.2.3 to 13.3.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update nodejs to 16.15.0 and npm to 8.8.0
+              hash: a7454fb62d845e444e3e798c577a264979da574a
+              body: ""
+              footer:
+                Change-type: minor
+                change-type: minor
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-13.3.0
+          title: "'Update nodejs to 16.15.0 and npm to 8.8.0'"
+          date: 2022-05-02T16:14:06.385Z
+  version: 11.3.5
+  title: "'Update open-balena-base to 13.3.0'"
+  date: 2022-05-03T08:04:11.414Z
+- commits:
+    - subject: Allow the client-connect/disconnect script to fail if necessary
+      hash: fad3c089d5d53be0fe3fdbe5cb5524dfcd3e99df
+      body: |
+        These curl commands should never fail as they're talking to the local
+        nodejs instance, but if for some reason they do it's better to reject
+        the client than pretend things are ok because they're really not
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.3.4
+  title: "'Allow the client-connect/disconnect script to fail if necessary'"
+  date: 2022-04-28T10:24:46.490Z
+- commits:
+    - subject: Limit batching connectivity updates to avoid Payload Too Large errors
+      hash: f51610321637c05ed962425b7cbfd93ed268c76a
+      body: ""
+      footer:
+        Connects-to: "#224"
+        connects-to: "#224"
+        Change-type: patch
+        change-type: patch
+      author: Thodoris Greasidis
+      nested: []
+  version: 11.3.3
+  title: "'Limit batching connectivity updates to avoid Payload Too Large errors'"
+  date: 2022-04-25T18:06:04.865Z
+- commits:
+    - subject: Avoid passing an unnecessary `event` property from the openvpn scripts
+      hash: 7239dcb5aa53f53cc7ce07c340999ed58cffbf41
+      body: |
+        It gets ignored anyway so we can save some processing time by removing
+        it altogether
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+    - subject: Pass VPN_API_PORT into openvpn scripts to avoid the need to source env
+      hash: a652b6b20039639c52b5164c1025b41576551096
+      body: |
+        This helps to simplify the openvpn scripts and avoid the need to read
+        and load in a bunch of unnecessary env vars which will hopefully make
+        the scripts faster and lighter weight
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+    - subject: Remove `CURL_EXTRA_FLAGS` concept since requests go to a local node now
+      hash: 5ad7b42c1fdf12b3f7ce0a826dc9b35c6b9b2e75
+      body: |
+        These made sense when the requests were sent directly to the api but
+        they are now handled by a local nodejs server and as such it makes
+        sense that any retry logic we would want should live in there
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.3.2
+  title: "'Simplify openvpn scripts'"
+  date: 2022-04-25T17:54:18.322Z
+- commits:
+    - subject: Remove `BALENA_` prefix from `VPN_GATEWAY` env var
+      hash: d74712b3febae36572088fa7e41f91f0f777115b
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.3.1
+  title: "'Remove  prefix from  env var'"
+  date: 2022-04-25T13:50:41.278Z
+- commits:
+    - subject: Use a plugin to handle auth asynchronously rather than synchronously
+      hash: 2fabc1a43a8bf954330483cd61bf27b23ed1309c
+      body: |
+        Using an auth-user-pass-verify script it is executed synchronously and
+        will block all VPN traffic for the duration which is far from ideal
+        when there are many clients authenticating concurrently and it also
+        needs to authenticate against the remote api server so switching to a
+        plugin that allows async authorization should provide large benefits
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 11.3.0
+  title: "'Use a plugin to handle auth asynchronously rather than synchronously'"
+  date: 2022-04-25T13:36:11.482Z
+- commits:
+    - subject: Use nodejs source map support rather than source-map-support module
+      hash: f083f2cbff219482ca76567bdec6086f455746e9
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.2.7
+  title: "'Use nodejs source map support rather than source-map-support module'"
+  date: 2022-04-14T11:21:41.966Z
+- commits:
+    - subject: Update dependencies
+      hash: d67675b1c3275ff6747a07ee682826e4c25b90bd
+      body: |
+        Update @balena/node-metrics-gatherer from 5.7.5 to 6.0.3
+        Update pinejs-client-request from 7.3.4 to 7.3.5
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Add an `aggregateRequestWorker` that must be called on cluster workers
+              hash: 76b12cdc4d8316e8e976959fac06e5513e031158
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-6.0.3
+          title: "'Add an  that must be called on cluster workers'"
+          date: 2022-04-07T13:53:03.644Z
+        - commits:
+            - subject: Use async/await for aggregateRequestHandler
+              hash: acd097834fbee00ae4f77582b8be14bc7348f5f4
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-6.0.2
+          title: "'Use async/await for aggregateRequestHandler'"
+          date: 2022-04-07T13:23:55.631Z
+        - commits:
+            - subject: Add missing await
+              hash: 97ed30f9cc16c2350e3c0233d5024e8a70db9431
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Josh Bowling <josh@balena.io>
+                signed-off-by: Josh Bowling <josh@balena.io>
+              author: Josh Bowling
+          version: node-metrics-gatherer-6.0.1
+          title: "'Add missing await'"
+          date: 2022-04-06T02:08:06.136Z
+        - commits:
+            - subject: Update prom-client to 14.x
+              hash: 81a8d36fa6c62c5dfec892a4a0c17f8596bd5873
+              body: ""
+              footer:
+                Change-type: major
+                change-type: major
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-6.0.0
+          title: "'Update prom-client to 14.x'"
+          date: 2022-04-05T14:58:33.322Z
+        - commits:
+            - subject: Update dependencies
+              hash: 0a8aefe639904a36cf3608f6aebc8a2c7bd9a25b
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-5.7.6
+          title: "'Update dependencies'"
+          date: 2022-04-05T14:43:06.093Z
+        - commits:
+            - subject: Update dependencies
+              hash: b972f9bba9510ebe4b4a4e80359f6bad178d61b8
+              body: |
+                Update pinejs-client-core from 6.10.0 to 6.10.2
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested:
+                - commits:
+                    - subject: Update dependencies
+                      hash: edc7575ac0976037506deb076d034e7cf08ce5bb
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                    - subject: Remove circleci
+                      hash: 59c5a36292a80149b305d83a4d22b4d2dbe3001d
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                  version: pinejs-client-js-6.10.2
+                  title: "'Remove circleci/update deps'"
+                  date: 2022-04-08T13:22:23.848Z
+                - commits:
+                    - subject: Do not await the _request() result to allow enhanced promises
+                        downstream
+                      hash: a209138f928809869d68e05cdcea4c2bf0d1fac1
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                        Signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+                        signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+                      author: Thodoris Greasidis
+                  version: pinejs-client-js-6.10.1
+                  title: "'Avoid modifying the resulting promise when retries are not used'"
+                  date: 2022-02-08T23:33:07.778Z
+            - subject: Remove circleci
+              hash: 26c3fe11664ccd1d2cf61a8183580e3cd58e5159
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested: []
+          version: pinejs-client-request-7.3.5
+          title: "'Remove circleci/update deps'"
+          date: 2022-04-08T13:43:09.450Z
+  version: 11.2.6
+  title: "'Update dependencies'"
+  date: 2022-04-14T10:49:04.456Z
+- commits:
+    - subject: Update open-balena-base to 13.2.1 Update open-balena-base from 13.2.1
+        to 13.2.3
+      hash: d5072994f324e0e456b1edb37a9ce58c9647101d
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 11.2.5
+  title: "'Update open-balena-base'"
+  date: 2022-04-08T19:43:57.659Z
+- commits:
+    - subject: Use Sentry.withScope instead of Sentry.configureScope as it fits better
+      hash: 1ee927985bf98fda1e3ead4d76a76dc758874f08
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.2.4
+  title: "'Use Sentry.withScope instead of Sentry.configureScope as it fits better'"
+  date: 2022-03-24T16:17:00.534Z
+- commits:
+    - subject: Update dependencies
+      hash: 387a47a016153e3d9ffec0a49ef67e12f8deb913
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.2.3
+  title: "'Update dependencies'"
+  date: 2022-03-24T14:38:25.763Z
+- commits:
+    - subject: "CircleCI: Remove docker layer caching"
+      hash: 8a1d469d9e638b167440ca0584193cf7e178f8c1
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.2.2
+  title: "'CircleCI: Remove docker layer caching'"
+  date: 2022-03-22T14:58:50.526Z
+- commits:
+    - subject: Update open-balena-base to 13.2.1
+      hash: 2018a752f0d531b192bf40c32587bcd946ca8f67
+      body: |
+        Update open-balena-base from 13.2.0 to 13.2.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update nodejs to 16.14.2 and npm to 8.5.5
+              hash: 165c44a52b291b9c335d3fe139d82ff0c99a5e96
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-13.2.1
+          title: "'Update nodejs to 16.14.2 and npm to 8.5.5'"
+          date: 2022-03-21T14:38:46.073Z
+  version: 11.2.1
+  title: "'Update open-balena-base to 13.2.1'"
+  date: 2022-03-21T16:55:08.775Z
+- commits:
     - subject: VPN connection draining
       hash: cb9a339620c08d805fa655166a5eb23a7057cbe4
       body: |

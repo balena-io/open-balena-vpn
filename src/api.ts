@@ -19,6 +19,7 @@ import { metrics } from '@balena/node-metrics-gatherer';
 import * as Bluebird from 'bluebird';
 import * as compression from 'compression';
 import * as express from 'express';
+import * as memoize from 'memoizee';
 import * as morgan from 'morgan';
 
 import {
@@ -28,21 +29,41 @@ import {
 	Metrics,
 	pooledRequest,
 } from './utils';
-import { TRUST_PROXY } from './utils/config';
+import {
+	BALENA_API_HOST,
+	TRUST_PROXY,
+	VPN_AUTH_CACHE_TIMEOUT,
+} from './utils/config';
 import { Sentry } from './utils/errors';
 import { hasDurationData, isTrusted } from './utils/openvpn';
-
-const BALENA_API_HOST = process.env.BALENA_API_HOST!;
 
 // Private endpoints should use the `fromLocalHost` middleware.
 const fromLocalHost: express.RequestHandler = (req, res, next) => {
 	// '::ffff:127.0.0.1' is the ipv4 mapped ipv6 address and ::1 is the ipv6 loopback
 	if (!['127.0.0.1', '::ffff:127.0.0.1', '::1'].includes(req.ip)) {
-		return res.sendStatus(401);
+		return res.status(401).end();
 	}
 
 	next();
 };
+
+const checkDeviceAuth = memoize(
+	async (username: string, password: string) => {
+		const { statusCode } = await pooledRequest.get({
+			url: `https://${BALENA_API_HOST}/services/vpn/auth/${username}`,
+			headers: { Authorization: `Bearer ${password}` },
+		});
+		if ([200, 401, 403].includes(statusCode)) {
+			return statusCode;
+		}
+		throw new Error(`Unexpected status code from the API: ${statusCode}`);
+	},
+	{
+		maxAge: VPN_AUTH_CACHE_TIMEOUT,
+		primitive: true,
+		promise: true,
+	},
+);
 
 export const apiFactory = (serviceId: number) => {
 	const api = express.Router();
@@ -55,8 +76,11 @@ export const apiFactory = (serviceId: number) => {
 
 	api.post('/api/v2/:worker/clients/', fromLocalHost, (req, res) => {
 		if (!isTrusted(req.body)) {
-			return res.sendStatus(400);
+			return res.status(400).end();
 		}
+		// Immediately respond to minimize time in the client-connect script
+		res.status(200).end();
+
 		metrics.inc(Metrics.OnlineDevices);
 		metrics.inc(Metrics.TotalDevices);
 
@@ -68,27 +92,25 @@ export const apiFactory = (serviceId: number) => {
 
 		workerMap[uuid] = workerId;
 		clients.setConnected(uuid, serviceId, true, logger);
-		res.send('OK');
 	});
 
 	api.post('/api/v1/auth/', fromLocalHost, async function (req, res) {
 		if (req.body.username == null) {
 			logger.info('AUTH FAIL: UUID not specified.');
-			return res.sendStatus(400);
+			return res.status(400).end();
 		}
 
 		if (req.body.password == null) {
 			logger.info('AUTH FAIL: API Key not specified.');
-			return res.sendStatus(400);
+			return res.status(400).end();
 		}
 
 		try {
-			const response = await pooledRequest.get({
-				url: `https://${BALENA_API_HOST}/services/vpn/auth/${req.body.username}`,
-				timeout: 30000,
-				headers: { Authorization: `Bearer ${req.body.password}` },
-			});
-			if (response.statusCode === 200) {
+			const statusCode = await checkDeviceAuth(
+				req.body.username,
+				req.body.password,
+			);
+			if (statusCode === 200) {
 				return res.send('OK');
 			} else {
 				logger.info(
@@ -98,17 +120,17 @@ export const apiFactory = (serviceId: number) => {
 				metrics.inc(Metrics.AuthFailuresByUuid, undefined, {
 					device_uuid: req.body.common_name,
 				});
-				return res.sendStatus(401);
+				return res.status(401).end();
 			}
 		} catch (err) {
 			captureException(err, 'api-auth-error', { req });
-			res.sendStatus(401);
+			res.status(401).end();
 		}
 	});
 
 	api.delete('/api/v2/:worker/clients/', fromLocalHost, (req, res) => {
 		if (!isTrusted(req.body)) {
-			return res.sendStatus(400);
+			return res.status(400).end();
 		}
 
 		if (hasDurationData(req.body)) {
@@ -127,14 +149,15 @@ export const apiFactory = (serviceId: number) => {
 				'openvpn-oos-event',
 				{ tags: { uuid }, req },
 			);
-			return res.sendStatus(400);
+			return res.status(400).end();
 		}
+		res.status(200).end();
+
 		delete workerMap[uuid];
 
 		metrics.dec(Metrics.OnlineDevices);
 
 		clients.setConnected(uuid, serviceId, false, logger);
-		res.send('OK');
 	});
 
 	return api;

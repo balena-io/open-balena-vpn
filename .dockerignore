@@ -1,5 +1,6 @@
 .*
 automation
+auth/target
 build
 config/env
 Dockerfile

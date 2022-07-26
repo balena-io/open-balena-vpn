@@ -25,15 +25,20 @@
 // Reset does not happen by actually resending all the events,
 // the API has a special endpoint that first sets all clients as offline.
 
-import { IncomingMessage } from 'http';
+import * as _ from 'lodash';
 import { setTimeout } from 'timers/promises';
 import { Logger } from 'winston';
 
-import { apiKey, captureException } from './index';
-import { request } from './request';
+import { captureException } from './index';
+import { request, REQUEST_TIMEOUT, Response } from './request';
+import { BALENA_API_HOST, intVar, VPN_SERVICE_API_KEY } from './config';
 
-const BALENA_API_HOST = process.env.BALENA_API_HOST!;
-const REQUEST_TIMEOUT = 60000;
+// As of writing this, using a chunk of 8000 62-char UUIDs results a content-length
+// that is bellow the 512KiB threshold that would trigger a 413 http error.
+const API_DEVICE_STATE_POST_BATCH_SIZE = intVar(
+	'API_DEVICE_STATE_POST_BATCH_SIZE',
+	8000,
+);
 
 interface DeviceStateTracker {
 	currentConnected?: boolean;
@@ -50,45 +55,49 @@ export const setConnected = (() => {
 		connected: boolean,
 		logger: Logger,
 	) => {
-		try {
-			if (uuids.length === 0) {
-				return;
-			}
-			const eventType = connected ? 'connect' : 'disconnect';
-			const response: IncomingMessage = await request
-				.post({
-					url: `https://${BALENA_API_HOST}/services/vpn/client-${eventType}`,
-					timeout: REQUEST_TIMEOUT,
-					json: true,
-					body: {
-						serviceId,
-						uuids,
-						connected,
-					},
-					headers: { Authorization: `Bearer ${apiKey}` },
-				})
-				.promise()
-				.timeout(REQUEST_TIMEOUT);
-			if (response.statusCode !== 200) {
-				throw new Error(
-					`Status code was '${response.statusCode}', expected '200'`,
-				);
-			}
-			// Update the current state on success
-			for (const uuid of uuids) {
-				deviceStates[uuid].currentConnected = connected;
-				logger.debug(
-					`successfully updated state for device: uuid=${uuid} connected=${connected}`,
-				);
-			}
+		if (uuids.length === 0) {
 			return;
-		} catch (err) {
-			captureException(err, 'device-state-update-error');
-			for (const uuid of uuids) {
-				// If we failed then add the uuids back into the list of pending updates
-				pendingUpdates.add(uuid);
-			}
 		}
+		const eventType = connected ? 'connect' : 'disconnect';
+		const uuidChunks = _.chunk(uuids, API_DEVICE_STATE_POST_BATCH_SIZE);
+		await Promise.allSettled(
+			uuidChunks.map(async (uuidChunk) => {
+				try {
+					const response: Response = await request
+						.post({
+							url: `https://${BALENA_API_HOST}/services/vpn/client-${eventType}`,
+							json: true,
+							body: {
+								serviceId,
+								uuids: uuidChunk,
+								connected,
+							},
+							headers: { Authorization: `Bearer ${VPN_SERVICE_API_KEY}` },
+						})
+						.promise()
+						.timeout(REQUEST_TIMEOUT);
+					if (response.statusCode !== 200) {
+						throw new Error(
+							`Status code was '${response.statusCode}', expected '200'`,
+						);
+					}
+					// Update the current state on success
+					for (const uuid of uuidChunk) {
+						deviceStates[uuid].currentConnected = connected;
+						logger.debug(
+							`successfully updated state for device: uuid=${uuid} connected=${connected}`,
+						);
+					}
+					return;
+				} catch (err) {
+					captureException(err, 'device-state-update-error');
+					for (const uuid of uuidChunk) {
+						// If we failed then add the uuids back into the list of pending updates
+						pendingUpdates.add(uuid);
+					}
+				}
+			}),
+		);
 	};
 
 	let currentlyReporting = false;

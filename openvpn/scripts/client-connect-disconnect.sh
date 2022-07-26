@@ -15,17 +15,22 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# WARNING: if this script fails openvpn interprets it as authentication failure
-set -o errexit
-
 VPN_INSTANCE_ID=$1
-if [ -f /usr/src/app/config/env ]; then
-	source /usr/src/app/config/env
-fi
+VPN_API_PORT=$2
 
-curl -s -X POST $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF || true
+if [[ -z "${bytes_received}" ]]; then
+	curl -s -X POST -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF &
 {
-	"event": "client-connect",
 	"common_name": "$common_name"
 }
 EOF
+else
+	curl -s -X DELETE -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF &
+{
+	"common_name": "$common_name",
+	"bytes_received": $bytes_received,
+	"bytes_sent": $bytes_sent,
+	"time_duration": $time_duration
+}
+EOF
+fi

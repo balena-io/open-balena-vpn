@@ -18,10 +18,13 @@
 import { Agent } from 'https';
 import * as _ from 'lodash';
 import * as rp from 'request-promise';
+export type { Response } from 'request';
 
+export const REQUEST_TIMEOUT = 59000;
 export const request = rp.defaults({
 	resolveWithFullResponse: true,
 	simple: false,
+	timeout: REQUEST_TIMEOUT,
 });
 
 let maxSockets = 20;

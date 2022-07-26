@@ -1,6 +1,4 @@
-#!/bin/bash
-
-# Copyright (C) 2014 Balena Ltd.
+# Copyright (C) 2022 Balena Ltd.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published
@@ -15,17 +13,20 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-VPN_INSTANCE_ID=$1
-if [ -f /usr/src/app/config/env ]; then
-	source /usr/src/app/config/env
-fi
+[Unit]
+Requires=confd.service
+After=confd.service
 
-curl -s -X DELETE $CURL_EXTRA_FLAGS -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF || true
-{
-	"event": "client-disconnect",
-	"common_name": "$common_name",
-	"bytes_received": $bytes_received,
-	"bytes_sent": $bytes_sent,
-	"time_duration": $time_duration
-}
-EOF
+[Service]
+# Increase the number of sockets haproxy is able to use
+LimitNOFILE=1048576
+# Avoid an issue with failing to mount namespaces
+BindReadOnlyPaths=
+EnvironmentFile=/usr/src/app/config/env
+# wait for open-balena-vpn master to exit
+ExecStop=-/bin/bash -c 'set -x; while curl -sfo/dev/null localhost:8080/ping; do sleep $(( (RANDOM % 3) + 3 ))s; done;'
+TimeoutStopSec={{ if getenv "DEFAULT_SIGTERM_TIMEOUT" }}{{ getenv "DEFAULT_SIGTERM_TIMEOUT" }}{{ else }}120{{ end }}
+
+[Install]
+WantedBy=
+WantedBy=basic.target

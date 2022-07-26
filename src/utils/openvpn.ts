@@ -21,7 +21,12 @@ import * as es from 'event-stream';
 import { EventEmitter } from 'eventemitter3';
 import * as fs from 'fs';
 import * as net from 'net';
-import VpnConnector = require('telnet-openvpn');
+const Telnet =
+	// This weird import is because telnet-client uses `export =` but the typings use `export default`
+	// tslint:disable-next-line:no-var-requires
+	require('telnet-client') as typeof import('telnet-client').default;
+
+import { VPN_API_PORT } from './config';
 import { Netmask } from './netmask';
 
 const parsePossibleInt = (s: string): number | string => {
@@ -121,8 +126,8 @@ export declare interface VpnManager {
 
 export class VpnManager extends EventEmitter {
 	private process?: ChildProcess;
-	private readonly connector = new VpnConnector();
-	private buf: string | undefined;
+	private readonly connector = new Telnet();
+	private buf: string = '';
 	private readonly pidFile: string;
 
 	constructor(
@@ -136,9 +141,9 @@ export class VpnManager extends EventEmitter {
 		super();
 		this.pidFile = `/var/run/openvpn/server-${this.instanceId}.pid`;
 		// proxy `data` events from connector, splitting at newlines
-		this.connector.connection.on('data', (data) => {
-			const lines = ((this.buf || '') + data.toString()).split(/\r?\n/);
-			this.buf = lines.pop();
+		this.connector.on('data', (data) => {
+			const lines = (this.buf + data.toString()).split(/\r?\n/);
+			this.buf = lines.pop()!;
 			for (const line of lines) {
 				this.emit('manager:data', line.trim());
 			}
@@ -185,20 +190,22 @@ export class VpnManager extends EventEmitter {
 			this.subnet.mask,
 			'--push',
 			`route ${gateway}`,
-			'--auth-user-pass-verify',
-			`scripts/auth.sh ${this.instanceId}`,
-			'via-env',
-			'--client-connect',
-			`scripts/client-connect.sh ${this.instanceId}`,
-			'--client-disconnect',
-			`scripts/client-disconnect.sh ${this.instanceId}`,
+			'--plugin',
+			'/etc/openvpn/plugins/openvpn-plugin-connect-disconnect-script.so',
+			'/etc/openvpn/scripts/client-connect-disconnect.sh',
+			`${this.instanceId}`,
+			`${VPN_API_PORT}`,
+			'--plugin',
+			'/etc/openvpn/plugins/openvpn-plugin-auth-script.so',
+			'/etc/openvpn/scripts/auth',
+			`${VPN_API_PORT}`,
 		];
 	}
 
 	private dataHandler = (data: string) => {
 		if (data.startsWith('>LOG:')) {
 			// >LOG:{timestamp},{level},{message}
-			const logData = data.substr(5);
+			const logData = data.slice(5);
 			const [, level, ...message] = logData.split(',');
 			this.emit(
 				'log',
@@ -209,32 +216,33 @@ export class VpnManager extends EventEmitter {
 			// >CLIENT:{event},{clientId},{...args}
 			// >CLIENT:ENV,{key}={value}
 			// >CLIENT:END
-			const eventData = data.substr('>CLIENT:'.length);
+			const eventData = data.slice('>CLIENT:'.length);
 			for (const eventType of [
-				'connect',
-				'address',
-				'established',
-				'disconnect',
+				'ESTABLISHED',
+				'CONNECT',
+				'ADDRESS',
+				'DISCONNECT',
 			]) {
-				if (eventData.startsWith(eventType.toUpperCase())) {
+				if (eventData.startsWith(eventType)) {
 					const [clientId, ...eventArgs] = eventData
-						.substr(eventType.length + 1)
+						.slice(eventType.length + 1)
 						.split(',');
 					this.off('manager:data', this.dataHandler);
 					this.on(
 						'manager:data',
 						this.clientEventEmitterFactory(
-							eventType,
+							eventType.toLowerCase(),
 							parseInt(clientId, 10),
 							eventArgs,
 						),
 					);
+					return;
 				}
 			}
 		} else if (data.startsWith('>BYTECOUNT_CLI:')) {
 			// >BYTECOUNT_CLI:{clientId},{bytesRx},{bytesTx}
 			const [clientId, bytesReceived, bytesSent] = data
-				.substr('>BYTECOUNT_CLI:'.length)
+				.slice('>BYTECOUNT_CLI:'.length)
 				.split(',');
 			this.emit('client:bytecount', parseInt(clientId, 10), {
 				bytes_received: parseInt(bytesReceived, 10),
@@ -252,7 +260,7 @@ export class VpnManager extends EventEmitter {
 		const emitter = (data: string) => {
 			if (data.startsWith('>CLIENT:ENV') && data !== '>CLIENT:ENV,END') {
 				// >CLIENT:ENV,key=val
-				const envData = data.substr('>CLIENT:ENV'.length + 1);
+				const envData = data.slice('>CLIENT:ENV'.length + 1);
 				const [key, val] = envData.split('=');
 				env[key] = parsePossibleInt(val);
 			} else {
@@ -288,7 +296,7 @@ export class VpnManager extends EventEmitter {
 		const kill = (signal?: ValueOf<typeof signals>) =>
 			spawn('/bin/kill', signal != null ? [`-${signal}`, pid] : [pid]);
 
-		return new Promise<void>((resolve, reject) => {
+		return await new Promise<void>((resolve, reject) => {
 			const start = Date.now();
 			const waitForDeath = (code?: number) => {
 				if (code !== 0) {
@@ -372,33 +380,37 @@ export class VpnManager extends EventEmitter {
 
 	public async connect() {
 		await this.connector.connect({
+			host: '127.0.0.1',
 			port: this.mgtPort,
 			shellPrompt: '',
+			negotiationMandatory: true,
+			ors: '\r\n',
+			sendTimeout: 3000,
 		});
 		this.emit('manager:connect');
 	}
 
 	public async exec(command: string) {
-		await this.connector.exec(command);
+		await this.connector.send(command);
 	}
 
-	public enableLogging() {
-		return this.exec('log on all');
+	public async enableLogging() {
+		await this.exec('log on all');
 	}
 
-	public enableBytecountReporting(interval: number) {
-		return this.exec(`bytecount ${interval}`);
+	public async enableBytecountReporting(interval: number) {
+		await this.exec(`bytecount ${interval}`);
 	}
 
-	public releaseHold() {
-		return this.exec('hold release');
+	public async releaseHold() {
+		await this.exec('hold release');
 	}
 
-	public getStatus() {
-		return this.exec('status');
+	public async getStatus() {
+		await this.exec('status');
 	}
 
-	public killClient(cn: string) {
-		return this.exec(`kill ${cn}`);
+	public async killClient(cn: string) {
+		await this.exec(`kill ${cn}`);
 	}
 }
