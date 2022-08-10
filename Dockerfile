@@ -91,7 +91,7 @@ RUN PROCESS_EXPORTER_TGZ="/tmp/process_exporter.tar.gz" set -x \
     && rm "${PROCESS_EXPORTER_TGZ}"
 
 COPY package.json package-lock.json /usr/src/app/
-RUN npm ci --unsafe-perm --production && npm cache clean --force 2>/dev/null
+RUN HUSKY=0 npm ci --production && npm cache clean --force
 
 COPY --from=auth-plugin /usr/src/app/auth-script-openvpn/openvpn-plugin-auth-script.so /etc/openvpn/plugins/
 COPY --from=builder /usr/src/app/build /usr/src/app/build

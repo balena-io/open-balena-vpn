@@ -12,7 +12,8 @@
     "lint:fix": "balena-lint --fix src/ test/ typings/",
     "pretest-unit": "npm run lint",
     "test-unit": "mocha test/index.ts",
-    "test": "docker build -t test-balena-vpn . && IMAGE_NAME=test-balena-vpn ./automation/test.sh"
+    "test": "docker build -t test-balena-vpn . && IMAGE_NAME=test-balena-vpn ./automation/test.sh",
+    "prepare": "[ \"$HUSKY\" = 0 ] || husky install"
   },
   "dependencies": {
     "@balena/node-metrics-gatherer": "^6.0.3",
