@@ -1,4 +1,16 @@
 - commits:
+    - subject: Fix Husky hooks not being installed on fresh repo clones
+      hash: b374ce863b9765e0a3fb86bd4aceeed38af59350
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.9.8
+  title: "'Fix Husky hooks not being installed on fresh repo clones'"
+  date: 2022-08-10T16:32:46.746Z
+- commits:
     - subject: Update open-balena-base to 13.4.0
       hash: c5954da2204fd67694298e9599d8f4a8eef85f5a
       body: |
