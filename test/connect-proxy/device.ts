@@ -18,7 +18,7 @@
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as nock from 'nock';
-import { BALENA_API_HOST } from '../../src/utils/config';
+import { BALENA_API_INTERNAL_HOST } from '../../src/utils/config';
 
 import { getDeviceByUUID } from '../../src/utils/device';
 
@@ -47,7 +47,7 @@ beforeEach(function () {
 
 describe('getDeviceByUUID()', function () {
 	beforeEach(function () {
-		nock(`https://${BALENA_API_HOST}`)
+		nock(BALENA_API_INTERNAL_HOST)
 			.get('/v6/device')
 			.query({
 				$select: 'id,is_connected_to_vpn',

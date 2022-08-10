@@ -30,7 +30,7 @@ import { pooledRequest, service, VpnManager } from '../src/utils';
 
 import proxyWorker from '../src/proxy-worker';
 import vpnWorker from '../src/vpn-worker';
-import { BALENA_API_HOST, VPN_API_PORT } from '../src/utils/config';
+import { BALENA_API_INTERNAL_HOST, VPN_API_PORT } from '../src/utils/config';
 
 const vpnHost = process.env.VPN_HOST || '127.0.0.1';
 const vpnPort = process.env.VPN_PORT || '443';
@@ -74,7 +74,7 @@ describe('vpn worker', function () {
 	this.timeout(15 * 1000);
 
 	before(() => {
-		nock(`https://${BALENA_API_HOST}`)
+		nock(BALENA_API_INTERNAL_HOST)
 			.post('/v6/service_instance')
 			.reply(200, { id: _.random(1, 1024) });
 	});
@@ -100,7 +100,7 @@ describe('VPN Events', function () {
 
 	const getEvent = (name: string) =>
 		new Bluebird<string>((resolve) => {
-			nock(`https://${BALENA_API_HOST}`)
+			nock(BALENA_API_INTERNAL_HOST)
 				.post(`/services/vpn/client-${name}`, /"uuids":.*"user2"/g)
 				.reply(200, (_uri: string, body: any) => {
 					resolve(body);
@@ -109,7 +109,7 @@ describe('VPN Events', function () {
 		});
 
 	before(() => {
-		nock(`https://${BALENA_API_HOST}`)
+		nock(BALENA_API_INTERNAL_HOST)
 			.get('/services/vpn/auth/user2')
 			.reply(200, 'OK');
 	});
@@ -165,7 +165,7 @@ describe('VPN proxy', function () {
 	};
 
 	beforeEach(() => {
-		nock(`https://${BALENA_API_HOST}`)
+		nock(BALENA_API_INTERNAL_HOST)
 			.get(/\/services\/vpn\/auth\/user[345]/)
 			.reply(200, 'OK')
 
@@ -176,7 +176,7 @@ describe('VPN proxy', function () {
 
 	describe('web accessible device', () => {
 		beforeEach(() => {
-			nock(`https://${BALENA_API_HOST}`)
+			nock(BALENA_API_INTERNAL_HOST)
 				.get('/v6/device')
 				.query({
 					$select: 'id,is_connected_to_vpn',
@@ -192,7 +192,7 @@ describe('VPN proxy', function () {
 					],
 				});
 
-			nock(`https://${BALENA_API_HOST}`)
+			nock(BALENA_API_INTERNAL_HOST)
 				.post('/v6/device(@id)/canAccess?@id=1', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
@@ -234,7 +234,7 @@ describe('VPN proxy', function () {
 
 	describe('tunnel forwarding', () => {
 		beforeEach(() => {
-			nock(`https://${BALENA_API_HOST}`)
+			nock(BALENA_API_INTERNAL_HOST)
 				.get('/v6/device')
 				.query({
 					$select: 'id,is_connected_to_vpn',
@@ -250,7 +250,7 @@ describe('VPN proxy', function () {
 					],
 				});
 
-			nock(`https://${BALENA_API_HOST}`)
+			nock(BALENA_API_INTERNAL_HOST)
 				.post('/v6/device(@id)/canAccess?@id=2', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
@@ -264,7 +264,7 @@ describe('VPN proxy', function () {
 		});
 
 		it('should refuse to forward via itself', () => {
-			nock(`https://${BALENA_API_HOST}`)
+			nock(BALENA_API_INTERNAL_HOST)
 				.get(
 					'/v6/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
 				)
@@ -284,7 +284,7 @@ describe('VPN proxy', function () {
 		});
 
 		it('should detect forward loops', () => {
-			nock(`https://${BALENA_API_HOST}`)
+			nock(BALENA_API_INTERNAL_HOST)
 				.get(
 					'/v6/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
 				)
@@ -311,7 +311,7 @@ describe('VPN proxy', function () {
 
 	describe('not web accessible device', () => {
 		beforeEach(() => {
-			nock(`https://${BALENA_API_HOST}`)
+			nock(BALENA_API_INTERNAL_HOST)
 				.get('/v6/device')
 				.query({
 					$select: 'id,is_connected_to_vpn',
@@ -329,7 +329,7 @@ describe('VPN proxy', function () {
 		});
 
 		it('should not allow port 8080 without authentication', () => {
-			nock(`https://${BALENA_API_HOST}`)
+			nock(BALENA_API_INTERNAL_HOST)
 				.post('/v6/device(@id)/canAccess?@id=3', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
@@ -351,7 +351,7 @@ describe('VPN proxy', function () {
 		});
 
 		it('should allow port 8080 with authentication', () => {
-			nock(`https://${BALENA_API_HOST}`)
+			nock(BALENA_API_INTERNAL_HOST)
 				.post('/v6/device(@id)/canAccess?@id=3', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})

@@ -19,7 +19,7 @@ import * as chai from 'chai';
 import * as nock from 'nock';
 
 import { service } from '../src/utils';
-import { BALENA_API_HOST } from '../src/utils/config';
+import { BALENA_API_INTERNAL_HOST } from '../src/utils/config';
 
 const { expect } = chai;
 
@@ -27,7 +27,7 @@ const serviceId = 10;
 
 describe('id', () => {
 	before(() => {
-		nock(`https://${BALENA_API_HOST}`)
+		nock(BALENA_API_INTERNAL_HOST)
 			.post('/v6/service_instance')
 			.reply(200, { id: serviceId });
 	});
@@ -47,7 +47,7 @@ describe('sendHeartbeat()', () => {
 	let isAlive = false;
 
 	before(() => {
-		nock(`https://${BALENA_API_HOST}`)
+		nock(BALENA_API_INTERNAL_HOST)
 			.patch(`/v6/service_instance(${serviceId})`)
 			.reply(200, (_uri: string, body: any) => {
 				called++;
