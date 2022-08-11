@@ -30,7 +30,7 @@ import {
 	pooledRequest,
 } from './utils';
 import {
-	BALENA_API_HOST,
+	BALENA_API_INTERNAL_HOST,
 	TRUST_PROXY,
 	VPN_AUTH_CACHE_TIMEOUT,
 } from './utils/config';
@@ -50,7 +50,7 @@ const fromLocalHost: express.RequestHandler = (req, res, next) => {
 const checkDeviceAuth = memoize(
 	async (username: string, password: string) => {
 		const { statusCode } = await pooledRequest.get({
-			url: `https://${BALENA_API_HOST}/services/vpn/auth/${username}`,
+			url: `${BALENA_API_INTERNAL_HOST}/services/vpn/auth/${username}`,
 			headers: { Authorization: `Bearer ${password}` },
 		});
 		if ([200, 401, 403].includes(statusCode)) {

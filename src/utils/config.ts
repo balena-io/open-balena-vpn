@@ -27,6 +27,37 @@ const requiredVar = (varName: string): string => {
 	return s;
 };
 
+export function optionalVar(varName: string, defaultValue: string): string;
+export function optionalVar(
+	varName: string,
+	defaultValue?: string,
+): string | undefined;
+export function optionalVar(
+	varName: string,
+	defaultValue?: string,
+): string | undefined {
+	return process.env[varName] || defaultValue;
+}
+
+const requiredMultiVar = (...varNames: string[]): string => {
+	let s: string | undefined;
+	for (const varName of varNames) {
+		s = optionalVar(varName);
+		if (s != null) {
+			break;
+		}
+	}
+	if (s == null) {
+		process.exitCode = 1;
+		throw new Error(
+			`Must have at least one of the following environment variables: '${varNames.join(
+				"', '",
+			)}'`,
+		);
+	}
+	return s;
+};
+
 // Code copied from our open source API
 // https://github.com/balena-io/open-balena-api/blob/e9abe8f959c59bbeefcadbfdc59642af565b1427/src/lib/config.ts
 export function intVar(varName: string): number;
@@ -125,7 +156,15 @@ export const VPN_BASE_MANAGEMENT_PORT = intVar('VPN_BASE_MANAGEMENT_PORT');
 // disable bytecount reporting by default
 export const VPN_BYTECOUNT_INTERVAL = intVar('VPN_BYTECOUNT_INTERVAL', 0);
 
-export const BALENA_API_HOST = requiredVar('BALENA_API_HOST');
+const apiHostForInternalUse = requiredMultiVar(
+	'BALENA_API_INTERNAL_HOST',
+	'BALENA_API_HOST',
+);
+// If we're using a dedicated internal host then we use http, if it's a shared external one it needs to be https
+export const BALENA_API_INTERNAL_HOST =
+	apiHostForInternalUse === optionalVar('BALENA_API_INTERNAL_HOST')
+		? `http://${apiHostForInternalUse}`
+		: `https://${apiHostForInternalUse}`;
 
 export const VPN_SERVICE_API_KEY = Buffer.from(
 	requiredVar('VPN_SERVICE_API_KEY'),

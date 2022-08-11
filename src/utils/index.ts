@@ -18,14 +18,14 @@
 import * as winston from 'winston';
 
 import { PinejsClientRequest } from 'pinejs-client-request';
-import { BALENA_API_HOST } from './config';
+import { BALENA_API_INTERNAL_HOST } from './config';
 
 export { version as VERSION } from '../../package.json';
 
 export { captureException } from './errors';
 
 export const balenaApi = new PinejsClientRequest({
-	apiPrefix: `https://${BALENA_API_HOST}/v6/`,
+	apiPrefix: `${BALENA_API_INTERNAL_HOST}/v6/`,
 });
 
 export const getLogger = (
