@@ -1,4 +1,16 @@
 - commits:
+    - subject: Allow specifying an internal hostname for balena-api comms
+      hash: d52c8bd6e447d5d410fb91513a3c3135294a3b8d
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 11.10.0
+  title: "'Allow specifying an internal hostname for balena-api comms'"
+  date: 2022-08-11T12:21:04.183Z
+- commits:
     - subject: Fix Husky hooks not being installed on fresh repo clones
       hash: b374ce863b9765e0a3fb86bd4aceeed38af59350
       body: ""
