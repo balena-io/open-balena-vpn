@@ -1,4 +1,16 @@
 - commits:
+    - subject: Fix env var name
+      hash: 4a9a4f8cadf813a5937bc2e1b13ed8f8f31b3b9b
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.10.1
+  title: "'Fix env var name'"
+  date: 2022-08-11T14:46:54.344Z
+- commits:
     - subject: Allow specifying an internal hostname for balena-api comms
       hash: d52c8bd6e447d5d410fb91513a3c3135294a3b8d
       body: ""
