@@ -31,10 +31,11 @@ import { pooledRequest, service, VpnManager } from '../src/utils';
 import proxyWorker from '../src/proxy-worker';
 import vpnWorker from '../src/vpn-worker';
 import { BALENA_API_INTERNAL_HOST, VPN_API_PORT } from '../src/utils/config';
+import { optionalVar } from '@balena/env-parsing';
 
-const vpnHost = process.env.VPN_HOST || '127.0.0.1';
-const vpnPort = process.env.VPN_PORT || '443';
-const caCertPath = process.env.CA_CERT_PATH || '/etc/openvpn/ca.crt';
+const vpnHost = optionalVar('VPN_HOST', '127.0.0.1');
+const vpnPort = optionalVar('VPN_PORT', '443');
+const caCertPath = optionalVar('CA_CERT_PATH', '/etc/openvpn/ca.crt');
 
 let instance: typeof service;
 let manager: VpnManager;

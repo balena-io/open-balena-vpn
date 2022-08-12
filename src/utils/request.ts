@@ -15,6 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { intVar } from '@balena/env-parsing';
 import { Agent } from 'https';
 import * as _ from 'lodash';
 import * as rp from 'request-promise';
@@ -27,11 +28,7 @@ export const request = rp.defaults({
 	timeout: REQUEST_TIMEOUT,
 });
 
-let maxSockets = 20;
-const { MAX_API_POST_WORKERS } = process.env;
-if (MAX_API_POST_WORKERS != null) {
-	maxSockets = parseInt(MAX_API_POST_WORKERS, 10);
-}
+const maxSockets = intVar('MAX_API_POST_WORKERS', 20);
 
 const pool = new Agent({
 	maxSockets,

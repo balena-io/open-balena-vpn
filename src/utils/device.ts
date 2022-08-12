@@ -15,13 +15,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { optionalVar } from '@balena/env-parsing';
 import * as _ from 'lodash';
 import * as memoize from 'memoizee';
 
 import { balenaApi } from '.';
 import { APIError, captureException } from './errors';
 
-const { VPN_GUEST_API_KEY } = process.env;
+const VPN_GUEST_API_KEY = optionalVar('VPN_GUEST_API_KEY');
 
 const authHeader = (auth?: Buffer): { Authorization?: string } => {
 	const headers: { Authorization?: string } = {};
