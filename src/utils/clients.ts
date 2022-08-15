@@ -32,17 +32,10 @@ import { Logger } from 'winston';
 import { captureException } from './index';
 import { request, REQUEST_TIMEOUT, Response } from './request';
 import {
+	API_DEVICE_STATE_POST_BATCH_SIZE,
 	BALENA_API_INTERNAL_HOST,
-	intVar,
 	VPN_SERVICE_API_KEY,
 } from './config';
-
-// As of writing this, using a chunk of 8000 62-char UUIDs results a content-length
-// that is bellow the 512KiB threshold that would trigger a 413 http error.
-const API_DEVICE_STATE_POST_BATCH_SIZE = intVar(
-	'API_DEVICE_STATE_POST_BATCH_SIZE',
-	8000,
-);
 
 interface DeviceStateTracker {
 	currentConnected?: boolean;

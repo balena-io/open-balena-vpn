@@ -34,6 +34,7 @@ import {
 
 import proxyWorker from './proxy-worker';
 import vpnWorker from './vpn-worker';
+import { intVar } from '@balena/env-parsing';
 
 const masterLogger = getLogger('master');
 
@@ -215,8 +216,8 @@ if (cluster.isWorker) {
 	// tslint:disable-next-line:no-unused-expression-chai
 	new prometheus.AggregatorRegistry();
 
-	const instanceId = parseInt(process.env.WORKER_ID!, 10);
-	const serviceId = parseInt(process.env.SERVICE_ID!, 10);
+	const instanceId = intVar('WORKER_ID');
+	const serviceId = intVar('SERVICE_ID');
 	getLogger('worker', serviceId, instanceId).notice(
 		`process started with pid=${process.pid}`,
 	);

@@ -15,6 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import { optionalVar } from '@balena/env-parsing';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
 import * as nock from 'nock';
@@ -26,7 +27,7 @@ const { expect } = chai;
 nock.disableNetConnect();
 
 const VPN_SERVICE_API_KEY = Buffer.from(
-	process.env.VPN_SERVICE_API_KEY || 'test_vpn_string',
+	optionalVar('VPN_SERVICE_API_KEY', 'test_vpn_string'),
 );
 
 before(() => {

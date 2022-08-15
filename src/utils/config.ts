@@ -15,68 +15,18 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import {
+	boolVar,
+	checkInt,
+	intVar,
+	MINUTES,
+	optionalVar,
+	requiredVar,
+	SECONDS,
+	trustProxyVar,
+} from '@balena/env-parsing';
 import * as fs from 'fs';
 import * as os from 'os';
-
-const requiredVar = (varName: string): string => {
-	const s = process.env[varName];
-	if (s == null) {
-		process.exitCode = 1;
-		throw new Error(`Missing environment variable: ${varName}`);
-	}
-	return s;
-};
-
-export function optionalVar(varName: string, defaultValue: string): string;
-export function optionalVar(
-	varName: string,
-	defaultValue?: string,
-): string | undefined;
-export function optionalVar(
-	varName: string,
-	defaultValue?: string,
-): string | undefined {
-	return process.env[varName] || defaultValue;
-}
-
-const requiredMultiVar = (...varNames: string[]): string => {
-	let s: string | undefined;
-	for (const varName of varNames) {
-		s = optionalVar(varName);
-		if (s != null) {
-			break;
-		}
-	}
-	if (s == null) {
-		process.exitCode = 1;
-		throw new Error(
-			`Must have at least one of the following environment variables: '${varNames.join(
-				"', '",
-			)}'`,
-		);
-	}
-	return s;
-};
-
-// Code copied from our open source API
-// https://github.com/balena-io/open-balena-api/blob/e9abe8f959c59bbeefcadbfdc59642af565b1427/src/lib/config.ts
-export function intVar(varName: string): number;
-export function intVar<R>(varName: string, defaultValue: R): number | R;
-export function intVar<R>(varName: string, defaultValue?: R): number | R {
-	if (arguments.length === 1) {
-		requiredVar(varName);
-	}
-
-	const s = process.env[varName];
-	if (s == null) {
-		return defaultValue!;
-	}
-	const i = parseInt(s, 10);
-	if (!Number.isFinite(i)) {
-		throw new Error(`${varName} must be a valid number if set`);
-	}
-	return i;
-}
 
 // resolve number of workers based on number of CPUs assigned to pods or available CPUs
 const getInstanceCount = (varName: string) => {
@@ -85,10 +35,13 @@ const getInstanceCount = (varName: string) => {
 		return instanceCount;
 	}
 	try {
-		instanceCount = parseInt(
+		const maybeInstanceCount = checkInt(
 			fs.readFileSync('/etc/podinfo/cpu_request', 'utf8'),
-			10,
 		);
+		if (maybeInstanceCount == null) {
+			throw new Error('/etc/podinfo/cpu_request was not an integer');
+		}
+		instanceCount = maybeInstanceCount;
 		console.log(`Using pod info core count of: ${instanceCount}`);
 	} catch (err) {
 		instanceCount = os.cpus().length;
@@ -105,41 +58,29 @@ const getIPv4InterfaceInfo = (iface?: string): os.NetworkInterfaceInfo[] => {
 		.filter((ip) => !ip.internal && ip.family === 'IPv4');
 };
 
-const { TRUST_PROXY: trustProxy = 'true' } = process.env;
-let trustProxyValue;
-if (trustProxy === 'true') {
-	// If it's 'true' enable it
-	trustProxyValue = true;
-} else if (trustProxy.includes('.') || trustProxy.includes(':')) {
-	// If it looks like an ip use as-is
-	trustProxyValue = trustProxy;
-} else {
-	const trustProxyNum = parseInt(trustProxy, 10);
-	if (Number.isFinite(trustProxyNum)) {
-		// If it's a number use the number
-		trustProxyValue = trustProxyNum;
-	} else {
-		throw new Error(`Invalid value for 'TRUST_PROXY' of '${trustProxy}'`);
-	}
-}
-export const TRUST_PROXY = trustProxyValue;
+export const TRUST_PROXY = trustProxyVar('TRUST_PROXY', false);
 
 export const VPN_API_PORT = intVar('VPN_API_PORT');
 
 // milliseconds
-export const DEFAULT_SIGTERM_TIMEOUT = intVar('DEFAULT_SIGTERM_TIMEOUT') * 1000;
+export const DEFAULT_SIGTERM_TIMEOUT =
+	intVar('DEFAULT_SIGTERM_TIMEOUT') * SECONDS;
 
 export const VPN_INSTANCE_COUNT = getInstanceCount('VPN_INSTANCE_COUNT');
-export const VPN_VERBOSE_LOGS = process.env.DEFAULT_VERBOSE_LOGS === 'true';
+export const VPN_VERBOSE_LOGS = boolVar('DEFAULT_VERBOSE_LOGS');
 
 export const VPN_SERVICE_ADDRESS = getIPv4InterfaceInfo(
-	process.env.VPN_SERVICE_REGISTER_INTERFACE,
+	optionalVar('VPN_SERVICE_REGISTER_INTERFACE'),
 )?.[0]?.address;
 
-export const { VPN_GATEWAY } = process.env;
+export const VPN_GATEWAY = optionalVar('VPN_GATEWAY');
 const VPN_BASE_SUBNET = requiredVar('VPN_BASE_SUBNET');
 export const [VPN_BASE_IP, netMask] = VPN_BASE_SUBNET.split('/');
-export const VPN_BASE_MASK = parseInt(netMask, 10);
+export const maybeVpnBaseMask = checkInt(netMask);
+if (maybeVpnBaseMask == null) {
+	throw new Error('Invalid VPN_BASE_SUBNET');
+}
+export const VPN_BASE_MASK = maybeVpnBaseMask;
 
 export const VPN_INSTANCE_SUBNET_BITMASK = Math.max(
 	// Clamp the largest subnet as /16 because that's as high as openvpn accepts
@@ -156,10 +97,10 @@ export const VPN_BASE_MANAGEMENT_PORT = intVar('VPN_BASE_MANAGEMENT_PORT');
 // disable bytecount reporting by default
 export const VPN_BYTECOUNT_INTERVAL = intVar('VPN_BYTECOUNT_INTERVAL', 0);
 
-const apiHostForInternalUse = requiredMultiVar(
+const apiHostForInternalUse = requiredVar([
 	'BALENA_API_INTERNAL_HOST',
 	'BALENA_API_HOST',
-);
+]);
 // If we're using a dedicated internal host then we use http, if it's a shared external one it needs to be https
 export const BALENA_API_INTERNAL_HOST =
 	apiHostForInternalUse === optionalVar('BALENA_API_INTERNAL_HOST')
@@ -174,5 +115,12 @@ export const VPN_FORWARD_PROXY_PORT = intVar('VPN_FORWARD_PROXY_PORT');
 
 export const VPN_AUTH_CACHE_TIMEOUT = intVar(
 	'VPN_AUTH_CACHE_TIMEOUT',
-	1 * 60 * 1000,
+	1 * MINUTES,
+);
+
+// As of writing this, using a chunk of 8000 62-char UUIDs results a content-length
+// that is bellow the 512KiB threshold that would trigger a 413 http error.
+export const API_DEVICE_STATE_POST_BATCH_SIZE = intVar(
+	'API_DEVICE_STATE_POST_BATCH_SIZE',
+	8000,
 );
