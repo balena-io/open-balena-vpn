@@ -1,4 +1,23 @@
 - commits:
+    - subject: Always send a connect event to the API if the connected worker changes
+      hash: e32082bc6e52fd57b9bd15402e1a8b29246b9847
+      body: |
+        This solves an issue that could happen where the device reconnects in
+        rapid succession and connects to another VPN container and then back to
+        the current one without yet having been recognized as disconnected from
+        the current VPN container and as such we would not send a connect event
+        for the reconnection. This would result in the device appearing to be
+        offline for the API (because it disconnected from the other instance)
+        whilst actually still being connected, just to this instance
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.10.4
+  title: "'Always send a connect event to the API if the connected worker changes'"
+  date: 2022-08-15T21:28:00.132Z
+- commits:
     - subject: Use @balena/env-parsing for shared env var parsing behavior
       hash: 586c8c7fa11f4e0b81785bca840759ca83515893
       body: ""
