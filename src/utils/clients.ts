@@ -40,6 +40,8 @@ import {
 interface DeviceStateTracker {
 	currentConnected?: boolean;
 	targetConnected: boolean;
+	currentWorkerId?: number;
+	targetWorkerId: number;
 }
 
 export const setConnected = (() => {
@@ -81,6 +83,11 @@ export const setConnected = (() => {
 					// Update the current state on success
 					for (const uuid of uuidChunk) {
 						deviceStates[uuid].currentConnected = connected;
+						// We mark the currentWorkerId to match the target since the key is that we have sent a new connect
+						// event since the worker has connected in case it went from eg `us-1` -> `other-1` -> `us-2` and
+						// `other` is seen as being in charge of the device when it actually should be us
+						deviceStates[uuid].currentWorkerId =
+							deviceStates[uuid].targetWorkerId;
 						logger.debug(
 							`successfully updated state for device: uuid=${uuid} connected=${connected}`,
 						);
@@ -108,10 +115,18 @@ export const setConnected = (() => {
 			const disconnects = [];
 			const connects = [];
 			for (const uuid of pendingUpdates) {
-				const { targetConnected, currentConnected } = deviceStates[uuid];
+				const {
+					targetConnected,
+					currentConnected,
+					targetWorkerId,
+					currentWorkerId,
+				} = deviceStates[uuid];
 				// We only try to update those where the target/current state differs, any where it matches
 				// will naturally be dropped from pending updates as expected as there is no pending update
-				if (targetConnected !== currentConnected) {
+				if (
+					targetConnected !== currentConnected ||
+					targetWorkerId !== currentWorkerId
+				) {
 					if (targetConnected) {
 						connects.push(uuid);
 					} else {
@@ -136,16 +151,20 @@ export const setConnected = (() => {
 	return (
 		uuid: string,
 		serviceId: number,
+		workerId: number,
 		connected: boolean,
 		logger: Logger,
 	) => {
 		if (deviceStates[uuid] == null) {
 			deviceStates[uuid] = {
-				targetConnected: connected,
 				currentConnected: undefined,
+				targetConnected: connected,
+				currentWorkerId: undefined,
+				targetWorkerId: workerId,
 			};
 		} else {
 			deviceStates[uuid].targetConnected = connected;
+			deviceStates[uuid].targetWorkerId = workerId;
 		}
 		pendingUpdates.add(uuid);
 		updateLoop(serviceId, logger);

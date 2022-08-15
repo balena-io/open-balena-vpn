@@ -30,7 +30,7 @@ import {
 	VPN_VERBOSE_LOGS,
 } from './utils/config';
 
-import { clients, getLogger } from './utils';
+import { getLogger } from './utils';
 
 import { HAProxy, Metrics, Netmask, VpnManager } from './utils';
 import { VpnClientBytecountData } from './utils/openvpn';
@@ -127,8 +127,6 @@ const worker = async (instanceId: number, serviceId: number) => {
 					const cn = client.uuid;
 					try {
 						logger.info(`disconnecting ${cn}`);
-						// update device state
-						clients.setConnected(cn, serviceId, false, logger);
 						// disconnect client from VPN
 						await vpn.killClient(cn);
 					} catch (err) {
