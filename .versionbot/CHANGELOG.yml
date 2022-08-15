@@ -1,4 +1,16 @@
 - commits:
+    - subject: Use @balena/env-parsing for shared env var parsing behavior
+      hash: 586c8c7fa11f4e0b81785bca840759ca83515893
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.10.3
+  title: "'Use @balena/env-parsing for shared env var parsing behavior'"
+  date: 2022-08-15T21:03:56.966Z
+- commits:
     - subject: Switch to conditionally calling husky install
       hash: a1fa676293717cdbfc96a4366ea9c7be36d4aea8
       body: |
