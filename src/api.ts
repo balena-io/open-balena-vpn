@@ -68,7 +68,7 @@ const checkDeviceAuth = memoize(
 export const apiFactory = (serviceId: number) => {
 	const api = express.Router();
 
-	const workerMap: _.Dictionary<string> = {};
+	const workerMap: _.Dictionary<number> = {};
 
 	const logger = getLogger('vpn', serviceId);
 
@@ -84,14 +84,14 @@ export const apiFactory = (serviceId: number) => {
 		metrics.inc(Metrics.OnlineDevices);
 		metrics.inc(Metrics.TotalDevices);
 
-		const workerId = req.params.worker;
+		const workerId = parseInt(req.params.worker, 10);
 		const uuid = req.body.common_name;
-		if (workerMap[uuid] != null && workerMap[uuid] !== req.params.worker) {
+		if (workerMap[uuid] != null && workerMap[uuid] !== workerId) {
 			metrics.dec(Metrics.OnlineDevices);
 		}
 
 		workerMap[uuid] = workerId;
-		clients.setConnected(uuid, serviceId, true, logger);
+		clients.setConnected(uuid, serviceId, workerId, true, logger);
 	});
 
 	api.post('/api/v1/auth/', fromLocalHost, async function (req, res) {
@@ -137,7 +137,7 @@ export const apiFactory = (serviceId: number) => {
 			metrics.histogram(Metrics.SessionDuration, req.body.time_duration);
 		}
 
-		const workerId = req.params.worker;
+		const workerId = parseInt(req.params.worker, 10);
 		const uuid = req.body.common_name;
 
 		if (workerMap[uuid] !== workerId) {
@@ -157,7 +157,7 @@ export const apiFactory = (serviceId: number) => {
 
 		metrics.dec(Metrics.OnlineDevices);
 
-		clients.setConnected(uuid, serviceId, false, logger);
+		clients.setConnected(uuid, serviceId, workerId, false, logger);
 	});
 
 	return api;
