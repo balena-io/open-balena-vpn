@@ -1,4 +1,18 @@
 - commits:
+    - subject: Switch to conditionally calling husky install
+      hash: a1fa676293717cdbfc96a4366ea9c7be36d4aea8
+      body: |
+        This avoids errors when trying to install with `npm ci --production`
+        where husky won't exist whilst also working on windows
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.10.2
+  title: "'Switch to conditionally calling husky install'"
+  date: 2022-08-15T16:39:51.178Z
+- commits:
     - subject: Fix env var name
       hash: 4a9a4f8cadf813a5937bc2e1b13ed8f8f31b3b9b
       body: ""
