@@ -16,6 +16,9 @@ keepalive {{ getenv "VPN_KEEPALIVE_FREQUENCY" "10" }} {{ getenv "VPN_KEEPALIVE_T
 # Increase the max clients from the default of 1024 (hard limit applied by subnet/pool config)
 max-clients 32768
 
+{{ if getenv "VPN_SHAPER_BYTES_PER_SECOND" }}shaper {{ getenv "VPN_SHAPER_BYTES_PER_SECOND" }}{{ end }}
+{{ if getenv "VPN_SHAPER_BYTES_PER_SECOND" }}push "shaper {{ getenv "VPN_SHAPER_BYTES_PER_SECOND" }}"{{ end }}
+
 # Allow authorisation via username/password.
 script-security 3 # Level 3 for username/password auth
 verify-client-cert none
