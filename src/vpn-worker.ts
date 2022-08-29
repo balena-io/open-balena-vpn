@@ -122,19 +122,17 @@ const worker = async (instanceId: number, serviceId: number) => {
 				`disconnecting ${clientCount} clients, spaced by ${delayMs}ms`,
 			);
 			let timeToKill = DEFAULT_SIGTERM_TIMEOUT;
-			for (const client of drainQueue) {
-				try {
-					const cn = client.uuid;
+			for (const { uuid: cn } of drainQueue) {
+				// Trigger the disconnecting the client in the background so as to avoid it delaying
+				// the overall cadence of disconnections but whilst still having error handling for it
+				(async () => {
 					try {
 						logger.info(`disconnecting ${cn}`);
-						// disconnect client from VPN
 						await vpn.killClient(cn);
 					} catch (err) {
 						logger.warning(`${err} while killing ${cn} on worker ${serviceId}`);
 					}
-				} catch (err) {
-					logger.warning(`received '${err}' trying to disconnect client`);
-				}
+				})();
 				timeToKill = timeToKill - delayMs;
 				// skip if last client
 				if (timeToKill > delayMs) {
