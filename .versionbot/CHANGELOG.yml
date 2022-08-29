@@ -1,4 +1,20 @@
 - commits:
+    - subject: Avoid delays in client disconnection from affecting the draining cadence
+      hash: c045e2088c7c9152db41b046da3ee1c774133990
+      body: |
+        This avoids situations where due to client disconnection delays we end
+        up with clients being disconnected at a slower cadence than expected
+        and meaning that there may still be significant numbers connected at
+        the point the SIGTERM timeout is reached
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.11.2
+  title: "'Avoid delays in client disconnection from affecting the draining cadence'"
+  date: 2022-08-29T10:19:41.358Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v13.5.1
       hash: 5cc271d82c70afc6e8745df1166afbd1b5bcb613
       body: |
