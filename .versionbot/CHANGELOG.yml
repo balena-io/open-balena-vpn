@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update dependencies
+      hash: 7ecfc34f5c136222bf35bb2f898357ead03cfd4b
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.11.3
+  title: "'Update dependencies'"
+  date: 2022-09-01T16:49:46.597Z
+- commits:
     - subject: Avoid delays in client disconnection from affecting the draining cadence
       hash: c045e2088c7c9152db41b046da3ee1c774133990
       body: |
