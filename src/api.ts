@@ -68,7 +68,7 @@ const checkDeviceAuth = memoize(
 export const apiFactory = (serviceId: number) => {
 	const api = express.Router();
 
-	const workerMap: _.Dictionary<number> = {};
+	const clientRefCount: { [uuid: string]: number } = {};
 
 	const logger = getLogger('vpn', serviceId);
 
@@ -81,17 +81,23 @@ export const apiFactory = (serviceId: number) => {
 		// Immediately respond to minimize time in the client-connect script
 		res.status(200).end();
 
-		metrics.inc(Metrics.OnlineDevices);
-		metrics.inc(Metrics.TotalDevices);
-
 		const workerId = parseInt(req.params.worker, 10);
 		const uuid = req.body.common_name;
-		if (workerMap[uuid] != null && workerMap[uuid] !== workerId) {
-			metrics.dec(Metrics.OnlineDevices);
-		}
 
-		workerMap[uuid] = workerId;
-		clients.setConnected(uuid, serviceId, workerId, true, logger);
+		clientRefCount[uuid] ??= 0;
+
+		if (clientRefCount[uuid] === 0) {
+			// Only increment the device as online if it wasn't previously online
+			metrics.inc(Metrics.OnlineDevices);
+		}
+		metrics.inc(Metrics.TotalDevices);
+		clientRefCount[uuid]++;
+
+		if (clientRefCount[uuid] > 0) {
+			// Only set the device as connected if the ref count is > 0, this handles the case where
+			// the disconnect comes before the first connect so we go 0 -> -1 -> 0
+			clients.setConnected(uuid, serviceId, workerId, true, logger);
+		}
 	});
 
 	api.post('/api/v1/auth/', fromLocalHost, async function (req, res) {
@@ -140,9 +146,12 @@ export const apiFactory = (serviceId: number) => {
 		const workerId = parseInt(req.params.worker, 10);
 		const uuid = req.body.common_name;
 
-		if (workerMap[uuid] !== workerId) {
+		clientRefCount[uuid] ??= 0;
+		clientRefCount[uuid]--;
+
+		if (clientRefCount[uuid] !== 0) {
 			logger.warning(
-				`dropping oos disconnect event for uuid=${uuid} worker=${workerId} (expected=${workerMap[uuid]})`,
+				`dropping oos disconnect event for uuid=${uuid} worker=${workerId} refcount=${clientRefCount[uuid]}`,
 			);
 			captureException(
 				new Error('Out of Sync OpenVPN Client Event Received'),
@@ -152,8 +161,6 @@ export const apiFactory = (serviceId: number) => {
 			return res.status(400).end();
 		}
 		res.status(200).end();
-
-		delete workerMap[uuid];
 
 		metrics.dec(Metrics.OnlineDevices);
 
