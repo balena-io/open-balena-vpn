@@ -1,4 +1,16 @@
 - commits:
+    - subject: Use a ref count rather than worker map for out of sync disconnects
+      hash: 213a847d1f6c906239a075c179971694aac00d83
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.11.4
+  title: "'Use a ref count rather than worker map for out of sync disconnects'"
+  date: 2022-09-02T12:41:50.963Z
+- commits:
     - subject: Update dependencies
       hash: 7ecfc34f5c136222bf35bb2f898357ead03cfd4b
       body: ""
