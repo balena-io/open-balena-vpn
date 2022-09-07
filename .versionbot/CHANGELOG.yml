@@ -1,4 +1,18 @@
 - commits:
+    - subject: Set desired es-version for downstream modules that support it
+      hash: a916e057373dfb764f9d06db97eb793f23756bfa
+      body: |
+        Notably this will cause pinejs-client to use a version with native
+        async/await and hence allow for async stack traces
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.11.5
+  title: "'Set desired es-version for downstream modules that support it'"
+  date: 2022-09-07T12:59:45.911Z
+- commits:
     - subject: Use a ref count rather than worker map for out of sync disconnects
       hash: 213a847d1f6c906239a075c179971694aac00d83
       body: ""
