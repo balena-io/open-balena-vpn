@@ -1,4 +1,19 @@
 - commits:
+    - subject: Stop automatic int parsing of openvpn events to avoid false positives
+      hash: 4c3a358d48271746b395446ba71977f320bfa973
+      body: |
+        This avoids the case where a uuid could be a valid int and be parsed as
+        a false positive and cause issues. It also avoids the overhead of
+        parsing ints when their parsed form may never be needed.
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.11.6
+  title: "'Stop automatic int parsing of openvpn events to avoid false positives'"
+  date: 2022-09-07T14:10:29.776Z
+- commits:
     - subject: Set desired es-version for downstream modules that support it
       hash: a916e057373dfb764f9d06db97eb793f23756bfa
       body: |
