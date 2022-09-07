@@ -35,7 +35,7 @@ import {
 	VPN_AUTH_CACHE_TIMEOUT,
 } from './utils/config';
 import { Sentry } from './utils/errors';
-import { hasDurationData, isTrusted } from './utils/openvpn';
+import { hasDurationData, hasCommonName } from './utils/openvpn';
 
 // Private endpoints should use the `fromLocalHost` middleware.
 const fromLocalHost: express.RequestHandler = (req, res, next) => {
@@ -75,7 +75,7 @@ export const apiFactory = (serviceId: number) => {
 	api.use(express.json());
 
 	api.post('/api/v2/:worker/clients/', fromLocalHost, (req, res) => {
-		if (!isTrusted(req.body)) {
+		if (!hasCommonName(req.body)) {
 			return res.status(400).end();
 		}
 		// Immediately respond to minimize time in the client-connect script
@@ -135,7 +135,7 @@ export const apiFactory = (serviceId: number) => {
 	});
 
 	api.delete('/api/v2/:worker/clients/', fromLocalHost, (req, res) => {
-		if (!isTrusted(req.body)) {
+		if (!hasCommonName(req.body)) {
 			return res.status(400).end();
 		}
 
