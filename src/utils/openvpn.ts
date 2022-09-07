@@ -29,13 +29,6 @@ const Telnet =
 import { VPN_API_PORT } from './config';
 import { Netmask } from './netmask';
 
-const parsePossibleInt = (s: string): number | string => {
-	if (/^[1-9]\d*$/.test(s)) {
-		return parseInt(s, 10);
-	}
-	return s;
-};
-
 export interface VpnClientUntrustedData {
 	username: string;
 }
@@ -43,8 +36,10 @@ export interface VpnClientTrustedData {
 	common_name: string;
 }
 export interface VpnClientBytecountData {
-	bytes_received: number;
-	bytes_sent: number;
+	/** The contents are a valid number */
+	bytes_received: string;
+	/** The contents are a valid number */
+	bytes_sent: string;
 }
 // CLIENT:CONNECT
 export interface VpnClientConnectData extends VpnClientUntrustedData {
@@ -59,17 +54,17 @@ export interface VpnClientDisconnectData
 	extends VpnClientUntrustedData,
 		Partial<VpnClientTrustedData>,
 		Partial<VpnClientBytecountData> {
-	time_duration: number;
+	/** The contents are a valid number */
+	time_duration: string;
 }
 
-export const isTrusted = (data: any): data is VpnClientTrustedData =>
-	data.common_name != null;
-export const hasBytecountData = (data: any): data is VpnClientBytecountData =>
-	data.bytes_received != null && data.bytes_sent != null;
-export const hasDurationData = (
-	data: any,
-): data is VpnClientDisconnectData & VpnClientTrustedData =>
-	data.time_duration != null && isTrusted(data);
+export const hasCommonName = <T extends {}>(
+	data: T & { common_name?: string },
+): data is T & { common_name: string } => data.common_name != null;
+export const hasDurationData = <T extends {}>(
+	data: T & { time_duration?: number },
+): data is T & { time_duration: number } =>
+	data.time_duration != null && typeof data.time_duration === 'number';
 
 const VpnLogLevels = {
 	D: 'debug',
@@ -262,16 +257,11 @@ export class VpnManager extends EventEmitter {
 				// >CLIENT:ENV,key=val
 				const envData = data.slice('>CLIENT:ENV'.length + 1);
 				const [key, val] = envData.split('=');
-				env[key] = parsePossibleInt(val);
+				env[key] = val;
 			} else {
 				this.off('manager:data', emitter);
 				this.on('manager:data', this.dataHandler);
-				this.emit(
-					`client:${eventName}`,
-					clientId,
-					...eventArgs.map(parsePossibleInt),
-					env,
-				);
+				this.emit(`client:${eventName}`, clientId, ...eventArgs, env);
 				// re-emit the last message if it was not `CLIENT:ENV,END`
 				if (data !== '>CLIENT:ENV,END') {
 					this.emit('manager:data', data);

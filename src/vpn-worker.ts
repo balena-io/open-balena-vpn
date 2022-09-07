@@ -60,7 +60,12 @@ const worker = async (instanceId: number, serviceId: number) => {
 	};
 
 	const clientCache: {
-		[key: number]: { uuid: string; ts: number } & VpnClientBytecountData;
+		[key: number]: {
+			uuid: string;
+			ts: number;
+			bytes_received: number;
+			bytes_sent: number;
+		};
 	} = {};
 	const writeBandwidthMetrics = (
 		clientId: number,
@@ -72,9 +77,11 @@ const worker = async (instanceId: number, serviceId: number) => {
 			);
 			return;
 		}
+		const bytesReceived = parseInt(data.bytes_received, 10);
+		const bytesSent = parseInt(data.bytes_sent, 10);
 		const uuid = clientCache[clientId].uuid;
-		const rxDelta = data.bytes_received - clientCache[clientId].bytes_received;
-		const txDelta = data.bytes_sent - clientCache[clientId].bytes_sent;
+		const rxDelta = bytesReceived - clientCache[clientId].bytes_received;
+		const txDelta = bytesSent - clientCache[clientId].bytes_sent;
 		const timeDelta = process.hrtime()[0] - clientCache[clientId].ts;
 		metrics.inc(Metrics.RxBytes, rxDelta);
 		metrics.inc(Metrics.RxBytesByUuid, rxDelta, { device_uuid: uuid });
@@ -90,8 +97,8 @@ const worker = async (instanceId: number, serviceId: number) => {
 				},
 			});
 		}
-		clientCache[clientId].bytes_received = data.bytes_received;
-		clientCache[clientId].bytes_sent = data.bytes_sent;
+		clientCache[clientId].bytes_received = bytesReceived;
+		clientCache[clientId].bytes_sent = bytesSent;
 		clientCache[clientId].ts += timeDelta;
 	};
 
@@ -200,7 +207,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 
 	vpn.on('client:established', (clientId, data) => {
 		logger.info(
-			`connection established with client_id=${clientId} uuid=${data.username}`,
+			`connection established with client_id=${clientId} uuid=${data.common_name}`,
 		);
 		clientCache[clientId] = {
 			// We need to flatten the uuid because otherwise it's a sliced string and keeps the
