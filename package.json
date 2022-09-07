@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@balena/env-parsing": "^1.1.0",
+    "@balena/es-version": "^1.0.1",
     "@balena/node-metrics-gatherer": "^6.0.3",
     "@sentry/node": "^7.12.0",
     "bluebird": "^3.7.2",
