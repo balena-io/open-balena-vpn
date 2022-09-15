@@ -1,4 +1,16 @@
 - commits:
+    - subject: Switch from balenaCI to flowzone
+      hash: 2570993dcdba3d5e0bb660af462633a9ff607a15
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.11.7
+  title: ""
+  date: 2022-09-15T19:34:08.977Z
+- commits:
     - subject: Stop automatic int parsing of openvpn events to avoid false positives
       hash: 4c3a358d48271746b395446ba71977f320bfa973
       body: |
