@@ -1,7 +1,1 @@
----
-reviewers: 1
-docker:
-  builds:
-    - path: .
-      dockerfile: Dockerfile
-      docker_repo: balena/open-balena-vpn
+disabled: true
