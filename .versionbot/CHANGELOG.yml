@@ -1,4 +1,16 @@
 - commits:
+    - subject: Delete redundant .resinci.yml
+      hash: cc98e9ea91d1f15081f693772b891f88f2989110
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.11.8
+  title: ""
+  date: 2022-09-26T12:19:30.226Z
+- commits:
     - subject: Switch from balenaCI to flowzone
       hash: 2570993dcdba3d5e0bb660af462633a9ff607a15
       body: ""
