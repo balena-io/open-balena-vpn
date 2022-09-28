@@ -1,4 +1,19 @@
 - commits:
+    - subject: Update dependency @types/mocha to 10.0.0
+      hash: a65e9648352a9ca76937393325d1b1c1556c9b5e
+      body: |
+        Update @types/mocha to 10.0.0
+
+        Update @types/mocha from 9.1.1 to 10.0.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Renovate Bot
+      nested: []
+  version: 11.11.10
+  title: ""
+  date: 2022-09-28T08:05:09.324Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v13.5.2
       hash: 2911366fdc87c1c9f44f4d2fb8aa0d5db95ae936
       body: |
