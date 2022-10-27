@@ -1,4 +1,29 @@
 - commits:
+    - subject: Update open-balena-base to 14.0.0
+      hash: 3133a27b51121b04529c6140026c1bd948b4aeba
+      body: |
+        Update open-balena-base from 13.6.1 to 14.0.0
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update to nodejs 18
+              hash: 3d9cffff7898abf4d82b3f699b673bee76ea3e66
+              body: ""
+              footer:
+                Change-type: major
+                change-type: major
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-14.0.0
+          title: ""
+          date: 2022-10-27T11:48:16.274Z
+  version: 11.13.0
+  title: ""
+  date: 2022-10-27T13:56:41.787Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v13.6.1
       hash: aec04445f58ab93653da88be650e209d3f92068a
       body: |
