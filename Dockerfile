@@ -26,7 +26,15 @@ RUN git clone https://github.com/balena-io-modules/connect-disconnect-script-ope
 	&& git checkout ${CONNECT_DISCONNECT_PLUGIN_COMMIT} \
 	&& C_INCLUDE_PATH=/usr/include/openvpn/ make plugin
 
-FROM plugin-builder AS auth-plugin
+FROM plugin-builder as learn-address-plugin
+
+ENV LEARN_ADDRESS_PLUGIN_COMMIT=9ee777205f54de62413fe5d0267eac426f6aae06
+RUN git clone https://github.com/balena-io-modules/learn-address-script-openvpn.git \
+	&& cd learn-address-script-openvpn \
+	&& git checkout ${LEARN_ADDRESS_PLUGIN_COMMIT} \
+	&& C_INCLUDE_PATH=/usr/include/openvpn/ make plugin
+
+FROM plugin-builder as auth-plugin
 
 ENV AUTH_PLUGIN_COMMIT=623982a5d63dd2b7b2b9f9295d10d96a56d58894
 RUN git clone https://github.com/fac/auth-script-openvpn.git \
@@ -108,6 +116,7 @@ RUN npm ci --production && npm cache clean --force
 COPY --from=auth-plugin /usr/src/app/auth-script-openvpn/openvpn-plugin-auth-script.so /etc/openvpn/plugins/
 COPY --from=builder /usr/src/app/build /usr/src/app/build
 COPY --from=connect-disconnect-plugin /usr/src/app/connect-disconnect-script-openvpn/openvpn-plugin-connect-disconnect-script.so /etc/openvpn/plugins/
+COPY --from=learn-address-plugin /usr/src/app/learn-address-script-openvpn/openvpn-plugin-learn-address-script.so /etc/openvpn/plugins/
 COPY --from=rust-builder /usr/src/app/target/release/auth /usr/src/app/openvpn/scripts/auth
 COPY bin /usr/src/app/bin
 COPY config /usr/src/app/config
