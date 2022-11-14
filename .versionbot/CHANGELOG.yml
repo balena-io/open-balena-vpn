@@ -1,4 +1,18 @@
 - commits:
+    - subject: Explicitly/consistently use 127.0.0.1 as the openvpn management host
+      hash: e4d48dbc8b5624b77e4d9c989b56cecc1827e50b
+      body: |
+        This fixes issues if `socket.connect` tries to connect using ipv6
+        localhost rather than ipv4
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.13.2
+  title: ""
+  date: 2022-11-14T14:27:04.106Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v14.0.1
       hash: 820cfaa0499c86d3f274f22c50f8686e5390f655
       body: |
