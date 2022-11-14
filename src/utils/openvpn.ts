@@ -124,6 +124,7 @@ export class VpnManager extends EventEmitter {
 	private readonly connector = new Telnet();
 	private buf: string = '';
 	private readonly pidFile: string;
+	private readonly mgtHost = '127.0.0.1';
 
 	constructor(
 		private instanceId: number,
@@ -171,7 +172,7 @@ export class VpnManager extends EventEmitter {
 			'--port',
 			`${this.vpnPort}`,
 			'--management',
-			'127.0.0.1',
+			this.mgtHost,
 			`${this.mgtPort}`,
 			'--management-hold',
 			'--ifconfig',
@@ -346,7 +347,7 @@ export class VpnManager extends EventEmitter {
 				socket.on('ready', readyHandler);
 				socket.on('error', errorHandler);
 				socket.on('timeout', errorHandler);
-				socket.connect(this.mgtPort);
+				socket.connect(this.mgtPort, this.mgtHost);
 			}).timeout(STARTUP_TIMEOUT - (Date.now() - since));
 		} catch (err) {
 			if (err instanceof Bluebird.TimeoutError) {
@@ -370,7 +371,7 @@ export class VpnManager extends EventEmitter {
 
 	public async connect() {
 		await this.connector.connect({
-			host: '127.0.0.1',
+			host: this.mgtHost,
 			port: this.mgtPort,
 			shellPrompt: '',
 			negotiationMandatory: true,
