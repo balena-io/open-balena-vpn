@@ -3,6 +3,8 @@ services:
   main:
     image: sut
     privileged: true
+    cap_add:
+      - NET_ADMIN
     tmpfs:
       - /run
       - /sys/fs/cgroup
@@ -22,6 +24,8 @@ services:
       - VPN_BASE_PORT=10000
       - VPN_BASE_MANAGEMENT_PORT=20000
       - VPN_API_PORT=30000
+      - VPN_DOWNRATE=5mbit
+      - VPN_UPRATE=5mbit
       - VPN_HOST=127.0.0.1
       - VPN_CONNECT_INSTANCE_COUNT=1
       - VPN_CONNECT_PROXY_PORT=3128
@@ -55,3 +59,4 @@ services:
         docker exec "$${CONTAINER_NAME}" npm install
         docker exec "$${CONTAINER_NAME}" npm run test-unit
         docker exec "$${CONTAINER_NAME}" npx mocha test/app.ts
+        docker exec "$${CONTAINER_NAME}" cat /tmp/learn-address/status.log

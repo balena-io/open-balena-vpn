@@ -37,7 +37,7 @@ Note that the dhcp pool size will also dictate the max clients per
 process, with the max clients per server being
 `max_clients_per_instance * VPN_INSTANCE_COUNT` and not the size of
 the base subnet. A VLSM of `20` will allow for 4,094 clients per instance, and a
-base subnet of size `/10` will allow for a total of a total of 4,194,302 clients.
+base subnet of size `/10` will allow for a total of 4,194,302 clients.
 
 Base ports are increments by the process instance ID (1-indexed) to calculate
 the port for that instance.
