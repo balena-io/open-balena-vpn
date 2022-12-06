@@ -22,7 +22,7 @@ import es from 'event-stream';
 import { EventEmitter } from 'eventemitter3';
 import fs from 'fs';
 import net from 'net';
-import { VPN_API_PORT } from './config.js';
+import { VPN_API_PORT, VPN_DOWNRATE, VPN_UPRATE } from './config.js';
 import type { Netmask } from './netmask.js';
 
 import { createRequire } from 'node:module';
@@ -199,6 +199,8 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 			'--plugin',
 			'/etc/openvpn/plugins/openvpn-plugin-learn-address-script.so',
 			'/etc/openvpn/scripts/learn-address.sh',
+			`${VPN_DOWNRATE}`,
+			`${VPN_UPRATE}`,
 			'--plugin',
 			'/etc/openvpn/plugins/openvpn-plugin-auth-script.so',
 			'/etc/openvpn/scripts/auth',
