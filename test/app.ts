@@ -441,4 +441,4 @@ describe('VPN proxy', function () {
 			});
 		});
 	});
- });
+});
