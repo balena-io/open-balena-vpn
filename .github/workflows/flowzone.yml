@@ -19,3 +19,4 @@ jobs:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKER_REGISTRY_PASS }}
     with:
       docker_images: balena/open-balena-vpn
+      runs_on: '["ubuntu-20.04"]'
