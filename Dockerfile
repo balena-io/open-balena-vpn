@@ -1,4 +1,4 @@
-FROM balena/open-balena-base:v14.0.1 as base
+FROM balena/open-balena-base:v14.2.0 as base
 
 
 FROM base as builder
@@ -65,7 +65,7 @@ RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/d
     && systemctl mask openvpn@.service openvpn.service
 
 ENV LIBNSS_OPENVPN_VERSION 22feb11322182f6fd79f85cd014b65b6c40b7b47
-RUN tmp="$(mktemp -d)" set -x \
+RUN tmp="$(mktemp -d)" ; set -x \
     && git clone -q https://github.com/balena-io-modules/libnss-openvpn.git "${tmp}" \
     && cd "${tmp}" \
     && git -C "${tmp}" checkout -q ${LIBNSS_OPENVPN_VERSION} \
@@ -76,7 +76,7 @@ RUN tmp="$(mktemp -d)" set -x \
 
 ENV NODE_EXPORTER_VERSION 1.3.1
 ENV NODE_EXPORTER_SHA256SUM 68f3802c2dd3980667e4ba65ea2e1fb03f4a4ba026cca375f15a0390ff850949
-RUN NODE_EXPORTER_TGZ="/tmp/node_exporter.tar.gz" set -x \
+RUN NODE_EXPORTER_TGZ="/tmp/node_exporter.tar.gz" ; set -x \
     && curl -Lo "${NODE_EXPORTER_TGZ}" https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz \
     && echo "${NODE_EXPORTER_SHA256SUM}  ${NODE_EXPORTER_TGZ}" | sha256sum -c \
     && tar -xzC /usr/local/bin -f "${NODE_EXPORTER_TGZ}" --strip-components=1 --wildcards '*/node_exporter' \
@@ -84,7 +84,7 @@ RUN NODE_EXPORTER_TGZ="/tmp/node_exporter.tar.gz" set -x \
 
 ENV PROCESS_EXPORTER_VERSION 0.7.10
 ENV PROCESS_EXPORTER_SHA256SUM 52503649649c0be00e74e8347c504574582b95ad428ff13172d658e82b3da1b5
-RUN PROCESS_EXPORTER_TGZ="/tmp/process_exporter.tar.gz" set -x \
+RUN PROCESS_EXPORTER_TGZ="/tmp/process_exporter.tar.gz" ; set -x \
     && curl -Lo "${PROCESS_EXPORTER_TGZ}" https://github.com/ncabatoff/process-exporter/releases/download/v${PROCESS_EXPORTER_VERSION}/process-exporter-${PROCESS_EXPORTER_VERSION}.linux-amd64.tar.gz \
     && echo "${PROCESS_EXPORTER_SHA256SUM}  ${PROCESS_EXPORTER_TGZ}" | sha256sum -c \
     && tar -xzC /usr/local/bin -f "${PROCESS_EXPORTER_TGZ}" --strip-components=1 --wildcards '*/process-exporter' \
