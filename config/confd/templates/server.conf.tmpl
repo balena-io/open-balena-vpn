@@ -11,7 +11,12 @@ persist-tun
 
 proto tcp4-server
 compress lzo
-keepalive {{ getenv "VPN_KEEPALIVE_FREQUENCY" "10" }} {{ getenv "VPN_KEEPALIVE_TIMEOUT" "60" }}
+
+# Tell clients to exit on keepalive timeouts
+ping {{ getenv "VPN_KEEPALIVE_FREQUENCY" "10" }}                    # interval
+ping-exit {{ (atoi (getenv "VPN_KEEPALIVE_TIMEOUT" "60")) mul 2 }}  # timeout*2
+push "ping {{ getenv "VPN_KEEPALIVE_FREQUENCY" "10" }}"             # interval
+push "ping-exit {{ getenv "VPN_KEEPALIVE_TIMEOUT" "60" }}"          # timeout
 
 # Increase the max clients from the default of 1024 (hard limit applied by subnet/pool config)
 max-clients 32768
