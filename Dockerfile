@@ -74,19 +74,23 @@ RUN tmp="$(mktemp -d)" ; set -x \
     && sed --in-place --regexp-extended 's|(hosts:\W+)(.*)|\1openvpn \2|' /etc/nsswitch.conf \
     && rm -rf "${tmp}"
 
+ARG TARGETARCH
+
 ENV NODE_EXPORTER_VERSION 1.3.1
-ENV NODE_EXPORTER_SHA256SUM 68f3802c2dd3980667e4ba65ea2e1fb03f4a4ba026cca375f15a0390ff850949
-RUN NODE_EXPORTER_TGZ="/tmp/node_exporter.tar.gz" ; set -x \
-    && curl -Lo "${NODE_EXPORTER_TGZ}" https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-amd64.tar.gz \
-    && echo "${NODE_EXPORTER_SHA256SUM}  ${NODE_EXPORTER_TGZ}" | sha256sum -c \
+ENV NODE_EXPORTER_SHA256SUM_amd64 68f3802c2dd3980667e4ba65ea2e1fb03f4a4ba026cca375f15a0390ff850949
+ENV NODE_EXPORTER_SHA256SUM_arm64 f19f35175f87d41545fa7d4657e834e3a37c1fe69f3bf56bc031a256117764e7
+RUN NODE_EXPORTER_TGZ="/tmp/node_exporter.tar.gz" ; set -x ; TARGETARCH=${TARGETARCH:-amd64} \
+    && curl -Lo "${NODE_EXPORTER_TGZ}" https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-${TARGETARCH}.tar.gz \
+    && echo "$(eval echo \$NODE_EXPORTER_SHA256SUM_${TARGETARCH})  ${NODE_EXPORTER_TGZ}" | sha256sum -c \
     && tar -xzC /usr/local/bin -f "${NODE_EXPORTER_TGZ}" --strip-components=1 --wildcards '*/node_exporter' \
     && rm "${NODE_EXPORTER_TGZ}"
 
 ENV PROCESS_EXPORTER_VERSION 0.7.10
-ENV PROCESS_EXPORTER_SHA256SUM 52503649649c0be00e74e8347c504574582b95ad428ff13172d658e82b3da1b5
-RUN PROCESS_EXPORTER_TGZ="/tmp/process_exporter.tar.gz" ; set -x \
-    && curl -Lo "${PROCESS_EXPORTER_TGZ}" https://github.com/ncabatoff/process-exporter/releases/download/v${PROCESS_EXPORTER_VERSION}/process-exporter-${PROCESS_EXPORTER_VERSION}.linux-amd64.tar.gz \
-    && echo "${PROCESS_EXPORTER_SHA256SUM}  ${PROCESS_EXPORTER_TGZ}" | sha256sum -c \
+ENV PROCESS_EXPORTER_SHA256SUM_amd64 52503649649c0be00e74e8347c504574582b95ad428ff13172d658e82b3da1b5
+ENV PROCESS_EXPORTER_SHA256SUM_arm64 b377e673558bd0d51f5f771c2b3b3be44b60fcac0689709f47d8c7ca8136f6f5
+RUN PROCESS_EXPORTER_TGZ="/tmp/process_exporter.tar.gz" ; set -x ; TARGETARCH=${TARGETARCH:-amd64} \
+    && curl -Lo "${PROCESS_EXPORTER_TGZ}" https://github.com/ncabatoff/process-exporter/releases/download/v${PROCESS_EXPORTER_VERSION}/process-exporter-${PROCESS_EXPORTER_VERSION}.linux-${TARGETARCH}.tar.gz \
+    && echo "$(eval echo \$PROCESS_EXPORTER_SHA256SUM_${TARGETARCH})  ${PROCESS_EXPORTER_TGZ}" | sha256sum -c \
     && tar -xzC /usr/local/bin -f "${PROCESS_EXPORTER_TGZ}" --strip-components=1 --wildcards '*/process-exporter' \
     && rm "${PROCESS_EXPORTER_TGZ}"
 
