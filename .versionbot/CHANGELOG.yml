@@ -1,4 +1,19 @@
 - commits:
+    - subject: Update balena/open-balena-base to 14.2.0
+      hash: 1800e624a84057cb4e31b0fd9287a636525146ca
+      body: |
+        Update balena/open-balena-base from 14.0.1 to 14.2.0
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 11.14.0
+  title: ""
+  date: 2023-01-19T16:10:02.491Z
+- commits:
     - subject: Explicitly/consistently use 127.0.0.1 as the openvpn management host
       hash: e4d48dbc8b5624b77e4d9c989b56cecc1827e50b
       body: |
