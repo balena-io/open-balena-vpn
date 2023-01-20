@@ -1,4 +1,18 @@
 - commits:
+    - subject: Enable builds for arm64
+      hash: 4c85f59a8ad2aa95135494c39e0f5a8513072d8d
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 11.15.0
+  title: ""
+  date: 2023-01-20T17:59:12.763Z
+- commits:
     - subject: Update balena/open-balena-base to 14.2.0
       hash: 1800e624a84057cb4e31b0fd9287a636525146ca
       body: |
