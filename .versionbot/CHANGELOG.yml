@@ -1,4 +1,19 @@
 - commits:
+    - subject: Update npm to 9.3.1
+      hash: 1802eb34536d9caefb25cf97985abdd866197411
+      body: |
+        Update npm to 9.3.1
+
+        Update npm from 8.19.3 to 9.3.1
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Renovate Bot
+      nested: []
+  version: 11.16.0
+  title: ""
+  date: 2023-01-20T18:37:12.196Z
+- commits:
     - subject: Enable builds for arm64
       hash: 4c85f59a8ad2aa95135494c39e0f5a8513072d8d
       body: ""
