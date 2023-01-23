@@ -1,4 +1,23 @@
 - commits:
+    - subject: Push ping-exit directive to clients rather than ping-restart
+      hash: b86df25bff7892ed8c464e222f64a264e8032e85
+      body: |
+        balenaOS devices drop privileges after starting OpenVPN so the SIGUSR1
+         is unable to recreate the socket.
+
+        Instead, have the server push the ping-exit directive as per the
+        OpenVPN docs. This way balenaOS will stop and restart the service.
+      footer:
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 11.17.0
+  title: ""
+  date: 2023-01-23T21:46:31.386Z
+- commits:
     - subject: Update npm to 9.3.1
       hash: 1802eb34536d9caefb25cf97985abdd866197411
       body: |
