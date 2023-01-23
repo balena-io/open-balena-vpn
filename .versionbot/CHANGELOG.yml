@@ -1,4 +1,19 @@
 - commits:
+    - subject: Update dependency eventemitter3 to 5.0.0
+      hash: 655994180f5f14ef59fcd06a1a58f5e0c410cec4
+      body: |
+        Update eventemitter3 to 5.0.0
+
+        Update eventemitter3 from 4.0.7 to 5.0.0
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Renovate Bot
+      nested: []
+  version: 11.18.0
+  title: ""
+  date: 2023-01-23T22:37:33.893Z
+- commits:
     - subject: Push ping-exit directive to clients rather than ping-restart
       hash: b86df25bff7892ed8c464e222f64a264e8032e85
       body: |
