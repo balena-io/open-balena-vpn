@@ -8,6 +8,11 @@
 {{- /* servers = getenv(VPN_INSTANCE_COUNT, default=getenv(NPROC) if production else 1) */ -}}
 {{ $servers := (getenv "VPN_INSTANCE_COUNT" (or (and (eq (getenv "PRODUCTION_MODE") "true") (getenv "NPROC")) "1")) -}}
 {{ $socket := getenv "VPN_HAPROXY_SOCKET" "/run/haproxy.sock" -}}
+{{- /* https://www.haproxy.com/blog/multithreading-in-haproxy/#multithreading-configuration */ -}}
+{{- /* http://cbonte.github.io/haproxy-dconv/1.8/configuration.html#3.1-nbthread */ -}}
+{{ $nbthread := getenv "HAPROXY_NBTHREAD" "2" -}}
+{{- /* http://cbonte.github.io/haproxy-dconv/1.8/configuration.html#cpu-map */ -}}
+{{ $cpu_map := getenv "HAPROXY_CPU_MAP" "auto:1/1-2 0-1" -}}
 
 global
 	master-worker
@@ -18,6 +23,8 @@ global
 	group haproxy
 	stats socket {{$socket}} mode 600 level admin
 	log /dev/log local0 {{if ne (getenv "VPN_VERBOSE_LOGS") "true"}}notice{{end}}
+	nbthread {{$nbthread}}
+	cpu-map {{$cpu_map}}
 
 defaults
 	timeout connect 10s
