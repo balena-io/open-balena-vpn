@@ -1,4 +1,18 @@
 - commits:
+    - subject: Use `connection draining` in relevant logs rather than `disconnecting`
+      hash: e3f58df75317622ca318d966d72fd9380c52dcb2
+      body: |
+        This helps avoid confusion as to whether it is triggered by server side
+        or client side
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.19.1
+  title: ""
+  date: 2023-01-30T16:27:14.943Z
+- commits:
     - subject: HAProxy thread control
       hash: 532b17636f9fea932d77cd2da09f70d33d95970b
       body: ""
