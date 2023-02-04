@@ -1,4 +1,19 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v14.4.1
+      hash: 13832253bc8dc881e20cd71e80fe51fc021f9187
+      body: |
+        Update balena/open-balena-base to 14.4.1
+
+        Update balena/open-balena-base from 14.2.0 to 14.4.1
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Renovate Bot
+      nested: []
+  version: 11.20.0
+  title: ""
+  date: 2023-02-04T00:02:54.616Z
+- commits:
     - subject: Use `connection draining` in relevant logs rather than `disconnecting`
       hash: e3f58df75317622ca318d966d72fd9380c52dcb2
       body: |
