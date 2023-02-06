@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update engines entry to specify npm 9
+      hash: 54bebbe3ee213cd966e652aab540338fa5da3cd2
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 11.21.0
+  title: ""
+  date: 2023-02-06T12:12:00.165Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v14.4.1
       hash: 13832253bc8dc881e20cd71e80fe51fc021f9187
       body: |
