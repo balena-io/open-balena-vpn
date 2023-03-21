@@ -22,3 +22,8 @@ jobs:
     with:
       docker_images: balena/open-balena-vpn
       runs_on: '["ubuntu-20.04"]'
+      docker_runs_on: >
+        {
+          "linux/amd64": ["self-hosted","distro:focal","X64"],
+          "linux/arm64": ["self-hosted","distro:focal","ARM64"]
+        }
