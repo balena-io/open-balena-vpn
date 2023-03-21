@@ -1,4 +1,18 @@
 - commits:
+    - subject: Use self-hosted runners to avoid failing cargo builds when emulated
+      hash: 394d3b6d575656ca10aa33a76707fb3c5d53990c
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 11.22.2
+  title: ""
+  date: 2023-03-21T14:03:33.502Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v14.5.1
       hash: 6272861895cdc8a0f3b8ed51c0cced405c5fed21
       body: |
