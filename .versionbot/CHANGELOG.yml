@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v14.7.1
+      hash: 2997047d6fd47faec58ef117551b728540695ead
+      body: |
+        Update balena/open-balena-base from 14.5.1 to 14.7.1
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Renovate Bot
+      nested: []
+  version: 11.23.0
+  title: ""
+  date: 2023-03-21T15:17:49.029Z
+- commits:
     - subject: Use self-hosted runners to avoid failing cargo builds when emulated
       hash: 394d3b6d575656ca10aa33a76707fb3c5d53990c
       body: ""
