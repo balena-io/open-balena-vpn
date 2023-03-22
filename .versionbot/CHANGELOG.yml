@@ -1,4 +1,31 @@
 - commits:
+    - subject: Update open-balena-base to 14.7.2
+      hash: 81c76cdfd746bcbd91a4d900419b1b4e46043d99
+      body: |
+        Update open-balena-base from 14.7.1 to 14.7.2
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Maintain legacy docker tags behaviour
+              hash: 34b2de3df298c53120ad714329ab2344657a7078
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-14.7.2
+          title: ""
+          date: 2023-03-22T16:00:23.319Z
+  version: 11.24.0
+  title: ""
+  date: 2023-03-22T16:40:59.490Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v14.7.1
       hash: 2997047d6fd47faec58ef117551b728540695ead
       body: |
