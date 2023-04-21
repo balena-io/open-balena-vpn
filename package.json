@@ -66,11 +66,6 @@
     "node": "^18.14.0",
     "npm": "^9.4.1"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "*.ts": [
       "balena-lint --fix"

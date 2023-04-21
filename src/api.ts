@@ -31,11 +31,13 @@ import {
 } from './utils';
 import {
 	BALENA_API_INTERNAL_HOST,
+	DELAY_ON_AUTH_FAIL,
 	TRUST_PROXY,
 	VPN_AUTH_CACHE_TIMEOUT,
 } from './utils/config';
 import { Sentry } from './utils/errors';
 import { hasDurationData, hasCommonName } from './utils/openvpn';
+import { setTimeout } from 'timers/promises';
 
 // Private endpoints should use the `fromLocalHost` middleware.
 const fromLocalHost: express.RequestHandler = (req, res, next) => {
@@ -126,6 +128,7 @@ export const apiFactory = (serviceId: number) => {
 				metrics.inc(Metrics.AuthFailuresByUuid, undefined, {
 					device_uuid: req.body.common_name,
 				});
+				await setTimeout(DELAY_ON_AUTH_FAIL);
 				return res.status(401).end();
 			}
 		} catch (err) {
