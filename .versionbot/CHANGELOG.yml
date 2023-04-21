@@ -1,4 +1,18 @@
 - commits:
+    - subject: Add a configurable (10s default) delay on auth failure
+      hash: e6044e11cecf789d61441893d98e0fb08488a154
+      body: |
+        This allows delaying returning an auth failure which will also delay
+        the device retrying
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 11.25.0
+  title: ""
+  date: 2023-04-21T17:03:10.021Z
+- commits:
     - subject: Update open-balena-base to 14.7.2
       hash: 81c76cdfd746bcbd91a4d900419b1b4e46043d99
       body: |
