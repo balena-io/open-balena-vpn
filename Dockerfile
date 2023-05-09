@@ -49,6 +49,31 @@ FROM base as main
 # https://engineeringblog.yelp.com/2016/01/dumb-init-an-init-for-docker.html
 STOPSIGNAL SIGRTMIN+3
 
+ARG TARGETARCH
+
+ARG EGET_RELEASE=1.3.3
+ARG EGET_SHA256_arm=8b13bc2dbf72a6a0ea2619663e9e5e55f74787459a88a89ebdbd390135d3b836
+ARG EGET_SHA256_arm64=276d58ec76178be131fb920f3a7dea2e4603a3746c77350d9d3deffa2f5143a2
+ARG EGET_SHA256_amd64=373a3bf0864344bfae684b575f01e9c4759b0aa7091dd9c325a3a373cf437d38
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+RUN asset="eget-${EGET_RELEASE}-linux_${TARGETARCH:-amd64}.tar.gz" && \
+	sha256="EGET_SHA256_${TARGETARCH:-amd64}" && \
+	curl -fsSL -O "https://github.com/zyedidia/eget/releases/download/v${EGET_RELEASE}/${asset}" && \
+	echo "${!sha256} ${asset}" | sha256sum -c - && \
+	tar -xzv -C /usr/local/bin -f "${asset}" --strip-components=1 --wildcards '*/eget' && \
+	rm "${asset}" && \
+	chmod +x /usr/local/bin/eget
+
+COPY eget_${TARGETARCH:-amd64}.toml /root/.eget.toml
+
+ARG NODE_EXPORTER_TAG=v1.3.1
+ARG PROCESS_EXPORTER_TAG=v0.7.10
+
+RUN eget prometheus/node_exporter --tag ${NODE_EXPORTER_TAG} \
+	&& eget ncabatoff/process-exporter --tag ${PROCESS_EXPORTER_TAG}
+
 EXPOSE 80 443 3128
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -73,26 +98,6 @@ RUN tmp="$(mktemp -d)" ; set -x \
     && make -C "${tmp}" install \
     && sed --in-place --regexp-extended 's|(hosts:\W+)(.*)|\1openvpn \2|' /etc/nsswitch.conf \
     && rm -rf "${tmp}"
-
-ARG TARGETARCH
-
-ENV NODE_EXPORTER_VERSION 1.3.1
-ENV NODE_EXPORTER_SHA256SUM_amd64 68f3802c2dd3980667e4ba65ea2e1fb03f4a4ba026cca375f15a0390ff850949
-ENV NODE_EXPORTER_SHA256SUM_arm64 f19f35175f87d41545fa7d4657e834e3a37c1fe69f3bf56bc031a256117764e7
-RUN NODE_EXPORTER_TGZ="/tmp/node_exporter.tar.gz" ; set -x ; TARGETARCH=${TARGETARCH:-amd64} \
-    && curl -Lo "${NODE_EXPORTER_TGZ}" https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VERSION}/node_exporter-${NODE_EXPORTER_VERSION}.linux-${TARGETARCH}.tar.gz \
-    && echo "$(eval echo \$NODE_EXPORTER_SHA256SUM_${TARGETARCH})  ${NODE_EXPORTER_TGZ}" | sha256sum -c \
-    && tar -xzC /usr/local/bin -f "${NODE_EXPORTER_TGZ}" --strip-components=1 --wildcards '*/node_exporter' \
-    && rm "${NODE_EXPORTER_TGZ}"
-
-ENV PROCESS_EXPORTER_VERSION 0.7.10
-ENV PROCESS_EXPORTER_SHA256SUM_amd64 52503649649c0be00e74e8347c504574582b95ad428ff13172d658e82b3da1b5
-ENV PROCESS_EXPORTER_SHA256SUM_arm64 b377e673558bd0d51f5f771c2b3b3be44b60fcac0689709f47d8c7ca8136f6f5
-RUN PROCESS_EXPORTER_TGZ="/tmp/process_exporter.tar.gz" ; set -x ; TARGETARCH=${TARGETARCH:-amd64} \
-    && curl -Lo "${PROCESS_EXPORTER_TGZ}" https://github.com/ncabatoff/process-exporter/releases/download/v${PROCESS_EXPORTER_VERSION}/process-exporter-${PROCESS_EXPORTER_VERSION}.linux-${TARGETARCH}.tar.gz \
-    && echo "$(eval echo \$PROCESS_EXPORTER_SHA256SUM_${TARGETARCH})  ${PROCESS_EXPORTER_TGZ}" | sha256sum -c \
-    && tar -xzC /usr/local/bin -f "${PROCESS_EXPORTER_TGZ}" --strip-components=1 --wildcards '*/process-exporter' \
-    && rm "${PROCESS_EXPORTER_TGZ}"
 
 COPY package.json package-lock.json /usr/src/app/
 RUN npm ci --production && npm cache clean --force
