@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v14.9.2
+      hash: 1897d680b1971b27ff132d37983ba25555fda467
+      body: |
+        Update balena/open-balena-base from 14.7.2 to 14.9.2
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Renovate Bot
+      nested: []
+  version: 11.26.0
+  title: ""
+  date: 2023-05-09T21:58:47.218Z
+- commits:
     - subject: use eget to update dependencies
       hash: 198705d802062f687fb753f0640b6008059b2fa1
       body: ""
