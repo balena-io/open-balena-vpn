@@ -1,4 +1,15 @@
 - commits:
+    - subject: use eget to update dependencies
+      hash: 198705d802062f687fb753f0640b6008059b2fa1
+      body: ""
+      footer:
+        change-type: patch
+      author: ab77
+      nested: []
+  version: 11.25.1
+  title: ""
+  date: 2023-05-09T21:34:39.652Z
+- commits:
     - subject: Add a configurable (10s default) delay on auth failure
       hash: e6044e11cecf789d61441893d98e0fb08488a154
       body: |
@@ -1887,9 +1898,9 @@
             - subject: Fix configuration for non-BoB deployments
               hash: be5d9722d47b65ca511cfb66ab13ed1f3ddff372
               body: >
-                The default value on the BALENA_DEVICE_UUID variable forced all code paths
-                that used to run optionally depending on whether deployment was
-                on a balenaOS device to run.
+                The default value on the BALENA_DEVICE_UUID variable forced all
+                code paths that used to run optionally depending on whether
+                deployment was on a balenaOS device to run.
               footer:
                 Change-type: patch
                 change-type: patch
@@ -1918,8 +1929,8 @@
             - subject: Auto-configure balenaMachine(bob)
               hash: efb8da155b7bedec44558dfcd55cb6b535099c01
               body: >
-                + allows balenaMachine(s)/BoB(s) to automatically configure itself
-                (without bob-cli)
+                + allows balenaMachine(s)/BoB(s) to automatically configure
+                itself (without bob-cli)
 
                 + auto-configuration requires balena-ca and cert-manager to do the heavy lifting prior
 
@@ -1962,7 +1973,8 @@
             - subject: Attempt to load root CA certificate bundle from file
               hash: 493bb446e99fc7a5b6ecaa4e796942aa65ad03d0
               body: >
-                * allows dynamic certificate generation and loading within the stack
+                * allows dynamic certificate generation and loading within the
+                stack
 
                 * if a (volume|directory) /certs exists, set up a notification to watch
                   for /certs/ca-bundle.pem and update CA certificates/restart confd
@@ -2270,8 +2282,8 @@
             - subject: Add parallel HOSTs and env vars
               hash: 7ef7a8e470f195afec8a104e837f901c9f0d1044
               body: >
-                * allows removal of BALENA_ prefixes across all products and services
-                (aside from reserved within balenaOS/Supervisor)
+                * allows removal of BALENA_ prefixes across all products and
+                services (aside from reserved within balenaOS/Supervisor)
 
                 * made balena-root-ca service a dependency of confd.service
               footer:
@@ -4207,7 +4219,8 @@
             - subject: Add a base image without systemd
               hash: d7e44872d9594b9ef0557f78b8f38c6e449bbe54
               body: >
-                Also configures circleCI to publish no-systemd variant in parallel.
+                Also configures circleCI to publish no-systemd variant in
+                parallel.
               footer:
                 Change-type: minor
                 change-type: minor
