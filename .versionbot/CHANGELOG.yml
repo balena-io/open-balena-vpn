@@ -1,4 +1,17 @@
 - commits:
+    - subject: test external contributions
+      hash: f38d954c20d7780b6e634738a0749e58b63e2267
+      body: |
+        * https://github.com/product-os/flowzone/pull/629
+        * https://github.com/balena-io/open-balena-vpn/pull/337
+      footer:
+        change-type: patch
+      author: Anton Belodedenko
+      nested: []
+  version: 11.26.2
+  title: ""
+  date: 2023-05-30T23:19:37.912Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v14.9.3
       hash: c7aa5a65b3d46e87650d14561ffb82001b79ae0e
       body: |
