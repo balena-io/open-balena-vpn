@@ -1,4 +1,15 @@
 - commits:
+    - subject: test internal contribution
+      hash: f4ff264c2403e243cc4061a7f0bcd2db4a6ca9f3
+      body: ""
+      footer:
+        change-type: patch
+      author: Anton Belodedenko
+      nested: []
+  version: 11.26.3
+  title: ""
+  date: 2023-06-01T16:58:40.607Z
+- commits:
     - subject: test external contributions
       hash: f38d954c20d7780b6e634738a0749e58b63e2267
       body: |
