@@ -156,11 +156,6 @@ export const apiFactory = (serviceId: number) => {
 			logger.warning(
 				`dropping oos disconnect event for uuid=${uuid} worker=${workerId} refcount=${clientRefCount[uuid]}`,
 			);
-			captureException(
-				new Error('Out of Sync OpenVPN Client Event Received'),
-				'openvpn-oos-event',
-				{ tags: { uuid }, req },
-			);
 			return res.status(400).end();
 		}
 		res.status(200).end();
