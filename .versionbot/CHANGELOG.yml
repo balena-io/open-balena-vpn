@@ -1,4 +1,16 @@
 - commits:
+    - subject: Stop reporting out of sync disconnects to sentry
+      hash: 3e5b2d70bfb798532142242e3f63ab8330e46466
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.26.7
+  title: ""
+  date: 2023-06-19T15:03:31.718Z
+- commits:
     - subject: Gracefully handle not finding service instance for device
       hash: fb51f754c9f0ea9b1d38c13a722220bdd8f0564f
       body: ""
