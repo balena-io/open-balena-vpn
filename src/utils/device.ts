@@ -104,7 +104,7 @@ interface VpnHost {
 export const getDeviceVpnHost = async (
 	uuid: string,
 	auth?: Buffer,
-): Promise<VpnHost> => {
+): Promise<VpnHost | undefined> => {
 	try {
 		const services = (await balenaApi.get({
 			resource: 'service_instance',
@@ -120,11 +120,8 @@ export const getDeviceVpnHost = async (
 				},
 			},
 			passthrough: { headers: authHeader(auth) },
-		})) as { d?: Array<{ id: number }> };
-		if (!Array.isArray(services) || services.length === 0) {
-			throw new Error('invalid api response');
-		}
-		return services[0] as VpnHost;
+		})) as Array<{ id: number; ip_address: string }>;
+		return services[0];
 	} catch (err) {
 		// TODO: Handle `Unauthorized` errors explicitly
 		captureException(err, 'device-vpn-host-lookup-error');
