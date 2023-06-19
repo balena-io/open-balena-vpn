@@ -1,4 +1,4 @@
-FROM balena/open-balena-base:v14.9.3 as base
+FROM balena/open-balena-base:v14.10.0 as base
 
 
 FROM base as builder
@@ -41,13 +41,6 @@ COPY auth .
 RUN cargo build --release
 
 FROM base as main
-
-# Docker/systemd socialisation hack to handle SIGTERM=>SIGKILL
-# https://stackoverflow.com/q/43486361/1559300
-# https://bugzilla.redhat.com/show_bug.cgi?id=1201657
-# https://unix.stackexchange.com/a/572819/78029
-# https://engineeringblog.yelp.com/2016/01/dumb-init-an-init-for-docker.html
-STOPSIGNAL SIGRTMIN+3
 
 ARG TARGETARCH
 
