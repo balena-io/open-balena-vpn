@@ -86,6 +86,12 @@ class Tunnel extends nodeTunnel.Tunnel {
 				return socket;
 			} else {
 				const vpnHost = await device.getDeviceVpnHost(uuid, auth);
+				if (vpnHost == null) {
+					client.end(HTTP_500);
+					throw new errors.HandledTunnelingError(
+						'service instance not found for device',
+					);
+				}
 				if (vpnHost.id === this.serviceId) {
 					client.end(HTTP_500);
 					throw new errors.HandledTunnelingError(
