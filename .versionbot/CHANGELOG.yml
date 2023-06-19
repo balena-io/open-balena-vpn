@@ -1,4 +1,81 @@
 - commits:
+    - subject: Update dependencies
+      hash: 31fc279dd4ec322f2ea68f6a03c5353a30cbf50f
+      body: |
+        Update pinejs-client-request from 7.3.5 to 7.3.7
+        Update typed-error from 3.2.1 to 3.2.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update flowzone.yml
+              hash: 9482758e9e575616ceb826d859fb28823f3b83f5
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Kyle Harding
+              nested: []
+          version: pinejs-client-request-7.3.7
+          title: ""
+          date: 2023-05-31T15:40:50.246Z
+        - commits:
+            - subject: Specify node 10 as the minimum supported node engine in the
+                package.json
+              hash: b2ff93e1ff0cc1275004010067a48bc0e458bfba
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+                signed-off-by: Thodoris Greasidis <thodoris@balena.io>
+              author: Thodoris Greasidis
+              nested: []
+            - subject: Replace balenaCI with flowzone
+              hash: 6d6c90a99c27b0a64e497f521cf7adb55c18ec2e
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Thodoris Greasidis
+              nested: []
+          version: pinejs-client-request-7.3.6
+          title: ""
+          date: 2022-09-26T09:40:32.762Z
+        - commits:
+            - subject: Delete CODEOWNERS
+              hash: 8b3f4191d9ff1f27ee2c2d56cfc23cdc5d823fdc
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: dfunckt
+              nested: []
+            - subject: Update dependencies
+              hash: 772e63f730d59009b84d33140fe76f23961c2a7a
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Thodoris Greasidis
+              nested: []
+            - subject: Replace circleCI with flowzone
+              hash: 33900bc3c8ac7783d157f949c1ec69b032b41d93
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Thodoris Greasidis
+              nested: []
+          version: typed-error-3.2.2
+          title: ""
+          date: 2023-04-20T10:06:29.364Z
+  version: 11.26.5
+  title: ""
+  date: 2023-06-19T12:20:27.304Z
+- commits:
     - subject: Update open-balena-base to 14.10.0
       hash: 074fbd33ca4eeb09f034107fce49b00a8f7b1e8c
       body: |
