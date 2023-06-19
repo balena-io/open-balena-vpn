@@ -1,4 +1,16 @@
 - commits:
+    - subject: Gracefully handle not finding service instance for device
+      hash: fb51f754c9f0ea9b1d38c13a722220bdd8f0564f
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.26.6
+  title: ""
+  date: 2023-06-19T13:00:34.613Z
+- commits:
     - subject: Update dependencies
       hash: 31fc279dd4ec322f2ea68f6a03c5353a30cbf50f
       body: |
