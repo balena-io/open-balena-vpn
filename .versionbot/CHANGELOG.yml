@@ -1,4 +1,42 @@
 - commits:
+    - subject: Update open-balena-base to 14.10.0
+      hash: 074fbd33ca4eeb09f034107fce49b00a8f7b1e8c
+      body: |
+        Update open-balena-base from 14.9.3 to 14.10.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update dependency npm to v9.7.1
+              hash: 6af4dabea40287d9bac00f001ea5cb2e228d2277
+              body: |
+                Update npm from 9.6.7 to 9.7.1
+              footer:
+                Change-type: minor
+                change-type: minor
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-14.10.0
+          title: ""
+          date: 2023-06-07T16:02:28.180Z
+        - commits:
+            - subject: Set systemd stopsignal to SIGRTMIN+3
+              hash: 5c69245959e57bcb4c033bc027d817801f7a1428
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-14.9.4
+          title: ""
+          date: 2023-05-31T16:09:26.999Z
+  version: 11.26.4
+  title: ""
+  date: 2023-06-19T11:45:30.623Z
+- commits:
     - subject: test internal contribution
       hash: f4ff264c2403e243cc4061a7f0bcd2db4a6ca9f3
       body: ""
