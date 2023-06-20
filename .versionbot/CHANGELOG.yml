@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update dependencies
+      hash: 7059b5bd984b96cb99555585202def02c5f3a3ea
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.26.8
+  title: ""
+  date: 2023-06-20T13:54:39.161Z
+- commits:
     - subject: Stop reporting out of sync disconnects to sentry
       hash: 3e5b2d70bfb798532142242e3f63ab8330e46466
       body: ""
