@@ -19,7 +19,7 @@ import { optionalVar } from '@balena/env-parsing';
 import * as _ from 'lodash';
 import * as memoize from 'memoizee';
 
-import { balenaApi } from '.';
+import { balenaApi, StatusError } from '.';
 import { APIError, captureException } from './errors';
 
 const VPN_GUEST_API_KEY = optionalVar('VPN_GUEST_API_KEY');
@@ -123,8 +123,10 @@ export const getDeviceVpnHost = async (
 		})) as Array<{ id: number; ip_address: string }>;
 		return services[0];
 	} catch (err) {
-		// TODO: Handle `Unauthorized` errors explicitly
-		captureException(err, 'device-vpn-host-lookup-error');
+		if (!(err instanceof StatusError) || err.statusCode !== 401) {
+			// Do not capture `Unauthorized` errors
+			captureException(err, 'device-vpn-host-lookup-error');
+		}
 		throw new APIError(`cannot find device vpn host (${err.message})`);
 	}
 };
