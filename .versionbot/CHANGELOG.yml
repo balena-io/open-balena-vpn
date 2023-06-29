@@ -1,4 +1,16 @@
 - commits:
+    - subject: Do not report unauthorized errors to sentry
+      hash: 97f3128ae2492bb07d13c8322d41037774d8a40f
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.26.11
+  title: ""
+  date: 2023-06-29T16:44:20.965Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v14.10.2
       hash: 3b28b81e59a214543761cf3b5fe97d4e5046f6a9
       body: |
