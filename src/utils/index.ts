@@ -18,6 +18,7 @@
 import * as winston from 'winston';
 
 import { PinejsClientRequest } from 'pinejs-client-request';
+export { StatusError } from 'pinejs-client-request';
 import { BALENA_API_INTERNAL_HOST } from './config';
 
 export { version as VERSION } from '../../package.json';
