@@ -1,4 +1,29 @@
 - commits:
+    - subject: Update open-balena-base to 15.0.0
+      hash: 8e3913262435a33e220f7b83957d5db549375a1a
+      body: |
+        Update open-balena-base from 14.11.1 to 15.0.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Upgrade to debian bookworm
+              hash: 492ce2808a7fafe6df99256948a6366fee6836fc
+              body: ""
+              footer:
+                Change-type: major
+                change-type: major
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-15.0.0
+          title: ""
+          date: 2023-07-06T16:19:57.969Z
+  version: 11.27.2
+  title: ""
+  date: 2023-07-10T16:07:35.156Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v14.11.1
       hash: 06d8dbf260df5c90f04b200215728c0c0eeaeb8a
       body: |
