@@ -1,4 +1,4 @@
-FROM balena/open-balena-base:v14.11.1 as base
+FROM balena/open-balena-base:v15.0.0 as base
 
 
 FROM base as builder
@@ -34,7 +34,7 @@ RUN git clone https://github.com/fac/auth-script-openvpn.git \
 	&& git checkout ${AUTH_PLUGIN_COMMIT} \
 	&& C_INCLUDE_PATH=/usr/include/openvpn/ make plugin
 
-FROM rust:1-bullseye as rust-builder
+FROM rust:1-bookworm as rust-builder
 
 WORKDIR /usr/src/app
 COPY auth .
@@ -70,27 +70,28 @@ RUN eget prometheus/node_exporter --tag ${NODE_EXPORTER_TAG} \
 EXPOSE 80 443 3128
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    socat \
-    && rm -rf /var/lib/apt/lists/*
+	socat \
+	&& rm -rf /var/lib/apt/lists/*
 
-RUN curl -s https://haproxy.debian.net/bernat.debian.org.gpg | apt-key add - >/dev/null \
-    && echo deb http://haproxy.debian.net bullseye-backports-2.6 main > /etc/apt/sources.list.d/haproxy.list \
-    && apt-get update -qq \
-    && apt-get install -qy haproxy=2.6.* iptables --no-install-recommends \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
-    && ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts \
-    && systemctl mask openvpn@.service openvpn.service
+# https://docs.renovatebot.com/modules/datasource/repology/
+# renovate: datasource=repology depName=debian_12/haproxy versioning=loose
+ARG HAPROXY_VERSION=2.6.12-1
+RUN apt-get update -qq \
+	&& apt-get install -qy haproxy=${HAPROXY_VERSION} iptables --no-install-recommends \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
+	&& ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts \
+	&& systemctl mask openvpn@.service openvpn.service
 
 ENV LIBNSS_OPENVPN_VERSION 22feb11322182f6fd79f85cd014b65b6c40b7b47
 RUN tmp="$(mktemp -d)" ; set -x \
-    && git clone -q https://github.com/balena-io-modules/libnss-openvpn.git "${tmp}" \
-    && cd "${tmp}" \
-    && git -C "${tmp}" checkout -q ${LIBNSS_OPENVPN_VERSION} \
-    && make -C "${tmp}" -j "$(nproc)" \
-    && make -C "${tmp}" install \
-    && sed --in-place --regexp-extended 's|(hosts:\W+)(.*)|\1openvpn \2|' /etc/nsswitch.conf \
-    && rm -rf "${tmp}"
+	&& git clone -q https://github.com/balena-io-modules/libnss-openvpn.git "${tmp}" \
+	&& cd "${tmp}" \
+	&& git -C "${tmp}" checkout -q ${LIBNSS_OPENVPN_VERSION} \
+	&& make -C "${tmp}" -j "$(nproc)" \
+	&& make -C "${tmp}" install \
+	&& sed --in-place --regexp-extended 's|(hosts:\W+)(.*)|\1openvpn \2|' /etc/nsswitch.conf \
+	&& rm -rf "${tmp}"
 
 COPY package.json package-lock.json /usr/src/app/
 RUN npm ci --production && npm cache clean --force
@@ -105,6 +106,6 @@ COPY openvpn /usr/src/app/openvpn
 COPY docker-hc /usr/src/app/
 COPY config/services /etc/systemd/system
 RUN systemctl enable \
-    open-balena-vpn.service \
-    node-exporter.service \
-    process-exporter.service
+	open-balena-vpn.service \
+	node-exporter.service \
+	process-exporter.service
