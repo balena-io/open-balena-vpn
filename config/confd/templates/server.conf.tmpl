@@ -33,6 +33,7 @@ tls-server
 tls-version-min 1.2
 
 data-ciphers {{ getenv "VPN_DATA_CIPHERS" "AES-128-GCM:AES-192-GCM:AES-256-GCM:AES-128-CBC:AES-192-CBC:AES-256-CBC" }}
+{{ if getenv "VPN_OPENSSL_PROVIDERS" }}providers {{ getenv "VPN_OPENSSL_PROVIDERS" }}{{ end }}
 
 group nogroup
 user nobody
