@@ -1,4 +1,16 @@
 - commits:
+    - subject: Add support for configuring openssl providers
+      hash: e13cdc18f31304cdae88dc1dee8c4c516e7764f2
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 11.28.0
+  title: ""
+  date: 2023-07-14T17:54:18.119Z
+- commits:
     - subject: Update open-balena-base to 15.0.0
       hash: 8e3913262435a33e220f7b83957d5db549375a1a
       body: |
