@@ -1,0 +1,6 @@
+[template]
+src = "open-balena-vpn.override.tmpl"
+dest = "/etc/systemd/system/open-balena-vpn.service.d/override.conf"
+keys = [
+  "DEFAULT_SIGTERM_TIMEOUT"
+]
