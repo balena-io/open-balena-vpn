@@ -20,6 +20,7 @@ import { metrics } from '@balena/node-metrics-gatherer';
 import { setTimeout } from 'timers/promises';
 import {
 	DEFAULT_SIGTERM_TIMEOUT,
+	MAXIMUM_DRAIN_DELAY,
 	VPN_BASE_IP,
 	VPN_BASE_MANAGEMENT_PORT,
 	VPN_BASE_MASK,
@@ -124,11 +125,13 @@ const worker = async (instanceId: number, serviceId: number) => {
 			logger.info(
 				`attempt to drain ${clientCount} connected clients in ${DEFAULT_SIGTERM_TIMEOUT}ms`,
 			);
-			const delayMs = DEFAULT_SIGTERM_TIMEOUT / clientCount;
+			const delayMs = Math.min(
+				MAXIMUM_DRAIN_DELAY,
+				DEFAULT_SIGTERM_TIMEOUT / clientCount,
+			);
 			logger.info(
 				`connection draining ${clientCount} clients, spaced by ${delayMs}ms`,
 			);
-			let timeToKill = DEFAULT_SIGTERM_TIMEOUT;
 			for (const { uuid: cn } of drainQueue) {
 				// Trigger the disconnecting the client in the background so as to avoid it delaying
 				// the overall cadence of disconnections but whilst still having error handling for it
@@ -140,12 +143,9 @@ const worker = async (instanceId: number, serviceId: number) => {
 						logger.warning(`${err} while killing ${cn} on worker ${serviceId}`);
 					}
 				})();
-				timeToKill = timeToKill - delayMs;
-				// skip if last client
-				if (timeToKill > delayMs) {
-					// otherwise keep disconnecting clients
-					await setTimeout(delayMs);
-				}
+
+				// Wait for the delay before moving on to the next client
+				await setTimeout(delayMs);
 			}
 		}
 
