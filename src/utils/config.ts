@@ -65,6 +65,10 @@ export const VPN_API_PORT = intVar('VPN_API_PORT');
 // milliseconds
 export const DEFAULT_SIGTERM_TIMEOUT =
 	intVar('DEFAULT_SIGTERM_TIMEOUT') * SECONDS;
+// We convert the drain rate per minute to the equivalent max delay for ease of use elsewhere
+export const MAXIMUM_DRAIN_DELAY = Math.round(
+	(1 * MINUTES) / intVar('MINIMUM_DRAIN_RATE_PER_MINUTE', 500),
+);
 
 export const VPN_INSTANCE_COUNT = getInstanceCount('VPN_INSTANCE_COUNT');
 export const VPN_VERBOSE_LOGS = boolVar('DEFAULT_VERBOSE_LOGS');
