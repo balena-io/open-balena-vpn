@@ -23,8 +23,8 @@ LimitNOFILE=1048576
 # Avoid an issue with failing to mount namespaces
 BindReadOnlyPaths=
 EnvironmentFile=/usr/src/app/config/env
-# wait for open-balena-vpn master to exit
-ExecStop=-/bin/bash -c 'set -x; while curl -sfo/dev/null localhost:8080/ping; do sleep $(( (RANDOM % 3) + 3 ))s; done;'
+# wait for open-balena-vpn master to exit, then kill systemd/init
+ExecStop=-/bin/bash -c 'set -x; while curl -sfo/dev/null localhost:8080/ping; do sleep $(( (RANDOM % 3) + 3 ))s; done; /usr/bin/systemctl kill init.scope'
 TimeoutStopSec={{ if getenv "DEFAULT_SIGTERM_TIMEOUT" }}{{ getenv "DEFAULT_SIGTERM_TIMEOUT" }}{{ else }}120{{ end }}
 
 [Install]
