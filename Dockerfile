@@ -61,11 +61,13 @@ RUN asset="eget-${EGET_RELEASE}-linux_${TARGETARCH:-amd64}.tar.gz" && \
 
 COPY eget_${TARGETARCH:-amd64}.toml /root/.eget.toml
 
-ARG NODE_EXPORTER_TAG=v1.3.1
-ARG PROCESS_EXPORTER_TAG=v0.7.10
+# renovate: datasource=github-releases depName=prometheus/node_exporter
+ARG NODE_EXPORTER_TAG=1.3.1
+# renovate: datasource=github-releases depName=ncabatoff/process-exporter
+ARG PROCESS_EXPORTER_TAG=0.7.10
 
-RUN eget prometheus/node_exporter --tag ${NODE_EXPORTER_TAG} \
-	&& eget ncabatoff/process-exporter --tag ${PROCESS_EXPORTER_TAG}
+RUN eget prometheus/node_exporter --tag v${NODE_EXPORTER_TAG} \
+	&& eget ncabatoff/process-exporter --tag v${PROCESS_EXPORTER_TAG}
 
 EXPOSE 80 443 3128
 
