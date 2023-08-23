@@ -1,4 +1,18 @@
 - commits:
+    - subject: Use renovate annotations to manage dockerfile version args
+      hash: b037b532f02e022dcaf4e9622677cde5ea72a545
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 11.29.1
+  title: ""
+  date: 2023-08-23T19:32:51.534Z
+- commits:
     - subject: Add a configurable minimum client drain rate when terminating
       hash: 13d3899e2a45be47939e2c2e5ef97573f74f07d3
       body: |
