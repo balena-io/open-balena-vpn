@@ -29,8 +29,9 @@ class ServiceInstance {
 		const tags: { [key: string]: string } = {};
 		try {
 			tags.instance_id = `${this.getId()}`;
-			// tslint:disable-next-line:no-empty
-		} catch {}
+		} catch {
+			// ignore
+		}
 
 		captureException(err, fingerprint, { tags });
 	}
@@ -61,9 +62,9 @@ class ServiceInstance {
 	public async scheduleHeartbeat() {
 		await setTimeout(this.interval);
 		try {
-			return await this.sendHeartbeat();
+			await this.sendHeartbeat();
 		} finally {
-			this.scheduleHeartbeat();
+			void this.scheduleHeartbeat();
 		}
 	}
 

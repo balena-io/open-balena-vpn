@@ -16,7 +16,6 @@
 */
 
 import { optionalVar } from '@balena/env-parsing';
-import * as _ from 'lodash';
 import * as memoize from 'memoizee';
 
 import { balenaApi, StatusError } from '.';

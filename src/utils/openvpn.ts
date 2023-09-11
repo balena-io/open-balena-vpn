@@ -23,7 +23,7 @@ import * as fs from 'fs';
 import * as net from 'net';
 const Telnet =
 	// This weird import is because telnet-client uses `export =` but the typings use `export default`
-	// tslint:disable-next-line:no-var-requires
+	// eslint-disable-next-line @typescript-eslint/no-var-requires
 	require('telnet-client') as typeof import('telnet-client').default;
 
 import { VPN_API_PORT } from './config';
@@ -58,10 +58,10 @@ export interface VpnClientDisconnectData
 	time_duration: string;
 }
 
-export const hasCommonName = <T extends {}>(
+export const hasCommonName = <T extends object>(
 	data: T & { common_name?: string },
 ): data is T & { common_name: string } => data.common_name != null;
-export const hasDurationData = <T extends {}>(
+export const hasDurationData = <T extends object>(
 	data: T & { time_duration?: number },
 ): data is T & { time_duration: number } =>
 	data.time_duration != null && typeof data.time_duration === 'number';
@@ -81,7 +81,7 @@ const STARTUP_TIMEOUT = 5 * SECONDS;
 const TERM_TIMEOUT = 5 * SECONDS;
 const KILL_TIMEOUT = TERM_TIMEOUT * 2;
 
-export declare interface VpnManager {
+export declare interface VpnManagerEvents {
 	on(event: 'process:error', callback?: (err: Error) => void): this;
 	on(
 		event: 'process:exit',
@@ -119,7 +119,7 @@ export declare interface VpnManager {
 	): this;
 }
 
-export class VpnManager extends EventEmitter {
+export class VpnManager extends EventEmitter implements VpnManagerEvents {
 	private process?: ChildProcess;
 	private readonly connector = new Telnet();
 	private buf: string = '';

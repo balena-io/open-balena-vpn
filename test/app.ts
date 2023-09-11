@@ -92,8 +92,8 @@ describe('tunnel worker', () =>
 	}));
 
 describe('api server', () =>
-	it('should startup successfully', () => {
-		apiServer(instance.getId()).listenAsync(VPN_API_PORT);
+	it('should startup successfully', async () => {
+		await apiServer(instance.getId()).listenAsync(VPN_API_PORT);
 	}));
 
 describe('VPN Events', function () {
