@@ -135,7 +135,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 			for (const { uuid: cn } of drainQueue) {
 				// Trigger the disconnecting the client in the background so as to avoid it delaying
 				// the overall cadence of disconnections but whilst still having error handling for it
-				(async () => {
+				void (async () => {
 					try {
 						logger.info(`connection draining ${cn}`);
 						await vpn.killClient(cn);
@@ -250,7 +250,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 
 			if (verbose) {
 				logger.info(`clientCache: ${JSON.stringify(clientCache)}`);
-				vpn.getStatus();
+				logger.info(await vpn.getStatus());
 			}
 
 			await drainConnections();

@@ -45,10 +45,7 @@ export class Netmask extends netmask.Netmask {
 		}
 		let net = new Netmask(this.base, mask);
 		const subnets = [];
-		while (true) {
-			if (!this.contains(net)) {
-				break;
-			}
+		while (this.contains(net)) {
 			subnets.push(net);
 			net = net.next();
 		}

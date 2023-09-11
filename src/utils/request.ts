@@ -17,7 +17,6 @@
 
 import { intVar } from '@balena/env-parsing';
 import { Agent } from 'https';
-import * as _ from 'lodash';
 import * as rp from 'request-promise';
 export type { Response } from 'request';
 

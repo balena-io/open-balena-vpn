@@ -144,7 +144,7 @@ export const setConnected = (() => {
 			await setTimeout(1000);
 			currentlyReporting = false;
 			// Check if any pending updates have come in whilst we were reporting
-			updateLoop(serviceId, logger);
+			void updateLoop(serviceId, logger);
 		}
 	};
 
@@ -167,6 +167,6 @@ export const setConnected = (() => {
 			deviceStates[uuid].targetWorkerId = workerId;
 		}
 		pendingUpdates.add(uuid);
-		updateLoop(serviceId, logger);
+		void updateLoop(serviceId, logger);
 	};
 })();

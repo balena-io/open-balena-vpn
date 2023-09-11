@@ -65,8 +65,8 @@ describe('getDeviceByUUID()', function () {
 		expect(device).to.be.an.instanceOf(Promise);
 	});
 
-	it('should resolve to the device requested', function () {
-		const device = getDeviceByUUID('deadbeef', VPN_SERVICE_API_KEY);
-		expect(device).to.eventually.deep.equal(this.mockDevice);
+	it('should resolve to the device requested', async function () {
+		const device = await getDeviceByUUID('deadbeef', VPN_SERVICE_API_KEY);
+		expect(device).to.deep.equal(this.mockDevice);
 	});
 });

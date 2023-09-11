@@ -17,7 +17,6 @@
 
 import { metrics } from '@balena/node-metrics-gatherer';
 import { promises as dns } from 'dns';
-import * as _ from 'lodash';
 import * as net from 'net';
 import * as nodeTunnel from 'node-tunnel';
 import * as winston from 'winston';
