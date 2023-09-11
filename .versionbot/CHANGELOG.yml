@@ -1,4 +1,40 @@
 - commits:
+    - subject: Update open-balena-base to 16.0.0
+      hash: 5277fca2377ece7ca27af96ac634ba08b3573cc7
+      body: |
+        Update open-balena-base from 15.1.0 to 16.0.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update nodejs to 20.6.1 and npm to 10.1.0
+              hash: 7de3033a0fdbfe7942718532a105321d532541d6
+              body: ""
+              footer:
+                Change-type: major
+                change-type: major
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-16.0.0
+          title: ""
+          date: 2023-09-11T10:26:55.870Z
+        - commits:
+            - subject: fix env var resolution from token map
+              hash: 1be02cb7bc4e3229c1d452caa638bc9739125e3c
+              body: ""
+              footer:
+                change-type: patch
+              author: ab77
+              nested: []
+          version: open-balena-base-15.1.1
+          title: ""
+          date: 2023-09-07T18:25:15.173Z
+  version: 11.29.4
+  title: ""
+  date: 2023-09-11T11:01:42.546Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v15.1.0
       hash: deff2770790c4c4a2915f54a627060c5ea6fa460
       body: |
