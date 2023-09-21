@@ -4,7 +4,7 @@ upstream:
     url: 'https://github.com/balena-io-modules/node-metrics-gatherer'
   - repo: 'node-tunnel'
     url: 'https://github.com/balena-io-modules/node-tunnel'
-  - repo: 'open-balena-base'
+  - repo: 'balena/open-balena-base'
     url: 'https://github.com/balena-io-modules/open-balena-base'
   - repo: 'pinejs-client-request'
     url: 'https://github.com/balena-io-modules/pinejs-client-request'
