@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update repo.yml
+      hash: 2286cd70a29f4f054b02cbb23389117227d32d0d
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Kyle Harding
+      nested: []
+  version: 11.29.11
+  title: ""
+  date: 2023-09-21T16:08:24.519Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v16.0.4
       hash: 157b36881640b2b4c2e42ae1a1482d603060cc76
       body: |
