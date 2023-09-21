@@ -1,4 +1,37 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v16.0.5
+      hash: d885e14b35e01f9c3e49b13f46172a2a16914381
+      body: |
+        Update balena/open-balena-base from 16.0.4 to 16.0.5
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested:
+        - commits:
+            - subject: Build confd from source to avoid upx issues in released binaries
+              hash: 96e9eb4d3e94c2848ef6a5e83d51d9c71835139f
+              body: >
+                upx v3.96 (2020) fixes this issue, but that was released after
+                the
+
+                v0.16.0 confd release in 2018
+              footer:
+                Resolves: https://github.com/balena-io/balena-monitor/issues/549
+                resolves: https://github.com/balena-io/balena-monitor/issues/549
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-16.0.5
+          title: ""
+          date: 2023-09-21T13:03:29.817Z
+  version: 11.29.12
+  title: ""
+  date: 2023-09-21T17:16:57.689Z
+- commits:
     - subject: Update repo.yml
       hash: 2286cd70a29f4f054b02cbb23389117227d32d0d
       body: ""
