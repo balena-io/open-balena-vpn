@@ -1,4 +1,31 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v16.0.7
+      hash: c7b82523be533d699ddc803060f7c7753aa769ca
+      body: |
+        Update balena/open-balena-base from 16.0.6 to 16.0.7
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested:
+        - commits:
+            - subject: Prefer using local env var values before falling back to defaults
+              hash: 3012af05ce93203768e661c77e4a322ac3147b85
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+                See: https://github.com/balena-io-modules/open-balena-base/pull/316/files#diff-95ccd7ac2401d4f914cf825fabd8648b9db8a1f5436aafcedf3a640e9a1b73b6R376-R378
+                see: https://github.com/balena-io-modules/open-balena-base/pull/316/files#diff-95ccd7ac2401d4f914cf825fabd8648b9db8a1f5436aafcedf3a640e9a1b73b6R376-R378
+              author: Thodoris Greasidis
+              nested: []
+          version: open-balena-base-16.0.7
+          title: ""
+          date: 2023-10-02T14:41:18.394Z
+  version: 11.29.14
+  title: ""
+  date: 2023-10-02T15:15:43.001Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v16.0.6
       hash: b4dcedccfffddbd2a547cc74d9517bf5e2999a89
       body: |
