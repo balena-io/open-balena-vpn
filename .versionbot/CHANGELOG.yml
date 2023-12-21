@@ -1,4 +1,118 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v16.0.18
+      hash: e0a11417b2ee0d70b78f20c1fb55f11e81d5f4f1
+      body: |
+        Update balena/open-balena-base from 16.0.10 to 16.0.18
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested:
+        - commits:
+            - subject: add missing data. host
+              hash: 76608ddf5578f54a4dda563f4c8a2a35f303110a
+              body: ""
+              footer:
+                change-type: patch
+              author: ab77
+              nested: []
+          version: open-balena-base-16.0.18
+          title: ""
+          date: 2023-12-13T01:16:22.659Z
+        - commits:
+            - subject: Update dependency npm to v10.2.5
+              hash: 12dc1b4934e4a50fc68841717588b8704041b964
+              body: |
+                Update npm from 10.2.4 to 10.2.5
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-16.0.17
+          title: ""
+          date: 2023-12-06T22:58:31.184Z
+        - commits:
+            - subject: remove self-hosted Sentry config
+              hash: 3f390363034c3d9ceeacaa78c93ceee927a9aaff
+              body: |
+                * components can be manually configuired to point to SaaS Sentry
+              footer:
+                change-type: patch
+              author: ab77
+              nested: []
+          version: open-balena-base-16.0.16
+          title: ""
+          date: 2023-12-05T00:24:26.689Z
+        - commits:
+            - subject: Update dependency node to v20.10.0
+              hash: c5a98cbac21692a085efd4d6118e080a1351222e
+              body: |
+                Update node from 20.9.0 to 20.10.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-16.0.15
+          title: ""
+          date: 2023-11-22T16:57:59.503Z
+        - commits:
+            - subject: Update dependency npm to v10.2.4
+              hash: a914500d0a42a83e73c3cf65d08749ce70d84d6d
+              body: |
+                Update npm from 10.2.3 to 10.2.4
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-16.0.14
+          title: ""
+          date: 2023-11-15T22:00:31.166Z
+        - commits:
+            - subject: Update dependency npm to v10.2.3
+              hash: 01f85340e6131d54f8c6eed7a74c37ff68b8d902
+              body: |
+                Update npm from 10.2.2 to 10.2.3
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-16.0.13
+          title: ""
+          date: 2023-11-02T21:00:19.215Z
+        - commits:
+            - subject: Update dependency node to v20.9.0
+              hash: 82aeef20c95240809512c443e59cb177db7a1f4f
+              body: |
+                Update node from 20.8.1 to 20.9.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-16.0.12
+          title: ""
+          date: 2023-10-31T19:59:20.031Z
+        - commits:
+            - subject: Update dependency npm to v10.2.2
+              hash: 157c6b4560483f893ef763e824e522c35f55927c
+              body: |
+                Update npm from 10.2.1 to 10.2.2
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-16.0.11
+          title: ""
+          date: 2023-10-31T19:06:09.574Z
+  version: 11.29.19
+  title: ""
+  date: 2023-12-21T21:01:12.496Z
+- commits:
     - subject: Update dependency lint-staged to v15
       hash: 47e3750a61d872f32a6e874d75ae86e3aa6a7875
       body: |
