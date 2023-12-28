@@ -77,7 +77,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # https://docs.renovatebot.com/modules/datasource/repology/
 # renovate: datasource=repology depName=debian_12/haproxy versioning=loose
-ARG HAPROXY_VERSION=2.6.12-1
+ARG HAPROXY_VERSION=2.6.12-1+deb12u1
 RUN apt-get update -qq \
 	&& apt-get install -qy haproxy=${HAPROXY_VERSION} iptables --no-install-recommends \
 	&& apt-get clean \
