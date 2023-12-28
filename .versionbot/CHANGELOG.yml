@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency debian_12/haproxy to v2.6.12-1+deb12u1
+      hash: a04142a6f14d38ed21b410fd4f22bcc86cca045c
+      body: |
+        Update debian_12/haproxy from 2.6.12-1 to 2.6.12-1+deb12u1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested: []
+  version: 11.29.21
+  title: ""
+  date: 2023-12-28T15:01:30.694Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v17
       hash: c5185b48a385e747191d30b590372d2bea2c8148
       body: |
