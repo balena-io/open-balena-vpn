@@ -1,4 +1,33 @@
 - commits:
+    - subject: Update dependencies
+      hash: 74fbc4e9806c85ac474a02c883673b7f346841e4
+      body: |
+        Update @balena/env-parsing from 1.1.5 to 1.1.10
+        Update @balena/lint from 7.1.2 to 7.2.4
+        Update pinejs-client-request from 7.3.7 to 7.4.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Respect the Retry-After header in request retries
+              hash: f8b6fa30b0b43edd269f988ff241a2a3fa3c892f
+              body: ""
+              footer:
+                Depends-on: https://github.com/balena-io-modules/pinejs-client-js/pull/141
+                depends-on: https://github.com/balena-io-modules/pinejs-client-js/pull/141
+                Change-type: minor
+                change-type: minor
+              author: Thodoris Greasidis
+              nested: []
+          version: pinejs-client-request-7.4.0
+          title: ""
+          date: 2023-12-05T15:30:32.898Z
+  version: 11.29.22
+  title: ""
+  date: 2023-12-29T15:21:57.581Z
+- commits:
     - subject: Update dependency debian_12/haproxy to v2.6.12-1+deb12u1
       hash: a04142a6f14d38ed21b410fd4f22bcc86cca045c
       body: |
