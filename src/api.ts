@@ -42,7 +42,7 @@ import { setTimeout } from 'timers/promises';
 // Private endpoints should use the `fromLocalHost` middleware.
 const fromLocalHost: express.RequestHandler = (req, res, next) => {
 	// '::ffff:127.0.0.1' is the ipv4 mapped ipv6 address and ::1 is the ipv6 loopback
-	if (!['127.0.0.1', '::ffff:127.0.0.1', '::1'].includes(req.ip)) {
+	if (!['127.0.0.1', '::ffff:127.0.0.1', '::1'].includes(req.ip!)) {
 		return res.status(401).end();
 	}
 
