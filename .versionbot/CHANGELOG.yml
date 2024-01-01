@@ -1,4 +1,17 @@
 - commits:
+    - subject: Lock file maintenance
+      hash: 18bc8d7681efd94dccd919dda933dee13eed7660
+      body: |
+        Update
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested: []
+  version: 11.29.25
+  title: ""
+  date: 2024-01-01T01:21:17.121Z
+- commits:
     - subject: Update Rust crate ureq to 2.9.1
       hash: 53893a5367215a5441282d9e647b0fa1170f4397
       body: |
