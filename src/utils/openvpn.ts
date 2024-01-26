@@ -15,12 +15,12 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Bluebird from 'bluebird';
+import Bluebird from 'bluebird';
 import { ChildProcess, spawn } from 'child_process';
-import * as es from 'event-stream';
+import es from 'event-stream';
 import { EventEmitter } from 'eventemitter3';
-import * as fs from 'fs';
-import * as net from 'net';
+import fs from 'fs';
+import net from 'net';
 const Telnet =
 	// This weird import is because telnet-client uses `export =` but the typings use `export default`
 	// eslint-disable-next-line @typescript-eslint/no-var-requires

@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { metrics } from '@balena/node-metrics-gatherer';
 import { setTimeout } from 'timers/promises';
 import {

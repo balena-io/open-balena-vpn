@@ -25,8 +25,8 @@ import {
 	SECONDS,
 	trustProxyVar,
 } from '@balena/env-parsing';
-import * as fs from 'fs';
-import * as os from 'os';
+import fs from 'fs';
+import os from 'os';
 
 // resolve number of workers based on number of CPUs assigned to pods or available CPUs
 const getInstanceCount = (varName: string) => {

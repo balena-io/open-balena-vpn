@@ -25,7 +25,7 @@
 // Reset does not happen by actually resending all the events,
 // the API has a special endpoint that first sets all clients as offline.
 
-import * as _ from 'lodash';
+import _ from 'lodash';
 import { setTimeout } from 'timers/promises';
 import { Logger } from 'winston';
 

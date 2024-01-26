@@ -15,13 +15,11 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as chai from 'chai';
-import * as nock from 'nock';
+import { expect } from 'chai';
+import nock from 'nock';
 
 import { service } from '../src/utils';
 import { BALENA_API_INTERNAL_HOST } from '../src/utils/config';
-
-const { expect } = chai;
 
 const serviceId = 10;
 

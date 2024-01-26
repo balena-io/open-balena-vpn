@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as net from 'net';
+import net from 'net';
 
 export class HAProxy {
 	constructor(private sockPath: string) {}

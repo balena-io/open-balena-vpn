@@ -1,5 +1,5 @@
 import { metrics } from '@balena/node-metrics-gatherer';
-import * as cluster from 'cluster';
+import cluster from 'cluster';
 
 export const enum Metrics {
 	SessionDuration = 'vpn_session_duration',

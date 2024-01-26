@@ -16,23 +16,20 @@
 */
 
 import { optionalVar } from '@balena/env-parsing';
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
-import * as nock from 'nock';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import nock from 'nock';
 import { BALENA_API_INTERNAL_HOST } from '../../src/utils/config';
 
 import { getDeviceByUUID } from '../../src/utils/device';
 
+chai.use(chaiAsPromised);
 const { expect } = chai;
 nock.disableNetConnect();
 
 const VPN_SERVICE_API_KEY = Buffer.from(
 	optionalVar('VPN_SERVICE_API_KEY', 'test_vpn_string'),
 );
-
-before(() => {
-	chai.use(chaiAsPromised);
-});
 
 beforeEach(function () {
 	this.mockDevice = {
