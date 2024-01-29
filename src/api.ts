@@ -16,11 +16,11 @@
 */
 
 import { metrics } from '@balena/node-metrics-gatherer';
-import * as Bluebird from 'bluebird';
-import * as compression from 'compression';
-import * as express from 'express';
-import * as memoize from 'memoizee';
-import * as morgan from 'morgan';
+import Bluebird from 'bluebird';
+import compression from 'compression';
+import express from 'express';
+import memoize from 'memoizee';
+import morgan from 'morgan';
 
 import {
 	captureException,

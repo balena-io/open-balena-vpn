@@ -16,7 +16,7 @@
 */
 
 import { optionalVar } from '@balena/env-parsing';
-import * as memoize from 'memoizee';
+import memoize from 'memoizee';
 
 import { balenaApi, StatusError } from '.';
 import { APIError, captureException } from './errors';

@@ -20,10 +20,10 @@ import { set } from '@balena/es-version';
 set('es2021');
 
 import { metrics } from '@balena/node-metrics-gatherer';
-import * as cluster from 'cluster';
-import * as express from 'express';
-import * as _ from 'lodash';
-import * as prometheus from 'prom-client';
+import cluster from 'cluster';
+import express from 'express';
+import _ from 'lodash';
+import prometheus from 'prom-client';
 
 import { apiServer } from './api';
 import { describeMetrics, getLogger, Metrics, service, VERSION } from './utils';

@@ -17,7 +17,7 @@
 
 import { intVar } from '@balena/env-parsing';
 import { Agent } from 'https';
-import * as rp from 'request-promise';
+import rp from 'request-promise';
 export type { Response } from 'request';
 
 export const REQUEST_TIMEOUT = 59000;

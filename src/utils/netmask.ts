@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as netmask from 'netmask';
+import netmask from 'netmask';
 
 export class Netmask extends netmask.Netmask {
 	// The second usable address of the block

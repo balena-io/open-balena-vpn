@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as winston from 'winston';
+import winston from 'winston';
 
 import { PinejsClientRequest } from 'pinejs-client-request';
 export { StatusError } from 'pinejs-client-request';

@@ -15,14 +15,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import * as Bluebird from 'bluebird';
-import * as chai from 'chai';
-import * as chaiAsPromised from 'chai-as-promised';
-import * as http from 'http';
-import * as _ from 'lodash';
-import * as nock from 'nock';
-import * as vpnClient from 'openvpn-client';
+import Bluebird from 'bluebird';
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import http from 'http';
+import _ from 'lodash';
+import nock from 'nock';
+import vpnClient from 'openvpn-client';
 
+chai.use(chaiAsPromised);
 const { expect } = chai;
 
 import { apiServer } from '../src/api';
@@ -61,14 +62,8 @@ interface HttpServerAsync {
 	closeAsync(): Promise<HttpServerAsync>;
 }
 
-before(() => {
-	chai.use(chaiAsPromised);
-});
-
 after(() => {
-	if (manager != null) {
-		manager.stop();
-	}
+	manager?.stop();
 });
 
 describe('vpn worker', function () {

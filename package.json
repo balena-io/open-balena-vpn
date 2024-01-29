@@ -3,6 +3,7 @@
   "private": true,
   "version": "11.29.33",
   "description": "RESTful VPN api",
+  "type": "commonjs",
   "license": "AGPL-3.0",
   "scripts": {
     "build": "tsc --project .",
