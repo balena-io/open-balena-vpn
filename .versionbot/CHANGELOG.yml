@@ -1,4 +1,16 @@
 - commits:
+    - subject: Switch to using typescript's `Node16` module resolution
+      hash: 6abed623a6e3d0dd2a7634d39e18bb2c6552a330
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.29.34
+  title: ""
+  date: 2024-01-29T16:06:54.271Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v17.0.4
       hash: b71541046e05ff5adf2aa5f42ba74c41b4983dec
       body: |
