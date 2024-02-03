@@ -27,7 +27,8 @@ chai.use(chaiAsPromised);
 const { expect } = chai;
 
 import { apiServer } from '../src/api';
-import { pooledRequest, service, VpnManager } from '../src/utils';
+import type { VpnManager } from '../src/utils';
+import { pooledRequest, service } from '../src/utils';
 
 import proxyWorker from '../src/proxy-worker';
 import vpnWorker from '../src/vpn-worker';
