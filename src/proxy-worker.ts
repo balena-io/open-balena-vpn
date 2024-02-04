@@ -19,7 +19,7 @@ import { metrics } from '@balena/node-metrics-gatherer';
 import { promises as dns } from 'dns';
 import net from 'net';
 import * as nodeTunnel from 'node-tunnel';
-import winston from 'winston';
+import type winston from 'winston';
 
 import { captureException, device, errors, getLogger, Metrics } from './utils';
 import {

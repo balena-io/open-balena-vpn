@@ -20,7 +20,7 @@
     "@balena/env-parsing": "^1.1.10",
     "@balena/es-version": "^1.0.3",
     "@balena/node-metrics-gatherer": "^6.0.3",
-    "@sentry/node": "^7.91.0",
+    "@sentry/node": "^7.99.0",
     "bluebird": "^3.7.2",
     "compression": "^1.7.4",
     "event-stream": "^4.0.1",
@@ -39,7 +39,7 @@
     "winston": "^3.11.0"
   },
   "devDependencies": {
-    "@balena/lint": "^7.2.4",
+    "@balena/lint": "^7.3.0",
     "@types/bluebird": "^3.5.42",
     "@types/chai": "^4.3.11",
     "@types/chai-as-promised": "^7.1.8",
@@ -51,21 +51,21 @@
     "@types/mocha": "^10.0.6",
     "@types/morgan": "^1.9.9",
     "@types/netmask": "^2.0.5",
-    "@types/node": "^20.10.5",
+    "@types/node": "^20.11.16",
     "@types/request-promise": "^4.1.51",
-    "chai": "^4.3.10",
+    "chai": "^4.4.1",
     "chai-as-promised": "^7.1.1",
     "husky": "^8.0.3",
-    "lint-staged": "^15.2.0",
+    "lint-staged": "^15.2.1",
     "mocha": "^10.2.0",
-    "nock": "^13.4.0",
+    "nock": "^13.5.1",
     "openvpn-client": "0.0.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
   "engines": {
-    "node": "^20.6.1",
-    "npm": "^10.1.0"
+    "node": "^21.6.1",
+    "npm": "^10.4.0"
   },
   "lint-staged": {
     "*.ts": [

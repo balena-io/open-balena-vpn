@@ -16,7 +16,8 @@
 */
 
 import Bluebird from 'bluebird';
-import { ChildProcess, spawn } from 'child_process';
+import type { ChildProcess } from 'child_process';
+import { spawn } from 'child_process';
 import es from 'event-stream';
 import { EventEmitter } from 'eventemitter3';
 import fs from 'fs';
@@ -27,7 +28,7 @@ const Telnet =
 	require('telnet-client') as typeof import('telnet-client').default;
 
 import { VPN_API_PORT } from './config';
-import { Netmask } from './netmask';
+import type { Netmask } from './netmask';
 
 export interface VpnClientUntrustedData {
 	username: string;

@@ -34,7 +34,7 @@ import {
 import { getLogger } from './utils';
 
 import { HAProxy, Metrics, Netmask, VpnManager } from './utils';
-import { VpnClientBytecountData } from './utils/openvpn';
+import type { VpnClientBytecountData } from './utils/openvpn';
 
 const getInstanceSubnet = (instanceId: number) => {
 	const network = new Netmask(VPN_BASE_IP, VPN_BASE_MASK);

@@ -27,10 +27,11 @@
 
 import _ from 'lodash';
 import { setTimeout } from 'timers/promises';
-import { Logger } from 'winston';
+import type { Logger } from 'winston';
 
 import { captureException } from './index';
-import { request, REQUEST_TIMEOUT, Response } from './request';
+import type { Response } from './request';
+import { request, REQUEST_TIMEOUT } from './request';
 import {
 	API_DEVICE_STATE_POST_BATCH_SIZE,
 	BALENA_API_INTERNAL_HOST,
