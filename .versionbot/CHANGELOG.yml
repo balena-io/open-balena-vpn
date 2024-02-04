@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update dependencies
+      hash: 5eedbbf296bb30c2e05b7c8b6c4c3253dac284bc
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.29.35
+  title: ""
+  date: 2024-02-04T22:56:59.901Z
+- commits:
     - subject: Switch to using typescript's `Node16` module resolution
       hash: 6abed623a6e3d0dd2a7634d39e18bb2c6552a330
       body: ""
