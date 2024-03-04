@@ -19,6 +19,9 @@ VPN_INSTANCE_ID=$1
 VPN_API_PORT=$2
 
 if [[ -z "${bytes_received}" ]]; then
+	# https://github.com/balena-io/open-balena-vpn/issues/290 - Quick workaround until a proper fix is implemented:
+	# In events where this script is run in parallel for POST and DELETE, make the POST win in the end to not the DELETE:
+	sleep 1
 	curl -s -X POST -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF &
 {
 	"common_name": "$common_name"
