@@ -71,6 +71,17 @@ export const MAXIMUM_DRAIN_DELAY = Math.round(
 );
 
 export const VPN_INSTANCE_COUNT = getInstanceCount('VPN_INSTANCE_COUNT');
+const VPN_OPENVPN_PROTO = optionalVar('VPN_OPENVPN_PROTO');
+if (VPN_OPENVPN_PROTO) {
+	if (/^udp[4-6]?$/.test(VPN_OPENVPN_PROTO)) {
+		if (VPN_INSTANCE_COUNT > 1) {
+			throw new Error(
+				`Can not set VPN_INSTANCE_COUNT to ${VPN_INSTANCE_COUNT} if VPN_OPENVPN_PROTO is ${VPN_OPENVPN_PROTO}.`,
+			);
+		}
+	}
+}
+
 export const VPN_VERBOSE_LOGS = boolVar('DEFAULT_VERBOSE_LOGS');
 
 export const VPN_SERVICE_ADDRESS = getIPv4InterfaceInfo(
