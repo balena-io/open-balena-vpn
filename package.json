@@ -55,7 +55,7 @@
     "@types/request-promise": "^4.1.51",
     "chai": "^4.4.1",
     "chai-as-promised": "^7.1.1",
-    "husky": "^8.0.3",
+    "husky": "^9.0.0",
     "lint-staged": "^15.2.1",
     "mocha": "^10.2.0",
     "nock": "^13.5.1",
