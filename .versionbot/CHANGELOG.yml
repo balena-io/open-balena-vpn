@@ -1,4 +1,16 @@
 - commits:
+    - subject: allow OpenVPN carrier protocol configuration
+      hash: d6601d38de65d8a10285b6f4bd776ae1553effef
+      body: |
+        Co-authored-by: Thodoris Greasidis <thgreasi@gmail.com>
+      footer:
+        change-type: minor
+      author: Anton Belodedenko
+      nested: []
+  version: 11.30.0
+  title: ""
+  date: 2024-03-13T12:38:29.770Z
+- commits:
     - subject: Lock file maintenance
       hash: 6c8c23b5356d9af17933baeba6b1a9063227b3bc
       body: |
@@ -2526,7 +2538,8 @@
 
         * defaults DEFAULT_SIGTERM_TIMEOUT to 120s
 
-        * spaces VPN clients disconnects by DEFAULT_SIGTERM_TIMEOUT / clientCount (millisecs)
+        * spaces VPN clients disconnects by DEFAULT_SIGTERM_TIMEOUT /
+        clientCount (millisecs)
       footer:
         Change-type: minor
         change-type: minor
@@ -3041,18 +3054,24 @@
                 + allows balenaMachine(s)/BoB(s) to automatically configure
                 itself (without bob-cli)
 
-                + auto-configuration requires balena-ca and cert-manager to do the heavy lifting prior
+                + auto-configuration requires balena-ca and cert-manager to do
+                the heavy lifting prior
 
-                + corresponding [balena-on-balena PR](https://github.com/balena-io/balena-on-balena/pull/261)
+                + corresponding [balena-on-balena
+                PR](https://github.com/balena-io/balena-on-balena/pull/261)
 
 
-                * refactor confd.service to include both root-ca and host-envvars handling
+                * refactor confd.service to include both root-ca and
+                host-envvars handling
 
-                * add systemd path watcher to restart confd if keys/certs change during runtime
+                * add systemd path watcher to restart confd if keys/certs change
+                during runtime
 
-                * store stack configuration available to all services in a persistent/shared volume (/balena)
+                * store stack configuration available to all services in a
+                persistent/shared volume (/balena)
 
-                * change resolver order to dns => mdns (ipv4) => mdns (ipv6) => return
+                * change resolver order to dns => mdns (ipv4) => mdns (ipv6) =>
+                return
 
                 * configure API key and JOSE/JWT key id
 
@@ -3085,7 +3104,8 @@
                 * allows dynamic certificate generation and loading within the
                 stack
 
-                * if a (volume|directory) /certs exists, set up a notification to watch
+                * if a (volume|directory) /certs exists, set up a notification
+                to watch
                   for /certs/ca-bundle.pem and update CA certificates/restart confd
               footer:
                 Change-type: patch
@@ -3367,7 +3387,8 @@
               body: >
                 * TOKEN_AUTH_REALM => REGISTRY2_TOKEN_AUTH_REALM
 
-                * REGISTRY2_TOKEN_AUTH_REALM is the new name for BALENA_TOKEN_AUTH_REALM
+                * REGISTRY2_TOKEN_AUTH_REALM is the new name for
+                BALENA_TOKEN_AUTH_REALM
               footer:
                 Change-type: patch
                 change-type: patch
@@ -5972,7 +5993,8 @@
         Using CGN address space should eliminate all instances of addressing
         clashes
 
-        regardless of device placement and without the necessity of a dedicated and
+        regardless of device placement and without the necessity of a dedicated
+        and
 
         public `BALENA_VPN_GATEWAY` ipv4 address for the remote peer.
       footer:
@@ -6413,10 +6435,12 @@
 
         * Generate custom, more fine grained, logs; openvpn log verbosity can be
           toggled with SIGUSR2.
-        * Use `child_process.spawn` in place of `forever.Monitor` meaning a process
+        * Use `child_process.spawn` in place of `forever.Monitor` meaning a
+        process
           exit will cause the worker process it be restarted meaning the restart will
           pass through the initialisation flow again.
-        * Gather client events and publish for Prometheus (session bitrate + length,
+        * Gather client events and publish for Prometheus (session bitrate +
+        length,
           total bytes rx/tx, online clients, total clients, auth failures).
       footer:
         Change-type: minor
