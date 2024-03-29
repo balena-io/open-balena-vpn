@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency express to v4.19.2 [SECURITY]
+      hash: 3c7d4eb17c961a2f5cc5a044b65c91989bc801ce
+      body: |
+        Update express from 4.18.2 to 4.19.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested: []
+  version: 11.30.1
+  title: ""
+  date: 2024-03-29T03:58:32.847Z
+- commits:
     - subject: allow OpenVPN carrier protocol configuration
       hash: d6601d38de65d8a10285b6f4bd776ae1553effef
       body: |
