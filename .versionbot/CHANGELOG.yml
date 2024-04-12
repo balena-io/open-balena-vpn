@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update Rust crate ureq to 2.9.6
+      hash: a2e45bae80423556e9ee0138d65a364d8c4d1d0e
+      body: |
+        Update ureq from 2.9.6 to 2.9.6
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested: []
+  version: 11.30.7
+  title: ""
+  date: 2024-04-12T16:46:14.921Z
+- commits:
     - subject: Update dependency husky to v9
       hash: 4b5fede7066e6a8de5509dac1e4af5b526edc622
       body: |
