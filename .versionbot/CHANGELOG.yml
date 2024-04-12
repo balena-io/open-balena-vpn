@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency husky to v9
+      hash: 4b5fede7066e6a8de5509dac1e4af5b526edc622
+      body: |
+        Update husky from 8.0.3 to 9.0.11
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested: []
+  version: 11.30.6
+  title: ""
+  date: 2024-04-12T16:14:35.255Z
+- commits:
     - subject: Lock file maintenance
       hash: 87bf32d2bf8e7e32ee3459836f69e4fb9313191d
       body: |
