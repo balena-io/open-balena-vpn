@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update to @balena/lint 8.x
+      hash: a7676ff3afd67de22f285747911a5c2433099b4b
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.30.2
+  title: ""
+  date: 2024-04-12T11:23:24.250Z
+- commits:
     - subject: Update dependency express to v4.19.2 [SECURITY]
       hash: 3c7d4eb17c961a2f5cc5a044b65c91989bc801ce
       body: |
