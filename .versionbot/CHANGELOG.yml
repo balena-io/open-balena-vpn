@@ -1,4 +1,150 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v17.0.14
+      hash: bd3b8bef98cc24248215cc9504d343443fa0038d
+      body: |
+        Update balena/open-balena-base from 17.0.4 to 17.0.14
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested:
+        - commits:
+            - subject: Update dependency npm to v10.5.2
+              hash: fb255f3673eb71ba85299e28c927c6667b61292f
+              body: |
+                Update npm from 10.5.1 to 10.5.2
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-17.0.14
+          title: ""
+          date: 2024-04-10T20:56:39.128Z
+        - commits:
+            - subject: Update dependency node to v21.7.3
+              hash: c8b4b1b7458cf85cedcedcac0586a7a8ccb523b9
+              body: |
+                Update node from 21.7.2 to 21.7.3
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-17.0.13
+          title: ""
+          date: 2024-04-10T19:07:42.640Z
+        - commits:
+            - subject: Update dependency node to v21.7.2
+              hash: 0f0358ed49cd7468f7beec482843332b2acca894
+              body: |
+                Update node from 21.7.1 to 21.7.2
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-17.0.12
+          title: ""
+          date: 2024-04-03T16:53:19.467Z
+        - commits:
+            - subject: Update dependency npm to v10.5.1
+              hash: 2901db193efc4829d5f24d544021920692bd7363
+              body: |
+                Update npm from 10.5.0 to 10.5.1
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-17.0.11
+          title: ""
+          date: 2024-04-03T15:55:50.962Z
+        - commits:
+            - subject: Update dependency node to v21.7.1
+              hash: 00982618ef48ad40ee83d269593bcfabcd5c102b
+              body: |
+                Update node from 21.7.0 to 21.7.1
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-17.0.10
+          title: ""
+          date: 2024-03-08T22:55:50.554Z
+        - commits:
+            - subject: Update dependency node to v21.7.0
+              hash: 090c5b72737c4849076108d38b84b77b482822f1
+              body: |
+                Update node from 21.6.2 to 21.7.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-17.0.9
+          title: ""
+          date: 2024-03-06T18:58:19.803Z
+        - commits:
+            - subject: Update dependency npm to v10.5.0
+              hash: 7151fd9008f9443c677441177c2959a0e35b952d
+              body: |
+                Update npm from 10.4.0 to 10.5.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-17.0.8
+          title: ""
+          date: 2024-02-28T18:58:05.433Z
+        - commits:
+            - subject: Fix docker cache-from for no-system variants
+              hash: 47989bd29164aaef2f78c2642aeaf64185df5561
+              body: ""
+              footer:
+                See: https://github.com/balena-io-modules/open-balena-base/pull/343
+                see: https://github.com/balena-io-modules/open-balena-base/pull/343
+                Change-type: patch
+                change-type: patch
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-17.0.7
+          title: ""
+          date: 2024-02-27T21:40:13.465Z
+        - commits:
+            - subject: Move the no-systemd compatibility tag to a suffix
+              hash: a869fb57fe2866a16aecfc75f33eb679696de3dd
+              body: >
+                We kept it as a prefix for historical reasons, but renovate
+                versioning expects the docker compatibility tag to follow the
+                semver.
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-17.0.6
+          title: ""
+          date: 2024-02-27T15:03:10.991Z
+        - commits:
+            - subject: Update dependency node to v21.6.2
+              hash: faafec8bb43b315b2d565dfb924e4dc91195a6ec
+              body: |
+                Update node from 21.6.1 to 21.6.2
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-17.0.5
+          title: ""
+          date: 2024-02-14T17:58:16.053Z
+  version: 11.30.3
+  title: ""
+  date: 2024-04-12T11:41:52.945Z
+- commits:
     - subject: Update to @balena/lint 8.x
       hash: a7676ff3afd67de22f285747911a5c2433099b4b
       body: ""
