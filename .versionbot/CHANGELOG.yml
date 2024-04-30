@@ -1,4 +1,30 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v17.0.16
+      hash: f8b720bde2aaedcfb546db608e4d4e8adfa96b13
+      body: |
+        Update balena/open-balena-base from 17.0.15 to 17.0.16
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested:
+        - commits:
+            - subject: Update dependency npm to v10.7.0
+              hash: 97503aea6564b140ee7e6a88a67abd4f07452b7b
+              body: |
+                Update npm from 10.6.0 to 10.7.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-17.0.16
+          title: ""
+          date: 2024-04-30T22:55:46.051Z
+  version: 11.30.13
+  title: ""
+  date: 2024-04-30T23:58:16.131Z
+- commits:
     - subject: Update Rust crate ureq to 2.9.7
       hash: 912cc24ffce2195ec45c37995e9839b49aac9151
       body: |
