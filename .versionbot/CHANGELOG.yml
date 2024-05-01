@@ -1,4 +1,17 @@
 - commits:
+    - subject: Run docker build and test on Actuated
+      hash: 1c2493dfbd637eecd0333abc5fb0f09de72d9fc2
+      body: |
+        We only have "focal" images on x86_64 for now.
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Kyle Harding
+      nested: []
+  version: 11.30.14
+  title: ""
+  date: 2024-05-01T12:45:27.261Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v17.0.16
       hash: f8b720bde2aaedcfb546db608e4d4e8adfa96b13
       body: |
