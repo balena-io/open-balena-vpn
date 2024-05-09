@@ -1,4 +1,31 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v17.0.19
+      hash: 137118ca976794dd4a1c26bf70a13aebe9e8ea60
+      body: |
+        Update balena/open-balena-base from 17.0.18 to 17.0.19
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested:
+        - commits:
+            - subject: Update ghcr.io/balena-io-modules/confd-releases Docker tag to v0.0.4
+              hash: e4421805b3dfbfb3eebfc0dabd3d036deae6ffa3
+              body: >
+                Update ghcr.io/balena-io-modules/confd-releases from 0.0.3 to
+                0.0.4
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-17.0.19
+          title: ""
+          date: 2024-05-09T16:52:52.843Z
+  version: 11.30.18
+  title: ""
+  date: 2024-05-09T18:03:15.899Z
+- commits:
     - subject: Lock file maintenance
       hash: 6e8c717dfd5efaac78bec1635dfe8d31bb24e028
       body: |
