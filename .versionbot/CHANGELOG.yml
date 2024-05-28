@@ -1,4 +1,19 @@
 - commits:
+    - subject: capture stderr logs from client connect/disconnect script
+      hash: 368f302ee5d98c79e6306d941a871a4a2abc3cb1
+      body: >
+        * this script signals the API that a client has connected (or
+        disconnected) and it is important to understand if any of these events
+        are failing to reach open-balena-vpn API as they can lead to balena-api
+        being unaware of client VPN state change
+      footer:
+        change-type: patch
+      author: Anton Belodedenko
+      nested: []
+  version: 11.30.22
+  title: ""
+  date: 2024-05-28T23:05:30.908Z
+- commits:
     - subject: Update balena/open-balena-base to v18 with nodejs 22.2.0
       hash: b32d626a6ff74a1f99590963253dee79e6f8e117
       body: |
