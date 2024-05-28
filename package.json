@@ -53,7 +53,7 @@
     "@types/netmask": "^2.0.5",
     "@types/node": "^20.12.12",
     "@types/request-promise": "^4.1.51",
-    "chai": "^4.4.1",
+    "chai": "^5.0.0",
     "chai-as-promised": "^7.1.1",
     "husky": "^9.0.0",
     "lint-staged": "^15.2.2",
