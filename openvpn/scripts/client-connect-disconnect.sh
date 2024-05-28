@@ -15,17 +15,25 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+function cleanup() {
+	if [[ $? -gt 0 ]]; then
+ 		cat </tmp/$PPID.tmp >/tmp/stderr-$PPID.log  		
+	fi
+	rm /tmp/$PPID.tmp
+}
+trap 'cleanup' EXIT
+
 VPN_INSTANCE_ID=$1
 VPN_API_PORT=$2
 
 if [[ -z "${bytes_received}" ]]; then
-	curl -s -X POST -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF &
+	curl -s -X POST -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" 2>/tmp/$PPID.tmp <<-EOF &
 {
 	"common_name": "$common_name"
 }
 EOF
 else
-	curl -s -X DELETE -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" >/dev/null <<-EOF &
+	curl -s -X DELETE -H 'Content-type: application/json' -d @- "http://127.0.0.1:${VPN_API_PORT}/api/v2/${VPN_INSTANCE_ID}/clients" 2>/tmp/$PPID.tmp <<-EOF &
 {
 	"common_name": "$common_name",
 	"bytes_received": $bytes_received,
