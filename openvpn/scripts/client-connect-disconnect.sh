@@ -17,7 +17,7 @@
 
 function cleanup() {
 	if [[ $? -gt 0 ]]; then
- 		cat </tmp/$PPID.tmp >/tmp/stderr-$PPID.log  		
+ 		cat </tmp/$PPID.tmp >>/tmp/stderr-$PPID.log  		
 	fi
 	rm /tmp/$PPID.tmp
 }
