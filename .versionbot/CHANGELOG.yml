@@ -1,4 +1,29 @@
 - commits:
+    - subject: Update balena/open-balena-base to v18 with nodejs 22.2.0
+      hash: b32d626a6ff74a1f99590963253dee79e6f8e117
+      body: |
+        Update balena/open-balena-base from 17.0.20 to 18.0.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Thodoris Greasidis
+      nested:
+        - commits:
+            - subject: Update to nodejs 22.2.0
+              hash: 713c8f951d54ca6bef70fa94154fb196d3316c01
+              body: ""
+              footer:
+                Change-type: major
+                change-type: major
+              author: Pagan Gazzard
+              nested: []
+          version: open-balena-base-18.0.0
+          title: ""
+          date: 2024-05-28T15:28:45.597Z
+  version: 11.30.21
+  title: ""
+  date: 2024-05-28T22:19:00.288Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v17.0.20
       hash: ecbef016b1e18ea4d6d8e46141d733c060230625
       body: |
