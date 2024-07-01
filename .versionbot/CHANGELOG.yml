@@ -1,4 +1,63 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v18.0.3
+      hash: de0ed551d83fac478f2589e4e18591ca46f72f33
+      body: |
+        Update balena/open-balena-base from 18.0.0 to 18.0.3
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested:
+        - commits:
+            - subject: Empty commit to rebuild open-balena-base to fix CVE-2024-6387.
+              hash: 4d7156be75e535ad5ab4a2bf2d574fde1b86d45c
+              body: >
+                Causes a rebuild of the open-balena-base to include
+                openssh-server
+
+                1:9.2p1-2+deb12u3 (OpenSSH_9.2p1 Debian-2+deb12u3) which fixes
+
+                [cve-2024-6387](https://www.qualys.com/2024/07/01/cve-2024-6387/regresshion.txt).
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Carlo Miguel F. Cruz <carloc@balena.io>
+                signed-off-by: Carlo Miguel F. Cruz <carloc@balena.io>
+              author: Carlo Miguel F. Cruz
+              nested: []
+          version: open-balena-base-18.0.3
+          title: ""
+          date: 2024-07-01T14:45:38.881Z
+        - commits:
+            - subject: Update dependency node to v22.3.0
+              hash: a94789c2aa6acef922ab880edfcbc849a4bffc68
+              body: |
+                Update node from 22.2.0 to 22.3.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-18.0.2
+          title: ""
+          date: 2024-06-11T19:53:08.300Z
+        - commits:
+            - subject: Update dependency npm to v10.8.1
+              hash: 38a545992fa5ed900d105b6a2790b889fb910b99
+              body: |
+                Update npm from 10.8.0 to 10.8.1
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-18.0.1
+          title: ""
+          date: 2024-05-29T21:51:28.091Z
+  version: 11.30.23
+  title: ""
+  date: 2024-07-01T16:07:53.849Z
+- commits:
     - subject: capture stderr logs from client connect/disconnect script
       hash: 368f302ee5d98c79e6306d941a871a4a2abc3cb1
       body: >
