@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update Rust crate ureq to 2.10.0
+      hash: 1982de9f9a03c4baccbbdfb5513f7a3476407dff
+      body: |
+        Update ureq from 2.9.7 to 2.10.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested: []
+  version: 11.30.25
+  title: ""
+  date: 2024-07-10T20:05:37.829Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v18.0.6
       hash: 162edc17f62bdba20b12afc6b5e30da0f6abed97
       body: |
