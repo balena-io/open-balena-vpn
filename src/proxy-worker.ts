@@ -157,7 +157,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 		}
 
 		let auth;
-		if (req.auth != null && req.auth.password != null) {
+		if (req.auth?.password != null) {
 			auth = Buffer.from(req.auth.password);
 		}
 
@@ -241,7 +241,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 			};
 			const earlyError = (err: Error) => {
 				let errMsg = 'could not connect to vpn tunnel';
-				if (err != null && err.message) {
+				if (err?.message) {
 					errMsg += `: ${err.message}`;
 				}
 				this.logger.warning(errMsg);
@@ -263,11 +263,12 @@ class Tunnel extends nodeTunnel.Tunnel {
 				const httpStatusCode = parseInt(httpStatusLine.split(' ')[1], 10);
 
 				if (httpStatusCode !== 200) {
-					return reject(
+					reject(
 						new errors.RemoteTunnellingError(
 							`could not connect to ${uuid}:${port}: ${httpStatusLine}`,
 						),
 					);
+					return;
 				}
 				resolve(socket);
 			};

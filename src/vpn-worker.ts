@@ -250,7 +250,6 @@ const worker = async (instanceId: number, serviceId: number) => {
 
 			if (verbose) {
 				logger.info(`clientCache: ${JSON.stringify(clientCache)}`);
-				logger.info(await vpn.getStatus());
 			}
 
 			await drainConnections();

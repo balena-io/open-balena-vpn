@@ -10,7 +10,7 @@
     "check": "tsc --pretty --noEmit --diagnostics --project ./tsconfig.json",
     "check:dev": "tsc --pretty --noEmit --diagnostics --project ./tsconfig.dev.json",
     "lint": "balena-lint -t ./tsconfig.dev.json src/ test/ typings/",
-    "lint:fix": "balena-lint -t ./tsconfig.dev.json --fix src/ test/ typings/",
+    "lint-fix": "balena-lint -t ./tsconfig.dev.json --fix src/ test/ typings/",
     "pretest": "npm run lint",
     "test-unit": "mocha test/index.ts",
     "test": "docker build -t test-balena-vpn . && IMAGE_NAME=test-balena-vpn ./automation/test.sh",

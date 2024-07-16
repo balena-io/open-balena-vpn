@@ -55,7 +55,9 @@ describe('getDeviceByUUID()', function () {
 			.reply(200, { d: [this.mockDevice] });
 	});
 
-	afterEach(() => nock.cleanAll());
+	afterEach(() => {
+		nock.cleanAll();
+	});
 
 	it('should return a promise', () => {
 		const device = getDeviceByUUID('deadbeef', VPN_SERVICE_API_KEY);
