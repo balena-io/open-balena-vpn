@@ -34,7 +34,7 @@ export const getLogger = (
 	serviceId?: number,
 	workerId?: string | number,
 ) => {
-	let label = `${service}`;
+	let label = service;
 	if (serviceId != null) {
 		label = `${label}-${serviceId}`;
 		if (workerId != null) {

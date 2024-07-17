@@ -53,7 +53,7 @@ export class Netmask extends netmask.Netmask {
 	}
 
 	// Override netmask.Netmask.next so it returns a Netmask (as opposed to netmask.Netmask) object
-	public next(count: number = 1): Netmask {
+	public next(count = 1): Netmask {
 		return new Netmask(
 			netmask.long2ip(this.netLong + this.size * count),
 			this.bitmask,

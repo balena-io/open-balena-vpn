@@ -123,7 +123,7 @@ export declare interface VpnManagerEvents {
 export class VpnManager extends EventEmitter implements VpnManagerEvents {
 	private process?: ChildProcess;
 	private readonly connector = new Telnet();
-	private buf: string = '';
+	private buf = '';
 	private readonly pidFile: string;
 	private readonly mgtHost = '127.0.0.1';
 
@@ -153,7 +153,7 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 	}
 
 	private args() {
-		const gateway = this.gateway || this.subnet.first;
+		const gateway = this.gateway ?? this.subnet.first;
 		return [
 			'--writepid',
 			this.pidFile,
@@ -288,13 +288,14 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 		const kill = (signal?: ValueOf<typeof signals>) =>
 			spawn('/bin/kill', signal != null ? [`-${signal}`, pid] : [pid]);
 
-		return await new Promise<void>((resolve, reject) => {
+		await new Promise<void>((resolve, reject) => {
 			const start = Date.now();
 			const waitForDeath = (code?: number) => {
 				if (code !== 0) {
 					// the signal was unsuccessful, the pid no longer exists;
 					// the process is dead, and our work here is done.
-					return resolve();
+					resolve();
+					return;
 				}
 				const elapsedTime = Date.now() - start;
 				if (elapsedTime < TERM_TIMEOUT) {
@@ -302,9 +303,10 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 				} else if (elapsedTime < KILL_TIMEOUT) {
 					kill(signals.KILL).on('exit', waitForDeath);
 				} else {
-					return reject(
+					reject(
 						new Bluebird.TimeoutError('orphan openvpn process did not go away'),
 					);
+					return;
 				}
 			};
 			kill().on('exit', waitForDeath);
@@ -396,10 +398,6 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 
 	public async releaseHold() {
 		await this.exec('hold release');
-	}
-
-	public async getStatus() {
-		await this.exec('status');
 	}
 
 	public async killClient(cn: string) {

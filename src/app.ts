@@ -70,12 +70,10 @@ if (cluster.isPrimary) {
 		});
 	});
 
-	process.on('SIGTERM', async () => {
+	process.on('SIGTERM', () => {
 		masterLogger.notice('received SIGTERM');
 		_.each(cluster.workers, (clusterWorker) => {
-			if (clusterWorker != null) {
-				clusterWorker.send('prepareShutdown');
-			}
+			clusterWorker?.send('prepareShutdown');
 		});
 		masterLogger.notice(
 			`waiting ${DEFAULT_SIGTERM_TIMEOUT}ms for workers to finish`,

@@ -54,7 +54,7 @@ const getInstanceCount = (varName: string) => {
 const getIPv4InterfaceInfo = (iface?: string): os.NetworkInterfaceInfo[] => {
 	return Object.entries(os.networkInterfaces())
 		.filter(([nic]) => nic === iface)
-		.flatMap(([, ips]) => ips || [])
+		.flatMap(([, ips]) => ips ?? [])
 		.filter((ip) => !ip.internal && ip.family === 'IPv4');
 };
 

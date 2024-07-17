@@ -23,7 +23,9 @@ export class HAProxy {
 	protected async connect(): Promise<net.Socket> {
 		return await new Promise((resolve, reject) => {
 			const socket = net.createConnection(this.sockPath);
-			socket.on('connect', () => resolve(socket));
+			socket.on('connect', () => {
+				resolve(socket);
+			});
 			socket.on('error', reject);
 		});
 	}
@@ -31,7 +33,7 @@ export class HAProxy {
 	public async register(
 		name: string,
 		port: number,
-		host: string = '127.0.0.1',
+		host = '127.0.0.1',
 	): Promise<boolean> {
 		const preamble = `set server ${name}`;
 		const socket = await this.connect();
