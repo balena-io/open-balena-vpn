@@ -1,4 +1,16 @@
 - commits:
+    - subject: Fix lint warnings
+      hash: 4a066b818b54a9668d9ffed19e27c4b305196641
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.30.27
+  title: ""
+  date: 2024-07-17T04:49:26.095Z
+- commits:
     - subject: Lock file maintenance
       hash: 9b33f2d957f7fa66f9d90046abf7aba324d91aa5
       body: |
