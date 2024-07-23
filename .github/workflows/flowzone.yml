@@ -30,6 +30,6 @@ jobs:
       # actuated only has "focal" images for x86_64 right now
       docker_runs_on: >
         {
-          "linux/amd64": ["actuated-4cpu-16gb","focal"],
+          "linux/amd64": ["self-hosted","focal"],
           "linux/arm64": ["self-hosted","distro:focal","ARM64"]
         }
