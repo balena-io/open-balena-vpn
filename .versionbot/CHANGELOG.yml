@@ -1,4 +1,15 @@
 - commits:
+    - subject: Switch to self-hosted
+      hash: 9fad180034bb9f489d7669bb6d8c9fcb84bac9de
+      body: ""
+      footer:
+        change-type: patch
+      author: Anton Belodedenko
+      nested: []
+  version: 11.30.28
+  title: ""
+  date: 2024-07-23T23:20:13.238Z
+- commits:
     - subject: Fix lint warnings
       hash: 4a066b818b54a9668d9ffed19e27c4b305196641
       body: ""
