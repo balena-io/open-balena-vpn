@@ -33,7 +33,7 @@ export const captureException = (
 	fingerprint: string,
 	opts?: {
 		tags?: { [key: string]: string };
-		req?: Sentry.Handlers.ExpressRequest;
+		req?: Sentry.PolymorphicRequest;
 	},
 ) => {
 	Sentry.withScope((scope) => {
@@ -49,7 +49,7 @@ export const captureException = (
 			}
 			if (req != null) {
 				scope.addEventProcessor((evt) =>
-					Sentry.Handlers.parseRequest(evt, req),
+					Sentry.addRequestDataToEvent(evt, req),
 				);
 			}
 		}

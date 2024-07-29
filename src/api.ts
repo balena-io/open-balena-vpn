@@ -180,6 +180,6 @@ export const apiServer = (serviceId: number) => {
 	app.use(morgan('combined'));
 	app.use(compression());
 	app.use(apiFactory(serviceId));
-	app.use(Sentry.Handlers.errorHandler());
+	Sentry.setupExpressErrorHandler(app);
 	return app;
 };
