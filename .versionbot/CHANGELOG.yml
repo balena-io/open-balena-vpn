@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update @sentry/node to v8
+      hash: 4d8b073f63292f224e1a1de0bfe6e570eeac7029
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.30.31
+  title: ""
+  date: 2024-07-30T09:52:04.875Z
+- commits:
     - subject: Lock file maintenance
       hash: 94cb1ac65c76ddc0f18875e640692736f8e4ce66
       body: |
