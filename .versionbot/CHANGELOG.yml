@@ -1,4 +1,17 @@
 - commits:
+    - subject: Lock file maintenance
+      hash: 4e0a76cd82dbf22dd15209857f62a788092986dc
+      body: |
+        Update
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested: []
+  version: 11.30.32
+  title: ""
+  date: 2024-09-03T15:20:29.526Z
+- commits:
     - subject: Update @sentry/node to v8
       hash: 4d8b073f63292f224e1a1de0bfe6e570eeac7029
       body: ""
