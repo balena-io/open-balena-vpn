@@ -1,4 +1,83 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v18.0.13
+      hash: 8d363f90bfeb165d957caa20dfc1ad866fbf3e34
+      body: |
+        Update balena/open-balena-base from 18.0.8 to 18.0.13
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested:
+        - commits:
+            - subject: Update dependency node to v22.8.0
+              hash: 1db3ee233ffb3354b258ac4449b81b5affb77778
+              body: |
+                Update node from 22.7.0 to 22.8.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-18.0.13
+          title: ""
+          date: 2024-09-03T14:53:08.115Z
+        - commits:
+            - subject: Update dependency npm to v10.8.3
+              hash: 222add4df15256fa181b87ef1ef7b56fee3d8c29
+              body: |
+                Update npm from 10.8.2 to 10.8.3
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-18.0.12
+          title: ""
+          date: 2024-08-28T20:53:48.284Z
+        - commits:
+            - subject: Update dependency node to v22.7.0
+              hash: 027d3ffea41263fa6ec272715e7f535b86a329ba
+              body: |
+                Update node from 22.6.0 to 22.7.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-18.0.11
+          title: ""
+          date: 2024-08-22T14:54:21.217Z
+        - commits:
+            - subject: Update dependency node to v22.6.0
+              hash: a368a66765aad499fe4749dc837547dce54bb1b6
+              body: |
+                Update node from 22.5.1 to 22.6.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-18.0.10
+          title: ""
+          date: 2024-08-06T17:52:11.765Z
+        - commits:
+            - subject: Update ghcr.io/balena-io-modules/confd-releases Docker tag to v0.0.5
+              hash: 3423e905003db707a4a30a70c2a6d8796e721765
+              body: >
+                Update ghcr.io/balena-io-modules/confd-releases from 0.0.4 to
+                0.0.5
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-18.0.9
+          title: ""
+          date: 2024-07-23T19:46:14.020Z
+  version: 11.30.33
+  title: ""
+  date: 2024-09-03T15:50:24.825Z
+- commits:
     - subject: Lock file maintenance
       hash: 4e0a76cd82dbf22dd15209857f62a788092986dc
       body: |
