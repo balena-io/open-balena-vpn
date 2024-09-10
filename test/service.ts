@@ -23,41 +23,43 @@ import { BALENA_API_INTERNAL_HOST } from '../src/utils/config';
 
 const serviceId = 10;
 
-describe('id', () => {
-	before(() => {
-		nock(BALENA_API_INTERNAL_HOST)
-			.post('/v6/service_instance')
-			.reply(200, { id: serviceId });
+export default () => {
+	describe('id', () => {
+		before(() => {
+			nock(BALENA_API_INTERNAL_HOST)
+				.post('/v6/service_instance')
+				.reply(200, { id: serviceId });
+		});
+
+		it('should throw error when service is not registered', () => {
+			expect(() => service.getId()).to.throw('Not Registered');
+		});
+
+		it('should return the service id once registered on the api', async () => {
+			await service.register();
+			expect(service.getId()).to.equal(serviceId);
+		});
 	});
 
-	it('should throw error when service is not registered', () => {
-		expect(() => service.getId()).to.throw('Not Registered');
-	});
+	describe('sendHeartbeat()', () => {
+		let called = 0;
+		let isAlive = false;
 
-	it('should return the service id once registered on the api', async () => {
-		await service.register();
-		expect(service.getId()).to.equal(serviceId);
-	});
-});
+		before(() => {
+			nock(BALENA_API_INTERNAL_HOST)
+				.patch(`/v6/service_instance(${serviceId})`)
+				.reply(200, (_uri: string, body: any) => {
+					called++;
+					isAlive = body.is_alive;
+					return 'OK';
+				});
+		});
 
-describe('sendHeartbeat()', () => {
-	let called = 0;
-	let isAlive = false;
-
-	before(() => {
-		nock(BALENA_API_INTERNAL_HOST)
-			.patch(`/v6/service_instance(${serviceId})`)
-			.reply(200, (_uri: string, body: any) => {
-				called++;
-				isAlive = body.is_alive;
-				return 'OK';
-			});
+		it('should trigger a patch request on service_instance using PineJS', async () => {
+			const registered = await service.sendHeartbeat();
+			expect(registered).to.be.equal(true);
+			expect(called).to.equal(1);
+			expect(isAlive).to.be.equal(true);
+		});
 	});
-
-	it('should trigger a patch request on service_instance using PineJS', async () => {
-		const registered = await service.sendHeartbeat();
-		expect(registered).to.be.equal(true);
-		expect(called).to.equal(1);
-		expect(isAlive).to.be.equal(true);
-	});
-});
+};

@@ -16,8 +16,10 @@
 */
 
 import 'mocha';
+import deviceTests from './device';
 
-describe('device', () => {
-	// eslint-disable-next-line @typescript-eslint/no-require-imports
-	require('./device');
-});
+export default () => {
+	describe('device', () => {
+		deviceTests();
+	});
+};

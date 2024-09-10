@@ -16,16 +16,16 @@
 */
 
 import 'mocha';
+import connectProxyTests from './connect-proxy/index';
+import serviceTests from './service';
+import utilsTests from './utils/index';
 
 describe('connect-proxy', () => {
-	// eslint-disable-next-line @typescript-eslint/no-require-imports
-	require('./connect-proxy');
+	connectProxyTests();
 });
 describe('service', () => {
-	// eslint-disable-next-line @typescript-eslint/no-require-imports
-	require('./service');
+	serviceTests();
 });
 describe('utils', () => {
-	// eslint-disable-next-line @typescript-eslint/no-require-imports
-	require('./utils');
+	utilsTests();
 });
