@@ -29,7 +29,6 @@ import _ from 'lodash';
 import { setTimeout } from 'timers/promises';
 import type { Logger } from 'winston';
 
-import { captureException } from './index';
 import type { Response } from './request';
 import { request, REQUEST_TIMEOUT } from './request';
 import {
@@ -37,6 +36,7 @@ import {
 	BALENA_API_INTERNAL_HOST,
 	VPN_SERVICE_API_KEY,
 } from './config';
+import { captureException } from './errors';
 
 interface DeviceStateTracker {
 	currentConnected?: boolean;

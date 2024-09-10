@@ -21,12 +21,19 @@ import net from 'net';
 import * as nodeTunnel from 'node-tunnel';
 import type winston from 'winston';
 
-import { captureException, device, errors, getLogger, Metrics } from './utils';
+import { getLogger } from './utils';
 import {
 	VPN_CONNECT_PROXY_PORT,
 	VPN_FORWARD_PROXY_PORT,
 	VPN_SERVICE_API_KEY,
 } from './utils/config';
+import * as errors from './utils/errors';
+import { Metrics } from './utils/metrics';
+import {
+	canAccessDevice,
+	getDeviceByUUID,
+	getDeviceVpnHost,
+} from './utils/device';
 
 const HTTP_500 = 'HTTP/1.0 500 Internal Server Error\r\n\r\n';
 
@@ -46,7 +53,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 				this.logger.crit(
 					`failed to connect to device (${err.message || err})\n${err.stack}`,
 				);
-				captureException(err, 'proxy-connect-error');
+				errors.captureException(err, 'proxy-connect-error');
 			}
 		});
 
@@ -84,7 +91,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 				});
 				return socket;
 			} else {
-				const vpnHost = await device.getDeviceVpnHost(uuid, auth);
+				const vpnHost = await getDeviceVpnHost(uuid, auth);
 				if (vpnHost == null) {
 					client.end(HTTP_500);
 					throw new errors.HandledTunnelingError(
@@ -175,12 +182,12 @@ class Tunnel extends nodeTunnel.Tunnel {
 			this.logger.info(`tunnel requested to ${uuid}:${port}`);
 
 			// we need to use VPN_SERVICE_API_KEY here as this could be an unauthenticated request
-			const data = await device.getDeviceByUUID(uuid, VPN_SERVICE_API_KEY);
+			const data = await getDeviceByUUID(uuid, VPN_SERVICE_API_KEY);
 			if (data == null) {
 				cltSocket.end('HTTP/1.0 404 Not Found\r\n\r\n');
 				throw new errors.HandledTunnelingError(`device not found: ${uuid}`);
 			}
-			const isAllowed = await device.canAccessDevice(data, port, auth);
+			const isAllowed = await canAccessDevice(data, port, auth);
 			if (!isAllowed) {
 				cltSocket.end('HTTP/1.0 407 Proxy Authorization Required\r\n\r\n');
 				throw new errors.HandledTunnelingError(
@@ -204,7 +211,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 			} else if (err instanceof errors.InvalidHostnameError) {
 				cltSocket.end('HTTP/1.0 403 Forbidden\r\n\r\n');
 			} else {
-				captureException(err, 'proxy-tunnel-error', { req });
+				errors.captureException(err, 'proxy-tunnel-error', { req });
 				cltSocket.end(HTTP_500);
 			}
 		}
@@ -245,7 +252,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 					errMsg += `: ${err.message}`;
 				}
 				this.logger.warning(errMsg);
-				captureException(err, 'proxy-forward-error');
+				errors.captureException(err, 'proxy-forward-error');
 				reject(new errors.RemoteTunnellingError(errMsg));
 			};
 			const proxyData = (chunk: Buffer) => {
