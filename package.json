@@ -39,7 +39,7 @@
     "winston": "^3.13.0"
   },
   "devDependencies": {
-    "@balena/lint": "^8.0.1",
+    "@balena/lint": "^9.0.1",
     "@types/bluebird": "^3.5.42",
     "@types/chai": "^4.3.14",
     "@types/chai-as-promised": "^7.1.8",

@@ -17,4 +17,7 @@
 
 import 'mocha';
 
-describe('netmask', () => require('./netmask'));
+describe('netmask', () => {
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+	require('./netmask');
+});
