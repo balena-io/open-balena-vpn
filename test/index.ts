@@ -17,6 +17,15 @@
 
 import 'mocha';
 
-describe('connect-proxy', () => require('./connect-proxy'));
-describe('service', () => require('./service'));
-describe('utils', () => require('./utils'));
+describe('connect-proxy', () => {
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+	require('./connect-proxy');
+});
+describe('service', () => {
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+	require('./service');
+});
+describe('utils', () => {
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+	require('./utils');
+});

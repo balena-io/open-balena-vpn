@@ -85,7 +85,7 @@ const $canAccessDevice = async (
 			{ headers: authHeader(auth) },
 		)) as { d?: Array<{ id: number }> };
 		return Array.isArray(d) && d.length === 1 && d[0].id === device.id;
-	} catch (e) {
+	} catch {
 		return false;
 	}
 };

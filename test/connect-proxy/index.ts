@@ -17,4 +17,7 @@
 
 import 'mocha';
 
-describe('device', () => require('./device'));
+describe('device', () => {
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+	require('./device');
+});
