@@ -16,7 +16,7 @@
 */
 
 import Bluebird from 'bluebird';
-import chai from 'chai';
+import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import http from 'http';
 import _ from 'lodash';
