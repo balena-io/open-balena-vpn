@@ -22,19 +22,19 @@ import express from 'express';
 import memoize from 'memoizee';
 import morgan from 'morgan';
 
-import { getLogger } from './utils';
+import { getLogger } from './utils/index.js';
 import {
 	BALENA_API_INTERNAL_HOST,
 	DELAY_ON_AUTH_FAIL,
 	TRUST_PROXY,
 	VPN_AUTH_CACHE_TIMEOUT,
-} from './utils/config';
-import { captureException, Sentry } from './utils/errors';
-import { hasDurationData, hasCommonName } from './utils/openvpn';
+} from './utils/config.js';
+import { captureException, Sentry } from './utils/errors.js';
+import { hasDurationData, hasCommonName } from './utils/openvpn.js';
 import { setTimeout } from 'timers/promises';
-import { pooledRequest } from './utils/request';
-import { Metrics } from './utils/metrics';
-import { setConnected } from './utils/clients';
+import { pooledRequest } from './utils/request.js';
+import { Metrics } from './utils/metrics.js';
+import { setConnected } from './utils/clients.js';
 
 // Private endpoints should use the `fromLocalHost` middleware.
 const fromLocalHost: express.RequestHandler = (req, res, next) => {

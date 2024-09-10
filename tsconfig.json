@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"allowJs": false,
 		"forceConsistentCasingInFileNames": true,
-		"module": "Node16",
+		"module": "NodeNext",
 		"noErrorTruncation": true,
 		"noFallthroughCasesInSwitch": true,
 		"noUnusedLocals": true,

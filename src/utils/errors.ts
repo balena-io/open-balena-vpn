@@ -18,7 +18,7 @@
 import * as Sentry from '@sentry/node';
 import { TypedError } from 'typed-error';
 
-import { VERSION } from '.';
+import { VERSION } from './index.js';
 
 Sentry.init({
 	dsn: process.env.SENTRY_DSN,

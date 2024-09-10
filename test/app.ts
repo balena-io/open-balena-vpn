@@ -26,15 +26,15 @@ import vpnClient from 'openvpn-client';
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
-import { apiServer } from '../src/api';
-import { service } from '../src/utils/service';
-import type { VpnManager } from '../src/utils/openvpn';
+import { apiServer } from '../src/api.js';
+import { service } from '../src/utils/service.js';
+import type { VpnManager } from '../src/utils/openvpn.js';
 
-import proxyWorker from '../src/proxy-worker';
-import vpnWorker from '../src/vpn-worker';
-import { BALENA_API_INTERNAL_HOST, VPN_API_PORT } from '../src/utils/config';
+import proxyWorker from '../src/proxy-worker.js';
+import vpnWorker from '../src/vpn-worker.js';
+import { BALENA_API_INTERNAL_HOST, VPN_API_PORT } from '../src/utils/config.js';
 import { optionalVar } from '@balena/env-parsing';
-import { pooledRequest } from '../src/utils/request';
+import { pooledRequest } from '../src/utils/request.js';
 
 const vpnHost = optionalVar('VPN_HOST', '127.0.0.1');
 const vpnPort = optionalVar('VPN_PORT', '443');

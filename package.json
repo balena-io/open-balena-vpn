@@ -3,7 +3,7 @@
   "private": true,
   "version": "11.30.42",
   "description": "RESTful VPN api",
-  "type": "commonjs",
+  "type": "module",
   "license": "AGPL-3.0",
   "scripts": {
     "build": "tsc --project .",
@@ -75,6 +75,7 @@
   "mocha": {
     "bail": true,
     "reporter": "spec",
+    "loader": "ts-node/esm/transpile-only",
     "require": "ts-node/register/transpile-only",
     "exit": true
   },

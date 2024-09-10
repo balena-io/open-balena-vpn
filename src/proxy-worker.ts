@@ -21,19 +21,19 @@ import net from 'net';
 import * as nodeTunnel from 'node-tunnel';
 import type winston from 'winston';
 
-import { getLogger } from './utils';
+import { getLogger } from './utils/index.js';
 import {
 	VPN_CONNECT_PROXY_PORT,
 	VPN_FORWARD_PROXY_PORT,
 	VPN_SERVICE_API_KEY,
-} from './utils/config';
-import * as errors from './utils/errors';
-import { Metrics } from './utils/metrics';
+} from './utils/config.js';
+import * as errors from './utils/errors.js';
+import { Metrics } from './utils/metrics.js';
 import {
 	canAccessDevice,
 	getDeviceByUUID,
 	getDeviceVpnHost,
-} from './utils/device';
+} from './utils/device.js';
 
 const HTTP_500 = 'HTTP/1.0 500 Internal Server Error\r\n\r\n';
 

@@ -18,7 +18,7 @@
 import { expect } from 'chai';
 import 'mocha';
 
-import * as netmask from '../../src/utils/netmask';
+import * as netmask from '../../src/utils/netmask.js';
 
 const BASE_SIZE = 10;
 const net = new netmask.Netmask('100.64.0.0', BASE_SIZE);
