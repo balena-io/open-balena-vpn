@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update @balena/lint to 9.x
+      hash: d51cb065ad0153a1aa8a6360041601f9b88bea24
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.30.39
+  title: ""
+  date: 2024-09-10T15:20:26.707Z
+- commits:
     - subject: Lock file maintenance
       hash: f0ee41f95db5db7aea9549c60cd3dbf666bb5558
       body: |
