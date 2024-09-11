@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update @sentry/node to ^8.30.0
+      hash: 97cf36efd138a0883eeb3827584e1c98dd264a44
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Otavio Jacobi
+      nested: []
+  version: 11.30.44
+  title: ""
+  date: 2024-09-11T13:09:01.559Z
+- commits:
     - subject: Convert to ES modules
       hash: 15bb6f22481be0ecd06d52c49afaf993dc010b19
       body: ""
