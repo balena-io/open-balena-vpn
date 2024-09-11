@@ -1,4 +1,16 @@
 - commits:
+    - subject: Avoid circular dependencies in utils
+      hash: 525d77652bb3d469ba236b6e6a494684453ae004
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.30.42
+  title: ""
+  date: 2024-09-11T09:56:33.450Z
+- commits:
     - subject: Update dependency express to v4.20.0 [SECURITY]
       hash: d4b9bbcb52de80af4630a46cdd1686cc13e32264
       body: |
