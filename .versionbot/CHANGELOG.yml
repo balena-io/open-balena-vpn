@@ -1,4 +1,16 @@
 - commits:
+    - subject: "Tests: update chai to v5 / chai-as-promised to v8"
+      hash: 7c2fa3d573f893bf440f6199ffeecb1a71f8f50e
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.30.45
+  title: ""
+  date: 2024-09-11T14:17:37.038Z
+- commits:
     - subject: Update @sentry/node to ^8.30.0
       hash: 97cf36efd138a0883eeb3827584e1c98dd264a44
       body: ""
