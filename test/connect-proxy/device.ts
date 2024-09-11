@@ -23,49 +23,51 @@ import { BALENA_API_INTERNAL_HOST } from '../../src/utils/config';
 
 import { getDeviceByUUID } from '../../src/utils/device';
 
-chai.use(chaiAsPromised);
-const { expect } = chai;
-nock.disableNetConnect();
+export default () => {
+	chai.use(chaiAsPromised);
+	const { expect } = chai;
+	nock.disableNetConnect();
 
-const VPN_SERVICE_API_KEY = Buffer.from(
-	optionalVar('VPN_SERVICE_API_KEY', 'test_vpn_string'),
-);
+	const VPN_SERVICE_API_KEY = Buffer.from(
+		optionalVar('VPN_SERVICE_API_KEY', 'test_vpn_string'),
+	);
 
-beforeEach(function () {
-	this.mockDevice = {
-		id: 1234,
-		uuid: 'deadbeef',
-		is_connected_to_vpn: false,
-		__metadata: {
-			uri: '/resin/device(1234)',
-			type: '',
-		},
-	};
-});
-
-describe('getDeviceByUUID()', function () {
 	beforeEach(function () {
-		nock(BALENA_API_INTERNAL_HOST)
-			.get('/v6/device')
-			.query({
-				$select: 'id,is_connected_to_vpn',
-				$filter: 'uuid eq @uuid',
-				'@uuid': "'deadbeef'",
-			})
-			.reply(200, { d: [this.mockDevice] });
+		this.mockDevice = {
+			id: 1234,
+			uuid: 'deadbeef',
+			is_connected_to_vpn: false,
+			__metadata: {
+				uri: '/resin/device(1234)',
+				type: '',
+			},
+		};
 	});
 
-	afterEach(() => {
-		nock.cleanAll();
-	});
+	describe('getDeviceByUUID()', function () {
+		beforeEach(function () {
+			nock(BALENA_API_INTERNAL_HOST)
+				.get('/v6/device')
+				.query({
+					$select: 'id,is_connected_to_vpn',
+					$filter: 'uuid eq @uuid',
+					'@uuid': "'deadbeef'",
+				})
+				.reply(200, { d: [this.mockDevice] });
+		});
 
-	it('should return a promise', () => {
-		const device = getDeviceByUUID('deadbeef', VPN_SERVICE_API_KEY);
-		expect(device).to.be.an.instanceOf(Promise);
-	});
+		afterEach(() => {
+			nock.cleanAll();
+		});
 
-	it('should resolve to the device requested', async function () {
-		const device = await getDeviceByUUID('deadbeef', VPN_SERVICE_API_KEY);
-		expect(device).to.deep.equal(this.mockDevice);
+		it('should return a promise', () => {
+			const device = getDeviceByUUID('deadbeef', VPN_SERVICE_API_KEY);
+			expect(device).to.be.an.instanceOf(Promise);
+		});
+
+		it('should resolve to the device requested', async function () {
+			const device = await getDeviceByUUID('deadbeef', VPN_SERVICE_API_KEY);
+			expect(device).to.deep.equal(this.mockDevice);
+		});
 	});
-});
+};
