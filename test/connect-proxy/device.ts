@@ -16,7 +16,7 @@
 */
 
 import { optionalVar } from '@balena/env-parsing';
-import chai from 'chai';
+import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import nock from 'nock';
 import { BALENA_API_INTERNAL_HOST } from '../../src/utils/config.js';
