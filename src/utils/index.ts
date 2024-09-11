@@ -19,9 +19,10 @@ import winston from 'winston';
 
 import { PinejsClientRequest } from 'pinejs-client-request';
 export { StatusError } from 'pinejs-client-request';
-import { BALENA_API_INTERNAL_HOST } from './config';
+import { BALENA_API_INTERNAL_HOST } from './config.js';
 
-export { version as VERSION } from '../../package.json';
+import packageJSON from '../../package.json' with { type: 'json' };
+export const VERSION = packageJSON.version;
 
 export const balenaApi = new PinejsClientRequest({
 	apiPrefix: `${BALENA_API_INTERNAL_HOST}/v6/`,

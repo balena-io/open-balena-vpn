@@ -25,8 +25,8 @@ import express from 'express';
 import _ from 'lodash';
 import prometheus from 'prom-client';
 
-import { apiServer } from './api';
-import { getLogger, VERSION } from './utils';
+import { apiServer } from './api.js';
+import { getLogger, VERSION } from './utils/index.js';
 import {
 	DEFAULT_SIGTERM_TIMEOUT,
 	TRUST_PROXY,
@@ -34,13 +34,13 @@ import {
 	VPN_INSTANCE_COUNT,
 	VPN_SERVICE_ADDRESS,
 	VPN_VERBOSE_LOGS,
-} from './utils/config';
+} from './utils/config.js';
 
-import proxyWorker from './proxy-worker';
-import vpnWorker from './vpn-worker';
+import proxyWorker from './proxy-worker.js';
+import vpnWorker from './vpn-worker.js';
 import { intVar } from '@balena/env-parsing';
-import { describeMetrics, Metrics } from './utils/metrics';
-import { service } from './utils/service';
+import { describeMetrics, Metrics } from './utils/metrics.js';
+import { service } from './utils/service.js';
 
 const masterLogger = getLogger('master');
 

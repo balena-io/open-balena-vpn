@@ -16,7 +16,7 @@
 */
 
 import 'mocha';
-import netmaskTests from './netmask';
+import netmaskTests from './netmask.js';
 
 export default () => {
 	describe('netmask', () => {

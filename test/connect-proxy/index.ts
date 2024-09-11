@@ -16,7 +16,7 @@
 */
 
 import 'mocha';
-import deviceTests from './device';
+import deviceTests from './device.js';
 
 export default () => {
 	describe('device', () => {

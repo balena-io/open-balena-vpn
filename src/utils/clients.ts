@@ -29,14 +29,14 @@ import _ from 'lodash';
 import { setTimeout } from 'timers/promises';
 import type { Logger } from 'winston';
 
-import type { Response } from './request';
-import { request, REQUEST_TIMEOUT } from './request';
+import type { Response } from './request.js';
+import { request, REQUEST_TIMEOUT } from './request.js';
 import {
 	API_DEVICE_STATE_POST_BATCH_SIZE,
 	BALENA_API_INTERNAL_HOST,
 	VPN_SERVICE_API_KEY,
-} from './config';
-import { captureException } from './errors';
+} from './config.js';
+import { captureException } from './errors.js';
 
 interface DeviceStateTracker {
 	currentConnected?: boolean;

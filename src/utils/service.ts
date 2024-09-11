@@ -16,9 +16,9 @@
 */
 
 import { setTimeout } from 'timers/promises';
-import { balenaApi } from '.';
-import { VPN_SERVICE_API_KEY } from './config';
-import { captureException, ServiceRegistrationError } from './errors';
+import { balenaApi } from './index.js';
+import { VPN_SERVICE_API_KEY } from './config.js';
+import { captureException, ServiceRegistrationError } from './errors.js';
 
 class ServiceInstance {
 	private _id: number | null = null;

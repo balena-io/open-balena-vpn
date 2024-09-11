@@ -16,9 +16,9 @@
 */
 
 import 'mocha';
-import connectProxyTests from './connect-proxy/index';
-import serviceTests from './service';
-import utilsTests from './utils/index';
+import connectProxyTests from './connect-proxy/index.js';
+import serviceTests from './service.js';
+import utilsTests from './utils/index.js';
 
 describe('connect-proxy', () => {
 	connectProxyTests();

@@ -19,9 +19,9 @@ import { optionalVar } from '@balena/env-parsing';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import nock from 'nock';
-import { BALENA_API_INTERNAL_HOST } from '../../src/utils/config';
+import { BALENA_API_INTERNAL_HOST } from '../../src/utils/config.js';
 
-import { getDeviceByUUID } from '../../src/utils/device';
+import { getDeviceByUUID } from '../../src/utils/device.js';
 
 export default () => {
 	chai.use(chaiAsPromised);
