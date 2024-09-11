@@ -18,7 +18,7 @@
 import { expect } from 'chai';
 import nock from 'nock';
 
-import { service } from '../src/utils';
+import { service } from '../src/utils/service';
 import { BALENA_API_INTERNAL_HOST } from '../src/utils/config';
 
 const serviceId = 10;

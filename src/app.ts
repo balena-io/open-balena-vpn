@@ -26,7 +26,7 @@ import _ from 'lodash';
 import prometheus from 'prom-client';
 
 import { apiServer } from './api';
-import { describeMetrics, getLogger, Metrics, service, VERSION } from './utils';
+import { getLogger, VERSION } from './utils';
 import {
 	DEFAULT_SIGTERM_TIMEOUT,
 	TRUST_PROXY,
@@ -39,6 +39,8 @@ import {
 import proxyWorker from './proxy-worker';
 import vpnWorker from './vpn-worker';
 import { intVar } from '@balena/env-parsing';
+import { describeMetrics, Metrics } from './utils/metrics';
+import { service } from './utils/service';
 
 const masterLogger = getLogger('master');
 

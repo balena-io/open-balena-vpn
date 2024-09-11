@@ -22,22 +22,19 @@ import express from 'express';
 import memoize from 'memoizee';
 import morgan from 'morgan';
 
-import {
-	captureException,
-	clients,
-	getLogger,
-	Metrics,
-	pooledRequest,
-} from './utils';
+import { getLogger } from './utils';
 import {
 	BALENA_API_INTERNAL_HOST,
 	DELAY_ON_AUTH_FAIL,
 	TRUST_PROXY,
 	VPN_AUTH_CACHE_TIMEOUT,
 } from './utils/config';
-import { Sentry } from './utils/errors';
+import { captureException, Sentry } from './utils/errors';
 import { hasDurationData, hasCommonName } from './utils/openvpn';
 import { setTimeout } from 'timers/promises';
+import { pooledRequest } from './utils/request';
+import { Metrics } from './utils/metrics';
+import { setConnected } from './utils/clients';
 
 // Private endpoints should use the `fromLocalHost` middleware.
 const fromLocalHost: express.RequestHandler = (req, res, next) => {
@@ -98,7 +95,7 @@ export const apiFactory = (serviceId: number) => {
 		if (clientRefCount[uuid] > 0) {
 			// Only set the device as connected if the ref count is > 0, this handles the case where
 			// the disconnect comes before the first connect so we go 0 -> -1 -> 0
-			clients.setConnected(uuid, serviceId, workerId, true, logger);
+			setConnected(uuid, serviceId, workerId, true, logger);
 		}
 	});
 
@@ -162,7 +159,7 @@ export const apiFactory = (serviceId: number) => {
 
 		metrics.dec(Metrics.OnlineDevices);
 
-		clients.setConnected(uuid, serviceId, workerId, false, logger);
+		setConnected(uuid, serviceId, workerId, false, logger);
 	});
 
 	return api;

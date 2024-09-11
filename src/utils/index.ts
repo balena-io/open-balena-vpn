@@ -23,8 +23,6 @@ import { BALENA_API_INTERNAL_HOST } from './config';
 
 export { version as VERSION } from '../../package.json';
 
-export { captureException } from './errors';
-
 export const balenaApi = new PinejsClientRequest({
 	apiPrefix: `${BALENA_API_INTERNAL_HOST}/v6/`,
 });
@@ -58,13 +56,3 @@ export const getLogger = (
 		levels: winston.config.syslog.levels,
 	});
 };
-
-export * as clients from './clients';
-export * as device from './device';
-export * as errors from './errors';
-export { HAProxy } from './haproxy';
-export { describeMetrics, Metrics } from './metrics';
-export { Netmask } from './netmask';
-export { VpnManager } from './openvpn';
-export { pooledRequest } from './request';
-export { service } from './service';
