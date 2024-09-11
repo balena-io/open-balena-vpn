@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency express to v4.20.0 [SECURITY]
+      hash: d4b9bbcb52de80af4630a46cdd1686cc13e32264
+      body: |
+        Update express from 4.19.2 to 4.20.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested: []
+  version: 11.30.41
+  title: ""
+  date: 2024-09-11T05:00:53.485Z
+- commits:
     - subject: "Tests: avoid the need for `require`"
       hash: e0a6f32bee71f2c67046f829f8db3797708d27f6
       body: ""
