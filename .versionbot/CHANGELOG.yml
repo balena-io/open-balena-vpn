@@ -1,4 +1,16 @@
 - commits:
+    - subject: Convert to ES modules
+      hash: 15bb6f22481be0ecd06d52c49afaf993dc010b19
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.30.43
+  title: ""
+  date: 2024-09-11T12:49:17.983Z
+- commits:
     - subject: Avoid circular dependencies in utils
       hash: 525d77652bb3d469ba236b6e6a494684453ae004
       body: ""
