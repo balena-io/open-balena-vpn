@@ -1,4 +1,16 @@
 - commits:
+    - subject: "Tests: avoid the need for `require`"
+      hash: e0a6f32bee71f2c67046f829f8db3797708d27f6
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.30.40
+  title: ""
+  date: 2024-09-11T04:09:49.181Z
+- commits:
     - subject: Update @balena/lint to 9.x
       hash: d51cb065ad0153a1aa8a6360041601f9b88bea24
       body: ""
