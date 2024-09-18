@@ -38,15 +38,18 @@ export interface DeviceInfo {
 	is_connected_to_vpn: boolean;
 }
 
-const getDeviceByUUIDQuery = balenaApi.prepare<{ uuid: string }>({
-	resource: 'device',
-	options: {
-		$select: ['id', 'is_connected_to_vpn'],
-		$filter: {
-			uuid: { '@': 'uuid' },
+const getDeviceByUUIDQuery = balenaApi.prepare(
+	{
+		resource: 'device',
+		options: {
+			$select: ['id', 'is_connected_to_vpn'],
+			$filter: {
+				uuid: { '@': 'uuid' },
+			},
 		},
 	},
-});
+	{ uuid: ['string'] },
+);
 export const getDeviceByUUID = async (
 	uuid: string,
 	auth?: Buffer,
@@ -65,12 +68,15 @@ export const getDeviceByUUID = async (
 	}
 };
 
-const canAccessDeviceQuery = balenaApi.prepare<{ id: number }>({
-	method: 'POST',
-	resource: 'device',
-	id: { '@': 'id' },
-	url: `device(@id)/canAccess`,
-});
+const canAccessDeviceQuery = balenaApi.prepare(
+	{
+		method: 'POST',
+		resource: 'device',
+		id: { '@': 'id' },
+		url: `device(@id)/canAccess`,
+	},
+	{ id: ['number'] },
+);
 const $canAccessDevice = async (
 	device: DeviceInfo,
 	port: number,
