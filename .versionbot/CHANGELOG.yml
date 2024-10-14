@@ -1,4 +1,16 @@
 - commits:
+    - subject: Add a timeout for fetching async metrics data
+      hash: 7052ffd9a0417d138cbbf888b34c4fd2d3fb7d51
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.30.51
+  title: ""
+  date: 2024-10-14T15:26:50.551Z
+- commits:
     - subject: Lock file maintenance
       hash: 4d473fddac39a7071904d2c77b54993eb9311158
       body: |
