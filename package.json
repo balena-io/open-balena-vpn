@@ -42,7 +42,7 @@
   "devDependencies": {
     "@balena/lint": "^9.0.1",
     "@types/bluebird": "^3.5.42",
-    "@types/chai": "^4.3.19",
+    "@types/chai": "^5.0.0",
     "@types/chai-as-promised": "^8.0.0",
     "@types/compression": "^1.7.5",
     "@types/event-stream": "^4.0.5",
