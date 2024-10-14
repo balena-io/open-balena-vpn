@@ -24,11 +24,13 @@ import cluster from 'cluster';
 import express from 'express';
 import _ from 'lodash';
 import prometheus from 'prom-client';
+import pTimeout from 'p-timeout';
 
 import { apiServer } from './api.js';
 import { getLogger, VERSION } from './utils/index.js';
 import {
 	DEFAULT_SIGTERM_TIMEOUT,
+	METRICS_TIMEOUT,
 	TRUST_PROXY,
 	VPN_API_PORT,
 	VPN_INSTANCE_COUNT,
@@ -193,8 +195,12 @@ if (cluster.isPrimary) {
 						}
 						try {
 							const [promMetrics, clusterMetrics] = await Promise.all([
-								prometheus.register.metrics(),
-								aggregatorRegistry.clusterMetrics(),
+								pTimeout(prometheus.register.metrics(), {
+									milliseconds: METRICS_TIMEOUT,
+								}),
+								pTimeout(aggregatorRegistry.clusterMetrics(), {
+									milliseconds: METRICS_TIMEOUT,
+								}),
 							]);
 							res.set('Content-Type', prometheus.register.contentType);
 							res.write(promMetrics);
