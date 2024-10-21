@@ -1,4 +1,17 @@
 - commits:
+    - subject: Lock file maintenance
+      hash: 1828ea925e504ec7545414a65e5f0e4e93e89391
+      body: |
+        Update
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested: []
+  version: 11.30.53
+  title: ""
+  date: 2024-10-21T12:14:31.688Z
+- commits:
     - subject: Update dependency @types/chai to v5
       hash: b29bd1dfc38e872735f40fd730cee61f9a841e13
       body: |
