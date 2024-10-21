@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @types/chai to v5
+      hash: b29bd1dfc38e872735f40fd730cee61f9a841e13
+      body: |
+        Update @types/chai from 4.3.19 to 5.0.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Self-hosted Renovate Bot
+      nested: []
+  version: 11.30.52
+  title: ""
+  date: 2024-10-21T11:08:57.452Z
+- commits:
     - subject: Add a timeout for fetching async metrics data
       hash: 7052ffd9a0417d138cbbf888b34c4fd2d3fb7d51
       body: ""
