@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update Rust crate ureq to 2.11.0
+      hash: c0f080a6b625da96edff2de27c52c88e66c6d1ee
+      body: |
+        Update ureq from 2.10.1 to 2.11.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 11.30.64
+  title: ""
+  date: 2024-11-28T18:04:24.560Z
+- commits:
     - subject: Lock file maintenance
       hash: 44064b4dc3414a9d648ba6a366480b7e01e6e14b
       body: |
