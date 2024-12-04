@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency mocha to v11
+      hash: fbc6997e03a71b9e4a90620e452d9880d4809a24
+      body: |
+        Update mocha from 10.8.2 to 11.0.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 11.30.66
+  title: ""
+  date: 2024-12-04T13:33:32.339Z
+- commits:
     - subject: Lock file maintenance
       hash: d7733700d84a95962a43809805b88f73818d90d6
       body: |
