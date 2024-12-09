@@ -1,4 +1,39 @@
 - commits:
+    - subject: Lock file maintenance
+      hash: d7cf21519545d8162a85162410416988d20698f9
+      body: |
+        Update 
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+    - subject: Update balena/open-balena-base Docker tag to v18.0.21
+      hash: 85b6b168bb6fd0ad7c06a1308b789367e4ae3242
+      body: |
+        Update balena/open-balena-base from 18.0.20 to 18.0.21
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Update dependency npm to v10.9.2
+              hash: 951f021cd0eeeaca473bafa79294c8d8c5ea4fbf
+              body: |
+                Update npm from 10.9.1 to 10.9.2
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Self-hosted Renovate Bot
+              nested: []
+          version: open-balena-base-18.0.21
+          title: ""
+          date: 2024-12-04T23:53:49.199Z
+  version: 11.30.70
+  title: ""
+  date: 2024-12-09T01:32:30.759Z
+- commits:
     - subject: Update Rust crate ureq to 2.12.1
       hash: c534ed9a629fec19bf7cad647cfb44b3bb88e8cb
       body: |
