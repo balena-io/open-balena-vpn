@@ -35,7 +35,7 @@
     "pinejs-client-request": "^8.0.1",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
-    "telnet-client": "^1.4.11",
+    "telnet-client": "^2.0.0",
     "typed-error": "^3.2.2",
     "winston": "^3.14.2"
   },
