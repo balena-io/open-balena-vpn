@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update npm to v11
+      hash: 30081b42e34a163b350513f77a8638ef3b6db188
+      body: |
+        Update npm from 10.9.2 to 11.0.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 11.30.76
+  title: ""
+  date: 2025-01-06T15:15:02.176Z
+- commits:
     - subject: Lock file maintenance
       hash: ad61ff11c9438317d76a3c849526689076b276ab
       body: |
