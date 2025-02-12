@@ -11,9 +11,9 @@
     "check:dev": "tsc --pretty --noEmit --diagnostics --project ./tsconfig.dev.json",
     "lint": "balena-lint -t ./tsconfig.dev.json src/ test/ typings/",
     "lint-fix": "balena-lint -t ./tsconfig.dev.json --fix src/ test/ typings/",
-    "pretest": "npm run lint",
+    "test": "npm run lint",
     "test-unit": "mocha test/index.ts",
-    "test": "docker build -t test-balena-vpn . && IMAGE_NAME=test-balena-vpn ./automation/test.sh",
+    "test-compose": "docker build . -t sut && docker compose -f docker-compose.test.yml run sut",
     "prepare": "node -e \"try { (await import('husky')).default() } catch (e) { if (e.code !== 'ERR_MODULE_NOT_FOUND') throw e }\" --input-type module"
   },
   "dependencies": {

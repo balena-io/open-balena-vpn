@@ -1,7 +1,7 @@
-FROM balena/open-balena-base:18.0.24 as base
+FROM balena/open-balena-base:18.0.24 AS base
 
 
-FROM base as builder
+FROM base AS builder
 COPY package.json package-lock.json /usr/src/app/
 RUN npm ci && npm cache clean --force 2>/dev/null
 COPY tsconfig.json tsconfig.dev.json /usr/src/app/
@@ -10,7 +10,7 @@ COPY test /usr/src/app/test
 COPY src /usr/src/app/src
 RUN npm run build
 
-FROM base as plugin-builder
+FROM base AS plugin-builder
 
 RUN apt-get update \
 	&& apt-get install \
@@ -18,7 +18,7 @@ RUN apt-get update \
 		openvpn \
 	&& rm -rf /var/lib/apt/lists/*
 
-FROM plugin-builder as connect-disconnect-plugin
+FROM plugin-builder AS connect-disconnect-plugin
 
 ENV CONNECT_DISCONNECT_PLUGIN_COMMIT=7c958d8b33a87a06b5a8fa096397fc623494013a
 RUN git clone https://github.com/balena-io-modules/connect-disconnect-script-openvpn.git \
@@ -26,7 +26,7 @@ RUN git clone https://github.com/balena-io-modules/connect-disconnect-script-ope
 	&& git checkout ${CONNECT_DISCONNECT_PLUGIN_COMMIT} \
 	&& C_INCLUDE_PATH=/usr/include/openvpn/ make plugin
 
-FROM plugin-builder as auth-plugin
+FROM plugin-builder AS auth-plugin
 
 ENV AUTH_PLUGIN_COMMIT=623982a5d63dd2b7b2b9f9295d10d96a56d58894
 RUN git clone https://github.com/fac/auth-script-openvpn.git \
@@ -34,13 +34,13 @@ RUN git clone https://github.com/fac/auth-script-openvpn.git \
 	&& git checkout ${AUTH_PLUGIN_COMMIT} \
 	&& C_INCLUDE_PATH=/usr/include/openvpn/ make plugin
 
-FROM rust:1-bookworm as rust-builder
+FROM rust:1-bookworm AS rust-builder
 
 WORKDIR /usr/src/app
 COPY auth .
 RUN cargo build --release
 
-FROM base as main
+FROM base AS main
 
 ARG TARGETARCH
 
@@ -71,6 +71,7 @@ RUN eget prometheus/node_exporter --tag v${NODE_EXPORTER_TAG} \
 
 EXPOSE 80 443 3128
 
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends \
 	socat \
 	&& rm -rf /var/lib/apt/lists/*
@@ -78,6 +79,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # https://docs.renovatebot.com/modules/datasource/repology/
 # renovate: datasource=repology depName=debian_12/haproxy versioning=loose
 ARG HAPROXY_VERSION=2.6.12-1+deb12u1
+
+# hadolint ignore=DL3008
 RUN apt-get update -qq \
 	&& apt-get install -qy haproxy=${HAPROXY_VERSION} iptables --no-install-recommends \
 	&& apt-get clean \
