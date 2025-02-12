@@ -1,4 +1,33 @@
 - commits:
+    - subject: Run compose tests on any self-hosted runner release
+      hash: 04bc650b023ba47e5261972469cd98ceaa6a03aa
+      body: |
+        Ubuntu Focal 20.04 is EOL in May 2025 and the previous limitations
+        of systemd in a container seem to no longer apply.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+    - subject: Use docker compose for functional tests
+      hash: 7f2c8a00baf441bfc94710302f51d5f24f78b8a8
+      body: |
+        This is the preferred approach for images built via Flowzone
+        and provides better logging when a container can't start, vs
+        running it in the background with no output.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 11.30.83
+  title: ""
+  date: 2025-02-12T19:55:18.454Z
+- commits:
     - subject: Lock file maintenance
       hash: f196472fce409013a178a7881ef096324b442579
       body: |
