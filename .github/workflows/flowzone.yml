@@ -25,9 +25,8 @@ jobs:
     secrets: inherit
     with:
       docker_images: balena/open-balena-vpn
-      # ubuntu-20.04 (focal) avoids conflicts with systemd on the host
       docker_runs_on: >
         {
-          "linux/amd64": ["self-hosted","distro:focal"],
-          "linux/arm64": ["self-hosted","distro:focal","ARM64"]
+          "linux/amd64": ["self-hosted"],
+          "linux/arm64": ["self-hosted","ARM64"]
         }
