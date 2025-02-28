@@ -1,4 +1,16 @@
 - commits:
+    - subject: Change request log format to more closely match the api
+      hash: df2b344bc9fafaf7d07db3ce68c7687028296e09
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 11.31.0
+  title: ""
+  date: 2025-02-28T17:03:00.303Z
+- commits:
     - subject: Run compose tests on any self-hosted runner release
       hash: 04bc650b023ba47e5261972469cd98ceaa6a03aa
       body: |
