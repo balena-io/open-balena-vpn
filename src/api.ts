@@ -35,6 +35,7 @@ import { setTimeout } from 'timers/promises';
 import { pooledRequest } from './utils/request.js';
 import { Metrics } from './utils/metrics.js';
 import { setConnected } from './utils/clients.js';
+import { trace } from '@opentelemetry/api';
 
 // Private endpoints should use the `fromLocalHost` middleware.
 const fromLocalHost: express.RequestHandler = (req, res, next) => {
@@ -177,11 +178,12 @@ export const apiServer = (serviceId: number) => {
 	app.use(
 		morgan((tokens, req, res) => {
 			const ip = tokens['remote-addr'](req, res);
+			const traceId = trace.getActiveSpan()?.spanContext().traceId ?? '-';
 			const url = tokens.url(req, res);
 			const statusCode = tokens.status(req, res) ?? '-';
 			const responseTime = tokens['response-time'](req, res) ?? '-';
 
-			return `${ip} ${req.method} ${url} ${statusCode} ${responseTime}ms`;
+			return `${ip} ${traceId} ${req.method} ${url} ${statusCode} ${responseTime}ms`;
 		}),
 	);
 	app.use(compression());

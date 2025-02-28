@@ -15,6 +15,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import '../src/init.js';
+
 import Bluebird from 'bluebird';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
