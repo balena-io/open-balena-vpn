@@ -174,7 +174,19 @@ export const apiServer = (serviceId: number) => {
 	app.set('trust proxy', TRUST_PROXY);
 	app.disable('x-powered-by');
 	app.get('/ping', (_req, res) => res.send('OK'));
-	app.use(morgan('combined'));
+	app.use(
+		morgan((tokens, req, res) => {
+			const date = new Date().toISOString();
+			const ip = tokens['remote-addr'](req, res);
+			const url = tokens.url(req, res);
+			const statusCode = tokens.status(req, res) ?? '-';
+			const responseTime = tokens['response-time'](req, res) ?? '-';
+
+			return `${date} ${ip} ${
+				req.method
+			} ${url} ${statusCode} ${responseTime}ms`;
+		}),
+	);
 	app.use(compression());
 	app.use(apiFactory(serviceId));
 	Sentry.setupExpressErrorHandler(app);
