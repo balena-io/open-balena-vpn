@@ -22,7 +22,7 @@ import express from 'express';
 import memoize from 'memoizee';
 import morgan from 'morgan';
 
-import { getLogger } from './utils/index.js';
+import { getLogger, getPassthrough } from './utils/index.js';
 import {
 	BALENA_API_INTERNAL_HOST,
 	DELAY_ON_AUTH_FAIL,
@@ -51,7 +51,7 @@ const checkDeviceAuth = memoize(
 	async (username: string, password: string) => {
 		const { statusCode } = await pooledRequest.get({
 			url: `${BALENA_API_INTERNAL_HOST}/services/vpn/auth/${username}`,
-			headers: { Authorization: `Bearer ${password}` },
+			...getPassthrough(`Bearer ${password}`),
 		});
 		if ([200, 401, 403].includes(statusCode)) {
 			return statusCode;

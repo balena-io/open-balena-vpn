@@ -18,19 +18,17 @@
 import { optionalVar } from '@balena/env-parsing';
 import memoize from 'memoizee';
 
-import { balenaApi, StatusError } from './index.js';
+import { balenaApi, getPassthrough, StatusError } from './index.js';
 import { APIError, captureException } from './errors.js';
 
 const VPN_GUEST_API_KEY = optionalVar('VPN_GUEST_API_KEY');
 
-const authHeader = (auth?: Buffer): { Authorization?: string } => {
-	const headers: { Authorization?: string } = {};
+const authHeader = (auth?: Buffer): string | undefined => {
 	if (auth != null) {
-		headers.Authorization = `Bearer ${auth}`;
+		return `Bearer ${auth}`;
 	} else if (VPN_GUEST_API_KEY != null) {
-		headers.Authorization = `Bearer ${VPN_GUEST_API_KEY}`;
+		return `Bearer ${VPN_GUEST_API_KEY}`;
 	}
-	return headers;
 };
 
 export interface DeviceInfo {
@@ -55,9 +53,11 @@ export const getDeviceByUUID = async (
 	auth?: Buffer,
 ): Promise<DeviceInfo> => {
 	try {
-		const devices = await getDeviceByUUIDQuery({ uuid }, undefined, {
-			headers: authHeader(auth),
-		});
+		const devices = await getDeviceByUUIDQuery(
+			{ uuid },
+			undefined,
+			getPassthrough(authHeader(auth)),
+		);
 		if (!Array.isArray(devices) || devices.length === 0) {
 			throw new Error('invalid api response');
 		}
@@ -88,7 +88,7 @@ const $canAccessDevice = async (
 			{
 				action: { or: ['tunnel-any', `tunnel-${port}`] },
 			},
-			{ headers: authHeader(auth) },
+			getPassthrough(authHeader(auth)),
 		)) as { d?: Array<{ id: number }> };
 		return Array.isArray(d) && d.length === 1 && d[0].id === device.id;
 	} catch {
@@ -124,7 +124,7 @@ export const getDeviceVpnHost = async (
 					},
 				},
 			},
-			passthrough: { headers: authHeader(auth) },
+			passthrough: getPassthrough(authHeader(auth)),
 		})) as Array<{ id: number; ip_address: string }>;
 		return services[0];
 	} catch (err) {
