@@ -1,4 +1,16 @@
 - commits:
+    - subject: "Tests: make use of use async/await"
+      hash: bedf17f66b99f634fe078d6b361b745b4a327143
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.31.1
+  title: ""
+  date: 2025-03-04T07:03:24.645Z
+- commits:
     - subject: Change request log format to more closely match the api
       hash: df2b344bc9fafaf7d07db3ce68c7687028296e09
       body: ""
