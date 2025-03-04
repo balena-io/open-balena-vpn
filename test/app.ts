@@ -97,7 +97,7 @@ describe('VPN Events', function () {
 	this.timeout(30 * 1000);
 
 	const getEvent = (name: string) =>
-		new Bluebird<string>((resolve) => {
+		new Promise<string>((resolve) => {
 			nock(BALENA_API_INTERNAL_HOST)
 				.post(`/services/vpn/client-${name}`, /"uuids":.*"user2"/g)
 				.reply(200, (_uri: string, body: any) => {
@@ -112,38 +112,36 @@ describe('VPN Events', function () {
 			.reply(200, 'OK');
 	});
 
-	it('should send a client-connect event', function () {
-		const connectEvent = getEvent('connect').then((body) => {
-			expect(body).to.have.property('serviceId').that.equals(instance.getId());
-			expect(body).to.have.property('uuids').that.deep.equals(['user2']);
-			expect(body).to.not.have.property('real_address');
-			expect(body).to.not.have.property('virtual_address');
-		});
-
+	it('should send a client-connect event', async function () {
+		const connectEvent = getEvent('connect');
 		this.client = vpnClient.create(vpnDefaultOpts);
 		this.client.authenticate('user2', 'pass');
-		return this.client.connect().return(connectEvent);
+		await this.client.connect();
+		const body = await connectEvent;
+		expect(body).to.have.property('serviceId').that.equals(instance.getId());
+		expect(body).to.have.property('uuids').that.deep.equals(['user2']);
+		expect(body).to.not.have.property('real_address');
+		expect(body).to.not.have.property('virtual_address');
 	});
 
-	it('should send a client-disconnect event', function () {
-		const disconnectEvent = getEvent('disconnect').then((body) => {
-			expect(body).to.have.property('serviceId').that.equals(instance.getId());
-			expect(body).to.have.property('uuids').that.deep.equals(['user2']);
-			expect(body).to.not.have.property('real_address');
-			expect(body).to.not.have.property('virtual_address');
-		});
-
-		return this.client.disconnect().return(disconnectEvent);
+	it('should send a client-disconnect event', async function () {
+		const disconnectEvent = getEvent('disconnect');
+		await this.client.disconnect();
+		const body = await disconnectEvent;
+		expect(body).to.have.property('serviceId').that.equals(instance.getId());
+		expect(body).to.have.property('uuids').that.deep.equals(['user2']);
+		expect(body).to.not.have.property('real_address');
+		expect(body).to.not.have.property('virtual_address');
 	});
 });
 
 describe('VPN proxy', function () {
 	this.timeout(30 * 1000);
 
-	const vpnTest = (
+	const vpnTest = async (
 		credentials: { user: string; pass: string },
 		func: () => any,
-	): Bluebird<HttpServerAsync> => {
+	): Promise<void> => {
 		const server = Bluebird.promisifyAll(
 			http.createServer((_req, res) => {
 				res.writeHead(200, { 'Content-type': 'text/plain' });
@@ -151,7 +149,7 @@ describe('VPN proxy', function () {
 			}),
 		) as any as HttpServerAsync;
 
-		return Bluebird.using(
+		await Bluebird.using(
 			vpnClient.connect(credentials, vpnDefaultOpts),
 			async () => {
 				const s = await server.listenAsync(8080);
@@ -203,8 +201,8 @@ describe('VPN proxy', function () {
 				});
 		});
 
-		it('should allow port 8080 without authentication (.balena)', () =>
-			vpnTest({ user: 'user3', pass: 'pass' }, async () => {
+		it('should allow port 8080 without authentication (.balena)', async () => {
+			await vpnTest({ user: 'user3', pass: 'pass' }, async () => {
 				const response = await pooledRequest({
 					url: 'http://deadbeef.balena:8080/test',
 					proxy: 'http://localhost:3128',
@@ -214,10 +212,11 @@ describe('VPN proxy', function () {
 				expect(response)
 					.to.have.property('body')
 					.that.equals('hello from 8080');
-			}));
+			});
+		});
 
-		it('should allow port 8080 without authentication (.resin)', () =>
-			vpnTest({ user: 'user3', pass: 'pass' }, async () => {
+		it('should allow port 8080 without authentication (.resin)', async () => {
+			await vpnTest({ user: 'user3', pass: 'pass' }, async () => {
 				const response = await pooledRequest({
 					url: 'http://deadbeef.resin:8080/test',
 					proxy: 'http://localhost:3128',
@@ -227,7 +226,8 @@ describe('VPN proxy', function () {
 				expect(response)
 					.to.have.property('body')
 					.that.equals('hello from 8080');
-			}));
+			});
+		});
 	});
 
 	describe('tunnel forwarding', () => {
@@ -261,14 +261,14 @@ describe('VPN proxy', function () {
 				});
 		});
 
-		it('should refuse to forward via itself', () => {
+		it('should refuse to forward via itself', async () => {
 			nock(BALENA_API_INTERNAL_HOST)
 				.get(
 					'/v6/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
 				)
 				.reply(200, { d: [{ id: instance.getId(), ip_address: '127.0.0.1' }] });
 
-			return vpnTest(
+			await vpnTest(
 				{ user: 'user3', pass: 'pass' },
 				() =>
 					expect(
@@ -281,14 +281,14 @@ describe('VPN proxy', function () {
 			);
 		});
 
-		it('should detect forward loops', () => {
+		it('should detect forward loops', async () => {
 			nock(BALENA_API_INTERNAL_HOST)
 				.get(
 					'/v6/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
 				)
 				.reply(200, { d: [{ id: 0, ip_address: '127.0.0.1' }] });
 
-			return vpnTest(
+			await vpnTest(
 				{ user: 'user3', pass: 'pass' },
 				() =>
 					expect(
@@ -326,7 +326,7 @@ describe('VPN proxy', function () {
 				});
 		});
 
-		it('should not allow port 8080 without authentication', () => {
+		it('should not allow port 8080 without authentication', async () => {
 			nock(BALENA_API_INTERNAL_HOST)
 				.post('/v6/device(@id)/canAccess?@id=3', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
@@ -335,7 +335,7 @@ describe('VPN proxy', function () {
 					return { d: [] };
 				});
 
-			return vpnTest(
+			await vpnTest(
 				{ user: 'user4', pass: 'pass' },
 				() =>
 					expect(
@@ -348,7 +348,7 @@ describe('VPN proxy', function () {
 			);
 		});
 
-		it('should allow port 8080 with authentication', () => {
+		it('should allow port 8080 with authentication', async () => {
 			nock(BALENA_API_INTERNAL_HOST)
 				.post('/v6/device(@id)/canAccess?@id=3', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
@@ -361,7 +361,7 @@ describe('VPN proxy', function () {
 					],
 				});
 
-			return vpnTest({ user: 'user5', pass: 'pass' }, async () => {
+			await vpnTest({ user: 'user5', pass: 'pass' }, async () => {
 				const response = await pooledRequest({
 					url: 'http://deadbeef.balena:8080/test',
 					proxy: 'http://BALENA_api:test_api_key@localhost:3128',
