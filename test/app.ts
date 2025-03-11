@@ -76,7 +76,8 @@ const checkTraceParentReturningBody = (body: nock.Body) =>
 		return body;
 	};
 
-// We check the lack of traceparent for certain things because the node-tunnel module does not support adding traces/spans and so won't have a traceparent to add
+// We check the lack of traceparent for certain things because the internal service instance heartbeat loop does not have a trace
+// and the proxy-worker connect method also does not have a trace
 const checkNoTraceParentReturningBody = (body: nock.Body) =>
 	function (this: nock.ReplyFnContext) {
 		expect(this.req.headers).to.not.have.property('traceparent');
@@ -201,7 +202,7 @@ describe('VPN proxy', function () {
 				})
 				.reply(
 					200,
-					checkNoTraceParentReturningBody({
+					checkTraceParentReturningBody({
 						d: [
 							{
 								id: 1,
@@ -217,7 +218,7 @@ describe('VPN proxy', function () {
 				})
 				.reply(
 					200,
-					checkNoTraceParentReturningBody({
+					checkTraceParentReturningBody({
 						d: [
 							{
 								id: 1,
@@ -267,7 +268,7 @@ describe('VPN proxy', function () {
 				})
 				.reply(
 					200,
-					checkNoTraceParentReturningBody({
+					checkTraceParentReturningBody({
 						d: [
 							{
 								id: 2,
@@ -283,7 +284,7 @@ describe('VPN proxy', function () {
 				})
 				.reply(
 					200,
-					checkNoTraceParentReturningBody({
+					checkTraceParentReturningBody({
 						d: [
 							{
 								id: 2,
@@ -360,7 +361,7 @@ describe('VPN proxy', function () {
 				})
 				.reply(
 					200,
-					checkNoTraceParentReturningBody({
+					checkTraceParentReturningBody({
 						d: [
 							{
 								id: 3,
@@ -376,7 +377,7 @@ describe('VPN proxy', function () {
 				.post('/v6/device(@id)/canAccess?@id=3', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
-				.reply(200, checkNoTraceParentReturningBody({ d: [] }));
+				.reply(200, checkTraceParentReturningBody({ d: [] }));
 
 			await vpnTest(
 				{ user: 'user4', pass: 'pass' },
@@ -398,7 +399,7 @@ describe('VPN proxy', function () {
 				})
 				.reply(
 					200,
-					checkNoTraceParentReturningBody({
+					checkTraceParentReturningBody({
 						d: [
 							{
 								id: 3,
