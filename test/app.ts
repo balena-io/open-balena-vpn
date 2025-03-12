@@ -15,6 +15,8 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import '../src/init.js';
+
 import Bluebird from 'bluebird';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -64,6 +66,24 @@ interface HttpServerAsync {
 	closeAsync(): Promise<HttpServerAsync>;
 }
 
+const expectTraceParent = (headers: Record<string, string>) => {
+	// Check that we are forwarding the traceparent header
+	expect(headers).to.have.property('traceparent').that.is.a('string');
+};
+const checkTraceParentReturningBody = (body: nock.Body) =>
+	function (this: nock.ReplyFnContext) {
+		expectTraceParent(this.req.headers);
+		return body;
+	};
+
+// We check the lack of traceparent for certain things because the internal service instance heartbeat loop does not have a trace
+// and the proxy-worker connect method also does not have a trace
+const checkNoTraceParentReturningBody = (body: nock.Body) =>
+	function (this: nock.ReplyFnContext) {
+		expect(this.req.headers).to.not.have.property('traceparent');
+		return body;
+	};
+
 after(() => {
 	manager?.stop();
 });
@@ -74,7 +94,7 @@ describe('vpn worker', function () {
 	before(() => {
 		nock(BALENA_API_INTERNAL_HOST)
 			.post('/v6/service_instance')
-			.reply(200, { id: _.random(1, 1024) });
+			.reply(200, checkNoTraceParentReturningBody({ id: _.random(1, 1024) }));
 	});
 
 	it('should resolve true when ready', async () => {
@@ -100,8 +120,9 @@ describe('VPN Events', function () {
 		new Promise<string>((resolve) => {
 			nock(BALENA_API_INTERNAL_HOST)
 				.post(`/services/vpn/client-${name}`, /"uuids":.*"user2"/g)
-				.reply(200, (_uri: string, body: any) => {
-					resolve(body);
+				.reply(200, function (_uri, body) {
+					expectTraceParent(this.req.headers);
+					resolve(body as string);
 					return 'OK';
 				});
 		});
@@ -109,7 +130,7 @@ describe('VPN Events', function () {
 	before(() => {
 		nock(BALENA_API_INTERNAL_HOST)
 			.get('/services/vpn/auth/user2')
-			.reply(200, 'OK');
+			.reply(200, checkTraceParentReturningBody('OK'));
 	});
 
 	it('should send a client-connect event', async function () {
@@ -163,11 +184,11 @@ describe('VPN proxy', function () {
 	beforeEach(() => {
 		nock(BALENA_API_INTERNAL_HOST)
 			.get(/\/services\/vpn\/auth\/user[345]/)
-			.reply(200, 'OK')
+			.reply(200, checkTraceParentReturningBody('OK'))
 
 			.post(/\/services\/vpn\/client-(?:dis)?connect/, /common_name=user[345]/g)
 			.times(2)
-			.reply(200, 'OK');
+			.reply(200, checkTraceParentReturningBody('OK'));
 	});
 
 	describe('web accessible device', () => {
@@ -179,26 +200,32 @@ describe('VPN proxy', function () {
 					$filter: 'uuid eq @uuid',
 					'@uuid': "'deadbeef'",
 				})
-				.reply(200, {
-					d: [
-						{
-							id: 1,
-							is_connected_to_vpn: 1,
-						},
-					],
-				});
+				.reply(
+					200,
+					checkTraceParentReturningBody({
+						d: [
+							{
+								id: 1,
+								is_connected_to_vpn: 1,
+							},
+						],
+					}),
+				);
 
 			nock(BALENA_API_INTERNAL_HOST)
 				.post('/v6/device(@id)/canAccess?@id=1', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
-				.reply(200, {
-					d: [
-						{
-							id: 1,
-						},
-					],
-				});
+				.reply(
+					200,
+					checkTraceParentReturningBody({
+						d: [
+							{
+								id: 1,
+							},
+						],
+					}),
+				);
 		});
 
 		it('should allow port 8080 without authentication (.balena)', async () => {
@@ -239,26 +266,32 @@ describe('VPN proxy', function () {
 					$filter: 'uuid eq @uuid',
 					'@uuid': "'c0ffeec0ffeec0ffee'",
 				})
-				.reply(200, {
-					d: [
-						{
-							id: 2,
-							is_connected_to_vpn: 1,
-						},
-					],
-				});
+				.reply(
+					200,
+					checkTraceParentReturningBody({
+						d: [
+							{
+								id: 2,
+								is_connected_to_vpn: 1,
+							},
+						],
+					}),
+				);
 
 			nock(BALENA_API_INTERNAL_HOST)
 				.post('/v6/device(@id)/canAccess?@id=2', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
-				.reply(200, {
-					d: [
-						{
-							id: 2,
-						},
-					],
-				});
+				.reply(
+					200,
+					checkTraceParentReturningBody({
+						d: [
+							{
+								id: 2,
+							},
+						],
+					}),
+				);
 		});
 
 		it('should refuse to forward via itself', async () => {
@@ -266,7 +299,12 @@ describe('VPN proxy', function () {
 				.get(
 					'/v6/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
 				)
-				.reply(200, { d: [{ id: instance.getId(), ip_address: '127.0.0.1' }] });
+				.reply(
+					200,
+					checkNoTraceParentReturningBody({
+						d: [{ id: instance.getId(), ip_address: '127.0.0.1' }],
+					}),
+				);
 
 			await vpnTest(
 				{ user: 'user3', pass: 'pass' },
@@ -286,7 +324,12 @@ describe('VPN proxy', function () {
 				.get(
 					'/v6/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
 				)
-				.reply(200, { d: [{ id: 0, ip_address: '127.0.0.1' }] });
+				.reply(
+					200,
+					checkNoTraceParentReturningBody({
+						d: [{ id: 0, ip_address: '127.0.0.1' }],
+					}),
+				);
 
 			await vpnTest(
 				{ user: 'user3', pass: 'pass' },
@@ -316,14 +359,17 @@ describe('VPN proxy', function () {
 					$filter: 'uuid eq @uuid',
 					'@uuid': "'deadbeef'",
 				})
-				.reply(200, {
-					d: [
-						{
-							id: 3,
-							is_connected_to_vpn: 1,
-						},
-					],
-				});
+				.reply(
+					200,
+					checkTraceParentReturningBody({
+						d: [
+							{
+								id: 3,
+								is_connected_to_vpn: 1,
+							},
+						],
+					}),
+				);
 		});
 
 		it('should not allow port 8080 without authentication', async () => {
@@ -331,9 +377,7 @@ describe('VPN proxy', function () {
 				.post('/v6/device(@id)/canAccess?@id=3', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
-				.reply(200, () => {
-					return { d: [] };
-				});
+				.reply(200, checkTraceParentReturningBody({ d: [] }));
 
 			await vpnTest(
 				{ user: 'user4', pass: 'pass' },
@@ -353,13 +397,16 @@ describe('VPN proxy', function () {
 				.post('/v6/device(@id)/canAccess?@id=3', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
-				.reply(200, {
-					d: [
-						{
-							id: 3,
-						},
-					],
-				});
+				.reply(
+					200,
+					checkTraceParentReturningBody({
+						d: [
+							{
+								id: 3,
+							},
+						],
+					}),
+				);
 
 			await vpnTest({ user: 'user5', pass: 'pass' }, async () => {
 				const response = await pooledRequest({

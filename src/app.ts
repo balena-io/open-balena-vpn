@@ -15,9 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import { set } from '@balena/es-version';
-// Set the desired es version for downstream modules that support it, before we import any
-set('es2021');
+import './init.js';
 
 import { metrics } from '@balena/node-metrics-gatherer';
 import cluster from 'cluster';

@@ -22,7 +22,7 @@ import express from 'express';
 import memoize from 'memoizee';
 import morgan from 'morgan';
 
-import { getLogger } from './utils/index.js';
+import { getLogger, getPassthrough } from './utils/index.js';
 import {
 	BALENA_API_INTERNAL_HOST,
 	DELAY_ON_AUTH_FAIL,
@@ -35,6 +35,7 @@ import { setTimeout } from 'timers/promises';
 import { pooledRequest } from './utils/request.js';
 import { Metrics } from './utils/metrics.js';
 import { setConnected } from './utils/clients.js';
+import { trace } from '@opentelemetry/api';
 
 // Private endpoints should use the `fromLocalHost` middleware.
 const fromLocalHost: express.RequestHandler = (req, res, next) => {
@@ -50,7 +51,7 @@ const checkDeviceAuth = memoize(
 	async (username: string, password: string) => {
 		const { statusCode } = await pooledRequest.get({
 			url: `${BALENA_API_INTERNAL_HOST}/services/vpn/auth/${username}`,
-			headers: { Authorization: `Bearer ${password}` },
+			...getPassthrough(`Bearer ${password}`),
 		});
 		if ([200, 401, 403].includes(statusCode)) {
 			return statusCode;
@@ -177,11 +178,12 @@ export const apiServer = (serviceId: number) => {
 	app.use(
 		morgan((tokens, req, res) => {
 			const ip = tokens['remote-addr'](req, res);
+			const traceId = trace.getActiveSpan()?.spanContext().traceId ?? '-';
 			const url = tokens.url(req, res);
 			const statusCode = tokens.status(req, res) ?? '-';
 			const responseTime = tokens['response-time'](req, res) ?? '-';
 
-			return `${ip} ${req.method} ${url} ${statusCode} ${responseTime}ms`;
+			return `${ip} ${traceId} ${req.method} ${url} ${statusCode} ${responseTime}ms`;
 		}),
 	);
 	app.use(compression());

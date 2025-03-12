@@ -37,6 +37,7 @@ import {
 	VPN_SERVICE_API_KEY,
 } from './config.js';
 import { captureException } from './errors.js';
+import { getPassthrough } from './index.js';
 
 interface DeviceStateTracker {
 	currentConnected?: boolean;
@@ -72,7 +73,7 @@ export const setConnected = (() => {
 								uuids: uuidChunk,
 								connected,
 							},
-							headers: { Authorization: `Bearer ${VPN_SERVICE_API_KEY}` },
+							...getPassthrough(`Bearer ${VPN_SERVICE_API_KEY}`),
 						})
 						.promise()
 						.timeout(REQUEST_TIMEOUT);

@@ -22,11 +22,23 @@ export { StatusError } from 'pinejs-client-request';
 import { BALENA_API_INTERNAL_HOST } from './config.js';
 
 import packageJSON from '../../package.json' with { type: 'json' };
+import { context, propagation } from '@opentelemetry/api';
 export const VERSION = packageJSON.version;
 
 export const balenaApi = new PinejsClientRequest({
 	apiPrefix: `${BALENA_API_INTERNAL_HOST}/v6/`,
 });
+
+export const getPassthrough = (auth: string | undefined) => {
+	const headers: Record<string, string> = {};
+	// Propogate the active trace context to the api
+	propagation.inject(context.active(), headers);
+
+	if (auth != null) {
+		headers.Authorization = auth;
+	}
+	return { headers };
+};
 
 export const getLogger = (
 	service: string,

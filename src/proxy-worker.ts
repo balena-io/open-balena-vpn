@@ -34,6 +34,7 @@ import {
 	getDeviceByUUID,
 	getDeviceVpnHost,
 } from './utils/device.js';
+import { context, propagation, trace } from '@opentelemetry/api';
 
 const HTTP_500 = 'HTTP/1.0 500 Internal Server Error\r\n\r\n';
 
@@ -57,7 +58,27 @@ class Tunnel extends nodeTunnel.Tunnel {
 			}
 		});
 
-		this.use(this.tunnelToDevice);
+		const tunnelTracer = trace.getTracer('node-tunnel');
+		this.use(async (...args) => {
+			const [req] = args;
+			const extractedContext = propagation.extract(
+				context.active(),
+				req.headers,
+			);
+
+			await tunnelTracer.startActiveSpan(
+				req.method ?? 'Unknown',
+				{},
+				extractedContext,
+				async (span) => {
+					try {
+						await this.tunnelToDevice(...args);
+					} finally {
+						span.end();
+					}
+				},
+			);
+		});
 	}
 
 	public connect = async (
@@ -152,8 +173,8 @@ class Tunnel extends nodeTunnel.Tunnel {
 			throw new errors.BadRequestError();
 		}
 
-		const match = req.url.match(
-			/^([a-fA-F0-9]+)\.(balena|resin|vpn)(?::([0-9]+))?$/,
+		const match = /^([a-fA-F0-9]+)\.(balena|resin|vpn)(?::([0-9]+))?$/.exec(
+			req.url,
 		);
 		if (match == null) {
 			throw new errors.InvalidHostnameError(`invalid hostname: ${req.url}`);
@@ -171,12 +192,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 		return { uuid, port: parseInt(port, 10), auth };
 	};
 
-	private tunnelToDevice: nodeTunnel.Middleware = async (
-		req,
-		cltSocket,
-		_head,
-		next,
-	) => {
+	private tunnelToDevice = (async (req, cltSocket, _head, next) => {
 		try {
 			const { uuid, port, auth } = this.parseRequest(req);
 			this.logger.info(`tunnel requested to ${uuid}:${port}`);
@@ -215,7 +231,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 				cltSocket.end(HTTP_500);
 			}
 		}
-	};
+	}) satisfies nodeTunnel.Middleware;
 
 	private forwardRequest = (
 		vpnHost: string,
