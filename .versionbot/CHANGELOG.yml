@@ -1,4 +1,32 @@
 - commits:
+    - subject: Extract the trace id for requests to the proxy-worker
+      hash: ab789be50f46596c5c1f921a8a33b5fc413bdcba
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+    - subject: Propagate the trace id to the api on pinejs requests
+      hash: 3287bae7508ec077f4ef8f26348a0b12edae92ca
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+    - subject: Use opentelemetry to add trace ids to request logs
+      hash: 48551b7a59e14b659c2864a36d75945580c026e3
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 11.32.0
+  title: ""
+  date: 2025-03-12T16:32:09.059Z
+- commits:
     - subject: Remove date from the request log
       hash: 4d9a6ee14fae95d75c5d751cbfa1bfca4a36b85b
       body: |
