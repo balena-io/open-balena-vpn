@@ -176,15 +176,12 @@ export const apiServer = (serviceId: number) => {
 	app.get('/ping', (_req, res) => res.send('OK'));
 	app.use(
 		morgan((tokens, req, res) => {
-			const date = new Date().toISOString();
 			const ip = tokens['remote-addr'](req, res);
 			const url = tokens.url(req, res);
 			const statusCode = tokens.status(req, res) ?? '-';
 			const responseTime = tokens['response-time'](req, res) ?? '-';
 
-			return `${date} ${ip} ${
-				req.method
-			} ${url} ${statusCode} ${responseTime}ms`;
+			return `${ip} ${req.method} ${url} ${statusCode} ${responseTime}ms`;
 		}),
 	);
 	app.use(compression());
