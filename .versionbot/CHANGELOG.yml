@@ -1,4 +1,18 @@
 - commits:
+    - subject: Remove date from the request log
+      hash: 4d9a6ee14fae95d75c5d751cbfa1bfca4a36b85b
+      body: |
+        This is in favor of the external log system handling timestamps rather
+        than duplicating
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.31.2
+  title: ""
+  date: 2025-03-12T14:55:41.957Z
+- commits:
     - subject: "Tests: make use of use async/await"
       hash: bedf17f66b99f634fe078d6b361b745b4a327143
       body: ""
