@@ -51,9 +51,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 		this.on('error', (err) => {
 			// errors thrown in `this.connect` will appear here
 			if (!(err instanceof errors.HandledTunnelingError)) {
-				this.logger.crit(
-					`failed to connect to device (${err.message || err})\n${err.stack}`,
-				);
+				this.logger.crit(`failed to connect to device: ${err}`);
 				errors.captureException(err, 'proxy-connect-error');
 			}
 		});
