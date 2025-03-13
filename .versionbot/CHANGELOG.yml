@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update dependencies
+      hash: b2dd25b87fb04947a43d36dbcc0122f419366f1b
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.32.3
+  title: ""
+  date: 2025-03-13T17:47:20.674Z
+- commits:
     - subject: Update ureq to 3.x
       hash: 30002025491ca57362543e8a52fcbceb2d03be87
       body: ""
