@@ -24,8 +24,8 @@ fn main() {
     let vpn_api_port = std::env::args().nth(1).unwrap();
 
     match ureq::post(&format!("http://127.0.0.1:{}/api/v1/auth/", vpn_api_port))
-        .set("Content-type", "application/json")
-        .send_string(&format!(
+        .header("Content-type", "application/json")
+        .send(&format!(
             "{{\"username\":\"{}\",\"password\":\"{}\"}}",
             username, password
         )) {
