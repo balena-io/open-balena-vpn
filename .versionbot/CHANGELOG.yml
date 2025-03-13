@@ -1,4 +1,56 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v18.0.27
+      hash: 5efb690a4b23dd18f1741343f19c5ccc55004277
+      body: |
+        Update balena/open-balena-base from 18.0.24 to 18.0.27
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Update dependency npm to v11.2.0
+              hash: 1b47a74e0a55c34869156da18ce14d277d07ab61
+              body: |
+                Update npm from 11.1.0 to 11.2.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-18.0.27
+          title: ""
+          date: 2025-03-05T20:54:44.374Z
+        - commits:
+            - subject: Update Node.js to v22.14.0
+              hash: b7d04e778753d94408c917374ad8670dd23c2022
+              body: |
+                Update node from 22.13.1 to 22.14.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-18.0.26
+          title: ""
+          date: 2025-02-11T11:55:16.573Z
+        - commits:
+            - subject: Update dependency npm to v11.1.0
+              hash: 0773cfd2986ca7290215d71e81d2c5fbe49345ea
+              body: |
+                Update npm from 11.0.0 to 11.1.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-18.0.25
+          title: ""
+          date: 2025-01-29T21:55:04.314Z
+  version: 11.32.1
+  title: ""
+  date: 2025-03-13T15:24:07.024Z
+- commits:
     - subject: Extract the trace id for requests to the proxy-worker
       hash: ab789be50f46596c5c1f921a8a33b5fc413bdcba
       body: ""
