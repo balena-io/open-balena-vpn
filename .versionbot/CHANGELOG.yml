@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update ureq to 3.x
+      hash: 30002025491ca57362543e8a52fcbceb2d03be87
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.32.2
+  title: ""
+  date: 2025-03-13T16:54:04.014Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v18.0.27
       hash: 5efb690a4b23dd18f1741343f19c5ccc55004277
       body: |
