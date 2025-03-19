@@ -130,7 +130,7 @@ export const apiFactory = (serviceId: number) => {
 				return res.status(401).end();
 			}
 		} catch (err) {
-			captureException(err, 'api-auth-error', { req });
+			captureException(err, 'api-auth-error');
 			res.status(401).end();
 		}
 	});
