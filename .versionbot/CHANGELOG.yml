@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update to sentry 9.x
+      hash: 52e72042e9e0ccf04948307a36a796a40a0f9276
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.32.6
+  title: ""
+  date: 2025-03-19T15:37:43.028Z
+- commits:
     - subject: Lock file maintenance
       hash: d534fc3d6f9021d284e0446bd30bac1d2fd09f55
       body: |
