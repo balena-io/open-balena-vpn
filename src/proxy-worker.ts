@@ -225,7 +225,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 			} else if (err instanceof errors.InvalidHostnameError) {
 				cltSocket.end('HTTP/1.0 403 Forbidden\r\n\r\n');
 			} else {
-				errors.captureException(err, 'proxy-tunnel-error', { req });
+				errors.captureException(err, 'proxy-tunnel-error');
 				cltSocket.end(HTTP_500);
 			}
 		}
