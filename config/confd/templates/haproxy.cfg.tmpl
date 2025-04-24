@@ -47,12 +47,14 @@ frontend http-80
 	acl is-haproxy-metrics path /metrics/haproxy
 	acl is-node-metrics path /metrics/node
 	acl is-process-metrics path /metrics/process
+	acl is-openvpn-metrics path /metrics/openvpn
 	acl is-vpn-metrics path /cluster_metrics
 	acl metrics-auth http_auth(metrics)
 	http-request deny if !metrics-auth
 	http-request use-service prometheus-exporter if is-haproxy-metrics metrics-auth
 	use_backend node-exporter if is-node-metrics metrics-auth
 	use_backend process-exporter if is-process-metrics metrics-auth
+	use_backend openvpn-exporter if is-openvpn-metrics metrics-auth
 	use_backend vpn-master if is-vpn-metrics metrics-auth
 
 backend node-exporter
@@ -62,6 +64,10 @@ backend node-exporter
 backend process-exporter
 	mode http
 	server process_exporter 127.0.0.1:9001 check
+
+backend openvpn-exporter
+	mode http
+	server openvpn_exporter 127.0.0.1:9002 check
 
 backend vpn-master
 	mode http
