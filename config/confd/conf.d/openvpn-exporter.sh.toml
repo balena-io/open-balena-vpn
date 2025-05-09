@@ -1,0 +1,7 @@
+[template]
+src = "openvpn-exporter.sh.tmpl"
+dest = "/usr/local/bin/openvpn-exporter-start.sh"
+mode = "0755"
+
+keys = [
+]

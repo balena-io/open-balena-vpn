@@ -1,0 +1,16 @@
+[Unit]
+Description=Prometheus OpenVPN Exporter
+Requires=network-online.target open-balena-vpn.service
+After=network-online.target open-balena-vpn.service
+
+[Service]
+StandardOutput=journal+console
+StandardError=journal+console
+Type=simple
+ExecStart=/usr/local/bin/openvpn-exporter-start.sh
+
+Restart=always
+SyslogIdentifier=openvpn-exporter
+
+[Install]
+WantedBy=multi-user.target
