@@ -1,4 +1,30 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v18.0.30
+      hash: f6957661b0b91700d173186494eb60cf09da1e7b
+      body: |
+        Update balena/open-balena-base from 18.0.29 to 18.0.30
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Update Node.js to v22.15.1
+              hash: 4411fa8db54f0d2faf59b265667f14de91d8c05e
+              body: |
+                Update node from 22.15.0 to 22.15.1
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-18.0.30
+          title: ""
+          date: 2025-05-14T22:01:59.078Z
+  version: 11.32.16
+  title: ""
+  date: 2025-05-15T11:18:33.470Z
+- commits:
     - subject: Update dependency lint-staged to v16
       hash: 5707d3bbd59be422fff148a2181bb0ec1ea22b4e
       body: |
