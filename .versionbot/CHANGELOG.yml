@@ -1,4 +1,18 @@
 - commits:
+    - subject: Ensure there is only one ever one concurrent cluster metrics fetch
+      hash: dbeea8ca49248824810cf2c6ac8a33958009cffa
+      body: |
+        This avoids them potentially stacking up and causing slow downs or
+        other issues
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.32.19
+  title: ""
+  date: 2025-05-20T16:49:47.701Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v18.0.31
       hash: 12e3e6dce27b01103352a1905d8ef6a24a309784
       body: |
