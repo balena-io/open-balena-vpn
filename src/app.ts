@@ -179,6 +179,18 @@ if (cluster.isPrimary) {
 				app.set('trust proxy', TRUST_PROXY);
 				app.disable('x-powered-by');
 				app.get('/ping', (_req, res) => res.send('OK'));
+
+				// Avoid stacking up fetching cluster metrics fetch attempts by making sure we
+				// only ever have one in progress at a time.
+				let inProgessClusterMetrics: undefined | Promise<string>;
+				const getClusterMetrics = async () => {
+					inProgessClusterMetrics ??= aggregatorRegistry.clusterMetrics();
+					try {
+						return await inProgessClusterMetrics;
+					} finally {
+						inProgessClusterMetrics = undefined;
+					}
+				};
 				app
 					.get('/cluster_metrics', async (_req, res) => {
 						for (const clientMetrics of Object.values(workerMetrics)) {
@@ -196,7 +208,7 @@ if (cluster.isPrimary) {
 								pTimeout(prometheus.register.metrics(), {
 									milliseconds: METRICS_TIMEOUT,
 								}),
-								pTimeout(aggregatorRegistry.clusterMetrics(), {
+								pTimeout(getClusterMetrics(), {
 									milliseconds: METRICS_TIMEOUT,
 								}),
 							]);
