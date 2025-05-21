@@ -1,4 +1,17 @@
 - commits:
+    - subject: Lock file maintenance
+      hash: b3af018df186c73502511036b4df5435d1a1dca9
+      body: |
+        Update 
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 11.32.22
+  title: ""
+  date: 2025-05-21T13:03:06.701Z
+- commits:
     - subject: Update dependency debian_12/haproxy to v2.6.12-1+deb12u2
       hash: 7736afbcb2da983cf352aba730123c2bbf534aa9
       body: |
