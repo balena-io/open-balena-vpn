@@ -36,10 +36,7 @@ export const captureException = (
 	},
 ) => {
 	Sentry.withScope((scope) => {
-		scope.addEventProcessor((evt) => {
-			evt.fingerprint = [fingerprint];
-			return evt;
-		});
+		scope.setFingerprint([fingerprint]);
 
 		if (opts != null) {
 			const { tags } = opts;
