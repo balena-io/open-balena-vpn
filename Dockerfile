@@ -78,7 +78,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # https://docs.renovatebot.com/modules/datasource/repology/
 # renovate: datasource=repology depName=debian_12/haproxy versioning=loose
-ARG HAPROXY_VERSION=2.6.12-1+deb12u1
+ARG HAPROXY_VERSION=2.6.12-1+deb12u2
 
 # hadolint ignore=DL3008
 RUN apt-get update -qq \
