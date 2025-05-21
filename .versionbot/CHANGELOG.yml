@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency debian_12/haproxy to v2.6.12-1+deb12u2
+      hash: 7736afbcb2da983cf352aba730123c2bbf534aa9
+      body: |
+        Update debian_12/haproxy from 2.6.12-1+deb12u1 to 2.6.12-1+deb12u2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 11.32.21
+  title: ""
+  date: 2025-05-21T12:27:45.313Z
+- commits:
     - subject: "Sentry: use `scope.setFingerprint` rather than using an event processor"
       hash: d72a8953e6a7563829d6584b12fcb07dae87390e
       body: ""
