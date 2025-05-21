@@ -1,4 +1,16 @@
 - commits:
+    - subject: "Sentry: use `scope.setFingerprint` rather than using an event processor"
+      hash: d72a8953e6a7563829d6584b12fcb07dae87390e
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.32.20
+  title: ""
+  date: 2025-05-21T12:06:38.735Z
+- commits:
     - subject: Ensure there is only one ever one concurrent cluster metrics fetch
       hash: dbeea8ca49248824810cf2c6ac8a33958009cffa
       body: |
