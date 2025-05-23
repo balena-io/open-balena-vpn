@@ -65,9 +65,14 @@ COPY eget_${TARGETARCH:-amd64}.toml /root/.eget.toml
 ARG NODE_EXPORTER_TAG=1.3.1
 # renovate: datasource=github-releases depName=ncabatoff/process-exporter
 ARG PROCESS_EXPORTER_TAG=0.7.10
+# renovate: datasource=github-releases depName=natrontech/openvpn-exporter
+ARG OPENVPN_EXPORTER_TAG=1.0.2
 
 RUN eget prometheus/node_exporter --tag v${NODE_EXPORTER_TAG} \
-	&& eget ncabatoff/process-exporter --tag v${PROCESS_EXPORTER_TAG}
+    && eget ncabatoff/process-exporter --tag v${PROCESS_EXPORTER_TAG} \
+	&& eget natrontech/openvpn-exporter --tag v${OPENVPN_EXPORTER_TAG} \
+		--asset "openvpn-exporter_v${OPENVPN_EXPORTER_TAG}_linux_${TARGETARCH:-amd64}.tar.gz" \
+		&& mv /usr/local/bin/openvpn-exporter-linux-${TARGETARCH:-amd64} /usr/local/bin/openvpn-exporter
 
 EXPOSE 80 443 3128
 
@@ -113,4 +118,5 @@ COPY config/services /etc/systemd/system
 RUN systemctl enable \
 	open-balena-vpn.service \
 	node-exporter.service \
-	process-exporter.service
+	process-exporter.service \
+	openvpn-exporter.service
