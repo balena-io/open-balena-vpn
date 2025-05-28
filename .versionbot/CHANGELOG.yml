@@ -1,4 +1,22 @@
 - commits:
+    - subject: Revert the openvpn server status file to version 1 format.
+      hash: df51f7b2c765f615b8203e29b04bcb50705a7c58
+      body: |
+        libnss-openvpn is unable to read OpenVPN server status file version 2
+        thus breaking the name resolution.  This commit reverts the status file
+        format to the previous version (1) and disables the openvpn-exporter
+        which relies on the version 2 status file format.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Carlo Miguel F. Cruz <carloc@balena.io>
+        signed-off-by: Carlo Miguel F. Cruz <carloc@balena.io>
+      author: Carlo Miguel F. Cruz
+      nested: []
+  version: 11.32.27
+  title: ""
+  date: 2025-05-28T10:16:42.293Z
+- commits:
     - subject: Add openvpn prometheus exporter
       hash: b83d1bc96df290eca1b99eec5b52cf17c62e7a22
       body: |
