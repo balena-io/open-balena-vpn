@@ -118,5 +118,4 @@ COPY config/services /etc/systemd/system
 RUN systemctl enable \
 	open-balena-vpn.service \
 	node-exporter.service \
-	process-exporter.service \
-	openvpn-exporter.service
+	process-exporter.service
