@@ -158,7 +158,7 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 		const gateway = this.gateway ?? this.subnet.first;
 		return [
 			'--status-version',
-			'2',
+			'1',
 			'--writepid',
 			this.pidFile,
 			'--status',
