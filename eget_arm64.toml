@@ -15,6 +15,11 @@ asset_filters = [".tar.gz"]
 target = "/usr/local/bin"
 file = "process-exporter"
 
+["natrontech/openvpn-exporter"]
+asset_filters = [".tar.gz", "^.sbom.json"]
+target = "/usr/local/bin"
+file = "openvpn-exporter-linux-arm64"
+
 ["balena-io/sshproxy"]
 asset_filters = [".tar.gz"]
 target = "/usr/local/bin"
