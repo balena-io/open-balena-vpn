@@ -1,4 +1,21 @@
 - commits:
+    - subject: Add openvpn prometheus exporter
+      hash: b83d1bc96df290eca1b99eec5b52cf17c62e7a22
+      body: |
+        Uses natrontech/openvpn-exporter for us
+        to get openvpn server metrics in our
+        observability stack.
+
+        https://balena.fibery.io/Work/Projects-917#Project/OpenVPN-prometheus-exporter-1003
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: jaomaloy
+      nested: []
+  version: 11.32.26
+  title: ""
+  date: 2025-05-28T07:10:51.459Z
+- commits:
     - subject: Lock file maintenance
       hash: 99b0840faa1f0b26e4f552e8994fa1227efe3cc2
       body: |
