@@ -1,4 +1,17 @@
 - commits:
+    - subject: Lock file maintenance
+      hash: eab97652343a8b8df976e33cb8f3e9d4b91b3d80
+      body: |
+        Update 
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 11.32.28
+  title: ""
+  date: 2025-06-02T01:26:48.896Z
+- commits:
     - subject: Revert the openvpn server status file to version 1 format.
       hash: df51f7b2c765f615b8203e29b04bcb50705a7c58
       body: |
