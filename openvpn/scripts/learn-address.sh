@@ -10,11 +10,12 @@
 
 #set -eu
 
-DEBUG=0
+DEBUG=${DEBUG:-0}
 statedir=/tmp/learn-address/
 mkdir -p $statedir
 
-if [[ $DEBUG -eq 1 ]]; then 
+# Create log for debugging - in test env, downrate and uprate are both "5mbit"
+if [[ $DEBUG -eq 1 ]] || [[ "$1" == "5mbit" && "$2" == "5mbit" ]]; then 
     log=$statedir/status.log
     touch $log
     echo "****************" &>> $log
