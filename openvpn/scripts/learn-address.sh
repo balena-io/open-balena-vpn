@@ -10,22 +10,45 @@
 
 #set -eu
 
-DEBUG=${DEBUG:-0}
-statedir=/tmp/learn-address/
-mkdir -p $statedir
+# Configuration with proper defaults
+# Convert boolean string to numeric value for script compatibility
+LEARN_ADDRESS_DEBUG_VAL=${LEARN_ADDRESS_DEBUG:-false}
+if [[ "$LEARN_ADDRESS_DEBUG_VAL" == "true" || "$LEARN_ADDRESS_DEBUG_VAL" == "1" ]]; then
+    DEBUG=1
+else
+    DEBUG=0
+fi
+statedir=${LEARN_ADDRESS_STATE_DIR:-/var/lib/openvpn/tc-state}
+log_dir=${LEARN_ADDRESS_LOG_DIR:-/var/log/openvpn}
 
-# Create log for debugging - in test env, downrate and uprate are both "5mbit"
-if [[ $DEBUG -eq 1 ]] || [[ "$1" == "5mbit" && "$2" == "5mbit" ]]; then 
-    log=$statedir/status.log
-    touch $log
-    echo "****************" &>> $log
-    echo "Starting $0: $# [$@]" &>> $log
+# Create directories with proper permissions
+mkdir -p "$statedir"
+chmod 700 "$statedir"
+
+# Setup logging only if debug is enabled
+if [[ $DEBUG -eq 1 ]]; then
+    mkdir -p "$log_dir"
+    log="$log_dir/learn-address.log"
+    # Log with timestamp and rotation consideration
+    echo "[$(date -Iseconds)] Starting learn-address script: $# [$@]" >> "$log"
+fi
+
+# Validate input parameters
+if [[ $# -lt 5 ]]; then
+    echo "[ERROR] Insufficient parameters. Expected: downrate uprate action ip cn" >&2
+    exit 1
 fi
 
 # downrate: from VPN server to the client
 downrate=$1
 # uprate: from client to the VPN server
 uprate=$2
+
+# Validate rate parameters
+if [[ ! "$downrate" =~ ^[0-9]+(kbit|mbit|gbit)$ ]] || [[ ! "$uprate" =~ ^[0-9]+(kbit|mbit|gbit)$ ]]; then
+    echo "[ERROR] Invalid rate format. Expected format: <number>(kbit|mbit|gbit)" >&2
+    exit 1
+fi
 
 function trace() {
     if [[ $DEBUG -eq 1 ]]; then 
@@ -76,16 +99,29 @@ function bwlimit-enable() {
         echo $classid > $statedir/last_classid
     fi
 
-    # Limit traffic from VPN server to client
-    echo "tc class add dev $dev parent 1: classid 1:$classid htb rate $downrate" &>> $log
-    tc class add dev $dev parent 1: classid 1:$classid htb rate $downrate &>> $log
-    echo "tc filter add dev $dev protocol all parent 1:0 prio 1 u32 match ip dst $ip/32 flowid 1:$classid" &>> $log
-    tc filter add dev $dev protocol all parent 1:0 prio 1 u32 match ip dst $ip/32 flowid 1:$classid &>> $log
+    # Limit traffic from VPN server to client (download)
+    if [[ $DEBUG -eq 1 ]]; then
+        echo "[$(date -Iseconds)] Adding tc class: dev=$dev classid=1:$classid rate=$downrate" >> "$log"
+    fi
+    if ! tc class add dev "$dev" parent 1: classid "1:$classid" htb rate "$downrate" 2>/dev/null; then
+        echo "[ERROR] Failed to add tc class for client $ip (classid 1:$classid)" >&2
+    fi
 
-    # Limit traffic from client to VPN server
-    tc filter add dev $dev parent ffff: protocol all prio 1 u32 match ip src $ip/32 police rate $uprate burst 80k drop flowid :$classid &>> $log
-    echo "tc filter add dev $dev parent ffff: protocol all prio 1 u32 match ip src $ip/32 police rate $uprate burst 80k drop flowid :$classid" &>> $log
-    
+    if [[ $DEBUG -eq 1 ]]; then
+        echo "[$(date -Iseconds)] Adding tc filter: dev=$dev dst=$ip/32 flowid=1:$classid" >> "$log"
+    fi
+    if ! tc filter add dev "$dev" protocol all parent 1:0 prio 1 u32 match ip dst "$ip/32" flowid "1:$classid" 2>/dev/null; then
+        echo "[ERROR] Failed to add tc filter for client $ip destination" >&2
+    fi
+
+    # Limit traffic from client to VPN server (upload)
+    if [[ $DEBUG -eq 1 ]]; then
+        echo "[$(date -Iseconds)] Adding tc ingress filter: dev=$dev src=$ip/32 rate=$uprate" >> "$log"
+    fi
+    if ! tc filter add dev "$dev" parent ffff: protocol all prio 1 u32 match ip src "$ip/32" police rate "$uprate" burst 80k drop flowid ":$classid" 2>/dev/null; then
+        echo "[ERROR] Failed to add tc ingress filter for client $ip" >&2
+    fi
+
     # Store classid and dev for further use.
     echo $classid > $statedir/$ip.classid
     echo $dev > $statedir/$ip.dev
@@ -108,21 +144,28 @@ function bwlimit-disable() {
 
     pre $dev
 
-    tc filter del dev $dev protocol all parent 1:0 prio 1 u32 match ip dst $ip/32
-    tc class del dev $dev classid 1:$classid
+    # Remove tc rules with proper error handling
+    if [[ $DEBUG -eq 1 ]]; then
+        echo "[$(date -Iseconds)] Removing tc rules for client $ip (classid $classid)" >> "$log"
+    fi
 
-    tc filter del dev $dev parent ffff: protocol all prio 1 u32 match ip src $ip/32
+    tc filter del dev "$dev" protocol all parent 1:0 prio 1 u32 match ip dst "$ip/32" 2>/dev/null || true
+    tc class del dev "$dev" classid "1:$classid" 2>/dev/null || true
+    tc filter del dev "$dev" parent ffff: protocol all prio 1 u32 match ip src "$ip/32" 2>/dev/null || true
 
     # Remove .dev but keep .classid so it can be reused.
-    rm $statedir/$ip.dev
+    rm -f "$statedir/$ip.dev"
 
     post $dev
 }
 
-if [[ $dev ]]; then
-    # Make sure queueing discipline is enabled.
-    tc qdisc add dev $dev root handle 1: htb 2>/dev/null || /bin/true
-    tc qdisc add dev $dev handle ffff: ingress 2>/dev/null || /bin/true
+# Make sure queueing discipline is enabled on the device
+if [[ -n "$dev" ]]; then
+    if [[ $DEBUG -eq 1 ]]; then
+        echo "[$(date -Iseconds)] Ensuring tc qdisc setup for device $dev" >> "$log"
+    fi
+    tc qdisc add dev "$dev" root handle 1: htb 2>/dev/null || true
+    tc qdisc add dev "$dev" handle ffff: ingress 2>/dev/null || true
 fi
 
 case "$3" in

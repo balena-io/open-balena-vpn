@@ -196,11 +196,16 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 			'/etc/openvpn/scripts/client-connect-disconnect.sh',
 			`${this.instanceId}`,
 			`${VPN_API_PORT}`,
-			'--plugin',
-			'/etc/openvpn/plugins/openvpn-plugin-learn-address-script.so',
-			'/etc/openvpn/scripts/learn-address.sh',
-			`${VPN_DOWNRATE}`,
-			`${VPN_UPRATE}`,
+			// Only enable throttling plugin if both rates are configured
+			...(VPN_DOWNRATE && VPN_UPRATE
+				? [
+						'--plugin',
+						'/etc/openvpn/plugins/openvpn-plugin-learn-address-script.so',
+						'/etc/openvpn/scripts/learn-address.sh',
+						VPN_DOWNRATE,
+						VPN_UPRATE,
+					]
+				: []),
 			'--plugin',
 			'/etc/openvpn/plugins/openvpn-plugin-auth-script.so',
 			'/etc/openvpn/scripts/auth',

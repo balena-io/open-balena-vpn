@@ -128,3 +128,9 @@ RUN systemctl enable \
 	open-balena-vpn.service \
 	node-exporter.service \
 	process-exporter.service
+
+# Setup learn-address script with proper permissions and directories
+RUN chmod +x /usr/src/app/openvpn/scripts/learn-address.sh \
+	&& mkdir -p /var/lib/openvpn/tc-state /var/log/openvpn \
+	&& chmod 700 /var/lib/openvpn/tc-state \
+	&& chown root:root /var/lib/openvpn/tc-state /var/log/openvpn
