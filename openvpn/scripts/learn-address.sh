@@ -59,8 +59,8 @@ function trace() {
             echo "tc -s qdisc show dev $dev" &>> $log 
             tc -s qdisc show dev $dev &>> $log 
             echo "tc -s class show dev $dev" &>> $log 
-            tc -s class show dev $detv &>> $log 
-            echo "tc -s filter show dev $dev" &>> $log 
+            tc -s class show dev $dev &>> $log
+            echo "tc -s filter show dev $dev" &>> $log
             tc -s class show dev $dev &>> $log 
         else 
             echo "No dev!" &>> $log
