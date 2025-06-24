@@ -7,6 +7,7 @@
 #$3 = action (add, update, delete)
 #$4 = IP or MAC
 #$5 = client_common name #Not used for rate limiting
+#$6 = device name (e.g. tun1, tun2, etc.)
 
 #set -eu
 
@@ -35,7 +36,7 @@ fi
 
 # Validate input parameters
 if [[ $# -lt 5 ]]; then
-    echo "[ERROR] Insufficient parameters. Expected: downrate uprate action ip cn" >&2
+    echo "[ERROR] Insufficient parameters. Expected: downrate uprate action ip cn [device]" >&2
     exit 1
 fi
 
@@ -43,6 +44,14 @@ fi
 downrate=$1
 # uprate: from client to the VPN server
 uprate=$2
+
+# Device name: from parameter or environment variable
+if [[ $# -ge 6 && -n "$6" ]]; then
+    dev="$6"
+elif [[ -z "$dev" ]]; then
+    echo "[ERROR] No device specified. Device must be passed as 6th parameter or set in dev environment variable" >&2
+    exit 1
+fi
 
 # Validate rate parameters
 if [[ ! "$downrate" =~ ^[0-9]+(kbit|mbit|gbit)$ ]] || [[ ! "$uprate" =~ ^[0-9]+(kbit|mbit|gbit)$ ]]; then

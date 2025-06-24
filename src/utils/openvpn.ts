@@ -204,6 +204,7 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 						'/etc/openvpn/scripts/learn-address.sh',
 						VPN_DOWNRATE,
 						VPN_UPRATE,
+						`tun${this.instanceId}`,
 					]
 				: []),
 			'--plugin',
