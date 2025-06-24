@@ -98,7 +98,8 @@ RUN apt-get update -qq \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
 	&& ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts \
-	&& systemctl mask openvpn@.service openvpn.service
+	&& systemctl mask openvpn@.service openvpn.service \
+	&& setcap cap_net_admin+ep /usr/sbin/tc
 
 ENV LIBNSS_OPENVPN_VERSION 22feb11322182f6fd79f85cd014b65b6c40b7b47
 RUN tmp="$(mktemp -d)" ; set -x \
@@ -133,4 +134,4 @@ RUN systemctl enable \
 RUN chmod +x /usr/src/app/openvpn/scripts/learn-address.sh \
 	&& mkdir -p /var/lib/openvpn/tc-state /var/log/openvpn \
 	&& chmod 700 /var/lib/openvpn/tc-state \
-	&& chown root:root /var/lib/openvpn/tc-state /var/log/openvpn
+	&& chown nobody:nogroup /var/lib/openvpn/tc-state /var/log/openvpn
