@@ -133,26 +133,46 @@ describe('VPN Events', function () {
 			.reply(200, checkTraceParentReturningBody('OK'));
 	});
 
-	it('should send a client-connect event', async function () {
-		const connectEvent = getEvent('connect');
+	async function verifyEvent(event: string) {
+		const body = await getEvent(event);
+		expect(body).to.have.property('serviceId').that.equals(instance.getId());
+		expect(body).to.have.property('uuids').that.deep.equals(['user2']);
+		expect(body).to.not.have.property('real_address');
+		expect(body).to.not.have.property('virtual_address');
+	}
+
+	it('should send a client-connect event', function () {
 		this.client = vpnClient.create(vpnDefaultOpts);
 		this.client.authenticate('user2', 'pass');
-		await this.client.connect();
-		const body = await connectEvent;
-		expect(body).to.have.property('serviceId').that.equals(instance.getId());
-		expect(body).to.have.property('uuids').that.deep.equals(['user2']);
-		expect(body).to.not.have.property('real_address');
-		expect(body).to.not.have.property('virtual_address');
+		return this.client.connect().return(verifyEvent('connect'));
 	});
 
-	it('should send a client-disconnect event', async function () {
-		const disconnectEvent = getEvent('disconnect');
+	it('should send a client-disconnect event', function () {
+		return this.client.disconnect().return(verifyEvent('disconnect'));
+	});
+});
+
+describe('More than one client', function () {
+	this.timeout(30 * 1000);
+
+	before(() => {
+		nock(BALENA_API_INTERNAL_HOST)
+			.get(/\/services\/vpn\/auth\/user[23]/)
+			.twice()
+			.reply(200, 'OK');
+	});
+	it('should connect two clients', async function () {
+		this.client = vpnClient.create(vpnDefaultOpts);
+		this.client.authenticate('user2', 'pass');
+
+		this.anotherClient = vpnClient.create(vpnDefaultOpts);
+		this.anotherClient.authenticate('user3', 'pass');
+		await this.client.connect();
+		return this.anotherClient.connect();
+	});
+	it('should disconnect two clients', async function () {
 		await this.client.disconnect();
-		const body = await disconnectEvent;
-		expect(body).to.have.property('serviceId').that.equals(instance.getId());
-		expect(body).to.have.property('uuids').that.deep.equals(['user2']);
-		expect(body).to.not.have.property('real_address');
-		expect(body).to.not.have.property('virtual_address');
+		return this.anotherClient.disconnect();
 	});
 });
 
