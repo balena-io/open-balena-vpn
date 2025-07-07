@@ -14,8 +14,8 @@ FROM base AS plugin-builder
 
 RUN apt-get update \
 	&& apt-get install \
-		libssl-dev \
-		openvpn \
+	libssl-dev \
+	openvpn \
 	&& rm -rf /var/lib/apt/lists/*
 
 FROM plugin-builder AS connect-disconnect-plugin
@@ -28,7 +28,7 @@ RUN git clone https://github.com/balena-io-modules/connect-disconnect-script-ope
 
 FROM plugin-builder AS learn-address-plugin
 
-ENV LEARN_ADDRESS_PLUGIN_COMMIT=32c796f930a592a37f3d047dfdc3caffbde61ccd
+ENV LEARN_ADDRESS_PLUGIN_COMMIT=8181b15c11dcbf437d1ea53eebf1dec75082f495
 RUN git clone https://github.com/balena-io-modules/learn-address-script-openvpn.git \
 	&& cd learn-address-script-openvpn \
 	&& git checkout ${LEARN_ADDRESS_PLUGIN_COMMIT} \
@@ -77,9 +77,9 @@ ARG PROCESS_EXPORTER_TAG=0.7.10
 ARG OPENVPN_EXPORTER_TAG=1.0.2
 
 RUN eget prometheus/node_exporter --tag v${NODE_EXPORTER_TAG} \
-    && eget ncabatoff/process-exporter --tag v${PROCESS_EXPORTER_TAG} \
+	&& eget ncabatoff/process-exporter --tag v${PROCESS_EXPORTER_TAG} \
 	&& eget natrontech/openvpn-exporter --tag v${OPENVPN_EXPORTER_TAG} \
-		&& mv /usr/local/bin/openvpn-exporter-linux-${TARGETARCH:-amd64} /usr/local/bin/openvpn-exporter
+	&& mv /usr/local/bin/openvpn-exporter-linux-${TARGETARCH:-amd64} /usr/local/bin/openvpn-exporter
 
 EXPOSE 80 443 3128
 
