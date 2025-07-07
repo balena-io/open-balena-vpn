@@ -26,7 +26,7 @@ RUN git clone https://github.com/balena-io-modules/connect-disconnect-script-ope
 	&& git checkout ${CONNECT_DISCONNECT_PLUGIN_COMMIT} \
 	&& C_INCLUDE_PATH=/usr/include/openvpn/ make plugin
 
-FROM plugin-builder as learn-address-plugin
+FROM plugin-builder AS learn-address-plugin
 
 ENV LEARN_ADDRESS_PLUGIN_COMMIT=32c796f930a592a37f3d047dfdc3caffbde61ccd
 RUN git clone https://github.com/balena-io-modules/learn-address-script-openvpn.git \
@@ -34,7 +34,7 @@ RUN git clone https://github.com/balena-io-modules/learn-address-script-openvpn.
 	&& git checkout ${LEARN_ADDRESS_PLUGIN_COMMIT} \
 	&& C_INCLUDE_PATH=/usr/include/openvpn/ make plugin
 
-FROM plugin-builder as auth-plugin
+FROM plugin-builder AS auth-plugin
 
 ENV AUTH_PLUGIN_COMMIT=623982a5d63dd2b7b2b9f9295d10d96a56d58894
 RUN git clone https://github.com/fac/auth-script-openvpn.git \

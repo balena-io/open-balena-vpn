@@ -61,3 +61,33 @@ exposes a HTTP CONNECT Proxy server allowing for access to devices via a
 hostname in the format `{deviceUUID}.balena:{port}`. The destination port
 is limited based on the requesting user and device configuration. The
 listening port is configured by the `VPN_CONNECT_PROXY_PORT` variable.
+
+## Bandwidth Throttling
+
+The VPN server supports per-client bandwidth throttling using Linux traffic control (tc). This feature allows administrators to limit the upload and download speeds for individual VPN clients.
+
+### Configuration
+
+Throttling is configured using environment variables:
+
+* `VPN_DOWNRATE` - Download rate limit (server→client traffic), e.g., `10mbit`, `100kbit`
+* `VPN_UPRATE` - Upload rate limit (client→server traffic), e.g., `5mbit`, `50kbit`
+
+Both parameters must be specified to enable throttling. Rate formats supported:
+- `<number>kbit` (kilobits per second)
+- `<number>mbit` (megabits per second)
+- `<number>gbit` (gigabits per second)
+
+### Debug Configuration
+
+For troubleshooting throttling issues:
+
+* `LEARN_ADDRESS_DEBUG=1` - Enable detailed logging of tc operations
+* `LEARN_ADDRESS_STATE_DIR` - Custom state directory (default: `/var/lib/openvpn/tc-state`)
+* `LEARN_ADDRESS_LOG_DIR` - Custom log directory (default: `/var/log/openvpn`)
+
+### Production Considerations
+
+- Set `LEARN_ADDRESS_DEBUG=0` in production to minimize logging overhead
+- Monitor state directory growth (`/var/lib/openvpn/tc-state`)
+- Consider log rotation for debug logs when enabled
