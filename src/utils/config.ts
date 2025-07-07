@@ -73,13 +73,23 @@ if (VPN_DOWNRATE && !/^\d+(kbit|mbit|gbit)$/.test(VPN_DOWNRATE)) {
 if (VPN_UPRATE && !/^\d+(kbit|mbit|gbit)$/.test(VPN_UPRATE)) {
 	throw new Error('VPN_UPRATE must be in format: <number>(kbit|mbit|gbit)');
 }
+if ((VPN_DOWNRATE != null) !== (VPN_UPRATE != null)) {
+	throw new Error(
+		'You must either specify both or neither of VPN_UPRATE and VPN_DOWNRATE, specifying just one is not supported',
+	);
+}
 
 // Learn-address script configuration
 export const LEARN_ADDRESS_DEBUG = boolVar('LEARN_ADDRESS_DEBUG', false);
-export const LEARN_ADDRESS_STATE_DIR =
-	optionalVar('LEARN_ADDRESS_STATE_DIR') ?? '/var/lib/openvpn/tc-state';
-export const LEARN_ADDRESS_LOG_DIR =
-	optionalVar('LEARN_ADDRESS_LOG_DIR') ?? '/var/log/openvpn';
+export const LEARN_ADDRESS_STATE_DIR = optionalVar(
+	'LEARN_ADDRESS_STATE_DIR',
+	'/var/lib/openvpn/tc-state',
+);
+
+export const LEARN_ADDRESS_LOG_DIR = optionalVar(
+	'LEARN_ADDRESS_LOG_DIR',
+	'/var/log/openvpn',
+);
 
 export const METRICS_TIMEOUT = intVar('METRICS_TIMEOUT', 20 * SECONDS);
 

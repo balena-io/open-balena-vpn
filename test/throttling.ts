@@ -3,10 +3,6 @@ import { spawn } from 'child_process';
 import * as fs from 'fs';
 import * as os from 'os';
 import * as path from 'path';
-import { fileURLToPath } from 'url';
-
-const FILENAME = fileURLToPath(import.meta.url);
-const DIRNAME = path.dirname(FILENAME);
 
 export default () => {
 	describe('Learn-address throttling script', () => {
@@ -16,7 +12,7 @@ export default () => {
 		beforeEach(() => {
 			tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'throttling-test-'));
 			scriptPath = path.join(
-				DIRNAME,
+				import.meta.dirname,
 				'..',
 				'openvpn',
 				'scripts',
