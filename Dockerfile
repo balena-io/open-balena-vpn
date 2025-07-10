@@ -26,6 +26,14 @@ RUN git clone https://github.com/balena-io-modules/connect-disconnect-script-ope
 	&& git checkout ${CONNECT_DISCONNECT_PLUGIN_COMMIT} \
 	&& C_INCLUDE_PATH=/usr/include/openvpn/ make plugin
 
+FROM plugin-builder AS learn-address-plugin
+
+ENV LEARN_ADDRESS_PLUGIN_COMMIT=425bb999e11f7903bb798f648a7aec038aeb76e3
+RUN git clone https://github.com/balena-io-modules/learn-address-script-openvpn.git \
+	&& cd learn-address-script-openvpn \
+	&& git checkout ${LEARN_ADDRESS_PLUGIN_COMMIT} \
+	&& C_INCLUDE_PATH=/usr/include/openvpn/ make plugin
+
 FROM plugin-builder AS auth-plugin
 
 ENV AUTH_PLUGIN_COMMIT=623982a5d63dd2b7b2b9f9295d10d96a56d58894
@@ -90,7 +98,8 @@ RUN apt-get update -qq \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
 	&& ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts \
-	&& systemctl mask openvpn@.service openvpn.service
+	&& systemctl mask openvpn@.service openvpn.service \
+	&& setcap 'cap_net_admin=ep' /usr/sbin/tc
 
 ENV LIBNSS_OPENVPN_VERSION 22feb11322182f6fd79f85cd014b65b6c40b7b47
 RUN tmp="$(mktemp -d)" ; set -x \
@@ -108,6 +117,7 @@ RUN npm ci --production && npm cache clean --force
 COPY --from=auth-plugin /usr/src/app/auth-script-openvpn/openvpn-plugin-auth-script.so /etc/openvpn/plugins/
 COPY --from=builder /usr/src/app/build /usr/src/app/build
 COPY --from=connect-disconnect-plugin /usr/src/app/connect-disconnect-script-openvpn/openvpn-plugin-connect-disconnect-script.so /etc/openvpn/plugins/
+COPY --from=learn-address-plugin /usr/src/app/learn-address-script-openvpn/openvpn-plugin-learn-address-script.so /etc/openvpn/plugins/
 COPY --from=rust-builder /usr/src/app/target/release/auth /usr/src/app/openvpn/scripts/auth
 COPY bin /usr/src/app/bin
 COPY config /usr/src/app/config
@@ -119,3 +129,9 @@ RUN systemctl enable \
 	open-balena-vpn.service \
 	node-exporter.service \
 	process-exporter.service
+
+# Setup learn-address script with proper permissions and directories
+RUN chmod +x /usr/src/app/openvpn/scripts/learn-address.sh \
+	&& mkdir -p /var/lib/openvpn/tc-state /var/log/openvpn \
+	&& chmod 700 /var/lib/openvpn/tc-state \
+	&& chown nobody:nogroup /var/lib/openvpn/tc-state /var/log/openvpn

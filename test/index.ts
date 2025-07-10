@@ -19,6 +19,7 @@ import 'mocha';
 import connectProxyTests from './connect-proxy/index.js';
 import serviceTests from './service.js';
 import utilsTests from './utils/index.js';
+import throttlingTests from './throttling.js';
 
 describe('connect-proxy', () => {
 	connectProxyTests();
@@ -28,4 +29,7 @@ describe('service', () => {
 });
 describe('utils', () => {
 	utilsTests();
+});
+describe('throttling', () => {
+	throttlingTests();
 });
