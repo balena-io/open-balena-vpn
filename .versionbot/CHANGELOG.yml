@@ -1,4 +1,82 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v18.0.38
+      hash: 4b111fa19db6e8393f6f9303654a16a29be7508c
+      body: |
+        Update balena/open-balena-base from 18.0.33 to 18.0.38
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Update dependency npm to v11.5.1
+              hash: c1b130b30252e296a4f04007382b8e594b56d77a
+              body: |
+                Update npm from 11.5.0 to 11.5.1
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-18.0.38
+          title: ""
+          date: 2025-07-24T19:09:10.893Z
+        - commits:
+            - subject: Update dependency npm to v11.5.0
+              hash: f134e92bf6857c904cf30b9126922e8e29493850
+              body: |
+                Update npm from 11.4.2 to 11.5.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-18.0.37
+          title: ""
+          date: 2025-07-24T18:06:33.895Z
+        - commits:
+            - subject: Update Node.js to v22.17.1
+              hash: a5d9cfcc5ad8a564ece7da561252f7d49e8a6e84
+              body: |
+                Update node from 22.17.0 to 22.17.1
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-18.0.36
+          title: ""
+          date: 2025-07-15T23:03:46.657Z
+        - commits:
+            - subject: Update Node.js to v22.17.0
+              hash: 4747f01fa0047f03fb3b9d8f6ea625e7cc3a2445
+              body: |
+                Update node from 22.16.0 to 22.17.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-18.0.35
+          title: ""
+          date: 2025-06-25T01:31:26.489Z
+        - commits:
+            - subject: Update dependency npm to v11.4.2
+              hash: 8eb4350cfa148424356aef2395b50c7496887be2
+              body: |
+                Update npm from 11.4.1 to 11.4.2
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-18.0.34
+          title: ""
+          date: 2025-06-12T16:02:01.370Z
+  version: 11.32.30
+  title: ""
+  date: 2025-07-25T14:30:06.842Z
+- commits:
     - subject: Lock file maintenance
       hash: d30c1673091cbac3e2378a875fbf1d7688fe8f36
       body: |
