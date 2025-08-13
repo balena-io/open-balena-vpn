@@ -15,7 +15,7 @@
 		"sourceMap": true,
 		"strict": true,
 		"useUnknownInCatchVariables": false,
-		"target": "es2022"
+		"target": "es2024"
 	},
 	"exclude": [
 		"node_modules"
