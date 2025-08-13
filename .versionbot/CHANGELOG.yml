@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update open-balena-base to 19.0.0
+      hash: 90e5211e7176a678b40b2a4d08f6d85c2fa8c96a
+      body: |
+        Update open-balena-base from 18.0.41 to 19.0.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.32.38
+  title: ""
+  date: 2025-08-13T14:27:52.175Z
+- commits:
     - subject: Lock file maintenance
       hash: b0d06fc1d2a76c48bfb99cc0307aec6c996cdd46
       body: |
