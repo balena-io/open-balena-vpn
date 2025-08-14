@@ -1,4 +1,31 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v19.0.1
+      hash: 96ed68c2f9b1d7dccf16626c0f2a686957128cb9
+      body: |
+        Update balena/open-balena-base from 19.0.0 to 19.0.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Add missing dependencies to no-systemd variant
+              hash: 1271f7a7d950f6d3b09f2390f2bf33a6cab35ea1
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-19.0.1
+          title: ""
+          date: 2025-08-14T15:25:48.677Z
+  version: 11.32.39
+  title: ""
+  date: 2025-08-14T19:11:35.277Z
+- commits:
     - subject: Update open-balena-base to 19.0.0
       hash: 90e5211e7176a678b40b2a4d08f6d85c2fa8c96a
       body: |
