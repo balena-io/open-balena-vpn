@@ -14,8 +14,8 @@ FROM base AS plugin-builder
 
 RUN apt-get update \
 	&& apt-get install \
-		libssl-dev \
-		openvpn \
+	libssl-dev \
+	openvpn \
 	&& rm -rf /var/lib/apt/lists/*
 
 FROM plugin-builder AS connect-disconnect-plugin
@@ -24,6 +24,14 @@ ENV CONNECT_DISCONNECT_PLUGIN_COMMIT=7c958d8b33a87a06b5a8fa096397fc623494013a
 RUN git clone https://github.com/balena-io-modules/connect-disconnect-script-openvpn.git \
 	&& cd connect-disconnect-script-openvpn \
 	&& git checkout ${CONNECT_DISCONNECT_PLUGIN_COMMIT} \
+	&& C_INCLUDE_PATH=/usr/include/openvpn/ make plugin
+
+FROM plugin-builder AS learn-address-plugin
+
+ENV LEARN_ADDRESS_PLUGIN_COMMIT=8181b15c11dcbf437d1ea53eebf1dec75082f495
+RUN git clone https://github.com/balena-io-modules/learn-address-script-openvpn.git \
+	&& cd learn-address-script-openvpn \
+	&& git checkout ${LEARN_ADDRESS_PLUGIN_COMMIT} \
 	&& C_INCLUDE_PATH=/usr/include/openvpn/ make plugin
 
 FROM plugin-builder AS auth-plugin
@@ -69,9 +77,9 @@ ARG PROCESS_EXPORTER_TAG=0.7.10
 ARG OPENVPN_EXPORTER_TAG=1.0.2
 
 RUN eget prometheus/node_exporter --tag v${NODE_EXPORTER_TAG} \
-    && eget ncabatoff/process-exporter --tag v${PROCESS_EXPORTER_TAG} \
+	&& eget ncabatoff/process-exporter --tag v${PROCESS_EXPORTER_TAG} \
 	&& eget natrontech/openvpn-exporter --tag v${OPENVPN_EXPORTER_TAG} \
-		&& mv /usr/local/bin/openvpn-exporter-linux-${TARGETARCH:-amd64} /usr/local/bin/openvpn-exporter
+	&& mv /usr/local/bin/openvpn-exporter-linux-${TARGETARCH:-amd64} /usr/local/bin/openvpn-exporter
 
 EXPOSE 80 443 3128
 
@@ -90,7 +98,8 @@ RUN apt-get update -qq \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
 	&& ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts \
-	&& systemctl mask openvpn@.service openvpn.service
+	&& systemctl mask openvpn@.service openvpn.service \
+	&& setcap 'cap_net_admin=ep' /usr/sbin/tc
 
 ENV LIBNSS_OPENVPN_VERSION 22feb11322182f6fd79f85cd014b65b6c40b7b47
 RUN tmp="$(mktemp -d)" ; set -x \
@@ -108,6 +117,7 @@ RUN npm ci --production && npm cache clean --force
 COPY --from=auth-plugin /usr/src/app/auth-script-openvpn/openvpn-plugin-auth-script.so /etc/openvpn/plugins/
 COPY --from=builder /usr/src/app/build /usr/src/app/build
 COPY --from=connect-disconnect-plugin /usr/src/app/connect-disconnect-script-openvpn/openvpn-plugin-connect-disconnect-script.so /etc/openvpn/plugins/
+COPY --from=learn-address-plugin /usr/src/app/learn-address-script-openvpn/openvpn-plugin-learn-address-script.so /etc/openvpn/plugins/
 COPY --from=rust-builder /usr/src/app/target/release/auth /usr/src/app/openvpn/scripts/auth
 COPY bin /usr/src/app/bin
 COPY config /usr/src/app/config
@@ -119,3 +129,9 @@ RUN systemctl enable \
 	open-balena-vpn.service \
 	node-exporter.service \
 	process-exporter.service
+
+# Setup learn-address script with proper permissions and directories
+RUN chmod +x /usr/src/app/openvpn/scripts/learn-address.sh \
+	&& mkdir -p /var/lib/openvpn/tc-state /var/log/openvpn \
+	&& chmod 700 /var/lib/openvpn/tc-state \
+	&& chown nobody:nogroup /var/lib/openvpn/tc-state /var/log/openvpn
