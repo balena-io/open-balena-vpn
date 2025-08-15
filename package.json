@@ -24,7 +24,7 @@
     "@opentelemetry/instrumentation-express": "^0.47.1",
     "@opentelemetry/instrumentation-http": "^0.57.2",
     "@opentelemetry/sdk-node": "^0.57.2",
-    "@sentry/node": "^9.6.1",
+    "@sentry/node": "^10.0.0",
     "bluebird": "^3.7.2",
     "compression": "^1.8.0",
     "event-stream": "^4.0.1",
