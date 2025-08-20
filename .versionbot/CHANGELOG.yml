@@ -1,4 +1,27 @@
 - commits:
+    - subject: Throttling with traffic control (tc) in learn-address OpenVPN plugin
+      hash: 6ff1e8244365650316c4d79445d7dedb6d60df4b
+      body: |
+        Allow throttling via environment variables
+        (VPN_UPRATE and VPN_DOWNRATE) on a per client
+        basis where learn-address OpenVPN plugin
+        is used.
+
+        This gives the tc binary CAP_NET_ADMIN
+        capability to perform these operations because
+        the capabilities aren't inherited.
+
+        Also change ownership of dirs to nobody user
+        so that they can write to state and log directories.
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: dsevastianov
+      nested: []
+  version: 11.33.0
+  title: ""
+  date: 2025-08-20T05:32:58.294Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v19.1.0
       hash: c56f671067e72990268760168a7917f3015e258e
       body: |
