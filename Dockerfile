@@ -1,4 +1,4 @@
-FROM balena/open-balena-base:19.1.0 AS base
+FROM balena/open-balena-base:19.1.0-s6-overlay AS base
 
 FROM base AS builder
 COPY package.json package-lock.json /usr/src/app/
@@ -173,13 +173,16 @@ COPY --from=libnss-openvpn /opt/ /
 # renovate: datasource=repology depName=debian_12/haproxy versioning=loose
 ARG HAPROXY_VERSION=2.6.12-1+deb12u2
 
+# https://docs.renovatebot.com/modules/datasource/repology/
+# renovate: datasource=repology depName=debian_12/openvpn versioning=loose
+ARG OPENVPN_VERSION=2.6.3-1+deb12u3
+
 # hadolint ignore=DL3008
 RUN apt-get update -qq \
-	&& apt-get install -qy haproxy=${HAPROXY_VERSION} iptables socat --no-install-recommends \
+	&& apt-get install -qy haproxy=${HAPROXY_VERSION} iptables socat openvpn=${OPENVPN_VERSION} --no-install-recommends \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
 	&& ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts \
-	&& systemctl mask openvpn@.service openvpn.service \
 	&& setcap 'cap_net_admin=ep' /usr/sbin/tc
 
 RUN sed --in-place --regexp-extended 's|(hosts:\W+)(.*)|\1openvpn \2|' /etc/nsswitch.conf
