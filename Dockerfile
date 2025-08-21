@@ -1,4 +1,4 @@
-FROM balena/open-balena-base:19.1.5 AS base
+FROM balena/open-balena-base:19.1.5-s6-overlay AS base
 
 FROM base AS builder
 COPY package.json package-lock.json /usr/src/app/
@@ -29,7 +29,7 @@ RUN apt-get update \
 
 FROM plugin-builder AS connect-disconnect-plugin
 
-ENV CONNECT_DISCONNECT_PLUGIN_COMMIT=7c958d8b33a87a06b5a8fa096397fc623494013a
+ARG CONNECT_DISCONNECT_PLUGIN_COMMIT=7c958d8b33a87a06b5a8fa096397fc623494013a
 
 WORKDIR /usr/src/app/connect-disconnect-script-openvpn
 RUN git clone https://github.com/balena-io-modules/connect-disconnect-script-openvpn.git . \
@@ -42,7 +42,7 @@ RUN git clone https://github.com/balena-io-modules/connect-disconnect-script-ope
 
 FROM plugin-builder AS learn-address-plugin
 
-ENV LEARN_ADDRESS_PLUGIN_COMMIT=8181b15c11dcbf437d1ea53eebf1dec75082f495
+ARG LEARN_ADDRESS_PLUGIN_COMMIT=8181b15c11dcbf437d1ea53eebf1dec75082f495
 
 WORKDIR /usr/src/app/learn-address-script-openvpn
 RUN git clone https://github.com/balena-io-modules/learn-address-script-openvpn.git . \
@@ -55,11 +55,11 @@ RUN git clone https://github.com/balena-io-modules/learn-address-script-openvpn.
 
 FROM plugin-builder AS auth-plugin
 
-ENV AUTH_PLUGIN_COMMIT=623982a5d63dd2b7b2b9f9295d10d96a56d58894
+ARG OAS_PLUGIN_COMMIT=623982a5d63dd2b7b2b9f9295d10d96a56d58894
 
 WORKDIR /usr/src/app/auth-script-openvpn
 RUN git clone https://github.com/fac/auth-script-openvpn.git . \
-	&& git checkout ${AUTH_PLUGIN_COMMIT} \
+	&& git checkout ${OAS_PLUGIN_COMMIT} \
 	&& C_INCLUDE_PATH=/usr/include/openvpn/ make plugin
 
 ########################################################
@@ -173,13 +173,16 @@ COPY --from=libnss-openvpn /opt/ /
 # renovate: datasource=repology depName=debian_12/haproxy versioning=loose
 ARG HAPROXY_VERSION=2.6.12-1+deb12u2
 
+# https://docs.renovatebot.com/modules/datasource/repology/
+# renovate: datasource=repology depName=debian_12/openvpn versioning=loose
+ARG OPENVPN_VERSION=2.6.3-1+deb12u3
+
 # hadolint ignore=DL3008
 RUN apt-get update -qq \
-	&& apt-get install -qy haproxy=${HAPROXY_VERSION} iptables socat --no-install-recommends \
+	&& apt-get install -qy haproxy=${HAPROXY_VERSION} iptables socat openvpn=${OPENVPN_VERSION} --no-install-recommends \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
 	&& ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts \
-	&& systemctl mask openvpn@.service openvpn.service \
 	&& setcap 'cap_net_admin=ep' /usr/sbin/tc
 
 RUN sed --in-place --regexp-extended 's|(hosts:\W+)(.*)|\1openvpn \2|' /etc/nsswitch.conf
@@ -192,19 +195,18 @@ COPY --from=builder /usr/src/app/build /usr/src/app/build
 COPY --from=connect-disconnect-plugin /usr/src/app/connect-disconnect-script-openvpn/openvpn-plugin-connect-disconnect-script.so /etc/openvpn/plugins/
 COPY --from=learn-address-plugin /usr/src/app/learn-address-script-openvpn/openvpn-plugin-learn-address-script.so /etc/openvpn/plugins/
 COPY --from=rust-builder /usr/src/app/target/release/auth /usr/src/app/openvpn/scripts/auth
-COPY bin /usr/src/app/bin
 COPY config /usr/src/app/config
 COPY openvpn /usr/src/app/openvpn
 COPY openvpn-exporter /usr/src/app/openvpn-exporter
 COPY docker-hc /usr/src/app/
-COPY config/services /etc/systemd/system
-RUN systemctl enable \
-	open-balena-vpn.service \
-	node-exporter.service \
-	process-exporter.service
+COPY config/s6-overlay /etc/s6-overlay
+COPY bin/*.sh /etc/s6-overlay/scripts/
+RUN chmod +x /etc/s6-overlay/scripts/* /usr/src/app/openvpn-exporter/bin/start.sh
 
 # Setup learn-address script with proper permissions and directories
 RUN chmod +x /usr/src/app/openvpn/scripts/learn-address.sh \
 	&& mkdir -p /var/lib/openvpn/tc-state /var/log/openvpn \
 	&& chmod 700 /var/lib/openvpn/tc-state \
 	&& chown nobody:nogroup /var/lib/openvpn/tc-state /var/log/openvpn
+
+ENTRYPOINT [ "/etc/s6-overlay/scripts/entry.sh" ]
