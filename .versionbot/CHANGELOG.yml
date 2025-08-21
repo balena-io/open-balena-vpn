@@ -1,4 +1,31 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v19.1.1
+      hash: 3400a8837ce3c24a02c5184c61ef4db65ca8c62c
+      body: |
+        Update balena/open-balena-base from 19.1.0 to 19.1.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Add dbus and avahi supervised services to s6-overlay
+              hash: 50a4108141b44ab5db5d0031f2e6560f83a8e286
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-19.1.1
+          title: ""
+          date: 2025-08-21T21:10:31.364Z
+  version: 11.33.1
+  title: ""
+  date: 2025-08-21T22:21:20.961Z
+- commits:
     - subject: Throttling with traffic control (tc) in learn-address OpenVPN plugin
       hash: 6ff1e8244365650316c4d79445d7dedb6d60df4b
       body: |
