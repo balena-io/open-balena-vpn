@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
+set -ex
 
-systemctl is-active open-balena-vpn \
-  && curl -I --fail localhost/ping
+is_up() {
+	local service="$1"
+	local result
+	result="$(s6-svstat "/run/service/${service}" -o up)"
+	test "${result}" = "true"
+}
+
+is_up open-balena-vpn
+is_up haproxy
+
+curl -I --fail http://localhost/ping

@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1091,SC2154,SC2312
+
 set -ae
 
-[[ $DEFAULT_VERBOSE_LOGS =~ on|On|Yes|yes|true|True ]] && set -x
+[[ ${DEFAULT_VERBOSE_LOGS} =~ on|On|Yes|yes|true|True ]] && set -x
 
-WORK_DIR="$(readlink -e "$(dirname "$0")"/..)"
+WORK_DIR="/usr/src/app"
 PATH="${WORK_DIR}/node_modules/.bin:${PATH}"
 
 function cleanup() {
@@ -14,7 +16,6 @@ trap 'cleanup' EXIT
 
 cd "${WORK_DIR}"
 
-# shellcheck disable=SC1091
 test -f "${WORK_DIR}/config/env" && source "${WORK_DIR}/config/env"
 
 # prevent new VPN connections by setting backend VPN workers to DRAIN mode
