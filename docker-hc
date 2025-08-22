@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
 
-systemctl is-active open-balena-vpn \
-  && curl -I --fail localhost/ping
+curl -I --fail localhost/ping
