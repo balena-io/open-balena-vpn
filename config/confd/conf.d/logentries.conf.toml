@@ -1,6 +1,0 @@
-[template]
-src = "logentries.conf.tmpl"
-dest = "/etc/rsyslog.d/logentries.conf"
-keys = [
-  "LOGENTRIES_TOKEN"
-]
