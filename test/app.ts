@@ -93,7 +93,7 @@ describe('vpn worker', function () {
 
 	before(() => {
 		nock(BALENA_API_INTERNAL_HOST)
-			.post('/v6/service_instance')
+			.post('/v7/service_instance')
 			.reply(200, checkNoTraceParentReturningBody({ id: _.random(1, 1024) }));
 	});
 
@@ -214,7 +214,7 @@ describe('VPN proxy', function () {
 	describe('web accessible device', () => {
 		beforeEach(() => {
 			nock(BALENA_API_INTERNAL_HOST)
-				.get('/v6/device')
+				.get('/v7/device')
 				.query({
 					$select: 'id,is_connected_to_vpn',
 					$filter: 'uuid eq @uuid',
@@ -233,7 +233,7 @@ describe('VPN proxy', function () {
 				);
 
 			nock(BALENA_API_INTERNAL_HOST)
-				.post('/v6/device(@id)/canAccess?@id=1', {
+				.post('/v7/device(@id)/canAccess?@id=1', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(
@@ -280,7 +280,7 @@ describe('VPN proxy', function () {
 	describe('tunnel forwarding', () => {
 		beforeEach(() => {
 			nock(BALENA_API_INTERNAL_HOST)
-				.get('/v6/device')
+				.get('/v7/device')
 				.query({
 					$select: 'id,is_connected_to_vpn',
 					$filter: 'uuid eq @uuid',
@@ -299,7 +299,7 @@ describe('VPN proxy', function () {
 				);
 
 			nock(BALENA_API_INTERNAL_HOST)
-				.post('/v6/device(@id)/canAccess?@id=2', {
+				.post('/v7/device(@id)/canAccess?@id=2', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(
@@ -317,7 +317,7 @@ describe('VPN proxy', function () {
 		it('should refuse to forward via itself', async () => {
 			nock(BALENA_API_INTERNAL_HOST)
 				.get(
-					'/v6/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
+					'/v7/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
 				)
 				.reply(
 					200,
@@ -342,7 +342,7 @@ describe('VPN proxy', function () {
 		it('should detect forward loops', async () => {
 			nock(BALENA_API_INTERNAL_HOST)
 				.get(
-					'/v6/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
+					'/v7/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20(d/is_connected_to_vpn%20eq%20true))',
 				)
 				.reply(
 					200,
@@ -373,7 +373,7 @@ describe('VPN proxy', function () {
 	describe('not web accessible device', () => {
 		beforeEach(() => {
 			nock(BALENA_API_INTERNAL_HOST)
-				.get('/v6/device')
+				.get('/v7/device')
 				.query({
 					$select: 'id,is_connected_to_vpn',
 					$filter: 'uuid eq @uuid',
@@ -394,7 +394,7 @@ describe('VPN proxy', function () {
 
 		it('should not allow port 8080 without authentication', async () => {
 			nock(BALENA_API_INTERNAL_HOST)
-				.post('/v6/device(@id)/canAccess?@id=3', {
+				.post('/v7/device(@id)/canAccess?@id=3', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(200, checkTraceParentReturningBody({ d: [] }));
@@ -414,7 +414,7 @@ describe('VPN proxy', function () {
 
 		it('should allow port 8080 with authentication', async () => {
 			nock(BALENA_API_INTERNAL_HOST)
-				.post('/v6/device(@id)/canAccess?@id=3', {
+				.post('/v7/device(@id)/canAccess?@id=3', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(

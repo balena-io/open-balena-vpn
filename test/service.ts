@@ -27,7 +27,7 @@ export default () => {
 	describe('id', () => {
 		before(() => {
 			nock(BALENA_API_INTERNAL_HOST)
-				.post('/v6/service_instance')
+				.post('/v7/service_instance')
 				.reply(200, { id: serviceId });
 		});
 
@@ -47,7 +47,7 @@ export default () => {
 
 		before(() => {
 			nock(BALENA_API_INTERNAL_HOST)
-				.patch(`/v6/service_instance(${serviceId})`)
+				.patch(`/v7/service_instance(${serviceId})`)
 				.reply(200, (_uri: string, body: any) => {
 					called++;
 					isAlive = body.is_alive;
