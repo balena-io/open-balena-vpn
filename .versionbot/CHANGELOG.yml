@@ -1,4 +1,31 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v19.1.2
+      hash: 955c72d99accce2de383bd2f5cd62e3e608e4217
+      body: |
+        Update balena/open-balena-base from 19.1.1 to 19.1.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Add /etc/machine-id symlink for node exporters
+              hash: a414bc7f557c67c37788f9d6602768b71fd66ad4
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-19.1.2
+          title: ""
+          date: 2025-08-22T18:08:42.096Z
+  version: 11.33.2
+  title: ""
+  date: 2025-08-22T19:35:11.351Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v19.1.1
       hash: 3400a8837ce3c24a02c5184c61ef4db65ca8c62c
       body: |
