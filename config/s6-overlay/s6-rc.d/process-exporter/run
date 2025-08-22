@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+exec /usr/local/bin/process-exporter \
+    -web.listen-address 127.0.0.1:9001 \
+    -web.telemetry-path /metrics/process \
+    -procnames haproxy,node,openvpn

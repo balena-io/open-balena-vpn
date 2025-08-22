@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1091
+
+# Change to working directory
+cd /usr/src/app || exit 1
+
+# Source environment variables
+if [[ -f config/env ]]; then
+    source config/env
+fi
+
+# HAProxy service for s6-overlay
+
+# Load environment files (optional configs)
+[[ -f /etc/default/haproxy ]] && source /etc/default/haproxy
+[[ -f /etc/sysconfig/haproxy ]] && source /etc/sysconfig/haproxy
+
+# Set default environment variables
+CONFIG="${CONFIG:-/etc/haproxy/haproxy.cfg}"
+PIDFILE="${PIDFILE:-/run/haproxy.pid}"
+# Note: -Ws becomes -W (no systemd notify), add -db for foreground
+EXTRAOPTS="${EXTRAOPTS:--S /run/haproxy-master.sock}"
+
+# # Ensure the log socket exists for HAProxy chroot
+# # (replaces BindReadOnlyPaths from systemd)
+# if [[ ! -e /var/lib/haproxy/dev/log ]]; then
+#     mkdir -p /var/lib/haproxy/dev
+#     # Create symlink or bind mount (depending on your container setup)
+#     ln -sf /dev/log /var/lib/haproxy/dev/log 2>/dev/null || true
+# fi
+
+# Validate configuration before starting
+if ! /usr/sbin/haproxy -f "${CONFIG}" -c -q ${EXTRAOPTS}; then
+    echo "[haproxy] Configuration validation failed"
+    exit 1
+fi
+
+echo "[haproxy] Starting HAProxy..."
+# -W: master-worker mode (without systemd)
+# -db: disable background/daemon mode (run in foreground for s6)
+# -f: config file
+# -p: pidfile
+exec /usr/sbin/haproxy -W -db -f "${CONFIG}" -p "${PIDFILE}" ${EXTRAOPTS}

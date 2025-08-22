@@ -195,19 +195,18 @@ COPY --from=builder /usr/src/app/build /usr/src/app/build
 COPY --from=connect-disconnect-plugin /usr/src/app/connect-disconnect-script-openvpn/openvpn-plugin-connect-disconnect-script.so /etc/openvpn/plugins/
 COPY --from=learn-address-plugin /usr/src/app/learn-address-script-openvpn/openvpn-plugin-learn-address-script.so /etc/openvpn/plugins/
 COPY --from=rust-builder /usr/src/app/target/release/auth /usr/src/app/openvpn/scripts/auth
-COPY bin /usr/src/app/bin
 COPY config /usr/src/app/config
 COPY openvpn /usr/src/app/openvpn
 COPY openvpn-exporter /usr/src/app/openvpn-exporter
 COPY docker-hc /usr/src/app/
-COPY config/services /etc/systemd/system
-RUN systemctl enable \
-	open-balena-vpn.service \
-	node-exporter.service \
-	process-exporter.service
+COPY config/s6-overlay /etc/s6-overlay
+COPY bin/*.sh /etc/s6-overlay/scripts/
+RUN chmod +x /etc/s6-overlay/scripts/* /usr/src/app/openvpn-exporter/bin/start.sh
 
 # Setup learn-address script with proper permissions and directories
 RUN chmod +x /usr/src/app/openvpn/scripts/learn-address.sh \
 	&& mkdir -p /var/lib/openvpn/tc-state /var/log/openvpn \
 	&& chmod 700 /var/lib/openvpn/tc-state \
 	&& chown nobody:nogroup /var/lib/openvpn/tc-state /var/log/openvpn
+
+ENTRYPOINT [ "/etc/s6-overlay/scripts/entry.sh" ]

@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1091,SC2312,SC2154
+
+# Change to working directory
+cd /usr/src/app || exit 1
+
+# Source environment variables
+if [[ -f config/env ]]; then
+    source config/env
+fi
+
+# Intercept SIGTERM to drain backend VPN workers before Node handles shutdown
+
+# Signal handler: drain backend VPN workers then forward to Node
+shutdown_handler() {
+    echo "[open-balena-vpn] Draining backend VPN workers..."
+    
+    # Run the backend VPN workers draining logic
+    # shellcheck disable=SC1001
+    for vpn_worker in $(echo 'show servers conn' | socat - "${VPN_HAPROXY_SOCKET}" \
+      | grep -E ^vpn-workers\/vpn \
+      | awk '{print $1}'); do
+        echo "set server ${vpn_worker} state drain" | socat - "${VPN_HAPROXY_SOCKET}"
+    done
+    
+    echo 'show servers state' | socat - "${VPN_HAPROXY_SOCKET}"
+    
+    # Forward SIGTERM to Node
+    if [[ -n ${node_pid} ]] && kill -0 "${node_pid}" 2>/dev/null; then
+        echo "[open-balena-vpn] Forwarding SIGTERM to Node (PID: ${node_pid})"
+        kill -TERM "${node_pid}" 2>/dev/null || true
+    fi
+    
+    # Wait for Node to finish its graceful shutdown
+    wait "${node_pid}"
+    exit $?
+}
+
+# Trap signals before starting the service
+trap 'shutdown_handler' SIGTERM SIGINT
+
+# Start service in background (no exec)
+/etc/s6-overlay/scripts/start.sh &
+node_pid=$!
+
+# Wait for the process
+wait "${node_pid}"
