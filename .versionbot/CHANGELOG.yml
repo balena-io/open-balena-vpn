@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update from using API v6 to v7
+      hash: 974f848cfaf55b2c9e53cca7c89d353d3433dda4
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 11.33.4
+  title: ""
+  date: 2025-08-25T12:43:51.234Z
+- commits:
     - subject: Lock file maintenance
       hash: 8fc5488f6bd3591587624e334689a75a589eb446
       body: |
