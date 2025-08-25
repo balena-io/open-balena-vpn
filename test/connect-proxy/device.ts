@@ -47,7 +47,7 @@ export default () => {
 	describe('getDeviceByUUID()', function () {
 		beforeEach(function () {
 			nock(BALENA_API_INTERNAL_HOST)
-				.get('/v6/device')
+				.get('/v7/device')
 				.query({
 					$select: 'id,is_connected_to_vpn',
 					$filter: 'uuid eq @uuid',

@@ -26,7 +26,7 @@ import { context, propagation } from '@opentelemetry/api';
 export const VERSION = packageJSON.version;
 
 export const balenaApi = new PinejsClientRequest({
-	apiPrefix: `${BALENA_API_INTERNAL_HOST}/v6/`,
+	apiPrefix: `${BALENA_API_INTERNAL_HOST}/v7/`,
 });
 
 export const getPassthrough = (auth: string | undefined) => {
