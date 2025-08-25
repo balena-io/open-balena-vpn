@@ -21,14 +21,6 @@ PIDFILE="${PIDFILE:-/run/haproxy.pid}"
 # Note: -Ws becomes -W (no systemd notify), add -db for foreground
 EXTRAOPTS="${EXTRAOPTS:--S /run/haproxy-master.sock}"
 
-# # Ensure the log socket exists for HAProxy chroot
-# # (replaces BindReadOnlyPaths from systemd)
-# if [[ ! -e /var/lib/haproxy/dev/log ]]; then
-#     mkdir -p /var/lib/haproxy/dev
-#     # Create symlink or bind mount (depending on your container setup)
-#     ln -sf /dev/log /var/lib/haproxy/dev/log 2>/dev/null || true
-# fi
-
 # Validate configuration before starting
 if ! /usr/sbin/haproxy -f "${CONFIG}" -c -q ${EXTRAOPTS}; then
     echo "[haproxy] Configuration validation failed"
