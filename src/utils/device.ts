@@ -20,6 +20,7 @@ import memoize from 'memoizee';
 
 import { balenaApi, getPassthrough, StatusError } from './index.js';
 import { APIError, captureException } from './errors.js';
+import { inspect } from 'node:util';
 
 const VPN_GUEST_API_KEY = optionalVar('VPN_GUEST_API_KEY');
 
@@ -74,12 +75,23 @@ const $canAccessDevice = async (
 	auth?: Buffer,
 ) => {
 	try {
-		const { d } = (await balenaApi.request({
+		console.error('===================================================');
+		console.error(`device(@id)/canAccess?@id=${device.id}`);
+		console.error('===================================================');
+		const res = (await balenaApi.request({
 			method: 'POST',
 			url: `device(@id)/canAccess?@id=${device.id}`,
 			body: { or: ['tunnel-any', `tunnel-${port}`] },
 			passthrough: getPassthrough(authHeader(auth)),
 		})) as { d?: Array<{ id: number }> };
+
+		console.error('===================================================');
+		console.error(
+			'res',
+			inspect(res, { depth: null, maxArrayLength: Infinity }),
+		);
+		console.error('===================================================');
+		const { d } = res;
 
 		return Array.isArray(d) && d.length === 1 && d[0].id === device.id;
 	} catch {
