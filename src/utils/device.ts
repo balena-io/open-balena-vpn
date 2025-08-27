@@ -68,28 +68,19 @@ export const getDeviceByUUID = async (
 	}
 };
 
-const canAccessDeviceQuery = balenaApi.prepare(
-	{
-		method: 'POST',
-		resource: 'device',
-		id: { '@': 'id' },
-		url: `device(@id)/canAccess`,
-	},
-	{ id: ['number'] },
-);
 const $canAccessDevice = async (
 	device: DeviceInfo,
 	port: number,
 	auth?: Buffer,
 ) => {
 	try {
-		const { d } = (await canAccessDeviceQuery(
-			{ id: device.id },
-			{
-				action: { or: ['tunnel-any', `tunnel-${port}`] },
-			},
-			getPassthrough(authHeader(auth)),
-		)) as { d?: Array<{ id: number }> };
+		const { d } = (await balenaApi.request({
+			method: 'POST',
+			url: `device(@id)/canAccess?@id=${device.id}`,
+			body: { or: ['tunnel-any', `tunnel-${port}`] },
+			passthrough: getPassthrough(authHeader(auth)),
+		})) as { d?: Array<{ id: number }> };
+
 		return Array.isArray(d) && d.length === 1 && d[0].id === device.id;
 	} catch {
 		return false;
@@ -111,7 +102,7 @@ export const getDeviceVpnHost = async (
 	auth?: Buffer,
 ): Promise<VpnHost | undefined> => {
 	try {
-		const services = (await balenaApi.get({
+		const services = await balenaApi.get({
 			resource: 'service_instance',
 			options: {
 				$select: ['id', 'ip_address'],
@@ -125,7 +116,7 @@ export const getDeviceVpnHost = async (
 				},
 			},
 			passthrough: getPassthrough(authHeader(auth)),
-		})) as Array<{ id: number; ip_address: string }>;
+		});
 		return services[0];
 	} catch (err) {
 		if (!(err instanceof StatusError) || err.statusCode !== 401) {
