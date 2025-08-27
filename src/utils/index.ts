@@ -20,6 +20,7 @@ import winston from 'winston';
 import { PinejsClientRequest } from 'pinejs-client-request';
 export { StatusError } from 'pinejs-client-request';
 import { BALENA_API_INTERNAL_HOST } from './config.js';
+import type { PineClient as BalenaPineClient } from 'balena-sdk';
 
 import packageJSON from '../../package.json' with { type: 'json' };
 import { context, propagation } from '@opentelemetry/api';
@@ -27,7 +28,7 @@ export const VERSION = packageJSON.version;
 
 export const balenaApi = new PinejsClientRequest({
 	apiPrefix: `${BALENA_API_INTERNAL_HOST}/v7/`,
-});
+}) satisfies BalenaPineClient as BalenaPineClient;
 
 export const getPassthrough = (auth: string | undefined) => {
 	const headers: Record<string, string> = {};

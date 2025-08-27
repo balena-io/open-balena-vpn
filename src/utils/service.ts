@@ -19,6 +19,7 @@ import { setTimeout } from 'timers/promises';
 import { balenaApi, getPassthrough } from './index.js';
 import { VPN_SERVICE_API_KEY } from './config.js';
 import { captureException, ServiceRegistrationError } from './errors.js';
+import type { BalenaModel } from 'balena-sdk';
 
 class ServiceInstance {
 	private _id: number | null = null;
@@ -38,11 +39,15 @@ class ServiceInstance {
 
 	public async register(ipAddress?: string): Promise<this> {
 		try {
-			const { id } = (await balenaApi.post({
+			const body: BalenaModel['service_instance']['Write'] = {
+				// @ts-expect-error we have to cast as the `ip_address` isn't usually writable but the vpn is allowed to
+				ip_address: ipAddress,
+			};
+			const { id } = await balenaApi.post({
 				resource: 'service_instance',
 				passthrough: getPassthrough(`Bearer ${VPN_SERVICE_API_KEY}`),
-				body: ipAddress != null ? { ip_address: ipAddress } : {},
-			})) as { id?: number };
+				body,
+			} as const);
 			if (id == null) {
 				throw new ServiceRegistrationError(
 					'No service ID received on response',
@@ -72,7 +77,7 @@ class ServiceInstance {
 				resource: 'service_instance',
 				id: this.getId(),
 				body: {
-					// Just indicate being online, api handles the timestamp with hooks
+					// @ts-expect-error The api handles the timestamp via hooks based on the `is_alive` so we can just indicate being online, however it does mean that `is_alive` doesn't actually exist in the model
 					is_alive: true,
 				},
 				passthrough: getPassthrough(`Bearer ${VPN_SERVICE_API_KEY}`),
