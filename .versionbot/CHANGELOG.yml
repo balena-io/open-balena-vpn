@@ -1,4 +1,40 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v19.1.5
+      hash: e361591e7afbdb4d86be40d1ab4856b0184737da
+      body: |
+        Update balena/open-balena-base from 19.1.4 to 19.1.5
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Add load_env_var shared function
+              hash: 7c0a5185c884e105c86b616e7f134034b1cad0ab
+              body: >
+                This shared function replicates systemd's EnvironmentFile
+                behaviour
+
+                by treating everything after the '=' as the complete value.
+
+
+                It should be used by services to load env files that may contain
+
+                spaces in values that are unquoted and may not be bash-safe.
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-19.1.5
+          title: ""
+          date: 2025-08-29T16:42:19.853Z
+  version: 11.33.7
+  title: ""
+  date: 2025-08-29T17:36:44.930Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v19.1.4
       hash: 1907f8acac1ca4c9c9ff390918770b9290cf4268
       body: |
