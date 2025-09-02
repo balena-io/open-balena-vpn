@@ -1,6 +1,0 @@
-[template]
-src = "open-balena-vpn.service.tmpl"
-dest = "/etc/systemd/system/open-balena-vpn.service"
-keys = [
-  "DEFAULT_SIGTERM_TIMEOUT"
-]

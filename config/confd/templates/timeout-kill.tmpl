@@ -1,0 +1,1 @@
+{{ if getenv "DEFAULT_SIGTERM_TIMEOUT" }}{{ mul (atoi (getenv "DEFAULT_SIGTERM_TIMEOUT")) 1000 }}{{ else }}120000{{ end }}

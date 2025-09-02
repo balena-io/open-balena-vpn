@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1091
+
+# HAProxy service for s6-overlay
+
+set -euo pipefail
+
+# Redirect all future stdout/stderr to s6-log
+exec > >(exec s6-log -b p"haproxy[$$]:" 1 || true) 2>&1
+
+# Change to working directory
+cd /usr/src/app || exit 1
+
+# Load environment variables for this service
+source /etc/s6-overlay/scripts/functions.sh
+[[ -f "config/env" ]] && load_env_file "config/env"
+
+# Load environment files (optional configs)
+[[ -f /etc/default/haproxy ]] && source /etc/default/haproxy
+[[ -f /etc/sysconfig/haproxy ]] && source /etc/sysconfig/haproxy
+
+# Set default environment variables
+CONFIG="/etc/haproxy/haproxy.cfg"
+PIDFILE="/run/haproxy.pid"
+EXTRAOPTS=("-S" "/run/haproxy-master.sock")
+
+# Validate configuration before starting
+if ! /usr/sbin/haproxy -f "${CONFIG}" -c -q "${EXTRAOPTS[@]}"; then
+    exit 1
+fi
+
+# ShellCheck is currently bad at figuring out functions that are invoked via trap.
+# In such cases, please ignore the message with a directive.
+# shellcheck disable=SC2329,SC2317
+signal_handler() {
+    
+    # Forward SIGTERM to main process
+    if [[ -n ${main_pid} ]] && kill -0 "${main_pid}" 2>/dev/null; then
+        echo "Forwarding SIGTERM to main process (PID: ${main_pid})"
+        kill -TERM "${main_pid}" 2>/dev/null || true
+    fi
+    
+    # Wait for main process to finish its graceful shutdown
+    wait "${main_pid}"
+    exit $?
+}
+
+# Trap signals before starting the service (killmode=mixed)
+trap 'signal_handler' SIGTERM SIGINT
+
+# -W: master-worker mode
+# -db: disable background/daemon mode (run in foreground for s6)
+# -f: config file
+# -p: pidfile
+/usr/sbin/haproxy -W -db -f "${CONFIG}" -p "${PIDFILE}" "${EXTRAOPTS[@]}" &
+main_pid=$!
+
+wait "${main_pid}"
+exit_code="${?}"
+
+# Exit code 143 (SIGTERM) is success
+[[ "${exit_code}" -eq 143 ]] && exit 0
+exit "${exit_code}"

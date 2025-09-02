@@ -1,14 +1,11 @@
-[Unit]
-Description=Prometheus Node Exporter
-Requires=network-online.target
-After=network-online.target
+#!/usr/bin/env bash
 
-[Service]
-StandardOutput=journal+console
-StandardError=journal+console
-Type=simple
+set -euo pipefail
 
-ExecStart=/usr/local/bin/node_exporter \
+# Redirect all future stdout/stderr to s6-log
+exec > >(exec s6-log -b p"node-exporter[$$]:" 1 || true) 2>&1
+
+exec /usr/local/bin/node_exporter \
     --web.listen-address 127.0.0.1:9000 \
     --web.telemetry-path /metrics/node \
     --collector.netstat \
@@ -43,9 +40,3 @@ ExecStart=/usr/local/bin/node_exporter \
     --no-collector.vmstat \
     --no-collector.xfs \
     --no-collector.zfs
-
-Restart=always
-SyslogIdentifier=node-exporter
-
-[Install]
-WantedBy=multi-user.target
