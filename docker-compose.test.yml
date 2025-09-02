@@ -45,7 +45,8 @@ services:
       - /bin/sh
       - -exc
       - |
-        sleep 10
+        # Stop open-balena-vpn service for testing
+        s6-svc -d /run/service/open-balena-vpn
 
         npm install
         /command/with-contenv npm run test-unit
