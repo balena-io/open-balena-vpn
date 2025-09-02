@@ -1,0 +1,6 @@
+[template]
+src = "timeout-kill.tmpl"
+dest = "/etc/s6-overlay/s6-rc.d/avahi-daemon/timeout-kill"
+keys = [
+  "DEFAULT_SIGTERM_TIMEOUT"
+]
