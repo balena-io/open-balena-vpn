@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency chai to v6
+      hash: 6e94a81c8104d28859e0d3ef1bc029acecc0860b
+      body: |
+        Update chai from 5.3.3 to 6.0.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.0.4
+  title: ""
+  date: 2025-09-02T16:43:56.578Z
+- commits:
     - subject: Stop open-balena-vpn main node app during testing
       hash: 6bfac51267615d26ac69bc5a6ae810c33cd96f1e
       body: >
