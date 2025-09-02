@@ -20,7 +20,7 @@ signal_handler() {
     
     # Run the backend VPN workers draining logic
     echo "Draining backend VPN workers..."
-    /etc/s6-overlay/scripts/stop.sh
+    /etc/s6-overlay/scripts/stop.sh || true # ignore errors from this script
     
     # Forward SIGTERM to main process
     if [[ -n ${main_pid} ]] && kill -0 "${main_pid}" 2>/dev/null; then
