@@ -1,4 +1,32 @@
 - commits:
+    - subject: Stop open-balena-vpn main node app during testing
+      hash: 6bfac51267615d26ac69bc5a6ae810c33cd96f1e
+      body: >
+        This avoids a lot of messy sentry logs that makes it difficult to see
+        what is being tested.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+    - subject: Remove keys limitation from confd templates
+      hash: 7c766b2a56ed061a4750ff57c3d636b34e6322de
+      body: |
+        Historically having the keys defined in the templates has
+        led to developer friction and confusion.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 12.0.3
+  title: ""
+  date: 2025-09-02T15:44:58.957Z
+- commits:
     - subject: Update golang Docker tag to v1.25.0
       hash: e14e2e36d269b734637c649a88716ab297b2c168
       body: |
