@@ -1,4 +1,16 @@
 - commits:
+    - subject: Explicitly use lf eol for `.tmpl` files to work properly on windows
+      hash: d216d7d3f61d9fdef1dd1886277f27f3fbce05fb
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.0.1
+  title: ""
+  date: 2025-09-02T14:57:47.025Z
+- commits:
     - subject: Switch to s6-overlay base image with reduced permissions
       hash: 8c3dc56956663f08dc6bd36d8c43ede03252d5fc
       body: ""
