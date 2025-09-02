@@ -1,4 +1,28 @@
 - commits:
+    - subject: Switch to s6-overlay base image with reduced permissions
+      hash: 8c3dc56956663f08dc6bd36d8c43ede03252d5fc
+      body: ""
+      footer:
+        Change-type: major
+        change-type: major
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+    - subject: Clean up Dockerfile and make better use of build stages
+      hash: a10dafe563582903cfac15939a93789f0c92a5ee
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 12.0.0
+  title: ""
+  date: 2025-09-02T14:30:24.139Z
+- commits:
     - subject: Lock file maintenance
       hash: 968e55a2d01aaec95e16e4f1a8911f83fcb75975
       body: |
