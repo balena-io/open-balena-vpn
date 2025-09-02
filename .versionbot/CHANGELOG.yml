@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update golang Docker tag to v1.25.0
+      hash: e14e2e36d269b734637c649a88716ab297b2c168
+      body: |
+        Update golang from 1.24.6 to 1.25.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.0.2
+  title: ""
+  date: 2025-09-02T15:18:10.344Z
+- commits:
     - subject: Explicitly use lf eol for `.tmpl` files to work properly on windows
       hash: d216d7d3f61d9fdef1dd1886277f27f3fbce05fb
       body: ""
