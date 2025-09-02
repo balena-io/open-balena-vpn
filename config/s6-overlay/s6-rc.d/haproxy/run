@@ -15,9 +15,6 @@ cd /usr/src/app || exit 1
 source /etc/s6-overlay/scripts/functions.sh
 [[ -f "config/env" ]] && load_env_file "config/env"
 
-# Update ulimits (requires SYS_RESOURCE or privileged mode)
-ulimit -n 1048576 || true # Sets LimitNOFILE to 1048576
-
 # Load environment files (optional configs)
 [[ -f /etc/default/haproxy ]] && source /etc/default/haproxy
 [[ -f /etc/sysconfig/haproxy ]] && source /etc/sysconfig/haproxy

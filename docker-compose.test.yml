@@ -5,7 +5,7 @@ services:
     build: .
     cap_add:
       - NET_ADMIN
-      - SYS_RESOURCE
+      - SYS_RESOURCE # Required for haproxy's config setting 'ulimit-n 1048576'
     volumes:
       - ./src:/usr/src/app/src:ro
       - ./test:/usr/src/app/test:ro
