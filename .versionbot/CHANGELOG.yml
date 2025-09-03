@@ -1,4 +1,17 @@
 - commits:
+    - subject: Use balena model info to improve the pinejs-client typings
+      hash: 5e27f5ca9876d937a6f2ed9024f769399f84daf3
+      body: |
+        https://balena.fibery.io/Work/Project/Backend-use-improved-pinejs-client-typings-1801
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.0.5
+  title: ""
+  date: 2025-09-03T14:00:34.655Z
+- commits:
     - subject: Update dependency chai to v6
       hash: 6e94a81c8104d28859e0d3ef1bc029acecc0860b
       body: |
