@@ -1,4 +1,16 @@
 - commits:
+    - subject: Avoid redundant `eq true` when checking `is_connected_to_vpn` boolean
+      hash: 5312974eb4cee2e1bcfd68bfa892f1aa23498f8c
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.0.6
+  title: ""
+  date: 2025-09-03T14:48:25.593Z
+- commits:
     - subject: Use balena model info to improve the pinejs-client typings
       hash: 5e27f5ca9876d937a6f2ed9024f769399f84daf3
       body: |
