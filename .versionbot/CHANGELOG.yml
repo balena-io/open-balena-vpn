@@ -1,4 +1,35 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v19.2.0
+      hash: 2ad89fb20bf902c6a06896eb63e8455895d1b05c
+      body: |
+        Update balena/open-balena-base from 19.1.5 to 19.2.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Install eget in the runtime image for convenience
+              hash: bda3c47838cfcfc63316f60b34fd14d36a10b57c
+              body: >
+                Downstream components can use open-balena-base in build stages
+
+                to install packages with eget rather than installing eget from
+                source.
+              footer:
+                Change-type: minor
+                change-type: minor
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-19.2.0
+          title: ""
+          date: 2025-09-03T14:15:57.893Z
+  version: 12.0.7
+  title: ""
+  date: 2025-09-03T15:16:14.975Z
+- commits:
     - subject: Avoid redundant `eq true` when checking `is_connected_to_vpn` boolean
       hash: 5312974eb4cee2e1bcfd68bfa892f1aa23498f8c
       body: ""
