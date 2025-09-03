@@ -76,7 +76,7 @@ RUN cargo build --release
 # Eget Builder
 ########################################################
 
-FROM golang:1.25.0 AS eget-builder
+FROM golang:1.25.1 AS eget-builder
 
 WORKDIR /src
 
