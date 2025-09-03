@@ -111,7 +111,7 @@ export const getDeviceVpnHost = async (
 					manages__device: {
 						$any: {
 							$alias: 'd',
-							$expr: { d: { uuid, is_connected_to_vpn: true } },
+							$expr: { d: { uuid, $: 'is_connected_to_vpn' } },
 						},
 					},
 				},
