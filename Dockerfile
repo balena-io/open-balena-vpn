@@ -1,4 +1,4 @@
-FROM balena/open-balena-base:19.2.1-s6-overlay AS base
+FROM balena/open-balena-base:20.0.0-s6-overlay AS base
 
 FROM base AS builder
 COPY package.json package-lock.json /usr/src/app/
@@ -66,7 +66,7 @@ RUN git clone https://github.com/fac/auth-script-openvpn.git . \
 # Rust Builder
 ########################################################
 
-FROM rust:1-bookworm AS rust-builder
+FROM rust:1-trixie AS rust-builder
 
 WORKDIR /usr/src/app
 COPY auth .
@@ -170,12 +170,12 @@ COPY --from=sshproxy /usr/local/bin/* /usr/local/bin/
 COPY --from=libnss-openvpn /opt/ /
 
 # https://docs.renovatebot.com/modules/datasource/repology/
-# renovate: datasource=repology depName=debian_12/haproxy versioning=loose
-ARG HAPROXY_VERSION=2.6.12-1+deb12u2
+# renovate: datasource=repology depName=debian_13/haproxy versioning=loose
+ARG HAPROXY_VERSION=3.0.11-1
 
 # https://docs.renovatebot.com/modules/datasource/repology/
-# renovate: datasource=repology depName=debian_12/openvpn versioning=loose
-ARG OPENVPN_VERSION=2.6.3-1+deb12u3
+# renovate: datasource=repology depName=debian_13/openvpn versioning=loose
+ARG OPENVPN_VERSION=2.6.14-1
 
 # hadolint ignore=DL3008
 RUN apt-get update -qq \
@@ -188,7 +188,7 @@ RUN apt-get update -qq \
 RUN sed --in-place --regexp-extended 's|(hosts:\W+)(.*)|\1openvpn \2|' /etc/nsswitch.conf
 
 COPY package.json package-lock.json /usr/src/app/
-RUN npm ci --production && npm cache clean --force
+RUN npm ci --omit=dev && npm cache clean --force
 
 COPY --from=auth-plugin /usr/src/app/auth-script-openvpn/openvpn-plugin-auth-script.so /etc/openvpn/plugins/
 COPY --from=builder /usr/src/app/build /usr/src/app/build
