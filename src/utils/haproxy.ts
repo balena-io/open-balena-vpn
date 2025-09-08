@@ -38,7 +38,7 @@ export class HAProxy {
 		const preamble = `set server ${name}`;
 		const socket = await this.connect();
 		socket.write(
-			`${preamble} addr ${host} port ${port}\r\n${preamble} state ready\r\n`,
+			`${preamble} addr ${host} port ${port};${preamble} state ready;`,
 			() => {
 				socket.destroy();
 			},
