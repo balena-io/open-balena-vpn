@@ -1,4 +1,52 @@
 - commits:
+    - subject: Update balena/open-balena-base to v20.0.0
+      hash: 2325dc9491522bf57d09c7a7f691552d1dd25170
+      body: |
+        Update balena/open-balena-base from 19.2.1 to 20.0.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Rename no-systemd variant to no-init for clarity
+              hash: f988174713d723624b5d1a455a899b1de4ff8c3d
+              body: |
+                This is a breaking change and consumers of this variant will
+                need to point to the new compatibility tag to get new releases.
+              footer:
+                Change-type: major
+                change-type: major
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+            - subject: Upgrade to debian trixie
+              hash: 8f937b6b16109cda217637860ea819015173cd6f
+              body: ""
+              footer:
+                Change-type: major
+                change-type: major
+              author: Pagan Gazzard
+              nested: []
+            - subject: Disable publishing of systemd variant
+              hash: 36c1ec3482356ccad7b5c0407ac72fcc2fbbc8cb
+              body: |
+                Going forward we will only be using s6 and no-init variants.
+              footer:
+                Change-type: major
+                change-type: major
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-20.0.0
+          title: ""
+          date: 2025-09-04T14:21:54.921Z
+  version: 12.0.10
+  title: ""
+  date: 2025-09-08T14:55:33.945Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v19.2.1
       hash: 1b234b18d174b07873a9f2a94e96db23f17e9b2d
       body: |
