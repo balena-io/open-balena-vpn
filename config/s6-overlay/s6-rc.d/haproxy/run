@@ -45,8 +45,18 @@ signal_handler() {
     exit $?
 }
 
+# Handle child process reaping to prevent zombies
+# shellcheck disable=SC2329,SC2317
+child_handler() {
+    # Reap any zombie children
+    while wait -n 2>/dev/null; do
+        :
+    done
+}
+
 # Trap signals before starting the service (killmode=mixed)
-trap 'signal_handler' SIGTERM SIGINT
+trap 'signal_handler' SIGTERM SIGINT SIGQUIT SIGHUP
+trap 'child_handler' SIGCHLD
 
 # -W: master-worker mode
 # -db: disable background/daemon mode (run in foreground for s6)
