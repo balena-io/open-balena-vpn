@@ -15,12 +15,16 @@ RUN npm run build
 
 FROM base AS plugin-builder
 
+# https://docs.renovatebot.com/modules/datasource/repology/
+# renovate: datasource=repology depName=debian_13/openvpn versioning=loose
+ARG OPENVPN_VERSION=2.6.14-1
+
 # hadolint ignore=DL3008
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 	git \
 	libssl-dev \
-	openvpn \
+	openvpn=${OPENVPN_VERSION} \
 	&& rm -rf /var/lib/apt/lists/*
 
 ########################################################
