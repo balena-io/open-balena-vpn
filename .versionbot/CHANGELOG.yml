@@ -1,4 +1,17 @@
 - commits:
+    - subject: Specify the openvpn version for plugin-builder to match the runtime
+        version
+      hash: 125e1a74229777fea64d818aef466c8547381144
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.0.12
+  title: ""
+  date: 2025-09-11T12:59:40.493Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v20.0.1
       hash: 9f3e037456e3548065e1c703d8bd0e00f39a5e23
       body: |
