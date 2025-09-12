@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# vpn-drain service - no-op service that exists only to run drain logic on shutdown
+# This service does nothing while running but executes HAProxy drain logic in its finish script
+
+# Just sleep forever - this service exists only for its finish script
+exec sleep infinity
