@@ -3,6 +3,6 @@
 set -euo pipefail
 
 # Redirect all future stdout/stderr to s6-log
-exec > >(exec s6-log -b p"openvpn-exporter[$$]:" 1 || true) 2>&1
+exec > >(exec s6-log p"openvpn-exporter[$$]:" 1 || true) 2>&1
 
 exec /usr/src/app/openvpn-exporter/bin/start.sh
