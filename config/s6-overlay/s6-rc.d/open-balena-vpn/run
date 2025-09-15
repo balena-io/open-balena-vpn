@@ -4,7 +4,7 @@
 set -euo pipefail
 
 # Redirect all future stdout/stderr to s6-log
-exec > >(exec s6-log -b p"vpn[$$]:" 1 || true) 2>&1
+exec > >(exec s6-log p"vpn[$$]:" 1 || true) 2>&1
 
 # Change to working directory
 cd /usr/src/app || exit 1
