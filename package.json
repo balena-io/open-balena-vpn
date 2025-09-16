@@ -35,7 +35,7 @@
     "netmask": "^2.0.2",
     "node-tunnel": "^4.0.8",
     "p-timeout": "^7.0.0",
-    "pinejs-client-request": "^8.1.0",
+    "pinejs-client-fetch": "^2.0.4",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "split": "^1.0.1",

@@ -18,7 +18,7 @@
 import { optionalVar } from '@balena/env-parsing';
 import memoize from 'memoizee';
 
-import { balenaApi, getPassthrough, StatusError } from './index.js';
+import { balenaApi, getPassthrough, RequestError } from './index.js';
 import { APIError, captureException } from './errors.js';
 
 const VPN_GUEST_API_KEY = optionalVar('VPN_GUEST_API_KEY');
@@ -123,7 +123,7 @@ export const getDeviceVpnHost = async (
 		});
 		return services[0];
 	} catch (err) {
-		if (!(err instanceof StatusError) || err.statusCode !== 401) {
+		if (!(err instanceof RequestError) || err.status !== 401) {
 			// Do not capture `Unauthorized` errors
 			captureException(err, 'device-vpn-host-lookup-error');
 		}
