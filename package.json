@@ -34,7 +34,7 @@
     "netmask": "^2.0.2",
     "node-tunnel": "^4.0.8",
     "p-timeout": "^7.0.1",
-    "pinejs-client-request": "^8.2.0",
+    "pinejs-client-fetch": "^2.1.12",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "split": "^1.0.1",
@@ -67,7 +67,8 @@
     "mocha": "11.8.0",
     "mockttp": "^4.6.3",
     "openvpn-client": "0.0.2",
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "undici": "^8.10.2"
   },
   "engines": {
     "node": "^24.5.0",
