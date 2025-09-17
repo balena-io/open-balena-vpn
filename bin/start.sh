@@ -31,12 +31,8 @@ command="$(command -v node)"
 args=("--enable-source-maps")
 entrypoint="build/src/app.js"
 if [[ ${NODE_ENV} = "development" ]]; then
-	tsnode="$(command -v ts-node || true)"
-	if [[ -x ${tsnode} ]]; then
-		command="${tsnode}"
-		args=("--files")
-		entrypoint="src/app.ts"
-	fi
+	args=('--enable-source-maps' '--import @swc-node/register/esm-register')
+	entrypoint="src/app.ts"
 fi
 
 if [[ ! -x ${command} ]] || [[ ! -f ${entrypoint} ]]; then
