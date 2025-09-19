@@ -1,4 +1,82 @@
 - commits:
+    - subject: Disable s6-log blocking mode
+      hash: 8c9b21b210f03a5a3f9cdd77a6b2d6f940f783ca
+      body: |
+        From the s6-log docs: https://skarnet.org/software/s6/s6-log.html
+
+        > By default, s6-log keeps reading from stdin even if its buffers
+        > still contain data. -b is safer, but may slow down your service;
+        > the default is faster, but may lead to unbound memory use if you
+        > have a lot of output to write to a slow file system.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+    - subject: Simplify open-balena-vpn signal handling using vpn-drain dependency
+      hash: 5b3ca9309635f62e878fd9c7e87e5a36e7a8edc5
+      body: >
+        Replace custom signal handling in open-balena-vpn with a
+        dependency-based
+
+        approach that leverages s6's native service ordering. The vpn-drain
+        service
+
+        runs as a no-op dependency that executes HAProxy drain logic in its
+        finish
+
+        script before open-balena-vpn shuts down.
+
+
+        - Add vpn-drain service that sleeps infinity but drains HAProxy in
+        finish script
+
+        - Remove signal handlers from open-balena-vpn/run script
+
+        - Use exec to run start.sh directly as PID 1 in the service
+
+        - Ensure proper shutdown order: vpn-drain finish → open-balena-vpn
+        shutdown
+
+
+        This approach separates concerns and uses s6's dependency system rather
+
+        than duplicating systemd's KillMode=mixed behavior in shell scripts.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+    - subject: Simplify HAProxy signal handling by removing custom handlers
+      hash: e87c6ff448e32ef5d95ff5982db1795ebef67da4
+      body: |
+        s6-overlay sends signals directly to the main process (like systemd's
+        KillMode=mixed), so HAProxy's master-worker mode (-W) can handle signal
+        propagation natively. The master process receives SIGTERM and gracefully
+        shuts down workers without requiring custom signal forwarding logic.
+
+        - Remove signal_handler() and child_handler() functions
+        - Use exec to run HAProxy directly as PID 1 in the service
+        - Add finish script to handle exit code 143 (SIGTERM) as success
+        - Simplify from background process management to direct execution
+
+        This approach leverages HAProxy's built-in signal handling capabilities
+        rather than duplicating systemd's KillMode=mixed behavior in userspace.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 12.0.13
+  title: ""
+  date: 2025-09-19T20:25:36.514Z
+- commits:
     - subject: Specify the openvpn version for plugin-builder to match the runtime
         version
       hash: 125e1a74229777fea64d818aef466c8547381144
