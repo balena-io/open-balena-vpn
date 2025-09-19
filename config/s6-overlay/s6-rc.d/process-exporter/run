@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # Redirect all future stdout/stderr to s6-log
-exec > >(exec s6-log -b p"process-exporter[$$]:" 1 || true) 2>&1
+exec > >(exec s6-log p"process-exporter[$$]:" 1 || true) 2>&1
 
 exec /usr/local/bin/process-exporter \
     -web.listen-address 127.0.0.1:9001 \

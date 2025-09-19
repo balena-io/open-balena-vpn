@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC1091
+
+# vpn-drain finish script - runs HAProxy drain logic before open-balena-vpn stops
+
+set -euo pipefail
+
+# Change to working directory
+cd /usr/src/app || exit 1
+
+# Load environment variables
+source /etc/s6-overlay/scripts/functions.sh
+[[ -f "config/env" ]] && load_env_file "config/env"
+
+# Run the backend VPN workers draining logic
+echo "Draining backend VPN workers..."
+/etc/s6-overlay/scripts/stop.sh
+
+exit 0
