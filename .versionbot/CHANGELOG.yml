@@ -1,4 +1,23 @@
 - commits:
+    - subject: Set openvpn-exporter service to down by default
+      hash: 93dac5c3128ca45589b7f280ee280cd73811f0b5
+      body: |
+        Openvpn-exporter relies on version 2 status file format, but
+        libnss-openvpn only works with v1 so we are disabling the
+        exporter service for now.
+
+        See previous commit df51f7b2c765f615b8203e29b04bcb50705a7c58
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 12.0.14
+  title: ""
+  date: 2025-09-23T17:02:49.626Z
+- commits:
     - subject: Disable s6-log blocking mode
       hash: 8c9b21b210f03a5a3f9cdd77a6b2d6f940f783ca
       body: |
