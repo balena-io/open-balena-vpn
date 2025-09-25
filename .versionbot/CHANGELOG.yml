@@ -1,4 +1,32 @@
 - commits:
+    - subject: Restore nproc environment variable for confd templates
+      hash: c871e669e761fcc0d4aefbaa583d439ca7892f3c
+      body: |
+        This env var was previously provided by a confd systemd overlay
+        and never replaced when we moved to s6.
+
+        As a result, haproxy was running only 1 vpn worker instead of 16.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+    - subject: Install procps package to restore missing /bin/kill binary
+      hash: 362e095009fc7183705b61f48eddb74a24324d74
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 12.0.15
+  title: ""
+  date: 2025-09-25T17:01:05.884Z
+- commits:
     - subject: Set openvpn-exporter service to down by default
       hash: 93dac5c3128ca45589b7f280ee280cd73811f0b5
       body: |
