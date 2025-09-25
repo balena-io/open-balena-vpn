@@ -3,4 +3,4 @@ set -e
 
 # Inject count of processors into environment.
 # This value is used by haproxy and openvpn config templates.
-nproc > /run/s6/container_environment/NPROC
+printf "%s" "$(nproc)" > /run/s6/container_environment/NPROC
