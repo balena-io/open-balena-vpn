@@ -1,4 +1,18 @@
 - commits:
+    - subject: Avoid newline in NPROC env
+      hash: af4eb403300da56bd9b3a4b83d108b794e5549a5
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 12.0.16
+  title: ""
+  date: 2025-09-25T20:27:53.472Z
+- commits:
     - subject: Restore nproc environment variable for confd templates
       hash: c871e669e761fcc0d4aefbaa583d439ca7892f3c
       body: |
