@@ -31,6 +31,7 @@ import {
 import type { Netmask } from './netmask.js';
 
 import { createRequire } from 'node:module';
+import { setTimeout } from 'node:timers/promises';
 const require = createRequire(import.meta.url);
 
 const Telnet =
@@ -302,37 +303,37 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 			return;
 		}
 
-		const pid = (await fs.promises.readFile(this.pidFile, 'utf8')).replace(
-			/\D/g,
-			'',
+		const pid = parseInt(
+			(await fs.promises.readFile(this.pidFile, 'utf8')).replace(/\D/g, ''),
+			10,
 		);
-		const signals = { PING: 0, KILL: 9 } as const;
-		const kill = (signal?: ValueOf<typeof signals>) =>
-			spawn('/bin/kill', signal != null ? [`-${signal}`, pid] : [pid]);
+		/** Signal 0 can be used to check the existence of the PID */
+		const SIGPING = 0 as const;
+		const kill = (signal?: typeof SIGPING | 'SIGTERM' | 'SIGKILL') => {
+			try {
+				return process.kill(pid, signal);
+			} catch {
+				return false;
+			}
+		};
 
-		await new Promise<void>((resolve, reject) => {
-			const start = Date.now();
-			const waitForDeath = (code?: number) => {
-				if (code !== 0) {
-					// the signal was unsuccessful, the pid no longer exists;
-					// the process is dead, and our work here is done.
-					resolve();
-					return;
-				}
-				const elapsedTime = Date.now() - start;
-				if (elapsedTime < TERM_TIMEOUT) {
-					kill(signals.PING).on('exit', waitForDeath);
-				} else if (elapsedTime < KILL_TIMEOUT) {
-					kill(signals.KILL).on('exit', waitForDeath);
-				} else {
-					reject(
-						new Bluebird.TimeoutError('orphan openvpn process did not go away'),
-					);
-					return;
-				}
-			};
-			kill().on('exit', waitForDeath);
-		});
+		const start = Date.now();
+		let error = kill('SIGTERM');
+		while (!error) {
+			await setTimeout(100);
+			const elapsedTime = Date.now() - start;
+			if (elapsedTime < TERM_TIMEOUT) {
+				error = kill(SIGPING);
+			} else if (elapsedTime < KILL_TIMEOUT) {
+				error = kill('SIGKILL');
+			} else {
+				throw new Bluebird.TimeoutError(
+					'orphan openvpn process did not go away',
+				);
+			}
+		}
+		// the signal was unsuccessful, the pid no longer exists;
+		// the process is dead, and our work here is done.
 	}
 
 	public async start() {
