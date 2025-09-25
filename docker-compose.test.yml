@@ -49,6 +49,13 @@ services:
         s6-svc -d /run/service/open-balena-vpn
 
         npm install
+
+        mkdir -p /dev/net /run/openvpn /run/openvpn-client /run/openvpn-server
+
+        if [ ! -c /dev/net/tun ]; then
+          mknod /dev/net/tun c 10 200
+        fi
+
         /command/with-contenv npm run test-unit
         /command/with-contenv npx mocha test/app.ts
 
