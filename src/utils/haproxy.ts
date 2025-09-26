@@ -45,4 +45,13 @@ export class HAProxy {
 		);
 		return true;
 	}
+
+	public async drain(name: string): Promise<boolean> {
+		const preamble = `set server ${name}`;
+		const socket = await this.connect();
+		socket.write(`${preamble} state drain;`, () => {
+			socket.destroy();
+		});
+		return true;
+	}
 }
