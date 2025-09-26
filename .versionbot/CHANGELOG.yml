@@ -1,4 +1,190 @@
 - commits:
+    - subject: Update dependencies
+      hash: 78775d2e9801e670b17e2f69390bba79534d73ca
+      body: |
+        Update pinejs-client-request from 8.0.1 to 8.1.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Switch to Node20 module resolution
+              hash: b2c8478ed1e2c657adda4017aff53bcae4a6e0d8
+              body: |
+                Update pinejs-client-core from 8.0.1 to 8.3.2
+              footer:
+                Change-type: minor
+                change-type: minor
+              author: Pagan Gazzard
+              nested:
+                - commits:
+                    - subject: "Improve typing of the `$: 'prop_name'` case"
+                      hash: adf6dbc6225ee22a72512e2416470556594fb566
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                      nested: []
+                  version: pinejs-client-js-8.3.2
+                  title: ""
+                  date: 2025-09-03T14:40:29.282Z
+                - commits:
+                    - subject: Update dependencies
+                      hash: 8836413c5bf77bb637e61e65fc54f73affeed69f
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                      nested: []
+                  version: pinejs-client-js-8.3.1
+                  title: ""
+                  date: 2025-08-01T14:12:31.816Z
+                - commits:
+                    - subject: Add support to odata-actions
+                      hash: 2bbb89d841a0122a069f1b89aac3503b38880ee5
+                      body: ""
+                      footer:
+                        Change-type: minor
+                        change-type: minor
+                      author: Otavio Jacobi
+                      nested: []
+                  version: pinejs-client-js-8.3.0
+                  title: ""
+                  date: 2025-07-17T14:02:58.283Z
+                - commits:
+                    - subject: Safely access 'id' of Params to avoid `unknown` propagation
+                      hash: 2ce99460c2385b3cd98935a6b5cbb1a876242e6b
+                      body: >
+                        When resolving the typings of a query, if the id is not
+                        present and we try to access it anyway
+
+                        typescript will infer `unknown`, which caused
+                        `OptionsToResponse` to satisfy as if ID was present
+                        (thus, turning it into a query with `id`)
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Otavio Jacobi
+                      nested: []
+                  version: pinejs-client-js-8.2.1
+                  title: ""
+                  date: 2025-07-04T16:23:19.320Z
+                - commits:
+                    - subject: Expose ResourceID typings
+                      hash: bfbecf13bbcf330c7da20f339be39f0e4cdf74e3
+                      body: ""
+                      footer:
+                        Change-type: minor
+                        change-type: minor
+                      author: Otavio Jacobi
+                      nested: []
+                  version: pinejs-client-js-8.2.0
+                  title: ""
+                  date: 2025-06-10T07:20:27.502Z
+                - commits:
+                    - subject: Fix linting
+                      hash: 29627add4a7c5701c9e4f032ea1f15a0523e2877
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Otavio Jacobi
+                      nested: []
+                  version: pinejs-client-js-8.1.5
+                  title: ""
+                  date: 2025-05-23T11:24:08.969Z
+                - commits:
+                    - subject: Update dependency mocha to v11
+                      hash: 85c2c2a779ba2cc94da6d35504e4f5ffb0263dcc
+                      body: |
+                        Update mocha from 10.8.2 to 11.1.0
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.1.4
+                  title: ""
+                  date: 2025-03-25T18:19:44.959Z
+                - commits:
+                    - subject: Update dependency @balena/lint to v9
+                      hash: 80ad49f9351dc1546aec43eb9a838a3d12e88afa
+                      body: |
+                        Update @balena/lint from 8.2.8 to 9.1.4
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.1.3
+                  title: ""
+                  date: 2025-03-25T17:15:51.568Z
+                - commits:
+                    - subject: Update TypeScript to 5.7.2
+                      hash: 47d950eeb4b2f1fbed1b3c0b72a5cc985410af97
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Thodoris Greasidis
+                      nested: []
+                  version: pinejs-client-js-8.1.2
+                  title: ""
+                  date: 2024-11-23T06:09:36.244Z
+                - commits:
+                    - subject: Update @balena/abstract-sql-to-typescript to 5.0.0
+                      hash: cdea88ba8c8ce13513b3e4400a8035c1957c8307
+                      body: >
+                        Update @balena/abstract-sql-to-typescript from 4.0.9 to
+                        5.0.0
+
+
+                        Chose a patch change type since this is a
+
+                        type only import.
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Thodoris Greasidis
+                      nested: []
+                  version: pinejs-client-js-8.1.1
+                  title: ""
+                  date: 2024-10-09T14:28:39.149Z
+                - commits:
+                    - subject: Add support for calling odata fns
+                      hash: befd5b25dc3c8f2d663c138255c68e4108abf8c9
+                      body: ""
+                      footer:
+                        Change-type: minor
+                        change-type: minor
+                      author: Otavio Jacobi
+                      nested: []
+                  version: pinejs-client-js-8.1.0
+                  title: ""
+                  date: 2024-10-09T13:01:51.754Z
+          version: pinejs-client-request-8.1.0
+          title: ""
+          date: 2025-09-16T15:57:45.524Z
+        - commits:
+            - subject: Update dependency lint-staged to v16
+              hash: c713d1000bb9ff12950890e3ac2dab550fad26e3
+              body: |
+                Update lint-staged from 15.5.2 to 16.0.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.0.2
+          title: ""
+          date: 2025-09-11T11:46:11.395Z
+  version: 12.0.18
+  title: ""
+  date: 2025-09-26T16:49:32.685Z
+- commits:
     - subject: Switch from ts-node to @swc-node
       hash: cde713e5bb6445ce5de2b4697dc439f49b469045
       body: ""
