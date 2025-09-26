@@ -1,4 +1,16 @@
 - commits:
+    - subject: Switch from ts-node to @swc-node
+      hash: cde713e5bb6445ce5de2b4697dc439f49b469045
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.0.17
+  title: ""
+  date: 2025-09-26T15:38:15.826Z
+- commits:
     - subject: Avoid newline in NPROC env
       hash: af4eb403300da56bd9b3a4b83d108b794e5549a5
       body: ""
