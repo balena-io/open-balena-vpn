@@ -1,4 +1,22 @@
 - commits:
+    - subject: Fix s6 command to check service status
+      hash: 0011aaf6e092fb463f84af6e3593b869164640e3
+      body: |
+        Argument order matters, and -u (or -o up) needs
+        to proceed the service path.
+
+        See https://skarnet.org/software/s6/s6-svstat.html
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 12.0.20
+  title: ""
+  date: 2025-09-29T22:28:08.169Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v20.0.3
       hash: ae1fbe85fe95f427abe1b0f886299ed2ec18d934
       body: |
