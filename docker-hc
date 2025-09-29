@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 set -ex
 
+# https://skarnet.org/software/s6/s6-svstat.html
 is_up() {
 	local service="$1"
 	local result
-	result="$(s6-svstat "/run/service/${service}" -o up)"
+	result="$(s6-svstat -u "/run/service/${service}")"
 	test "${result}" = "true"
 }
 
