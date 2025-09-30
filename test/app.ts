@@ -315,7 +315,7 @@ describe('VPN proxy', function () {
 		});
 
 		it('should refuse to forward via itself', async () => {
-			nock(BALENA_API_INTERNAL_HOST)
+			const scope = nock(BALENA_API_INTERNAL_HOST)
 				.get(
 					'/v7/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20d/is_connected_to_vpn)',
 				)
@@ -337,10 +337,11 @@ describe('VPN proxy', function () {
 						}),
 					).to.eventually.be.rejected,
 			);
+			expect(scope.isDone()).to.be.true;
 		});
 
 		it('should detect forward loops', async () => {
-			nock(BALENA_API_INTERNAL_HOST)
+			const scope = nock(BALENA_API_INTERNAL_HOST)
 				.get(
 					'/v7/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20d/is_connected_to_vpn)',
 				)
@@ -367,6 +368,7 @@ describe('VPN proxy', function () {
 						}),
 					).to.eventually.be.rejected,
 			);
+			expect(scope.isDone()).to.be.true;
 		});
 	});
 
@@ -393,7 +395,7 @@ describe('VPN proxy', function () {
 		});
 
 		it('should not allow port 8080 without authentication', async () => {
-			nock(BALENA_API_INTERNAL_HOST)
+			const scope = nock(BALENA_API_INTERNAL_HOST)
 				.post('/v7/device(@id)/canAccess?@id=3', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
@@ -410,10 +412,11 @@ describe('VPN proxy', function () {
 						}),
 					).to.eventually.be.rejected,
 			);
+			expect(scope.isDone()).to.be.true;
 		});
 
 		it('should allow port 8080 with authentication', async () => {
-			nock(BALENA_API_INTERNAL_HOST)
+			const scope = nock(BALENA_API_INTERNAL_HOST)
 				.post('/v7/device(@id)/canAccess?@id=3', {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
@@ -438,6 +441,7 @@ describe('VPN proxy', function () {
 				expect(response)
 					.to.have.property('body')
 					.that.equals('hello from 8080');
+				expect(scope.isDone()).to.be.true;
 			});
 		});
 	});
