@@ -113,7 +113,7 @@ export const getDeviceVpnHost = async (
 							$alias: 'd',
 							$expr: {
 								d: { uuid },
-								$: 'is_connected_to_vpn',
+								$raw: 'd/is_connected_to_vpn',
 							},
 						},
 					},
