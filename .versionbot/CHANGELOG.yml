@@ -1,4 +1,16 @@
 - commits:
+    - subject: "getDeviceVpnHost: Fix the is_connected_to_vpn raw filter"
+      hash: 73a011c577b812e506e125f1ac814dc4b50dbe1e
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Thodoris Greasidis
+      nested: []
+  version: 12.0.21
+  title: ""
+  date: 2025-09-30T20:52:54.145Z
+- commits:
     - subject: Fix s6 command to check service status
       hash: 0011aaf6e092fb463f84af6e3593b869164640e3
       body: |
