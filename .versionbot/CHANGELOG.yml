@@ -1,4 +1,106 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v20.1.1
+      hash: ae2a12bc16e34ef2675d0bcfc1c0ba619f19ef39
+      body: |
+        Update balena/open-balena-base from 20.0.3 to 20.1.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Revert "Update dependency npm to v11.6.1"
+              hash: 1d459c4e18a5f234a3c3a51a67f83f1e5889e03d
+              body: |
+                This reverts commit 12e3c9b70b635e860907aab56f8afff0b3c6f3c8.
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-20.1.1
+          title: ""
+          date: 2025-10-01T20:39:35.435Z
+        - commits:
+            - subject: Halt container on certificate changes
+              hash: 390ca9c23606d406d1430f743f2e57475cdc5f83
+              body: >
+                Watch for cert changes and halt the container to apply
+                environment
+
+                changes on restart.
+
+
+                On restart, configure-balena.sh will pick up any new/changed
+                certificates and
+
+                update /etc/docker.env accordingly before other services start.
+
+
+                This is the cleanest way to ensure any already running services
+                get the
+
+                new environment variables when certificates change.
+              footer:
+                Change-type: minor
+                change-type: minor
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+            - subject: Pre-run confd so templates can be used in s6-overlay
+              hash: a4d67d67f54f415d07dab9fc73fd5353baf08d13
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+            - subject: Add is_up to shared functions to check service status
+              hash: 4a4563e7e1210c4c731b5a254bc35708d423c02e
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+            - subject: Disable s6-log blocking mode
+              hash: b22260970564f73078a50ac25549d08fc8802b59
+              body: >
+                From the s6-log docs:
+                https://skarnet.org/software/s6/s6-log.html
+
+
+                > By default, s6-log keeps reading from stdin even if its
+                buffers
+
+                > still contain data. -b is safer, but may slow down your
+                service;
+
+                > the default is faster, but may lead to unbound memory use if
+                you
+
+                > have a lot of output to write to a slow file system.
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-20.1.0
+          title: ""
+          date: 2025-09-30T19:28:57.714Z
+  version: 12.0.23
+  title: ""
+  date: 2025-10-01T21:17:03.073Z
+- commits:
     - subject: Test that the mocked API requests are indeed used
       hash: a5449a3af3c27cedb8eaab7142d961b0faf5b6b6
       body: ""
