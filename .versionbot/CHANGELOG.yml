@@ -1,4 +1,27 @@
 - commits:
+    - subject: Test that the mocked API requests are indeed used
+      hash: a5449a3af3c27cedb8eaab7142d961b0faf5b6b6
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Thodoris Greasidis
+      nested: []
+    - subject: "getDeviceVpnHost: Make the raw is_connected_to_vpn filter more
+        explicit using the alias"
+      hash: d6892594aa85519f952b157e91fb5af94bdc2857
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+        See: https://balena.fibery.io/Security/Information_Security_and_Reliability_Incident/Elevated-Device-VPN-Tunnel-Errors-150
+        see: https://balena.fibery.io/Security/Information_Security_and_Reliability_Incident/Elevated-Device-VPN-Tunnel-Errors-150
+      author: Thodoris Greasidis
+      nested: []
+  version: 12.0.22
+  title: ""
+  date: 2025-10-01T00:18:06.009Z
+- commits:
     - subject: "getDeviceVpnHost: Fix the is_connected_to_vpn raw filter"
       hash: 73a011c577b812e506e125f1ac814dc4b50dbe1e
       body: ""
