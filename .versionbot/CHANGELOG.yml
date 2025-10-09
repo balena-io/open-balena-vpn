@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update golang Docker tag to v1.25.2
+      hash: 7f14a78b77db03757faf7b7a73cc769e02489e0d
+      body: |
+        Update golang from 1.25.1 to 1.25.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.0.27
+  title: ""
+  date: 2025-10-09T16:14:20.273Z
+- commits:
     - subject: Use `process.kill` for signal sending rather than spawning `/bin/kill`
       hash: 77990035d09e2872b4c514dd7162d91ea8d0024e
       body: ""
