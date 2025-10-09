@@ -185,8 +185,6 @@ ARG OPENVPN_VERSION=2.6.14-1
 RUN apt-get update -qq \
 	&& apt-get install -qy --no-install-recommends \
 		haproxy=${HAPROXY_VERSION} iptables socat openvpn=${OPENVPN_VERSION} \
-		# We need procps for the /bin/kill command used in src/utils/openvpn.ts
-		procps \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/*.list /etc/haproxy/* /etc/rsyslog.d/49-haproxy.conf /etc/openvpn/* /etc/defaults/openvpn \
 	&& ln -sf /usr/src/app/openvpn/scripts /etc/openvpn/scripts \
