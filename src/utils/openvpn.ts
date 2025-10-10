@@ -18,7 +18,7 @@
 import Bluebird from 'bluebird';
 import type { ChildProcess } from 'child_process';
 import { spawn } from 'child_process';
-import es from 'event-stream';
+import split from 'split';
 import { EventEmitter } from 'eventemitter3';
 import fs from 'fs';
 import net from 'net';
@@ -342,10 +342,10 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 			stdio: ['ignore', 'pipe', 'pipe'],
 		});
 		// proxy logs from the child process stdout/stderr
-		this.process.stdout!.pipe(es.split()).on('data', (data) => {
+		this.process.stdout!.pipe(split()).on('data', (data) => {
 			this.emit('log', VpnLogLevels.n, data);
 		});
-		this.process.stderr!.pipe(es.split()).on('data', (data) => {
+		this.process.stderr!.pipe(split()).on('data', (data) => {
 			this.emit('log', VpnLogLevels.n, data);
 		});
 		// proxy error events from the child process
