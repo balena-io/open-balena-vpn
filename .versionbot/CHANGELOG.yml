@@ -1,4 +1,16 @@
 - commits:
+    - subject: Use `split` directly rather than via `event-stream`
+      hash: 454f8bf638b2fee16f6b046717fdeea49f449dab
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.0.29
+  title: ""
+  date: 2025-10-10T11:42:18.741Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v20.1.3
       hash: a4d56d875d48090639b59573ca3be5d8194a0291
       body: |
