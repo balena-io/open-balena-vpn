@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update golang Docker tag to v1.25.3
+      hash: 5021bfd36d74349f2e1e61f54af7b5e191f80fb8
+      body: |
+        Update golang from 1.25.2 to 1.25.3
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.0.30
+  title: ""
+  date: 2025-10-14T00:15:04.776Z
+- commits:
     - subject: Use `split` directly rather than via `event-stream`
       hash: 454f8bf638b2fee16f6b046717fdeea49f449dab
       body: ""
