@@ -1,4 +1,95 @@
 - commits:
+    - subject: Update @balena/node-metrics-gatherer to 6.1.0
+      hash: 99c66918d6c5ea768ab5e4759808ba704c0a2ff6
+      body: |
+        Update @balena/node-metrics-gatherer from 6.0.3 to 6.1.0
+        Update pinejs-client-request from 8.1.0 to 8.1.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update to prom-client 15.x
+              hash: 1791a4e229c522f308e47a5ee497744065ecffaa
+              body: ""
+              footer:
+                Change-type: minor
+                change-type: minor
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-6.1.0
+          title: ""
+          date: 2025-10-16T16:45:37.812Z
+        - commits:
+            - subject: Simplify check for the `_total` suffix
+              hash: 0876d476b4d2244b11dcab9cf6c26dafd42ce5ab
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-6.0.5
+          title: ""
+          date: 2025-10-16T16:29:09.286Z
+        - commits:
+            - subject: Update dev dependencies
+              hash: 8ba69f4cad2b51c018e51e78f8df23de9f672bdf
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-6.0.4
+          title: ""
+          date: 2025-10-16T16:22:47.165Z
+        - commits:
+            - subject: Sub-class the `StatusError` for errors as pinejs-client-core expects
+              hash: c866977804481b50a81a62bb5a585c1f3ec53bd5
+              body: |
+                This increases standardization across implementations
+
+                Update pinejs-client-core from 8.3.2 to 8.4.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+              nested:
+                - commits:
+                    - subject: Add a `StatusError` class that downstream is expected to use for errors
+                      hash: 5c589f1ddb12ffac87c13d3daed2bda09d386378
+                      body: >
+                        This isn't enforced currently but it will help to
+                        standardize errors
+
+                        across implementations and make it easier to switch
+                        between them
+                      footer:
+                        Change-type: minor
+                        change-type: minor
+                      author: Pagan Gazzard
+                      nested: []
+                  version: pinejs-client-js-8.4.0
+                  title: ""
+                  date: 2025-10-10T16:59:39.572Z
+                - commits:
+                    - subject: "Types: make use of inference for some simplification"
+                      hash: 9622554854b58352a581300d7a6cf97b156d2a9a
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                      nested: []
+                  version: pinejs-client-js-8.3.3
+                  title: ""
+                  date: 2025-10-10T13:05:32.557Z
+          version: pinejs-client-request-8.1.1
+          title: ""
+          date: 2025-10-10T17:13:10.933Z
+  version: 12.0.35
+  title: ""
+  date: 2025-10-16T22:46:01.766Z
+- commits:
     - subject: Do not start deviceStates current connected/worker id as undefined
       hash: b375e2e061372177210351ceea9f60b4732082d2
       body: |
