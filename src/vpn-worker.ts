@@ -114,6 +114,10 @@ const worker = async (instanceId: number, serviceId: number) => {
 	});
 
 	const drainConnections = _.once(async () => {
+		logger.info(`setting haproxy for '${instanceId}' into drain mode`);
+		await new HAProxy('/var/run/haproxy.sock').drain(
+			`vpn-workers/vpn${instanceId}`,
+		);
 		const drainQueue = Object.values(clientCache);
 		const clientCount = drainQueue.length;
 
