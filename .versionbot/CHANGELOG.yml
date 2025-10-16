@@ -1,4 +1,19 @@
 - commits:
+    - subject: Do not start deviceStates current connected/worker id as undefined
+      hash: b375e2e061372177210351ceea9f60b4732082d2
+      body: |
+        This means that those properties now are only ever non-existent or
+        booleans, and are always added in the same order. Hopefully this will
+        be more amenable to v8 as they will be more standardized
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.0.34
+  title: ""
+  date: 2025-10-16T18:33:11.420Z
+- commits:
     - subject: Simplify logic of consuming bitrate messages
       hash: 162b354c502c3e337f373d3966c2bc96a37d1fb2
       body: ""
