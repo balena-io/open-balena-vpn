@@ -46,11 +46,19 @@ const masterLogger = getLogger('master');
 
 describeMetrics();
 
+export interface BitrateMessage {
+	type: 'bitrate';
+	data: {
+		uuid: string;
+		rxBitrate: number;
+		txBitrate: number;
+	};
+}
+
 if (cluster.isPrimary) {
 	interface WorkerMetric {
-		uuid: string;
-		rxBitrate: number[];
-		txBitrate: number[];
+		rxBitrate: Array<BitrateMessage['data']['rxBitrate']>;
+		txBitrate: Array<BitrateMessage['data']['txBitrate']>;
 	}
 	const workerMetrics = new Map<string, WorkerMetric>();
 
@@ -82,28 +90,25 @@ if (cluster.isPrimary) {
 		);
 	});
 
-	cluster.on(
-		'message',
-		(_worker, msg: { type: string; data: WorkerMetric }) => {
-			const { data, type } = msg;
-			if (type === 'bitrate') {
-				const workerMetric = workerMetrics.get(data.uuid) ?? {
-					rxBitrate: [],
-					txBitrate: [],
-				};
-				workerMetrics.set(
-					data.uuid,
-					_.mergeWith(workerMetric, data, (obj, src) => {
-						if (Array.isArray(obj)) {
-							return obj.concat([src]);
-						}
-					}),
-				);
-			} else {
-				return;
-			}
-		},
-	);
+	cluster.on('message', (_worker, msg: BitrateMessage) => {
+		const { data, type } = msg;
+		if (type === 'bitrate') {
+			const workerMetric = workerMetrics.get(data.uuid) ?? {
+				rxBitrate: [],
+				txBitrate: [],
+			};
+			workerMetrics.set(
+				data.uuid,
+				_.mergeWith(workerMetric, data, (obj, src) => {
+					if (Array.isArray(obj)) {
+						return obj.concat([src]);
+					}
+				}),
+			);
+		} else {
+			return;
+		}
+	});
 
 	cluster.on('message', (_worker, msg: { type: string; data: WorkerState }) => {
 		const { data, type } = msg;
