@@ -1,4 +1,17 @@
 - commits:
+    - subject: Use a Map rather than an object for client cache
+      hash: c1a68e8c41e98b40053708d9825f1b98c7b6dca0
+      body: |
+        This performs better for the use-case
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.0.36
+  title: ""
+  date: 2025-10-16T23:18:29.492Z
+- commits:
     - subject: Update @balena/node-metrics-gatherer to 6.1.0
       hash: 99c66918d6c5ea768ab5e4759808ba704c0a2ff6
       body: |
