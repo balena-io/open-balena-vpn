@@ -1,4 +1,35 @@
 - commits:
+    - subject: Use a Map rather than an object for storing worker metrics
+      hash: c5a54b4e92aed934a627f49e9f2b1ccaaa6094fa
+      body: |
+        This performs better for the use-case
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+    - subject: Use a Map rather than an object for storing client ref count
+      hash: c0f2c398deb2e1bb2c27e106c6cda77fa43a3567
+      body: |
+        This performs better for the use-case
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+    - subject: Use a Map rather than an object for storing device states
+      hash: 31a8323ad2c5f346885230bf026e4a6074204820
+      body: |
+        This performs better for the use-case
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.0.32
+  title: ""
+  date: 2025-10-16T16:21:50.430Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v20.1.4
       hash: b3964935de26da41868c88bc2c925ed68d535470
       body: |
