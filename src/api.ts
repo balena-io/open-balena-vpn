@@ -68,7 +68,7 @@ const checkDeviceAuth = memoize(
 export const apiFactory = (serviceId: number) => {
 	const api = express.Router();
 
-	const clientRefCount: { [uuid: string]: number } = {};
+	const clientRefCount = new Map<string, number>();
 
 	const logger = getLogger('vpn', serviceId);
 
@@ -84,17 +84,17 @@ export const apiFactory = (serviceId: number) => {
 		const workerId = parseInt(req.params.worker, 10);
 		const uuid = req.body.common_name;
 
-		clientRefCount[uuid] ??= 0;
+		const startingRefCount = clientRefCount.get(uuid) ?? 0;
+		clientRefCount.set(uuid, startingRefCount + 1);
 
-		if (clientRefCount[uuid] === 0) {
+		if (startingRefCount === 0) {
 			// Only increment the device as online if it wasn't previously online
 			metrics.inc(Metrics.OnlineDevices);
 		}
 		metrics.inc(Metrics.TotalDevices);
-		clientRefCount[uuid]++;
 
-		if (clientRefCount[uuid] > 0) {
-			// Only set the device as connected if the ref count is > 0, this handles the case where
+		if (startingRefCount >= 0) {
+			// Only set the device as connected if the starting ref count is >= 0, this handles the case where
 			// the disconnect comes before the first connect so we go 0 -> -1 -> 0
 			setConnected(uuid, serviceId, workerId, true, logger);
 		}
@@ -147,12 +147,12 @@ export const apiFactory = (serviceId: number) => {
 		const workerId = parseInt(req.params.worker, 10);
 		const uuid = req.body.common_name;
 
-		clientRefCount[uuid] ??= 0;
-		clientRefCount[uuid]--;
+		const startingRefCount = clientRefCount.get(uuid) ?? 0;
+		clientRefCount.set(uuid, startingRefCount - 1);
 
-		if (clientRefCount[uuid] !== 0) {
+		if (startingRefCount !== 1) {
 			logger.warning(
-				`dropping oos disconnect event for uuid=${uuid} worker=${workerId} refcount=${clientRefCount[uuid]}`,
+				`dropping oos disconnect event for uuid=${uuid} worker=${workerId} refcount=${startingRefCount - 1}`,
 			);
 			return res.status(400).end();
 		}
