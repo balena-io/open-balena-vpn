@@ -40,10 +40,10 @@ import { captureException } from './errors.js';
 import { getPassthrough } from './index.js';
 
 interface DeviceStateTracker {
-	currentConnected?: boolean;
 	targetConnected: boolean;
-	currentWorkerId?: number;
 	targetWorkerId: number;
+	currentConnected?: boolean;
+	currentWorkerId?: number;
 }
 
 export const setConnected = (() => {
@@ -119,8 +119,8 @@ export const setConnected = (() => {
 			for (const uuid of pendingUpdates) {
 				const {
 					targetConnected,
-					currentConnected,
 					targetWorkerId,
+					currentConnected,
 					currentWorkerId,
 				} = deviceStates.get(uuid)!;
 				// We only try to update those where the target/current state differs, any where it matches
@@ -160,9 +160,7 @@ export const setConnected = (() => {
 		const deviceState = deviceStates.get(uuid);
 		if (deviceState == null) {
 			deviceStates.set(uuid, {
-				currentConnected: undefined,
 				targetConnected: connected,
-				currentWorkerId: undefined,
 				targetWorkerId: workerId,
 			});
 		} else {
