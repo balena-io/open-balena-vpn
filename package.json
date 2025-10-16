@@ -19,7 +19,7 @@
   "dependencies": {
     "@balena/env-parsing": "^1.2.6",
     "@balena/es-version": "^1.0.3",
-    "@balena/node-metrics-gatherer": "^6.0.3",
+    "@balena/node-metrics-gatherer": "^6.1.0",
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/instrumentation-express": "^0.47.1",
     "@opentelemetry/instrumentation-http": "^0.57.2",
@@ -35,7 +35,7 @@
     "netmask": "^2.0.2",
     "node-tunnel": "^4.0.8",
     "p-timeout": "^7.0.0",
-    "pinejs-client-request": "^8.1.0",
+    "pinejs-client-request": "^8.1.1",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "split": "^1.0.1",
