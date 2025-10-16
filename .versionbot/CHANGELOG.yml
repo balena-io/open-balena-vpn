@@ -1,4 +1,24 @@
 - commits:
+    - subject: Simplify logic of consuming bitrate messages
+      hash: 162b354c502c3e337f373d3966c2bc96a37d1fb2
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+    - subject: Improve typings of bitrate messages
+      hash: d27ab1c76fcb8b8dcce6f94f22e8785527fa94c1
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.0.33
+  title: ""
+  date: 2025-10-16T17:26:09.135Z
+- commits:
     - subject: Use a Map rather than an object for storing worker metrics
       hash: c5a54b4e92aed934a627f49e9f2b1ccaaa6094fa
       body: |
