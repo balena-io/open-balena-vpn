@@ -90,23 +90,18 @@ if (cluster.isPrimary) {
 		);
 	});
 
-	cluster.on('message', (_worker, msg: BitrateMessage) => {
-		const { data, type } = msg;
+	cluster.on('message', (_worker, { data, type }: BitrateMessage) => {
 		if (type === 'bitrate') {
-			const workerMetric = workerMetrics.get(data.uuid) ?? {
-				rxBitrate: [],
-				txBitrate: [],
-			};
-			workerMetrics.set(
-				data.uuid,
-				_.mergeWith(workerMetric, data, (obj, src) => {
-					if (Array.isArray(obj)) {
-						return obj.concat([src]);
-					}
-				}),
-			);
-		} else {
-			return;
+			let workerMetric = workerMetrics.get(data.uuid);
+			if (workerMetric == null) {
+				workerMetric = {
+					rxBitrate: [],
+					txBitrate: [],
+				};
+				workerMetrics.set(data.uuid, workerMetric);
+			}
+			workerMetric.rxBitrate.push(data.rxBitrate);
+			workerMetric.txBitrate.push(data.txBitrate);
 		}
 	});
 
