@@ -52,7 +52,7 @@ if (cluster.isPrimary) {
 		rxBitrate: number[];
 		txBitrate: number[];
 	}
-	let workerMetrics: { [key: string]: WorkerMetric } = {};
+	const workerMetrics = new Map<string, WorkerMetric>();
 
 	let verbose = VPN_VERBOSE_LOGS;
 
@@ -87,14 +87,17 @@ if (cluster.isPrimary) {
 		(_worker, msg: { type: string; data: WorkerMetric }) => {
 			const { data, type } = msg;
 			if (type === 'bitrate') {
-				workerMetrics[data.uuid] = _.mergeWith(
-					workerMetrics[data.uuid] || { rxBitrate: [], txBitrate: [] },
-					data,
-					(obj, src) => {
+				const workerMetric = workerMetrics.get(data.uuid) ?? {
+					rxBitrate: [],
+					txBitrate: [],
+				};
+				workerMetrics.set(
+					data.uuid,
+					_.mergeWith(workerMetric, data, (obj, src) => {
 						if (Array.isArray(obj)) {
 							return obj.concat([src]);
 						}
-					},
+					}),
 				);
 			} else {
 				return;
@@ -193,7 +196,7 @@ if (cluster.isPrimary) {
 				};
 				app
 					.get('/cluster_metrics', async (_req, res) => {
-						for (const clientMetrics of Object.values(workerMetrics)) {
+						for (const clientMetrics of workerMetrics.values()) {
 							metrics.histogram(
 								Metrics.SessionRxBitrate,
 								_.mean(clientMetrics.rxBitrate),
@@ -217,7 +220,7 @@ if (cluster.isPrimary) {
 							res.write('\n');
 							res.write(clusterMetrics);
 							res.end();
-							workerMetrics = {};
+							workerMetrics.clear();
 							metrics.reset(Metrics.SessionRxBitrate);
 							metrics.reset(Metrics.SessionTxBitrate);
 						} catch (err) {
