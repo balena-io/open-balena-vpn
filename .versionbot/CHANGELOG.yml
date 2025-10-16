@@ -1,4 +1,31 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v20.1.4
+      hash: b3964935de26da41868c88bc2c925ed68d535470
+      body: |
+        Update balena/open-balena-base from 20.1.3 to 20.1.4
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Fix value mapping for Registry2 S3 API keys.
+              hash: 947464223e92c9ef2cbfee048c4b8e9dd37daaf1
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Carlo Miguel F. Cruz <carloc@balena.io>
+                signed-off-by: Carlo Miguel F. Cruz <carloc@balena.io>
+              author: Carlo Miguel F. Cruz
+              nested: []
+          version: open-balena-base-20.1.4
+          title: ""
+          date: 2025-10-16T14:10:12.766Z
+  version: 12.0.31
+  title: ""
+  date: 2025-10-16T15:25:25.579Z
+- commits:
     - subject: Update golang Docker tag to v1.25.3
       hash: 5021bfd36d74349f2e1e61f54af7b5e191f80fb8
       body: |
