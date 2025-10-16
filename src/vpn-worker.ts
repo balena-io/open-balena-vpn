@@ -62,19 +62,21 @@ const worker = async (instanceId: number, serviceId: number) => {
 		process.exit(1);
 	};
 
-	const clientCache: {
-		[key: number]: {
+	const clientCache = new Map<
+		number,
+		{
 			uuid: string;
 			ts: number;
 			bytes_received: number;
 			bytes_sent: number;
-		};
-	} = {};
+		}
+	>();
 	const writeBandwidthMetrics = (
 		clientId: number,
 		data: VpnClientBytecountData,
 	) => {
-		if (clientCache[clientId] == null) {
+		const clientEntry = clientCache.get(clientId);
+		if (clientEntry == null) {
 			logger.warning(
 				`unable to write bandwidth metrics for unknown client_id=${clientId}`,
 			);
@@ -82,10 +84,10 @@ const worker = async (instanceId: number, serviceId: number) => {
 		}
 		const bytesReceived = parseInt(data.bytes_received, 10);
 		const bytesSent = parseInt(data.bytes_sent, 10);
-		const uuid = clientCache[clientId].uuid;
-		const rxDelta = bytesReceived - clientCache[clientId].bytes_received;
-		const txDelta = bytesSent - clientCache[clientId].bytes_sent;
-		const timeDelta = process.hrtime()[0] - clientCache[clientId].ts;
+		const uuid = clientEntry.uuid;
+		const rxDelta = bytesReceived - clientEntry.bytes_received;
+		const txDelta = bytesSent - clientEntry.bytes_sent;
+		const timeDelta = process.hrtime()[0] - clientEntry.ts;
 		metrics.inc(Metrics.RxBytes, rxDelta);
 		metrics.inc(Metrics.RxBytesByUuid, rxDelta, { device_uuid: uuid });
 		metrics.inc(Metrics.TxBytes, txDelta);
@@ -100,9 +102,9 @@ const worker = async (instanceId: number, serviceId: number) => {
 				},
 			} satisfies BitrateMessage);
 		}
-		clientCache[clientId].bytes_received = bytesReceived;
-		clientCache[clientId].bytes_sent = bytesSent;
-		clientCache[clientId].ts += timeDelta;
+		clientEntry.bytes_received = bytesReceived;
+		clientEntry.bytes_sent = bytesSent;
+		clientEntry.ts += timeDelta;
 	};
 
 	let verbose = VPN_VERBOSE_LOGS;
@@ -114,12 +116,11 @@ const worker = async (instanceId: number, serviceId: number) => {
 	});
 
 	const drainConnections = _.once(async () => {
-		const drainQueue = Object.values(clientCache);
-		const clientCount = drainQueue.length;
+		const clientCount = clientCache.size;
 
 		if (verbose) {
 			logger.info(
-				`drainQueue: ${JSON.stringify(drainQueue)} clientCount: ${clientCount}`,
+				`clientCache: ${JSON.stringify(Object.fromEntries(clientCache))} clientCount: ${clientCount}`,
 			);
 		}
 
@@ -134,7 +135,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 			logger.info(
 				`connection draining ${clientCount} clients, spaced by ${delayMs}ms`,
 			);
-			for (const { uuid: cn } of drainQueue) {
+			for (const { uuid: cn } of clientCache.values()) {
 				// Trigger the disconnecting the client in the background so as to avoid it delaying
 				// the overall cadence of disconnections but whilst still having error handling for it
 				void (async () => {
@@ -170,10 +171,9 @@ const worker = async (instanceId: number, serviceId: number) => {
 		process.exit(0);
 	});
 
-	const eventTypes = [`SIGINT`, `uncaughtException`, `SIGTERM`];
-	eventTypes.forEach((eventType) => {
+	for (const eventType of [`SIGINT`, `uncaughtException`, `SIGTERM`]) {
 		process.on(eventType, drainConnections);
-	});
+	}
 
 	const vpnPort = VPN_BASE_PORT + instanceId;
 	const mgtPort = VPN_BASE_MANAGEMENT_PORT + instanceId;
@@ -211,14 +211,14 @@ const worker = async (instanceId: number, serviceId: number) => {
 		logger.info(
 			`connection established with client_id=${clientId} uuid=${data.common_name}`,
 		);
-		clientCache[clientId] = {
+		clientCache.set(clientId, {
 			// We need to flatten the uuid because otherwise it's a sliced string and keeps the
 			// original, rather large, string in memory forever
 			uuid: flatstr(data.common_name),
 			bytes_received: 0,
 			bytes_sent: 0,
 			ts: process.hrtime()[0],
-		};
+		});
 	});
 
 	vpn.on('client:bytecount', (clientId, data) => {
@@ -251,7 +251,9 @@ const worker = async (instanceId: number, serviceId: number) => {
 			logger.notice(`received: ${msg}`);
 
 			if (verbose) {
-				logger.info(`clientCache: ${JSON.stringify(clientCache)}`);
+				logger.info(
+					`clientCache: ${JSON.stringify(Object.fromEntries(clientCache))}`,
+				);
 			}
 
 			await drainConnections();
