@@ -1,4 +1,99 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v20.2.1
+      hash: 04c58059a2b080002afc24eba894e52e2abecdad
+      body: |
+        Update balena/open-balena-base from 20.1.4 to 20.2.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Update Node.js to v24.11.0
+              hash: 648b6cea5dd9e8023d9feaaf17059c02dea6aa0f
+              body: |
+                Update node from 24.10.0 to 24.11.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-20.2.1
+          title: ""
+          date: 2025-10-28T18:08:00.736Z
+        - commits:
+            - subject: Fix load_env_file to use xenv for exact systemd compatibility
+              hash: a9535db87f71657857ffde88a59596690dec4048
+              body: |
+                The load_env_file function now uses xenv (github.com/michurin/systemd-env-file)
+                which wraps systemd v256's actual EnvironmentFile parser. This ensures exact
+                compatibility when migrating from systemd to s6-overlay.
+
+                Key behavior (matching systemd, NOT POSIX):
+                - Unquoted values: process escape sequences (value\;text → value;text)
+                - Double-quoted values: NO escape processing (diverges from POSIX shell)
+                - Single-quoted values: NO escape processing
+
+                Example: BUCKETS=balena-images\;balena-delta now correctly expands to
+                "balena-images;balena-delta" (semicolons, not literal backslashes).
+
+                References:
+                - xenv: https://github.com/michurin/systemd-env-file
+                - systemd v256 parser: https://github.com/systemd/systemd/blob/v256/src/basic/env-file.c
+                - systemd issue #10659: https://github.com/systemd/systemd/issues/10659
+              footer:
+                Change-type: minor
+                change-type: minor
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+            - subject: Fix load_env_file to follow POSIX shell quoting rules
+              hash: a56a4d516a166d1990c9c7a6cd0fe99aace304c6
+              body: >
+                The load_env_file function previously did not correctly handle
+                escape
+
+                sequences according to POSIX standards (IEEE Std 1003.1-2017,
+                sections
+
+                2.2.1-2.2.3), causing issues with values containing escaped
+                characters
+
+                like semicolons.
+
+
+                This matches systemd's EnvironmentFile behavior after PR #11427,
+                which
+
+                fixed escape handling to follow shell syntax for quotes.
+
+
+                Example: BUCKETS="balena-images\;balena-delta" now correctly
+                expands
+
+                to "balena-images;balena-delta" (semicolons, not literal
+                backslashes).
+
+
+                References:
+                  - https://github.com/systemd/systemd/issues/10659
+                  - https://github.com/systemd/systemd/pull/11427
+                  - IEEE Std 1003.1-2017, sections 2.2.1-2.2.3
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-20.2.0
+          title: ""
+          date: 2025-10-21T04:33:03.133Z
+  version: 12.0.37
+  title: ""
+  date: 2025-10-28T19:27:53.614Z
+- commits:
     - subject: Use a Map rather than an object for client cache
       hash: c1a68e8c41e98b40053708d9825f1b98c7b6dca0
       body: |
