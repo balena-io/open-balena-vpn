@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update @sentry/node to 10.x
+      hash: 0f4f698bc1e4706ac56e763a77ed3925a0fbbad1
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 12.1.0
+  title: ""
+  date: 2025-11-19T17:22:17.979Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v20.2.2
       hash: 74132d74c93267493298e1fad0d2d7c42a9b55cb
       body: |
