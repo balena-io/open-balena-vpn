@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @sentry/node to v10.27.0 [SECURITY]
+      hash: ff35ec144589874b6b1156934838c291f1a49c35
+      body: |
+        Update @sentry/node from 10.26.0 to 10.27.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.1.1
+  title: ""
+  date: 2025-11-24T22:25:02.719Z
+- commits:
     - subject: Update @sentry/node to 10.x
       hash: 0f4f698bc1e4706ac56e763a77ed3925a0fbbad1
       body: ""
