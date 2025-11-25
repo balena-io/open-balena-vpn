@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update dependencies
+      hash: c34a2515042ddf17d2436a5163cc3ad9045fe0bb
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.1.2
+  title: ""
+  date: 2025-11-25T15:35:12.842Z
+- commits:
     - subject: Update dependency @sentry/node to v10.27.0 [SECURITY]
       hash: ff35ec144589874b6b1156934838c291f1a49c35
       body: |
