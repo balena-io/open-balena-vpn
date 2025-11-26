@@ -36,6 +36,7 @@ import { pooledRequest } from './utils/request.js';
 import { Metrics } from './utils/metrics.js';
 import { setConnected } from './utils/clients.js';
 import { trace } from '@opentelemetry/api';
+import bodyParser from 'body-parser';
 
 // Private endpoints should use the `fromLocalHost` middleware.
 const fromLocalHost: express.RequestHandler = (req, res, next) => {
@@ -72,7 +73,7 @@ export const apiFactory = (serviceId: number) => {
 
 	const logger = getLogger('vpn', serviceId);
 
-	api.use(express.json());
+	api.use(bodyParser.json());
 
 	api.post('/api/v2/:worker/clients/', fromLocalHost, (req, res) => {
 		if (!hasCommonName(req.body)) {
@@ -101,12 +102,12 @@ export const apiFactory = (serviceId: number) => {
 	});
 
 	api.post('/api/v1/auth/', fromLocalHost, async function (req, res) {
-		if (req.body.username == null) {
+		if (req.body?.username == null) {
 			logger.info('AUTH FAIL: UUID not specified.');
 			return res.status(400).end();
 		}
 
-		if (req.body.password == null) {
+		if (req.body?.password == null) {
 			logger.info('AUTH FAIL: API Key not specified.');
 			return res.status(400).end();
 		}
