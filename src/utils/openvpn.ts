@@ -68,12 +68,12 @@ export interface VpnClientDisconnectData
 }
 
 export const hasCommonName = <T extends object>(
-	data: T & { common_name?: string },
-): data is T & { common_name: string } => data.common_name != null;
+	data: undefined | (T & { common_name?: string }),
+): data is T & { common_name: string } => data?.common_name != null;
 export const hasDurationData = <T extends object>(
-	data: T & { time_duration?: number },
+	data: undefined | (T & { time_duration?: number }),
 ): data is T & { time_duration: number } =>
-	data.time_duration != null && typeof data.time_duration === 'number';
+	typeof data?.time_duration === 'number';
 
 const VpnLogLevels = {
 	D: 'debug',
