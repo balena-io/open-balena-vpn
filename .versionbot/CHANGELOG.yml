@@ -1,4 +1,16 @@
 - commits:
+    - subject: Move setting haproxy to drain mode logic from bash into nodejs
+      hash: 9186de87213b38701f292abebe556e646d00aea4
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.1.4
+  title: ""
+  date: 2025-11-27T15:45:41.367Z
+- commits:
     - subject: Update body-parser to 2.x
       hash: cba2ed9cc712df931d3b805e301e5f3cf7ec7989
       body: ""
