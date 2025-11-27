@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update body-parser to 2.x
+      hash: cba2ed9cc712df931d3b805e301e5f3cf7ec7989
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.1.3
+  title: ""
+  date: 2025-11-27T00:06:07.201Z
+- commits:
     - subject: Update dependencies
       hash: c34a2515042ddf17d2436a5163cc3ad9045fe0bb
       body: ""
