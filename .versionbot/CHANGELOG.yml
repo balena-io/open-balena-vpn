@@ -1,4 +1,19 @@
 - commits:
+    - subject: Check for access to tunnel to a device first
+      hash: 7e9509464fe4396fab351d2428b31c7b51dec8fa
+      body: |
+        This avoids exposing data around the existence of a device matching the
+        uuid whilst also being able to reduce API requests in the event of
+        lacking permissions
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.1.5
+  title: ""
+  date: 2025-11-28T17:22:24.950Z
+- commits:
     - subject: Move setting haproxy to drain mode logic from bash into nodejs
       hash: 9186de87213b38701f292abebe556e646d00aea4
       body: ""
