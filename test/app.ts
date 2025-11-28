@@ -214,11 +214,11 @@ describe('VPN proxy', function () {
 	describe('web accessible device', () => {
 		beforeEach(() => {
 			nock(BALENA_API_INTERNAL_HOST)
-				.get('/v7/device')
+				.get('/v7/device(@id)')
 				.query({
-					$select: 'id,is_connected_to_vpn',
-					$filter: 'uuid eq @uuid',
-					'@uuid': "'deadbeef'",
+					$select: 'id',
+					$filter: 'is_connected_to_vpn',
+					'@id': '1',
 				})
 				.reply(
 					200,
@@ -226,14 +226,13 @@ describe('VPN proxy', function () {
 						d: [
 							{
 								id: 1,
-								is_connected_to_vpn: true,
 							},
 						],
 					}),
 				);
 
 			nock(BALENA_API_INTERNAL_HOST)
-				.post('/v7/device(@id)/canAccess?@id=1', {
+				.post("/v7/device(uuid=@uuid)/canAccess?@uuid='deadbeef1'", {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(
@@ -251,7 +250,7 @@ describe('VPN proxy', function () {
 		it('should allow port 8080 without authentication (.balena)', async () => {
 			await vpnTest({ user: 'user3', pass: 'pass' }, async () => {
 				const response = await pooledRequest({
-					url: 'http://deadbeef.balena:8080/test',
+					url: 'http://deadbeef1.balena:8080/test',
 					proxy: 'http://localhost:3128',
 					tunnel: true,
 				});
@@ -265,7 +264,7 @@ describe('VPN proxy', function () {
 		it('should allow port 8080 without authentication (.resin)', async () => {
 			await vpnTest({ user: 'user3', pass: 'pass' }, async () => {
 				const response = await pooledRequest({
-					url: 'http://deadbeef.resin:8080/test',
+					url: 'http://deadbeef1.resin:8080/test',
 					proxy: 'http://localhost:3128',
 					tunnel: true,
 				});
@@ -280,26 +279,25 @@ describe('VPN proxy', function () {
 	describe('tunnel forwarding', () => {
 		beforeEach(() => {
 			nock(BALENA_API_INTERNAL_HOST)
-				.get('/v7/device')
+				.get('/v7/device(@id)')
 				.query({
-					$select: 'id,is_connected_to_vpn',
-					$filter: 'uuid eq @uuid',
-					'@uuid': "'c0ffeec0ffeec0ffee'",
+					$select: 'id',
+					$filter: 'is_connected_to_vpn',
+					'@id': '3',
 				})
 				.reply(
 					200,
 					checkTraceParentReturningBody({
 						d: [
 							{
-								id: 2,
-								is_connected_to_vpn: true,
+								id: 3,
 							},
 						],
 					}),
 				);
 
 			nock(BALENA_API_INTERNAL_HOST)
-				.post('/v7/device(@id)/canAccess?@id=2', {
+				.post("/v7/device(uuid=@uuid)/canAccess?@uuid='c0ffeec0ffeec0ffee'", {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(
@@ -307,7 +305,7 @@ describe('VPN proxy', function () {
 					checkTraceParentReturningBody({
 						d: [
 							{
-								id: 2,
+								id: 3,
 							},
 						],
 					}),
@@ -375,19 +373,18 @@ describe('VPN proxy', function () {
 	describe('not web accessible device', () => {
 		beforeEach(() => {
 			nock(BALENA_API_INTERNAL_HOST)
-				.get('/v7/device')
+				.get('/v7/device(@id)')
 				.query({
-					$select: 'id,is_connected_to_vpn',
-					$filter: 'uuid eq @uuid',
-					'@uuid': "'deadbeef'",
+					$select: 'id',
+					$filter: 'is_connected_to_vpn',
+					'@id': '2',
 				})
 				.reply(
 					200,
 					checkTraceParentReturningBody({
 						d: [
 							{
-								id: 3,
-								is_connected_to_vpn: true,
+								id: 2,
 							},
 						],
 					}),
@@ -396,7 +393,7 @@ describe('VPN proxy', function () {
 
 		it('should not allow port 8080 without authentication', async () => {
 			const scope = nock(BALENA_API_INTERNAL_HOST)
-				.post('/v7/device(@id)/canAccess?@id=3', {
+				.post("/v7/device(uuid=@uuid)/canAccess?@uuid='deadbeef2'", {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(200, checkTraceParentReturningBody({ d: [] }));
@@ -406,7 +403,7 @@ describe('VPN proxy', function () {
 				() =>
 					expect(
 						pooledRequest({
-							url: 'http://deadbeef.balena:8080/test',
+							url: 'http://deadbeef2.balena:8080/test',
 							proxy: 'http://localhost:3128',
 							tunnel: true,
 						}),
@@ -417,7 +414,7 @@ describe('VPN proxy', function () {
 
 		it('should allow port 8080 with authentication', async () => {
 			const scope = nock(BALENA_API_INTERNAL_HOST)
-				.post('/v7/device(@id)/canAccess?@id=3', {
+				.post("/v7/device(uuid=@uuid)/canAccess?@uuid='deadbeef2'", {
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
 				.reply(
@@ -425,7 +422,7 @@ describe('VPN proxy', function () {
 					checkTraceParentReturningBody({
 						d: [
 							{
-								id: 3,
+								id: 2,
 							},
 						],
 					}),
@@ -433,7 +430,7 @@ describe('VPN proxy', function () {
 
 			await vpnTest({ user: 'user5', pass: 'pass' }, async () => {
 				const response = await pooledRequest({
-					url: 'http://deadbeef.balena:8080/test',
+					url: 'http://deadbeef2.balena:8080/test',
 					proxy: 'http://BALENA_api:test_api_key@localhost:3128',
 					tunnel: true,
 				});

@@ -31,65 +31,60 @@ const authHeader = (auth?: Buffer): string | undefined => {
 	}
 };
 
-export interface DeviceInfo {
-	id: number;
-	is_connected_to_vpn: boolean;
-}
-
-const getDeviceByUUIDQuery = balenaApi.prepare(
+const isDeviceConnectedToVpnQuery = balenaApi.prepare(
 	{
 		resource: 'device',
+		id: { '@': 'id' },
 		options: {
-			$select: ['id', 'is_connected_to_vpn'],
+			$select: ['id'],
 			$filter: {
-				uuid: { '@': 'uuid' },
+				$: 'is_connected_to_vpn',
 			},
 		},
 	},
-	{ uuid: ['string'] },
+	{ id: ['number'] },
 );
-export const getDeviceByUUID = async (
-	uuid: string,
+export const isDeviceConnectedToVpn = async (
+	id: number,
 	auth?: Buffer,
-): Promise<DeviceInfo> => {
+): Promise<boolean> => {
 	try {
-		const devices = await getDeviceByUUIDQuery(
-			{ uuid },
+		const device = await isDeviceConnectedToVpnQuery(
+			{ id },
 			undefined,
 			getPassthrough(authHeader(auth)),
 		);
-		if (!Array.isArray(devices) || devices.length === 0) {
-			throw new Error('invalid api response');
+		if (device == null) {
+			return false;
 		}
-		return devices[0] as DeviceInfo;
+		return true;
 	} catch (err) {
 		captureException(err, 'device-lookup-error');
 		throw new APIError(err.message);
 	}
 };
 
-const $canAccessDevice = async (
-	device: DeviceInfo,
-	port: number,
-	auth?: Buffer,
-) => {
+const $canAccessDevice = async (uuid: string, port: number, auth?: Buffer) => {
 	try {
 		const { d } = (await balenaApi.request({
 			method: 'POST',
-			url: `device(@id)/canAccess?@id=${device.id}`,
+			url: `device(uuid=@uuid)/canAccess?@uuid='${uuid}'`,
 			body: {
 				action: { or: ['tunnel-any', `tunnel-${port}`] },
 			},
 			passthrough: getPassthrough(authHeader(auth)),
 		})) as { d?: Array<{ id: number }> };
-		return Array.isArray(d) && d.length === 1 && d[0].id === device.id;
+		if (!Array.isArray(d) || d.length !== 1) {
+			return false;
+		}
+		return d[0].id;
 	} catch {
 		return false;
 	}
 };
 export const canAccessDevice = memoize($canAccessDevice, {
 	maxAge: 5 * 1000,
-	normalizer: (args) => `${args[0].id}-${args[1]}-${args[2] ?? 'guest'}`,
+	normalizer: (args) => `${args[0]}-${args[1]}-${args[2] ?? 'guest'}`,
 	promise: true,
 });
 

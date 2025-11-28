@@ -12,7 +12,8 @@ services:
       - ./typings:/usr/src/app/typings:ro
       - ./tsconfig.json:/usr/src/app/tsconfig.json:ro
     extra_hosts:
-      - "deadbeef.vpn:127.0.0.1"
+      - "deadbeef1.vpn:127.0.0.1"
+      - "deadbeef2.vpn:127.0.0.1"
     environment:
       - PRODUCTION_MODE=false
       - API_HOST=api.balena.test

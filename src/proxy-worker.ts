@@ -31,7 +31,7 @@ import * as errors from './utils/errors.js';
 import { Metrics } from './utils/metrics.js';
 import {
 	canAccessDevice,
-	getDeviceByUUID,
+	isDeviceConnectedToVpn,
 	getDeviceVpnHost,
 } from './utils/device.js';
 import { context, propagation, trace } from '@opentelemetry/api';
@@ -195,20 +195,19 @@ class Tunnel extends nodeTunnel.Tunnel {
 			const { uuid, port, auth } = this.parseRequest(req);
 			this.logger.info(`tunnel requested to ${uuid}:${port}`);
 
-			// we need to use VPN_SERVICE_API_KEY here as this could be an unauthenticated request
-			const data = await getDeviceByUUID(uuid, VPN_SERVICE_API_KEY);
-			if (data == null) {
-				cltSocket.end('HTTP/1.0 404 Not Found\r\n\r\n');
-				throw new errors.HandledTunnelingError(`device not found: ${uuid}`);
-			}
-			const isAllowed = await canAccessDevice(data, port, auth);
-			if (!isAllowed) {
+			const deviceId = await canAccessDevice(uuid, port, auth);
+			if (!deviceId) {
 				cltSocket.end('HTTP/1.0 407 Proxy Authorization Required\r\n\r\n');
 				throw new errors.HandledTunnelingError(
 					`device not accessible: ${uuid}`,
 				);
 			}
-			if (!data.is_connected_to_vpn) {
+			// we need to use VPN_SERVICE_API_KEY here as this could be an unauthenticated request
+			const isConnectedToVpn = await isDeviceConnectedToVpn(
+				deviceId,
+				VPN_SERVICE_API_KEY,
+			);
+			if (!isConnectedToVpn) {
 				cltSocket.end('HTTP/1.0 503 Service Unavailable\r\n\r\n');
 				throw new errors.HandledTunnelingError(`device not available: ${uuid}`);
 			}
