@@ -21,7 +21,7 @@ import chaiAsPromised from 'chai-as-promised';
 import nock from 'nock';
 import { BALENA_API_INTERNAL_HOST } from '../../src/utils/config.js';
 
-import { getDeviceByUUID } from '../../src/utils/device.js';
+import { isDeviceConnectedToVpn } from '../../src/utils/device.js';
 
 export default () => {
 	chai.use(chaiAsPromised);
@@ -32,42 +32,46 @@ export default () => {
 		optionalVar('VPN_SERVICE_API_KEY', 'test_vpn_string'),
 	);
 
-	beforeEach(function () {
-		this.mockDevice = {
-			id: 1234,
-			uuid: 'deadbeef',
-			is_connected_to_vpn: false,
-			__metadata: {
-				uri: '/resin/device(1234)',
-				type: '',
-			},
-		};
-	});
-
-	describe('getDeviceByUUID()', function () {
-		beforeEach(function () {
+	describe('isDeviceConnectedToVpn()', function () {
+		before(function () {
 			nock(BALENA_API_INTERNAL_HOST)
-				.get('/v7/device')
+				.get('/v7/device(@id)')
 				.query({
-					$select: 'id,is_connected_to_vpn',
-					$filter: 'uuid eq @uuid',
-					'@uuid': "'deadbeef'",
+					$select: 'id',
+					$filter: 'is_connected_to_vpn',
+					'@id': 1234,
 				})
-				.reply(200, { d: [this.mockDevice] });
+				.reply(200, { d: [] });
+			nock(BALENA_API_INTERNAL_HOST)
+				.get('/v7/device(@id)')
+				.query({
+					$select: 'id',
+					$filter: 'is_connected_to_vpn',
+					'@id': 3456,
+				})
+				.reply(200, { d: [{ id: 3456 }] });
 		});
 
-		afterEach(() => {
+		after(() => {
 			nock.cleanAll();
 		});
 
-		it('should return a promise', () => {
-			const device = getDeviceByUUID('deadbeef', VPN_SERVICE_API_KEY);
-			expect(device).to.be.an.instanceOf(Promise);
+		it('should return a promise that resolves to false when not connected', async () => {
+			const isConnectedToVpn = isDeviceConnectedToVpn(
+				1234,
+				VPN_SERVICE_API_KEY,
+			);
+			expect(isConnectedToVpn).to.be.an.instanceOf(Promise);
+			expect(await isConnectedToVpn).to.equal(false);
 		});
 
-		it('should resolve to the device requested', async function () {
-			const device = await getDeviceByUUID('deadbeef', VPN_SERVICE_API_KEY);
-			expect(device).to.deep.equal(this.mockDevice);
+		it('should return a promise that resolves to true when connected', async () => {
+			const isConnectedToVpn = isDeviceConnectedToVpn(
+				3456,
+				VPN_SERVICE_API_KEY,
+			);
+			expect(isConnectedToVpn).to.be.an.instanceOf(Promise);
+			expect(await isConnectedToVpn).to.equal(true);
 		});
 	});
 };
