@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Add a startup delay to give OpenVPN time to create status files
-sleep 15
-
 # Get VPN_INSTANCE_COUNT from the environment file that confd already generated
 INSTANCE_COUNT=$(grep "^VPN_INSTANCE_COUNT=" /usr/src/app/config/env | cut -d= -f2)
 NPROC=$(nproc)
@@ -23,12 +20,31 @@ for i in $(seq 1 $((INSTANCE_COUNT))); do
 	fi
 done
 
-# Execute the openvpn-exporter only if we have status paths to monitor
-if [ -n "$STATUS_PATHS" ]; then
-    exec /usr/local/bin/openvpn-exporter \
-        -openvpn.listen-address 127.0.0.1:9002 \
-        -openvpn.metrics-path /metrics/openvpn \
-        -openvpn.status-files "$STATUS_PATHS"
-else
-    echo "No status paths to monitor, exiting"
-fi
+echo "Waiting for $INSTANCE_COUNT OpenVPN status files..."
+TIMEOUT=60
+for (( retry=0; retry<TIMEOUT; retry++ )); do
+    PATH_EXISTS=true
+
+    # Check every expected file explicitly since
+    # the exporter fails to start if any are missing
+    for i in $(seq 1 $INSTANCE_COUNT); do
+        if [ ! -f "/run/openvpn/server-$i.status" ]; then
+            PATH_EXISTS=false
+            break
+        fi
+    done
+
+    # Execute the openvpn-exporter only if we have status paths to monitor
+    if [ "$PATH_EXISTS" = true ]; then
+        echo "All status files detected."
+        exec /usr/local/bin/openvpn-exporter \
+            -openvpn.listen-address 127.0.0.1:9002 \
+            -openvpn.metrics-path /metrics/openvpn \
+            -openvpn.status-files "$STATUS_PATHS"
+    fi
+
+    sleep 1
+done
+
+echo "Timed out waiting for OpenVPN status files."
+exit 1
