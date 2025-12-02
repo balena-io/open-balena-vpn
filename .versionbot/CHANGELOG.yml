@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update golang Docker tag to v1.25.5
+      hash: 411e864503dbe12996d5143be1eb51608b164951
+      body: |
+        Update golang from 1.25.4 to 1.25.5
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.1.6
+  title: ""
+  date: 2025-12-02T18:40:47.295Z
+- commits:
     - subject: Check for access to tunnel to a device first
       hash: 7e9509464fe4396fab351d2428b31c7b51dec8fa
       body: |
