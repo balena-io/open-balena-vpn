@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency debian_13/openvpn to v2.6.14-1+deb13u1
+      hash: 72c4bb68fc5576e5f2e81551a3052c6ea76dba48
+      body: |
+        Update debian_13/openvpn from 2.6.14-1 to 2.6.14-1+deb13u1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.1.7
+  title: ""
+  date: 2025-12-03T22:36:57.140Z
+- commits:
     - subject: Update golang Docker tag to v1.25.5
       hash: 411e864503dbe12996d5143be1eb51608b164951
       body: |
