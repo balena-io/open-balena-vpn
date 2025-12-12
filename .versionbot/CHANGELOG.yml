@@ -1,4 +1,40 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v20.2.4
+      hash: c47d1a31dce90189bed4c3c5d61d1d83d2403e19
+      body: |
+        Update balena/open-balena-base from 20.2.2 to 20.2.4
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: "patch: Use flock instead of lockfile in critical sesion"
+              hash: c26ce0f5736ab6817abdcd60f78729502180399d
+              body: ""
+              footer: {}
+              author: Anton Belodedenko
+              nested: []
+          version: open-balena-base-20.2.4
+          title: ""
+          date: 2025-12-12T17:29:51.399Z
+        - commits:
+            - subject: Update Node.js to v24.12.0
+              hash: 1308020ca87b6124d664117b76a05e49b94b6d06
+              body: |
+                Update node from 24.11.1 to 24.12.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-20.2.3
+          title: ""
+          date: 2025-12-10T17:11:08.260Z
+  version: 12.1.8
+  title: ""
+  date: 2025-12-12T18:21:57.237Z
+- commits:
     - subject: Update dependency debian_13/openvpn to v2.6.14-1+deb13u1
       hash: 72c4bb68fc5576e5f2e81551a3052c6ea76dba48
       body: |
