@@ -56,11 +56,11 @@ export interface VpnClientConnectData extends VpnClientUntrustedData {
 }
 // CLIENT:ESTABLISHED
 export interface VpnClientEstablishedData
-	extends VpnClientUntrustedData,
-		VpnClientTrustedData {}
+	extends VpnClientUntrustedData, VpnClientTrustedData {}
 // CLIENT:DISCONNECT
 export interface VpnClientDisconnectData
-	extends VpnClientUntrustedData,
+	extends
+		VpnClientUntrustedData,
 		Partial<VpnClientTrustedData>,
 		Partial<VpnClientBytecountData> {
 	/** The contents are a valid number */
