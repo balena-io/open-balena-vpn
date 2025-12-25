@@ -6,9 +6,7 @@ export const enum Metrics {
 	SessionRxBitrate = 'vpn_session_avg_rx_bitrate',
 	SessionTxBitrate = 'vpn_session_avg_tx_bitrate',
 	RxBytes = 'vpn_rx_bytes_total',
-	RxBytesByUuid = 'vpn_rx_bytes_by_uuid_total',
 	TxBytes = 'vpn_tx_bytes_total',
-	TxBytesByUuid = 'vpn_tx_bytes_by_uuid_total',
 	OnlineDevices = 'vpn_online_devices',
 	TotalDevices = 'vpn_devices_total',
 	AuthFailures = 'vpn_auth_failures_total',
@@ -46,26 +44,10 @@ export const describeMetrics = () => {
 		);
 		metrics.counter(Metrics.RxBytes, 0);
 		metrics.describe.counter(
-			Metrics.RxBytesByUuid,
-			'total rx bytes across all vpn sessions',
-			{
-				labelNames: ['device_uuid'],
-			},
-		);
-		metrics.counter(Metrics.RxBytesByUuid, 0);
-		metrics.describe.counter(
 			Metrics.TxBytes,
 			'total tx bytes across all vpn sessions',
 		);
 		metrics.counter(Metrics.TxBytes, 0);
-		metrics.describe.counter(
-			Metrics.TxBytesByUuid,
-			'total tx bytes across all vpn sessions',
-			{
-				labelNames: ['device_uuid'],
-			},
-		);
-		metrics.counter(Metrics.TxBytesByUuid, 0);
 		const min = 60;
 		const hour = 60 * min;
 		const day = 24 * hour;

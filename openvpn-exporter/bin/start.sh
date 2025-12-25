@@ -38,6 +38,7 @@ for (( retry=0; retry<TIMEOUT; retry++ )); do
     if [ "$PATH_EXISTS" = true ]; then
         echo "All status files detected."
         exec /usr/local/bin/openvpn-exporter \
+            -openvpn.ignore-individuals \
             -openvpn.listen-address 127.0.0.1:9002 \
             -openvpn.metrics-path /metrics/openvpn \
             -openvpn.status-files "$STATUS_PATHS"
