@@ -151,7 +151,7 @@ RUN eget balena-io/sshproxy --tag v${SSHPROXY_TAG} \
 
 FROM plugin-builder AS libnss-openvpn
 
-ENV LIBNSS_OPENVPN_VERSION=22feb11322182f6fd79f85cd014b65b6c40b7b47
+ENV LIBNSS_OPENVPN_VERSION=ea16a3f1565353b1ff9a41e9b0f8ffeee97ce7d5
 
 WORKDIR /usr/src/app/libnss-openvpn
 RUN git clone https://github.com/balena-io-modules/libnss-openvpn.git . \

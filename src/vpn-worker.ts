@@ -89,9 +89,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 		const txDelta = bytesSent - clientEntry.bytes_sent;
 		const timeDelta = process.hrtime()[0] - clientEntry.ts;
 		metrics.inc(Metrics.RxBytes, rxDelta);
-		metrics.inc(Metrics.RxBytesByUuid, rxDelta, { device_uuid: uuid });
 		metrics.inc(Metrics.TxBytes, txDelta);
-		metrics.inc(Metrics.TxBytesByUuid, txDelta, { device_uuid: uuid });
 		if (timeDelta > 0 && process.send != null) {
 			process.send({
 				type: 'bitrate',
