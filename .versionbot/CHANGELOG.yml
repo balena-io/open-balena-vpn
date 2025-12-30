@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @opentelemetry/instrumentation-express to v0.57.1
+      hash: 0d00c640809726cf7d209fe055a7974e4c541268
+      body: |
+        Update @opentelemetry/instrumentation-express from 0.57.0 to 0.57.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.1.12
+  title: ""
+  date: 2025-12-30T10:50:09.470Z
+- commits:
     - subject: Lock file maintenance
       hash: 453e6454200abf0df21ce29899dc3b7afc43cba5
       body: |
