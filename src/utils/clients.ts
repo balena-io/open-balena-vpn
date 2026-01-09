@@ -41,9 +41,8 @@ import { getPassthrough } from './index.js';
 
 interface DeviceStateTracker {
 	targetConnected: boolean;
-	targetWorkerId: number;
-	currentConnected?: boolean;
-	currentWorkerId?: number;
+	currentConnected: boolean;
+	forceUpdate: boolean;
 }
 
 export const setConnected = (() => {
@@ -86,10 +85,7 @@ export const setConnected = (() => {
 					for (const uuid of uuidChunk) {
 						const deviceState = deviceStates.get(uuid)!;
 						deviceState.currentConnected = connected;
-						// We mark the currentWorkerId to match the target since the key is that we have sent a new connect
-						// event since the worker has connected in case it went from eg `us-1` -> `other-1` -> `us-2` and
-						// `other` is seen as being in charge of the device when it actually should be us
-						deviceState.currentWorkerId = deviceState.targetWorkerId;
+						deviceState.forceUpdate = false;
 						logger.debug(
 							`successfully updated state for device: uuid=${uuid} connected=${connected}`,
 						);
@@ -117,18 +113,12 @@ export const setConnected = (() => {
 			const disconnects = [];
 			const connects = [];
 			for (const uuid of pendingUpdates) {
-				const {
-					targetConnected,
-					targetWorkerId,
-					currentConnected,
-					currentWorkerId,
-				} = deviceStates.get(uuid)!;
+				const { targetConnected, currentConnected, forceUpdate } =
+					deviceStates.get(uuid)!;
 				// We only try to update those where the target/current state differs, any where it matches
-				// will naturally be dropped from pending updates as expected as there is no pending update
-				if (
-					targetConnected !== currentConnected ||
-					targetWorkerId !== currentWorkerId
-				) {
+				// will naturally be dropped from pending updates as expected as there is no pending update,
+				// with the exception being if a force update has been marked
+				if (targetConnected !== currentConnected || forceUpdate === true) {
 					if (targetConnected) {
 						connects.push(uuid);
 					} else {
@@ -153,7 +143,6 @@ export const setConnected = (() => {
 	return (
 		uuid: string,
 		serviceId: number,
-		workerId: number,
 		connected: boolean,
 		logger: Logger,
 	) => {
@@ -161,11 +150,17 @@ export const setConnected = (() => {
 		if (deviceState == null) {
 			deviceStates.set(uuid, {
 				targetConnected: connected,
-				targetWorkerId: workerId,
+				currentConnected: false,
+				forceUpdate: false,
 			});
 		} else {
 			deviceState.targetConnected = connected;
-			deviceState.targetWorkerId = workerId;
+			if (deviceState.currentConnected === true) {
+				// If we think the device is already connected but are marking it as connected again then we force an
+				// update in case the device has gone from eg `us` -> `other` -> `us` and `other` is seen as being in
+				// charge of the device when it actually should be us
+				deviceState.forceUpdate = true;
+			}
 		}
 		pendingUpdates.add(uuid);
 		void updateLoop(serviceId, logger);
