@@ -39,9 +39,7 @@ import { getPassthrough } from './index.ts';
 
 interface DeviceStateTracker {
 	targetConnected: boolean;
-	targetWorkerId: number;
 	currentConnected?: boolean;
-	currentWorkerId?: number;
 }
 
 const chunk = <T>(arr: T[], size: number): T[][] => {
@@ -92,10 +90,6 @@ export const setConnected = (() => {
 					for (const uuid of uuidChunk) {
 						const deviceState = deviceStates.get(uuid)!;
 						deviceState.currentConnected = connected;
-						// We mark the currentWorkerId to match the target since the key is that we have sent a new connect
-						// event since the worker has connected in case it went from eg `us-1` -> `other-1` -> `us-2` and
-						// `other` is seen as being in charge of the device when it actually should be us
-						deviceState.currentWorkerId = deviceState.targetWorkerId;
 						logger.debug(
 							`successfully updated state for device: uuid=${uuid} connected=${connected}`,
 						);
@@ -123,18 +117,10 @@ export const setConnected = (() => {
 			const disconnects = [];
 			const connects = [];
 			for (const uuid of pendingUpdates) {
-				const {
-					targetConnected,
-					targetWorkerId,
-					currentConnected,
-					currentWorkerId,
-				} = deviceStates.get(uuid)!;
+				const { targetConnected, currentConnected } = deviceStates.get(uuid)!;
 				// We only try to update those where the target/current state differs, any where it matches
 				// will naturally be dropped from pending updates as expected as there is no pending update
-				if (
-					targetConnected !== currentConnected ||
-					targetWorkerId !== currentWorkerId
-				) {
+				if (targetConnected !== currentConnected) {
 					if (targetConnected) {
 						connects.push(uuid);
 					} else {
@@ -159,7 +145,6 @@ export const setConnected = (() => {
 	return (
 		uuid: string,
 		serviceId: number,
-		workerId: number,
 		connected: boolean,
 		logger: Logger,
 	) => {
@@ -167,11 +152,16 @@ export const setConnected = (() => {
 		if (deviceState == null) {
 			deviceStates.set(uuid, {
 				targetConnected: connected,
-				targetWorkerId: workerId,
+				currentConnected: undefined,
 			});
 		} else {
 			deviceState.targetConnected = connected;
-			deviceState.targetWorkerId = workerId;
+			if (deviceState.currentConnected === true) {
+				// If we think the device is already connected but are marking it as connected again then we force an
+				// update in case the device has gone from eg `us` -> `other` -> `us` and `other` is seen as being in
+				// charge of the device when it actually should be us
+				deviceState.currentConnected = undefined;
+			}
 		}
 		pendingUpdates.add(uuid);
 		void updateLoop(serviceId, logger);
