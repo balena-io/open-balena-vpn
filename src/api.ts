@@ -82,7 +82,6 @@ export const apiFactory = (serviceId: number) => {
 		// Immediately respond to minimize time in the client-connect script
 		res.status(200).end();
 
-		const workerId = parseInt(req.params.worker, 10);
 		const uuid = req.body.common_name;
 
 		const startingRefCount = clientRefCount.get(uuid) ?? 0;
@@ -97,7 +96,7 @@ export const apiFactory = (serviceId: number) => {
 		if (startingRefCount >= 0) {
 			// Only set the device as connected if the starting ref count is >= 0, this handles the case where
 			// the disconnect comes before the first connect so we go 0 -> -1 -> 0
-			setConnected(uuid, serviceId, workerId, true, logger);
+			setConnected(uuid, serviceId, true, logger);
 		}
 	});
 
@@ -158,7 +157,7 @@ export const apiFactory = (serviceId: number) => {
 
 		metrics.dec(Metrics.OnlineDevices);
 
-		setConnected(uuid, serviceId, workerId, false, logger);
+		setConnected(uuid, serviceId, false, logger);
 	});
 
 	return api;
