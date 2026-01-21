@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update golang Docker tag to v1.25.6
+      hash: 423d3fdd0469084095acf19505cc8d19fceb6cec
+      body: |
+        Update golang from 1.25.5 to 1.25.6
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.1.17
+  title: ""
+  date: 2026-01-21T05:23:28.656Z
+- commits:
     - subject: Re-enable openvpn-exporter
       hash: f8924c44026b9d729daae930484dd2946489f91a
       body: |
