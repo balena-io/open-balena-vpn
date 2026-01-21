@@ -124,9 +124,6 @@ export const apiFactory = (serviceId: number) => {
 					`AUTH FAIL: API Authentication failed for ${req.body.username}`,
 				);
 				metrics.inc(Metrics.AuthFailures);
-				metrics.inc(Metrics.AuthFailuresByUuid, undefined, {
-					device_uuid: req.body.common_name,
-				});
 				await setTimeout(DELAY_ON_AUTH_FAIL);
 				return res.status(401).end();
 			}
