@@ -1,4 +1,29 @@
 - commits:
+    - subject: Re-enable openvpn-exporter
+      hash: f8924c44026b9d729daae930484dd2946489f91a
+      body: |
+        Uses an updated version of libnss which supports
+        v2 Status files.
+
+        Openvpn-exporter also covers a tx/rx_bytes_by_uuid
+        metric that we can use so we remove redundant and
+        error prone metrics.
+
+        Also configure the exporter to not export multiple
+        timeseries for the same device.
+      footer:
+        Fibery: https://balena.fibery.io/Work/Project/(Cloudlink)-Monitor-and-ready-Bandwidth-limiting-and-openVPN-exporter-for-production-1731
+        fibery: https://balena.fibery.io/Work/Project/(Cloudlink)-Monitor-and-ready-Bandwidth-limiting-and-openVPN-exporter-for-production-1731
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: jaomaloy <jan.maloy@balena.io>
+        signed-off-by: jaomaloy <jan.maloy@balena.io>
+      author: jaomaloy
+      nested: []
+  version: 12.1.16
+  title: ""
+  date: 2026-01-21T03:49:33.820Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v20.2.6
       hash: a1a5422b43d2c6142ff7ba37d320a87b0a4e32b4
       body: |
