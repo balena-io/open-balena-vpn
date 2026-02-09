@@ -1,4 +1,16 @@
 - commits:
+    - subject: Enable configuring the openvpn status file write interval
+      hash: 7fd1174afb807c5cee65218da54192a295db7d78
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 12.2.0
+  title: ""
+  date: 2026-02-09T18:12:27.191Z
+- commits:
     - subject: Update golang Docker tag to v1.25.6
       hash: 423d3fdd0469084095acf19505cc8d19fceb6cec
       body: |
