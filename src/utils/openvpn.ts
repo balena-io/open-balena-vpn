@@ -27,6 +27,7 @@ import {
 	VPN_DOWNRATE,
 	VPN_UPRATE,
 	LEARN_ADDRESS_DEBUG,
+	VPN_STATUS_FILE_WRITE_INTERVAL_SECONDS,
 } from './config.js';
 import type { Netmask } from './netmask.js';
 
@@ -169,7 +170,7 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 			this.pidFile,
 			'--status',
 			`/run/openvpn/server-${this.instanceId}.status`,
-			'10',
+			`${VPN_STATUS_FILE_WRITE_INTERVAL_SECONDS}`,
 			'--cd',
 			'/etc/openvpn',
 			'--config',
