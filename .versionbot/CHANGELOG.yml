@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency lodash to v4.17.23 [SECURITY]
+      hash: f8f38e2f1698151f4155c9d6c4e28b2586d78267
+      body: |
+        Update lodash from 4.17.21 to 4.17.23
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.2.1
+  title: ""
+  date: 2026-02-09T18:31:50.339Z
+- commits:
     - subject: Enable configuring the openvpn status file write interval
       hash: 7fd1174afb807c5cee65218da54192a295db7d78
       body: ""
