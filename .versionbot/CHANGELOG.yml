@@ -1,4 +1,16 @@
 - commits:
+    - subject: Enable configuring `UV_THREADPOOL_SIZE`
+      hash: 5439ba96736718772c54bfc952d149e6748aac1b
+      body: ""
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.0
+  title: ""
+  date: 2026-02-10T17:14:51.432Z
+- commits:
     - subject: Update dependency lodash to v4.17.23 [SECURITY]
       hash: f8f38e2f1698151f4155c9d6c4e28b2586d78267
       body: |
