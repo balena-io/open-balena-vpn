@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update golang Docker tag to v1.25.7
+      hash: f66f2be7837c8198758002bdac604257837a2f9f
+      body: |
+        Update golang from 1.25.6 to 1.25.7
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.2
+  title: ""
+  date: 2026-02-12T20:51:15.488Z
+- commits:
     - subject: Update dependency debian_13/haproxy to v3.0.11-1+deb13u2
       hash: 121985f416519e6b96ae377be340a8df151935c2
       body: |
