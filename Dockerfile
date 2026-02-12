@@ -175,7 +175,7 @@ COPY --from=libnss-openvpn /opt/ /
 
 # https://docs.renovatebot.com/modules/datasource/repology/
 # renovate: datasource=repology depName=debian_13/haproxy versioning=loose
-ARG HAPROXY_VERSION=3.0.11-1+deb13u1
+ARG HAPROXY_VERSION=3.0.11-1+deb13u2
 
 # https://docs.renovatebot.com/modules/datasource/repology/
 # renovate: datasource=repology depName=debian_13/openvpn versioning=loose
