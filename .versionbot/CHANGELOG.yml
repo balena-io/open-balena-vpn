@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency debian_13/haproxy to v3.0.11-1+deb13u2
+      hash: 121985f416519e6b96ae377be340a8df151935c2
+      body: |
+        Update debian_13/haproxy from 3.0.11-1+deb13u1 to 3.0.11-1+deb13u2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.1
+  title: ""
+  date: 2026-02-12T20:29:20.423Z
+- commits:
     - subject: Enable configuring `UV_THREADPOOL_SIZE`
       hash: 5439ba96736718772c54bfc952d149e6748aac1b
       body: ""
