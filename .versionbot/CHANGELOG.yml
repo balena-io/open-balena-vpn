@@ -1,4 +1,43 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v20.2.8
+      hash: 5af53ad1a88b8505579b329a724dd960c0da6e3d
+      body: |
+        Update balena/open-balena-base from 20.2.6 to 20.2.8
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Update Node.js to v24.13.1
+              hash: cb7498e63d3643c394218659b0017d53f962a2c0
+              body: |
+                Update node from 24.13.0 to 24.13.1
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-20.2.8
+          title: ""
+          date: 2026-02-10T14:29:22.948Z
+        - commits:
+            - subject: Update dependency just-containers/s6-overlay to v3.2.2.0
+              hash: 07616b2420aaad57986035551751143768a5976e
+              body: |
+                Update just-containers/s6-overlay from 3.2.1.0 to 3.2.2.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-20.2.7
+          title: ""
+          date: 2026-01-24T21:57:07.513Z
+  version: 12.3.3
+  title: ""
+  date: 2026-02-12T22:16:38.424Z
+- commits:
     - subject: Update golang Docker tag to v1.25.7
       hash: f66f2be7837c8198758002bdac604257837a2f9f
       body: |
