@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency balena-sdk to v23
+      hash: 3bfead815eaa53a362f86a12257ddff1ab979517
+      body: |
+        Update balena-sdk from 22.4.5 to 23.0.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.5
+  title: ""
+  date: 2026-02-13T13:24:16.883Z
+- commits:
     - subject: Update golang Docker tag to v1.26.0
       hash: 536ff29f9d0a44d21389fce93deb13a437cc5f71
       body: |
