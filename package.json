@@ -61,7 +61,7 @@
     "@types/node": "^24.10.4",
     "@types/request-promise": "^4.1.51",
     "@types/split": "^1.0.5",
-    "balena-sdk": "^22.4.4",
+    "balena-sdk": "^23.0.0",
     "chai": "^6.2.2",
     "chai-as-promised": "^8.0.2",
     "husky": "^9.1.7",
