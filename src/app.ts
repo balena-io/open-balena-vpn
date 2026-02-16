@@ -73,18 +73,21 @@ if (cluster.isPrimary) {
 	process.on('SIGUSR2', () => {
 		masterLogger.notice('caught SIGUSR2, toggling log verbosity');
 		verbose = !verbose;
-		_.each(cluster.workers, (clusterWorker) => {
-			if (clusterWorker != null) {
-				clusterWorker.send('toggleVerbosity');
-			}
-		});
+		if (cluster.workers == null) {
+			return;
+		}
+		for (const clusterWorker of Object.values(cluster.workers)) {
+			clusterWorker?.send('toggleVerbosity');
+		}
 	});
 
 	process.on('SIGTERM', () => {
 		masterLogger.notice('received SIGTERM');
-		_.each(cluster.workers, (clusterWorker) => {
-			clusterWorker?.send('prepareShutdown');
-		});
+		if (cluster.workers != null) {
+			for (const clusterWorker of Object.values(cluster.workers)) {
+				clusterWorker?.send('prepareShutdown');
+			}
+		}
 		masterLogger.notice(
 			`waiting ${DEFAULT_SIGTERM_TIMEOUT}ms for workers to finish`,
 		);
@@ -154,7 +157,7 @@ if (cluster.isPrimary) {
 						VPN_INSTANCE_COUNT > 1 ? 's' : ''
 					}`,
 				);
-				_.times(VPN_INSTANCE_COUNT, (i) => {
+				for (let i = 0; i < VPN_INSTANCE_COUNT; i++) {
 					const workerId = i + 1;
 					const restartWorker = (code?: number, signal?: string) => {
 						if (signal != null) {
@@ -174,7 +177,7 @@ if (cluster.isPrimary) {
 						cluster.fork(env).on('exit', restartWorker);
 					};
 					restartWorker();
-				});
+				}
 
 				const aggregatorRegistry = new prometheus.AggregatorRegistry();
 
