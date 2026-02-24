@@ -21,7 +21,6 @@ import Bluebird from 'bluebird';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import http from 'http';
-import _ from 'lodash';
 import nock from 'nock';
 import vpnClient from 'openvpn-client';
 
@@ -94,7 +93,12 @@ describe('vpn worker', function () {
 	before(() => {
 		nock(BALENA_API_INTERNAL_HOST)
 			.post('/v7/service_instance')
-			.reply(200, checkNoTraceParentReturningBody({ id: _.random(1, 1024) }));
+			.reply(
+				200,
+				checkNoTraceParentReturningBody({
+					id: Math.floor(1 + Math.random() * 1023),
+				}),
+			);
 	});
 
 	it('should resolve true when ready', async () => {

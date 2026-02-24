@@ -20,7 +20,6 @@ import './init.js';
 import { metrics } from '@balena/node-metrics-gatherer';
 import cluster from 'cluster';
 import express from 'express';
-import _ from 'lodash';
 import prometheus from 'prom-client';
 import pTimeout from 'p-timeout';
 
@@ -73,18 +72,16 @@ if (cluster.isPrimary) {
 	process.on('SIGUSR2', () => {
 		masterLogger.notice('caught SIGUSR2, toggling log verbosity');
 		verbose = !verbose;
-		_.each(cluster.workers, (clusterWorker) => {
-			if (clusterWorker != null) {
-				clusterWorker.send('toggleVerbosity');
-			}
-		});
+		for (const clusterWorker of Object.values(cluster.workers ?? {})) {
+			clusterWorker?.send('toggleVerbosity');
+		}
 	});
 
 	process.on('SIGTERM', () => {
 		masterLogger.notice('received SIGTERM');
-		_.each(cluster.workers, (clusterWorker) => {
+		for (const clusterWorker of Object.values(cluster.workers ?? {})) {
 			clusterWorker?.send('prepareShutdown');
-		});
+		}
 		masterLogger.notice(
 			`waiting ${DEFAULT_SIGTERM_TIMEOUT}ms for workers to finish`,
 		);
@@ -154,7 +151,7 @@ if (cluster.isPrimary) {
 						VPN_INSTANCE_COUNT > 1 ? 's' : ''
 					}`,
 				);
-				_.times(VPN_INSTANCE_COUNT, (i) => {
+				for (let i = 0; i < VPN_INSTANCE_COUNT; i++) {
 					const workerId = i + 1;
 					const restartWorker = (code?: number, signal?: string) => {
 						if (signal != null) {
@@ -174,7 +171,7 @@ if (cluster.isPrimary) {
 						cluster.fork(env).on('exit', restartWorker);
 					};
 					restartWorker();
-				});
+				}
 
 				const aggregatorRegistry = new prometheus.AggregatorRegistry();
 
@@ -194,16 +191,20 @@ if (cluster.isPrimary) {
 						inProgessClusterMetrics = undefined;
 					}
 				};
+
+				const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
+				const mean = (arr: number[]) =>
+					arr.length > 0 ? sum(arr) / arr.length : 0;
 				app
 					.get('/cluster_metrics', async (_req, res) => {
 						for (const clientMetrics of workerMetrics.values()) {
 							metrics.histogram(
 								Metrics.SessionRxBitrate,
-								_.mean(clientMetrics.rxBitrate),
+								mean(clientMetrics.rxBitrate),
 							);
 							metrics.histogram(
 								Metrics.SessionTxBitrate,
-								_.mean(clientMetrics.txBitrate),
+								mean(clientMetrics.txBitrate),
 							);
 						}
 						try {
