@@ -1,4 +1,17 @@
 - commits:
+    - subject: Remove lodash usage
+      hash: 7d40d81da997c1721b6c66fb585243a715614223
+      body: |
+        Note: it is currently still imported via dependencies
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.7
+  title: ""
+  date: 2026-02-25T09:01:01.930Z
+- commits:
     - subject: Lock file maintenance
       hash: 16fc6158b696906374c12d74afefaef1661b7b01
       body: |
