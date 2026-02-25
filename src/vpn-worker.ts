@@ -15,7 +15,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import _ from 'lodash';
 import { metrics } from '@balena/node-metrics-gatherer';
 import { setTimeout } from 'timers/promises';
 import {
@@ -113,7 +112,12 @@ const worker = async (instanceId: number, serviceId: number) => {
 		}
 	});
 
-	const drainConnections = _.once(async () => {
+	let drainConnections: () => Promise<void> | void = async () => {
+		// Only run once
+		drainConnections = () => {
+			// noop
+		};
+
 		logger.info(`setting haproxy for '${instanceId}' into drain mode`);
 		await new HAProxy('/var/run/haproxy.sock').drain(
 			`vpn-workers/vpn${instanceId}`,
@@ -172,7 +176,7 @@ const worker = async (instanceId: number, serviceId: number) => {
 		// wait here, the master should exit when all workers have signaled completion
 		await setTimeout(DEFAULT_SIGTERM_TIMEOUT);
 		process.exit(0);
-	});
+	};
 
 	for (const eventType of [`SIGINT`, `uncaughtException`, `SIGTERM`]) {
 		process.on(eventType, drainConnections);

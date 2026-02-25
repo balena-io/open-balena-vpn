@@ -25,7 +25,6 @@
 // Reset does not happen by actually resending all the events,
 // the API has a special endpoint that first sets all clients as offline.
 
-import _ from 'lodash';
 import { setTimeout } from 'timers/promises';
 import type { Logger } from 'winston';
 
@@ -46,6 +45,14 @@ interface DeviceStateTracker {
 	currentWorkerId?: number;
 }
 
+const chunk = <T>(arr: T[], size: number): T[][] => {
+	const result: T[][] = [];
+	for (let i = 0; i < arr.length; i += size) {
+		result.push(arr.slice(i, i + size));
+	}
+	return result;
+};
+
 export const setConnected = (() => {
 	const deviceStates = new Map<string, DeviceStateTracker>();
 	const pendingUpdates = new Set<string>();
@@ -60,7 +67,7 @@ export const setConnected = (() => {
 			return;
 		}
 		const eventType = connected ? 'connect' : 'disconnect';
-		const uuidChunks = _.chunk(uuids, API_DEVICE_STATE_POST_BATCH_SIZE);
+		const uuidChunks = chunk(uuids, API_DEVICE_STATE_POST_BATCH_SIZE);
 		await Promise.allSettled(
 			uuidChunks.map(async (uuidChunk) => {
 				try {
