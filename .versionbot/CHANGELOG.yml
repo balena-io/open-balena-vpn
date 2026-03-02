@@ -1,4 +1,16 @@
 - commits:
+    - subject: Reduce bluebird usage to tests
+      hash: 3464dbbfa432b860ca4bc84c8fec07cd5610d9e6
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.8
+  title: ""
+  date: 2026-03-02T17:24:02.625Z
+- commits:
     - subject: Remove lodash usage
       hash: 7d40d81da997c1721b6c66fb585243a715614223
       body: |
