@@ -60,11 +60,6 @@ const vpnDefaultOpts = [
 	'3',
 ];
 
-interface HttpServerAsync {
-	listenAsync(port: number): Promise<HttpServerAsync>;
-	closeAsync(): Promise<HttpServerAsync>;
-}
-
 const expectTraceParent = (headers: Record<string, string>) => {
 	// Check that we are forwarding the traceparent header
 	expect(headers).to.have.property('traceparent').that.is.a('string');
@@ -114,7 +109,9 @@ describe('tunnel worker', () =>
 
 describe('api server', () =>
 	it('should startup successfully', async () => {
-		await apiServer(instance.getId()).listenAsync(VPN_API_PORT);
+		await new Promise<void>((resolve) =>
+			apiServer(instance.getId()).listen(VPN_API_PORT, resolve),
+		);
 	}));
 
 describe('VPN Events', function () {
@@ -187,20 +184,25 @@ describe('VPN proxy', function () {
 		credentials: { user: string; pass: string },
 		func: () => any,
 	): Promise<void> => {
-		const server = Bluebird.promisifyAll(
-			http.createServer((_req, res) => {
-				res.writeHead(200, { 'Content-type': 'text/plain' });
-				res.end('hello from 8080');
-			}),
-		) as any as HttpServerAsync;
+		const server = http.createServer((_req, res) => {
+			res.writeHead(200, { 'Content-type': 'text/plain' });
+			res.end('hello from 8080');
+		});
 
 		await Bluebird.using(
 			vpnClient.connect(credentials, vpnDefaultOpts),
 			async () => {
-				const s = await server.listenAsync(8080);
+				await new Promise<void>((resolve) => server.listen(8080, resolve));
 				await func();
-				await server.closeAsync();
-				return s;
+				await new Promise<void>((resolve, reject) =>
+					server.close((err) => {
+						if (err) {
+							reject(err);
+						} else {
+							resolve();
+						}
+					}),
+				);
 			},
 		);
 	};

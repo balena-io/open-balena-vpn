@@ -16,7 +16,6 @@
 */
 
 import { metrics } from '@balena/node-metrics-gatherer';
-import Bluebird from 'bluebird';
 import compression from 'compression';
 import express from 'express';
 import memoize from 'memoizee';
@@ -164,12 +163,8 @@ export const apiFactory = (serviceId: number) => {
 	return api;
 };
 
-interface ExpressAsync extends express.Express {
-	listenAsync(port: number): Promise<ReturnType<express.Express['listen']>>;
-}
-
 export const apiServer = (serviceId: number) => {
-	const app = Bluebird.promisifyAll(express()) as any as ExpressAsync;
+	const app = express();
 	app.set('trust proxy', TRUST_PROXY);
 	app.disable('x-powered-by');
 	app.get('/ping', (_req, res) => res.send('OK'));
