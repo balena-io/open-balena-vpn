@@ -145,94 +145,93 @@ if (cluster.isPrimary) {
 
 			serviceLogger.info('spawning vpn authentication api server...');
 			const api = apiServer(serviceInstance.getId());
-			await api.listenAsync(VPN_API_PORT).then(() => {
-				serviceLogger.info(
-					`spawning ${VPN_INSTANCE_COUNT} worker${
-						VPN_INSTANCE_COUNT > 1 ? 's' : ''
-					}`,
-				);
-				for (let i = 0; i < VPN_INSTANCE_COUNT; i++) {
-					const workerId = i + 1;
-					const restartWorker = (code?: number, signal?: string) => {
-						if (signal != null) {
-							serviceLogger.crit(
-								`worker-${workerId} killed with signal ${signal}`,
-							);
-						}
-						if (code != null) {
-							serviceLogger.crit(`worker-${workerId} exited with code ${code}`);
-						}
-						const env = {
-							...process.env,
-							WORKER_ID: workerId,
-							SERVICE_ID: serviceInstance.getId(),
-							VPN_VERBOSE_LOGS: verbose,
-						};
-						cluster.fork(env).on('exit', restartWorker);
-					};
-					restartWorker();
-				}
-
-				const aggregatorRegistry = new prometheus.AggregatorRegistry();
-
-				const app = express();
-				app.set('trust proxy', TRUST_PROXY);
-				app.disable('x-powered-by');
-				app.get('/ping', (_req, res) => res.send('OK'));
-
-				// Avoid stacking up fetching cluster metrics fetch attempts by making sure we
-				// only ever have one in progress at a time.
-				let inProgessClusterMetrics: undefined | Promise<string>;
-				const getClusterMetrics = async () => {
-					inProgessClusterMetrics ??= aggregatorRegistry.clusterMetrics();
-					try {
-						return await inProgessClusterMetrics;
-					} finally {
-						inProgessClusterMetrics = undefined;
+			await new Promise<void>((resolve) => api.listen(VPN_API_PORT, resolve));
+			serviceLogger.info(
+				`spawning ${VPN_INSTANCE_COUNT} worker${
+					VPN_INSTANCE_COUNT > 1 ? 's' : ''
+				}`,
+			);
+			for (let i = 0; i < VPN_INSTANCE_COUNT; i++) {
+				const workerId = i + 1;
+				const restartWorker = (code?: number, signal?: string) => {
+					if (signal != null) {
+						serviceLogger.crit(
+							`worker-${workerId} killed with signal ${signal}`,
+						);
 					}
+					if (code != null) {
+						serviceLogger.crit(`worker-${workerId} exited with code ${code}`);
+					}
+					const env = {
+						...process.env,
+						WORKER_ID: workerId,
+						SERVICE_ID: serviceInstance.getId(),
+						VPN_VERBOSE_LOGS: verbose,
+					};
+					cluster.fork(env).on('exit', restartWorker);
 				};
+				restartWorker();
+			}
 
-				const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
-				const mean = (arr: number[]) =>
-					arr.length > 0 ? sum(arr) / arr.length : 0;
-				app
-					.get('/cluster_metrics', async (_req, res) => {
-						for (const clientMetrics of workerMetrics.values()) {
-							metrics.histogram(
-								Metrics.SessionRxBitrate,
-								mean(clientMetrics.rxBitrate),
-							);
-							metrics.histogram(
-								Metrics.SessionTxBitrate,
-								mean(clientMetrics.txBitrate),
-							);
-						}
-						try {
-							const [promMetrics, clusterMetrics] = await Promise.all([
-								pTimeout(prometheus.register.metrics(), {
-									milliseconds: METRICS_TIMEOUT,
-								}),
-								pTimeout(getClusterMetrics(), {
-									milliseconds: METRICS_TIMEOUT,
-								}),
-							]);
-							res.set('Content-Type', prometheus.register.contentType);
-							res.write(promMetrics);
-							res.write('\n');
-							res.write(clusterMetrics);
-							res.end();
-							workerMetrics.clear();
-							metrics.reset(Metrics.SessionRxBitrate);
-							metrics.reset(Metrics.SessionTxBitrate);
-						} catch (err) {
-							serviceLogger.warning(`error in /cluster_metrics: ${err}`);
-							res.status(500).send();
-						}
-					})
-					.listen(8080);
+			const aggregatorRegistry = new prometheus.AggregatorRegistry();
 
-				return [app, metrics];
-			});
+			const app = express();
+			app.set('trust proxy', TRUST_PROXY);
+			app.disable('x-powered-by');
+			app.get('/ping', (_req, res) => res.send('OK'));
+
+			// Avoid stacking up fetching cluster metrics fetch attempts by making sure we
+			// only ever have one in progress at a time.
+			let inProgessClusterMetrics: undefined | Promise<string>;
+			const getClusterMetrics = async () => {
+				inProgessClusterMetrics ??= aggregatorRegistry.clusterMetrics();
+				try {
+					return await inProgessClusterMetrics;
+				} finally {
+					inProgessClusterMetrics = undefined;
+				}
+			};
+
+			const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
+			const mean = (arr: number[]) =>
+				arr.length > 0 ? sum(arr) / arr.length : 0;
+			app
+				.get('/cluster_metrics', async (_req, res) => {
+					for (const clientMetrics of workerMetrics.values()) {
+						metrics.histogram(
+							Metrics.SessionRxBitrate,
+							mean(clientMetrics.rxBitrate),
+						);
+						metrics.histogram(
+							Metrics.SessionTxBitrate,
+							mean(clientMetrics.txBitrate),
+						);
+					}
+					try {
+						const [promMetrics, clusterMetrics] = await Promise.all([
+							pTimeout(prometheus.register.metrics(), {
+								milliseconds: METRICS_TIMEOUT,
+							}),
+							pTimeout(getClusterMetrics(), {
+								milliseconds: METRICS_TIMEOUT,
+							}),
+						]);
+						res.set('Content-Type', prometheus.register.contentType);
+						res.write(promMetrics);
+						res.write('\n');
+						res.write(clusterMetrics);
+						res.end();
+						workerMetrics.clear();
+						metrics.reset(Metrics.SessionRxBitrate);
+						metrics.reset(Metrics.SessionTxBitrate);
+					} catch (err) {
+						serviceLogger.warning(`error in /cluster_metrics: ${err}`);
+						res.status(500).send();
+					}
+				})
+				.listen(8080);
+
+			return [app, metrics];
 		})
 		.catch((err) => {
 			console.error('Error starting master:', err);

@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import Bluebird from 'bluebird';
+import pTimeout, { TimeoutError } from 'p-timeout';
 import type { ChildProcess } from 'child_process';
 import { spawn } from 'child_process';
 import split from 'split';
@@ -328,9 +328,7 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 			} else if (elapsedTime < KILL_TIMEOUT) {
 				error = kill('SIGKILL');
 			} else {
-				throw new Bluebird.TimeoutError(
-					'orphan openvpn process did not go away',
-				);
+				throw new TimeoutError('orphan openvpn process did not go away');
 			}
 		}
 		// the signal was unsuccessful, the pid no longer exists;
@@ -361,23 +359,26 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 
 	private async waitForStart(since: number = Date.now()) {
 		try {
-			await new Bluebird((resolve, reject) => {
-				const socket = new net.Socket();
-				const errorHandler = () => {
-					socket.destroy();
-					reject(new Error('socket not ready'));
-				};
-				const readyHandler = () => {
-					socket.end();
-					resolve();
-				};
-				socket.on('ready', readyHandler);
-				socket.on('error', errorHandler);
-				socket.on('timeout', errorHandler);
-				socket.connect(this.mgtPort, this.mgtHost);
-			}).timeout(STARTUP_TIMEOUT - (Date.now() - since));
+			await pTimeout(
+				new Promise<void>((resolve, reject) => {
+					const socket = new net.Socket();
+					const errorHandler = () => {
+						socket.destroy();
+						reject(new Error('socket not ready'));
+					};
+					const readyHandler = () => {
+						socket.end();
+						resolve();
+					};
+					socket.on('ready', readyHandler);
+					socket.on('error', errorHandler);
+					socket.on('timeout', errorHandler);
+					socket.connect(this.mgtPort, this.mgtHost);
+				}),
+				{ milliseconds: STARTUP_TIMEOUT - (Date.now() - since) },
+			);
 		} catch (err) {
-			if (err instanceof Bluebird.TimeoutError) {
+			if (err instanceof TimeoutError) {
 				throw err;
 			}
 			await this.waitForStart(since);
