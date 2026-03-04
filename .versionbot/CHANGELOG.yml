@@ -1,4 +1,42 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v21
+      hash: 70bf2367cbaabc42c2a782212eb2aa5e124a8220
+      body: |
+        Update balena/open-balena-base from 20.2.8 to 21.0.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Update Node.js to v24.14.0
+              hash: 0e5fc2dca054e7b6751f68b6d69e7ca51be9db01
+              body: |
+                Update node from 24.13.1 to 24.14.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-21.0.1
+          title: ""
+          date: 2026-02-24T16:24:20.567Z
+        - commits:
+            - subject: Remove DELTA_S3_HOST from HOSTS_CONFIG
+              hash: c75a3919ff744e6a4e4b42f45719cfb666a390a7
+              body: ""
+              footer:
+                Change-type: major
+                change-type: major
+              author: joshbwlng
+              nested: []
+          version: open-balena-base-21.0.0
+          title: ""
+          date: 2026-02-19T02:40:33.603Z
+  version: 12.3.9
+  title: ""
+  date: 2026-03-04T13:54:24.747Z
+- commits:
     - subject: Reduce bluebird usage to tests
       hash: 3464dbbfa432b860ca4bc84c8fec07cd5610d9e6
       body: ""
