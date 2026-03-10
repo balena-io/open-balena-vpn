@@ -35,7 +35,7 @@ import { VpnManager, type VpnClientBytecountData } from './utils/openvpn.js';
 import { Netmask } from './utils/netmask.js';
 import { Metrics } from './utils/metrics.js';
 import { HAProxy } from './utils/haproxy.js';
-import type { BitrateMessage } from './app.js';
+import type { BitrateMessage } from './init-primary.js';
 
 const getInstanceSubnet = (instanceId: number) => {
 	const network = new Netmask(VPN_BASE_IP, VPN_BASE_MASK);

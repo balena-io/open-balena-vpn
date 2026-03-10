@@ -15,8 +15,6 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import './init.js';
-
 import { metrics } from '@balena/node-metrics-gatherer';
 import cluster from 'cluster';
 import express from 'express';
@@ -35,15 +33,18 @@ import {
 	VPN_VERBOSE_LOGS,
 } from './utils/config.js';
 
-import proxyWorker from './proxy-worker.js';
-import vpnWorker from './vpn-worker.js';
-import { intVar } from '@balena/env-parsing';
-import { describeMetrics, Metrics } from './utils/metrics.js';
+import { describePrimaryMetrics, Metrics } from './utils/metrics.js';
 import { service } from './utils/service.js';
+
+if (!cluster.isPrimary) {
+	throw new Error(
+		'init-primary should only be imported by the primary cluster process',
+	);
+}
 
 const masterLogger = getLogger('master');
 
-describeMetrics();
+describePrimaryMetrics();
 
 export interface BitrateMessage {
 	type: 'bitrate';
@@ -54,90 +55,91 @@ export interface BitrateMessage {
 	};
 }
 
-if (cluster.isPrimary) {
-	interface WorkerMetric {
-		rxBitrate: Array<BitrateMessage['data']['rxBitrate']>;
-		txBitrate: Array<BitrateMessage['data']['txBitrate']>;
+interface WorkerMetric {
+	rxBitrate: Array<BitrateMessage['data']['rxBitrate']>;
+	txBitrate: Array<BitrateMessage['data']['txBitrate']>;
+}
+const workerMetrics = new Map<string, WorkerMetric>();
+
+let verbose = VPN_VERBOSE_LOGS;
+
+type WorkerState = {
+	instanceId: number;
+	finished: boolean;
+};
+const workerStates: { [instanceId: number]: WorkerState } = {};
+
+process.on('SIGUSR2', () => {
+	masterLogger.notice('caught SIGUSR2, toggling log verbosity');
+	verbose = !verbose;
+	for (const clusterWorker of Object.values(cluster.workers ?? {})) {
+		clusterWorker?.send('toggleVerbosity');
 	}
-	const workerMetrics = new Map<string, WorkerMetric>();
+});
 
-	let verbose = VPN_VERBOSE_LOGS;
-
-	type WorkerState = {
-		instanceId: number;
-		finished: boolean;
-	};
-	const workerStates: { [instanceId: number]: WorkerState } = {};
-
-	process.on('SIGUSR2', () => {
-		masterLogger.notice('caught SIGUSR2, toggling log verbosity');
-		verbose = !verbose;
-		for (const clusterWorker of Object.values(cluster.workers ?? {})) {
-			clusterWorker?.send('toggleVerbosity');
-		}
-	});
-
-	process.on('SIGTERM', () => {
-		masterLogger.notice('received SIGTERM');
-		for (const clusterWorker of Object.values(cluster.workers ?? {})) {
-			clusterWorker?.send('prepareShutdown');
-		}
-		masterLogger.notice(
-			`waiting ${DEFAULT_SIGTERM_TIMEOUT}ms for workers to finish`,
-		);
-	});
-
-	cluster.on('message', (_worker, { data, type }: BitrateMessage) => {
-		if (type === 'bitrate') {
-			let workerMetric = workerMetrics.get(data.uuid);
-			if (workerMetric == null) {
-				workerMetric = {
-					rxBitrate: [],
-					txBitrate: [],
-				};
-				workerMetrics.set(data.uuid, workerMetric);
-			}
-			workerMetric.rxBitrate.push(data.rxBitrate);
-			workerMetric.txBitrate.push(data.txBitrate);
-		}
-	});
-
-	cluster.on('message', (_worker, msg: { type: string; data: WorkerState }) => {
-		const { data, type } = msg;
-
-		// worker finished connection draining
-		if (type === 'drain') {
-			try {
-				workerStates[data.instanceId] = data;
-				const drainCount = Object.keys(workerStates).length;
-				masterLogger.notice(
-					`total: ${VPN_INSTANCE_COUNT} drained: ${drainCount}`,
-				);
-				for (const key in workerStates) {
-					if (key != null) {
-						const value: WorkerState = workerStates[key];
-						const workerState = value.finished;
-						masterLogger.notice(`instanceId:${key} finished:${workerState}`);
-					}
-				}
-				if (drainCount >= VPN_INSTANCE_COUNT) {
-					masterLogger.notice(`all ${drainCount} worker(s) drained`);
-					process.exit(0);
-				}
-			} catch (err) {
-				masterLogger.warning(`${err} handling message from worker`);
-			}
-		} else {
-			return;
-		}
-	});
-
+process.on('SIGTERM', () => {
+	masterLogger.notice('received SIGTERM');
+	for (const clusterWorker of Object.values(cluster.workers ?? {})) {
+		clusterWorker?.send('prepareShutdown');
+	}
 	masterLogger.notice(
-		`open-balena-vpn@${VERSION} process started with pid=${process.pid}`,
+		`waiting ${DEFAULT_SIGTERM_TIMEOUT}ms for workers to finish`,
 	);
-	masterLogger.debug('registering as service instance...');
-	service
-		.wrap({ ipAddress: VPN_SERVICE_ADDRESS }, async (serviceInstance) => {
+});
+
+cluster.on('message', (_worker, { data, type }: BitrateMessage) => {
+	if (type === 'bitrate') {
+		let workerMetric = workerMetrics.get(data.uuid);
+		if (workerMetric == null) {
+			workerMetric = {
+				rxBitrate: [],
+				txBitrate: [],
+			};
+			workerMetrics.set(data.uuid, workerMetric);
+		}
+		workerMetric.rxBitrate.push(data.rxBitrate);
+		workerMetric.txBitrate.push(data.txBitrate);
+	}
+});
+
+cluster.on('message', (_worker, msg: { type: string; data: WorkerState }) => {
+	const { data, type } = msg;
+
+	// worker finished connection draining
+	if (type === 'drain') {
+		try {
+			workerStates[data.instanceId] = data;
+			const drainCount = Object.keys(workerStates).length;
+			masterLogger.notice(
+				`total: ${VPN_INSTANCE_COUNT} drained: ${drainCount}`,
+			);
+			for (const key in workerStates) {
+				if (key != null) {
+					const value: WorkerState = workerStates[key];
+					const workerState = value.finished;
+					masterLogger.notice(`instanceId:${key} finished:${workerState}`);
+				}
+			}
+			if (drainCount >= VPN_INSTANCE_COUNT) {
+				masterLogger.notice(`all ${drainCount} worker(s) drained`);
+				process.exit(0);
+			}
+		} catch (err) {
+			masterLogger.warning(`${err} handling message from worker`);
+		}
+	} else {
+		return;
+	}
+});
+
+masterLogger.notice(
+	`open-balena-vpn@${VERSION} process started with pid=${process.pid}`,
+);
+masterLogger.debug('registering as service instance...');
+try {
+	await service.wrap(
+		{ ipAddress: VPN_SERVICE_ADDRESS },
+		async (serviceInstance) => {
 			const serviceLogger = getLogger('master', serviceInstance.getId());
 			serviceLogger.info(
 				`registered as service instance with id=${serviceInstance.getId()} ipAddress=${VPN_SERVICE_ADDRESS}`,
@@ -232,27 +234,9 @@ if (cluster.isPrimary) {
 				.listen(8080);
 
 			return [app, metrics];
-		})
-		.catch((err) => {
-			console.error('Error starting master:', err);
-			process.exit(1);
-		});
-}
-
-if (cluster.isWorker) {
-	// Ensure the prom-client worker listener is registered by instantiating the class
-	// tslint:disable-next-line:no-unused-expression-chai
-	new prometheus.AggregatorRegistry();
-
-	const instanceId = intVar('WORKER_ID');
-	const serviceId = intVar('SERVICE_ID');
-	getLogger('worker', serviceId, instanceId).notice(
-		`process started with pid=${process.pid}`,
+		},
 	);
-	vpnWorker(instanceId, serviceId)
-		.then(() => proxyWorker(instanceId, serviceId))
-		.catch((err) => {
-			console.error('Error starting worker:', err);
-			process.exit(1);
-		});
+} catch (err) {
+	console.error('Error starting master:', err);
+	process.exit(1);
 }

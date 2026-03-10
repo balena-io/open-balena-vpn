@@ -29,10 +29,10 @@ fi
 
 command="$(command -v node)"
 args=("--enable-source-maps")
-entrypoint="build/src/app.js"
+entrypoint="build/src/init.js"
 if [[ ${NODE_ENV} = "development" ]]; then
 	args=('--enable-source-maps' '--import @swc-node/register/esm-register')
-	entrypoint="src/app.ts"
+	entrypoint="src/init.ts"
 fi
 
 if [[ ! -x ${command} ]] || [[ ! -f ${entrypoint} ]]; then

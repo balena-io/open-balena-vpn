@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import '../src/init.js';
+import '../src/init-instrumentation.js';
 
 import Bluebird from 'bluebird';
 import * as chai from 'chai';
