@@ -302,8 +302,6 @@ const worker = (instanceId: number, serviceId: number) => {
 		`process started with pid=${process.pid}`,
 	);
 
-	const tunnel = new Tunnel(instanceId, serviceId);
-	tunnel.start(VPN_CONNECT_PROXY_PORT);
-	return tunnel;
+	new Tunnel(instanceId, serviceId).start(VPN_CONNECT_PROXY_PORT);
 };
 export default worker;

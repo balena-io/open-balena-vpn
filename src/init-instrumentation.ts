@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2018 Balena Ltd.
+	Copyright (C) 2025 Balena Ltd.
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -15,14 +15,15 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import './init-instrumentation.js';
+import { set } from '@balena/es-version';
+// Set the desired es version for downstream modules that support it, before we import any
+set('es2021');
 
-import cluster from 'cluster';
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { ExpressInstrumentation } from '@opentelemetry/instrumentation-express';
+import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 
-if (cluster.isPrimary) {
-	await import('./init-primary.js');
-}
-
-if (cluster.isWorker) {
-	await import('./init-worker.js');
-}
+const sdk = new NodeSDK({
+	instrumentations: [new ExpressInstrumentation(), new HttpInstrumentation()],
+});
+sdk.start();
