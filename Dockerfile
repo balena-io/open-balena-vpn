@@ -4,7 +4,6 @@ FROM base AS builder
 COPY package.json package-lock.json /usr/src/app/
 RUN npm ci && npm cache clean --force 2>/dev/null
 COPY tsconfig.json tsconfig.dev.json /usr/src/app/
-COPY typings /usr/src/app/typings
 COPY test /usr/src/app/test
 COPY src /usr/src/app/src
 RUN npm run build
