@@ -9,7 +9,6 @@ services:
     volumes:
       - ./src:/usr/src/app/src:ro
       - ./test:/usr/src/app/test:ro
-      - ./typings:/usr/src/app/typings:ro
       - ./tsconfig.json:/usr/src/app/tsconfig.json:ro
     extra_hosts:
       - "deadbeef1.vpn:127.0.0.1"
