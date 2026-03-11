@@ -1,4 +1,16 @@
 - commits:
+    - subject: Remove unnecessary cluster typings override
+      hash: da91f97526f8126794fd131ecf27a259b1dd4bd1
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.12
+  title: ""
+  date: 2026-03-11T12:30:22.000Z
+- commits:
     - subject: Update golang Docker tag to v1.26.1
       hash: beba6d567eefa9cd8bb11c2a1be964bc3515006c
       body: |
