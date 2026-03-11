@@ -1,4 +1,19 @@
 - commits:
+    - subject: Separate primary/worker initialization to avoid unnecessary imports
+      hash: fd94ea74ca429c3477881eeda34f18c1d70574a5
+      body: |
+        This means that the primary process no longer has the overhead of
+        importing dependencies that are only necessary for worker processes and
+        vice versa the worker process doesn't import primary only dependencies
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.13
+  title: ""
+  date: 2026-03-11T17:02:49.727Z
+- commits:
     - subject: Remove unnecessary cluster typings override
       hash: da91f97526f8126794fd131ecf27a259b1dd4bd1
       body: ""
