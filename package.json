@@ -43,7 +43,7 @@
     "winston": "^3.19.0"
   },
   "devDependencies": {
-    "@balena/lint": "^9.3.12",
+    "@balena/lint": "^9.4.0",
     "@swc-node/register": "^1.11.1",
     "@swc/core": "^1.15.7",
     "@types/bluebird": "^3.5.42",
@@ -67,7 +67,7 @@
     "mocha": "^11.7.5",
     "nock": "^13.5.6",
     "openvpn-client": "0.0.2",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   },
   "engines": {
     "node": "^24.5.0",
