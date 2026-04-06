@@ -1,4 +1,16 @@
 - commits:
+    - subject: Update to typescript 6.x / es2025
+      hash: 60a9850f5a35e0bb8c005e48a764564c1e0de45b
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.15
+  title: ""
+  date: 2026-04-06T17:54:01.652Z
+- commits:
     - subject: Lock file maintenance
       hash: 8d3f1c48e14e40ebd5c28c3d4d7985de1e8364d9
       body: |
