@@ -1,4 +1,17 @@
 - commits:
+    - subject: Lock file maintenance
+      hash: 73dfb432ebedda870e78fe5ead9260497565ce35
+      body: |
+        Update 
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.19
+  title: ""
+  date: 2026-04-13T00:20:14.153Z
+- commits:
     - subject: Update golang Docker tag to v1.26.2
       hash: fb1679f3fb5da52c61f056d6f72e042873164082
       body: |
