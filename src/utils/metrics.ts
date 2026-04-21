@@ -37,19 +37,6 @@ export const describeWorkerMetrics = () => {
 		'total tx bytes across all vpn sessions',
 	);
 	metrics.counter(Metrics.TxBytes, 0);
-	const min = 60;
-	const hour = 60 * min;
-	const day = 24 * hour;
-	const week = 7 * day;
-	const month = 4 * week;
-	const durationBuckets = [1, 10, min, hour, day, week, month];
-	metrics.describe.histogram(
-		Metrics.SessionDuration,
-		'histogram showing duration of vpn sessions',
-		{
-			buckets: durationBuckets,
-		},
-	);
 	metrics.describe.gauge(
 		Metrics.ActiveTunnels,
 		'current tunnels to vpn devices',
@@ -111,5 +98,27 @@ export const describePrimaryMetrics = () => {
 		Metrics.SessionTxBitrate,
 		'histogram of average tx rate per vpn client',
 		{ buckets: bitrateBuckets },
+	);
+	const min = 60;
+	const hour = 60 * min;
+	const day = 24 * hour;
+	const week = 7 * day;
+	const durationBuckets = [
+		1 * min,
+		5 * min,
+		15 * min,
+		1 * hour,
+		6 * hour,
+		12 * hour,
+		1 * day,
+		1 * week, // 1w  - very stable long-running sessions, could be affected by deployment restarts, but still worth tracking
+	];
+
+	metrics.describe.histogram(
+		Metrics.SessionDuration,
+		'histogram showing duration of vpn sessions',
+		{
+			buckets: durationBuckets,
+		},
 	);
 };
