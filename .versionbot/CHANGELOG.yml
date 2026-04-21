@@ -1,4 +1,20 @@
 - commits:
+    - subject: Retry local tunnel connection if the device is linked to this instance
+      hash: bd5250f155fd46de04e0b6b5c62a26dae5403e9a
+      body: |
+        This helps with a potential race condition where the local dns lookup
+        fails for a device that has just connected and been marked as so in the
+        API but the status file has not yet been written and hence the dns
+        cannot resolve the device uuid yet
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.20
+  title: ""
+  date: 2026-04-21T13:44:34.741Z
+- commits:
     - subject: Lock file maintenance
       hash: 73dfb432ebedda870e78fe5ead9260497565ce35
       body: |
