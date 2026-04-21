@@ -1,4 +1,17 @@
 - commits:
+    - subject: Lock file maintenance
+      hash: df9a2850d2dae45a435bfb8ece8182cd69f5d052
+      body: |
+        Update 
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.21
+  title: ""
+  date: 2026-04-21T14:53:32.145Z
+- commits:
     - subject: Retry local tunnel connection if the device is linked to this instance
       hash: bd5250f155fd46de04e0b6b5c62a26dae5403e9a
       body: |
