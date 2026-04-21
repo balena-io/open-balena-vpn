@@ -26,6 +26,7 @@ import {
 	VPN_CONNECT_PROXY_PORT,
 	VPN_FORWARD_PROXY_PORT,
 	VPN_SERVICE_API_KEY,
+	VPN_STATUS_FILE_WRITE_INTERVAL_SECONDS,
 } from './utils/config.js';
 import * as errors from './utils/errors.js';
 import { Metrics } from './utils/metrics.js';
@@ -35,8 +36,18 @@ import {
 	getDeviceVpnHost,
 } from './utils/device.js';
 import { context, propagation, trace } from '@opentelemetry/api';
+import { setTimeout } from 'timers/promises';
 
 const HTTP_500 = 'HTTP/1.0 500 Internal Server Error\r\n\r\n';
+
+const deviceIsLocal = async (uuid: string) => {
+	try {
+		await dns.lookup(`${uuid}.vpn`);
+		return true;
+	} catch {
+		return false;
+	}
+};
 
 class Tunnel extends nodeTunnel.Tunnel {
 	private readonly logger: winston.Logger;
@@ -79,6 +90,25 @@ class Tunnel extends nodeTunnel.Tunnel {
 		});
 	}
 
+	private async localConnect(
+		port: number,
+		host: string,
+		client: net.Socket,
+		req: nodeTunnel.Request,
+	) {
+		this.logger.info(`connecting to ${host}:${port}`);
+		const socket = await super.connect(port, host, client, req);
+		metrics.inc(Metrics.ActiveTunnels);
+		metrics.inc(Metrics.TotalTunnels);
+		socket.on('close', (hadError) => {
+			metrics.dec(Metrics.ActiveTunnels);
+			if (hadError) {
+				metrics.inc(Metrics.TunnelErrors);
+			}
+		});
+		return socket;
+	}
+
 	public connect = async (
 		port: number,
 		host: string,
@@ -87,28 +117,9 @@ class Tunnel extends nodeTunnel.Tunnel {
 	) => {
 		const { uuid, auth } = this.parseRequest(req);
 
-		const deviceIsLocal = async () => {
-			try {
-				await dns.lookup(`${uuid}.vpn`);
-				return true;
-			} catch {
-				return false;
-			}
-		};
-
 		try {
-			if (await deviceIsLocal()) {
-				this.logger.info(`connecting to ${host}:${port}`);
-				const socket = await super.connect(port, host, client, req);
-				metrics.inc(Metrics.ActiveTunnels);
-				metrics.inc(Metrics.TotalTunnels);
-				socket.on('close', (hadError) => {
-					metrics.dec(Metrics.ActiveTunnels);
-					if (hadError) {
-						metrics.inc(Metrics.TunnelErrors);
-					}
-				});
-				return socket;
+			if (await deviceIsLocal(uuid)) {
+				return await this.localConnect(port, host, client, req);
 			} else {
 				const vpnHost = await getDeviceVpnHost(uuid, auth);
 				if (vpnHost == null) {
@@ -118,6 +129,12 @@ class Tunnel extends nodeTunnel.Tunnel {
 					);
 				}
 				if (vpnHost.id === this.serviceId) {
+					// Add a delay matching the interval for writing the VPN status file to allow time for the status file to be updated
+					// in case the previous failure to find locally was due to a race condition where the status file had not yet been updated
+					await setTimeout(VPN_STATUS_FILE_WRITE_INTERVAL_SECONDS * 1000);
+					if (await deviceIsLocal(uuid)) {
+						return await this.localConnect(port, host, client, req);
+					}
 					client.end(HTTP_500);
 					throw new errors.HandledTunnelingError(
 						'device is not available on registered service instance',
