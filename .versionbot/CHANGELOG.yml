@@ -1,4 +1,56 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v21.0.17
+      hash: c03338d96a6c83cc365086a4929f57f488294550
+      body: |
+        Update balena/open-balena-base from 21.0.14 to 21.0.17
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Update debian Docker tag to trixie-20260505
+              hash: 9fb03486b35522a9e6063899ec449019dfd94f15
+              body: |
+                Update debian from trixie-20260421 to trixie-20260505
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-21.0.17
+          title: ""
+          date: 2026-05-09T16:17:10.195Z
+        - commits:
+            - subject: Update dependency just-containers/s6-overlay to v3.2.3.0
+              hash: bc01af916911e6aaeb6f115adb0edabb295481ff
+              body: |
+                Update just-containers/s6-overlay from 3.2.2.0 to 3.2.3.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-21.0.16
+          title: ""
+          date: 2026-05-09T15:37:18.283Z
+        - commits:
+            - subject: Update debian Docker tag to trixie-20260421
+              hash: 48ba4b99a08f273d13c8ebb82b27ed248452c19f
+              body: |
+                Update debian from trixie-20260406 to trixie-20260421
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-21.0.15
+          title: ""
+          date: 2026-04-22T02:50:29.237Z
+  version: 12.3.25
+  title: ""
+  date: 2026-05-11T19:57:35.006Z
+- commits:
     - subject: Update golang Docker tag to v1.26.3
       hash: 7c4f03189b98966df3da7ff43225b0096694d6d9
       body: |
