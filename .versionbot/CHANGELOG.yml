@@ -1,4 +1,32 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v21.0.19
+      hash: 1e7f815d9b1fdf1bbd1cd8a7e42b43f0ce9bce2a
+      body: |
+        Update balena/open-balena-base from 21.0.18 to 21.0.19
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Remove DSA key references
+              hash: 146c0d1d220f2c3e76872a4ce99ba7cdbac3670c
+              body: |
+                We recently dropped DSA key generation from cert-manager
+                as the latest ssh-keygen no longer supports it. Removing
+                references to those keys from this codebase as well.
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: joshbwlng
+              nested: []
+          version: open-balena-base-21.0.19
+          title: ""
+          date: 2026-05-13T14:46:58.611Z
+  version: 12.3.28
+  title: ""
+  date: 2026-05-15T15:00:01.395Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v21.0.18
       hash: cce728ef49813ba0485ac4e0e766c1efab213cc9
       body: |
