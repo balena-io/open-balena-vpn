@@ -1,4 +1,23 @@
 - commits:
+    - subject: Define session_duration in the primary instead of workers
+      hash: 1b200fa5ae7e2e2cff3dce4d75c05de1ad5c24ce
+      body: |
+        The vpn_session_duration histogram was using default Prometheus
+        buckets instead of the configured duration buckets - because
+        this was in the worker configuration/definition instead of
+        the primary where it is called. Also, update bucket boundaries
+        to meaningful durations for VPN sessions.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: jaomaloy <jan.maloy@balena.io>
+        signed-off-by: jaomaloy <jan.maloy@balena.io>
+      author: jaomaloy
+      nested: []
+  version: 12.3.29
+  title: ""
+  date: 2026-06-01T15:58:32.193Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v21.0.19
       hash: 1e7f815d9b1fdf1bbd1cd8a7e42b43f0ce9bce2a
       body: |
