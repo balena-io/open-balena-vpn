@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update opentelemetry-js monorepo to v0.218.0
+      hash: 664b0048a3772834393ecdafc4a3567abd928a9e
+      body: |
+        Update @opentelemetry/instrumentation-http from 0.208.0 to 0.218.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.30
+  title: ""
+  date: 2026-06-04T15:08:37.981Z
+- commits:
     - subject: Define session_duration in the primary instead of workers
       hash: 1b200fa5ae7e2e2cff3dce4d75c05de1ad5c24ce
       body: |
