@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency debian_13/haproxy to v3.0.11-1+deb13u3
+      hash: 9ae1e081f9d8c79a2b453d36f6692c76a79fbc4a
+      body: |
+        Update debian_13/haproxy from 3.0.11-1+deb13u2 to 3.0.11-1+deb13u3
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.32
+  title: ""
+  date: 2026-06-04T18:16:46.216Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v21.0.22
       hash: 81adb8d50f9df66c2bcfa50f7b130d96a5aae7b4
       body: |
