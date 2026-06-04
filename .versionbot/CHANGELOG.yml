@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update golang Docker tag to v1.26.4
+      hash: 6167fad127358711f19cfffb1490381769a53dfb
+      body: |
+        Update golang from 1.26.3 to 1.26.4
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.34
+  title: ""
+  date: 2026-06-04T20:06:29.849Z
+- commits:
     - subject: Update dependency debian_13/openvpn to v2.6.14-1+deb13u2
       hash: 4fe51720b418d953bb5fcb216834935f6210a0e8
       body: |
