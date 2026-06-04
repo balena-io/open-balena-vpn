@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency debian_13/openvpn to v2.6.14-1+deb13u2
+      hash: 4fe51720b418d953bb5fcb216834935f6210a0e8
+      body: |
+        Update debian_13/openvpn from 2.6.14-1+deb13u1 to 2.6.14-1+deb13u2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.33
+  title: ""
+  date: 2026-06-04T19:01:27.426Z
+- commits:
     - subject: Update dependency debian_13/haproxy to v3.0.11-1+deb13u3
       hash: 9ae1e081f9d8c79a2b453d36f6692c76a79fbc4a
       body: |
