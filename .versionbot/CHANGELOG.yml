@@ -1,4 +1,56 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v21.0.22
+      hash: 81adb8d50f9df66c2bcfa50f7b130d96a5aae7b4
+      body: |
+        Update balena/open-balena-base from 21.0.19 to 21.0.22
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Update Node.js to v24.16.0
+              hash: b7bcd031d09ba9bd37bf189f70a7ee530e8d94f0
+              body: |
+                Update node from 24.15.0 to 24.16.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-21.0.22
+          title: ""
+          date: 2026-05-21T14:04:30.230Z
+        - commits:
+            - subject: Update debian:trixie-20260518 Docker digest to 4ae6766
+              hash: 9e2fcd0e710d2b16071e6c2240ddd6496e4f9cd2
+              body: |
+                Update debian
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-21.0.21
+          title: ""
+          date: 2026-05-20T02:54:38.405Z
+        - commits:
+            - subject: Update debian Docker tag to trixie-20260518
+              hash: b5d245358558539be381f145dced9b508a5b2b93
+              body: |
+                Update debian from trixie-20260505 to trixie-20260518
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-21.0.20
+          title: ""
+          date: 2026-05-19T23:20:57.863Z
+  version: 12.3.31
+  title: ""
+  date: 2026-06-04T16:28:49.300Z
+- commits:
     - subject: Update opentelemetry-js monorepo to v0.218.0
       hash: 664b0048a3772834393ecdafc4a3567abd928a9e
       body: |
