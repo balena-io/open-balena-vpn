@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update opentelemetry-js-contrib monorepo to v0.66.0
+      hash: 04dd2d74eea276efe3c70aee73f86cf62aa9a846
+      body: |
+        Update @opentelemetry/instrumentation-express from 0.57.1 to 0.66.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.36
+  title: ""
+  date: 2026-06-05T09:35:13.278Z
+- commits:
     - subject: Update dependency @opentelemetry/sdk-node to v0.217.0 [SECURITY]
       hash: 92afd15332f96cca812af1526f18422a0b29c270
       body: |
