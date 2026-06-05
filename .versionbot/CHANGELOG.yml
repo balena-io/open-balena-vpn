@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @opentelemetry/sdk-node to v0.217.0 [SECURITY]
+      hash: 92afd15332f96cca812af1526f18422a0b29c270
+      body: |
+        Update @opentelemetry/sdk-node from 0.208.0 to 0.217.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.35
+  title: ""
+  date: 2026-06-05T08:03:08.676Z
+- commits:
     - subject: Update golang Docker tag to v1.26.4
       hash: 6167fad127358711f19cfffb1490381769a53dfb
       body: |
