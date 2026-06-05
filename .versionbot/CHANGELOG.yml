@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update opentelemetry-js monorepo to v0.218.0
+      hash: df37401bc7db1c2513ddcc20fdde0fec9c5dd690
+      body: |
+        Update @opentelemetry/sdk-node from 0.217.0 to 0.218.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.37
+  title: ""
+  date: 2026-06-05T11:33:54.502Z
+- commits:
     - subject: Update opentelemetry-js-contrib monorepo to v0.66.0
       hash: 04dd2d74eea276efe3c70aee73f86cf62aa9a846
       body: |
