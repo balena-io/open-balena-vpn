@@ -6,6 +6,8 @@ services:
     cap_add:
       - NET_ADMIN
       - SYS_RESOURCE # Required for haproxy's config setting 'ulimit-n 1048576'
+    devices:
+      - /dev/net/tun:/dev/net/tun
     volumes:
       - ./src:/usr/src/app/src:ro
       - ./test:/usr/src/app/test:ro
@@ -52,7 +54,7 @@ services:
 
         mkdir -p /dev/net /run/openvpn /run/openvpn-client /run/openvpn-server
 
-        if [ ! -c /dev/net/tun ]; then
+        if [ ! -e /dev/net/tun ]; then
           mknod /dev/net/tun c 10 200
         fi
 
