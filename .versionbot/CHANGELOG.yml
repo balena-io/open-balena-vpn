@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency balena-sdk to ^23.2.1
+      hash: 9ea41a2a3a652340a12d206c755ea111c6e4cd6a
+      body: |
+        Update balena-sdk from 23.2.1 to 23.2.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.42
+  title: ""
+  date: 2026-06-06T20:47:36.389Z
+- commits:
     - subject: Update swc monorepo to ^1.15.33
       hash: ef63892030f7b9af00772ca8740d6e8ac12cc4c6
       body: |
