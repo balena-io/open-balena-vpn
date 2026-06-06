@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency balena-sdk to ^23.2.0
+      hash: 932211257c4e0f3ea6578c9f0a098deece99c3ad
+      body: |
+        Update balena-sdk from 23.2.0 to 23.2.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.40
+  title: ""
+  date: 2026-06-06T03:24:32.022Z
+- commits:
     - subject: Update dependency lint-staged to ^17.0.3
       hash: 9e71a52c7255b2f3cd2d9e82935ac707da4f51b4
       body: |
