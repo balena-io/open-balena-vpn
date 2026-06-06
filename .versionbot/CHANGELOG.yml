@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @balena/lint to ^9.4.1
+      hash: 2150c834bab7cb7111485ed958efe7cb5a4eaada
+      body: |
+        Update @balena/lint from 9.4.1 to 9.4.3
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.38
+  title: ""
+  date: 2026-06-06T00:48:51.687Z
+- commits:
     - subject: Update opentelemetry-js monorepo to v0.218.0
       hash: df37401bc7db1c2513ddcc20fdde0fec9c5dd690
       body: |
