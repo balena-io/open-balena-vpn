@@ -82,12 +82,6 @@ Both parameters must be specified to enable throttling. Rate formats supported:
 
 For troubleshooting throttling issues:
 
-* `LEARN_ADDRESS_DEBUG=1` - Enable detailed logging of tc operations
+* `LEARN_ADDRESS_DEBUG=true` - Enable detailed logging of tc operations
 * `LEARN_ADDRESS_STATE_DIR` - Custom state directory (default: `/var/lib/openvpn/tc-state`)
 * `LEARN_ADDRESS_LOG_DIR` - Custom log directory (default: `/var/log/openvpn`)
-
-### Production Considerations
-
-- Set `LEARN_ADDRESS_DEBUG=0` in production to minimize logging overhead
-- Monitor state directory growth (`/var/lib/openvpn/tc-state`)
-- Consider log rotation for debug logs when enabled
