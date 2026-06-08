@@ -1,4 +1,17 @@
 - commits:
+    - subject: Lock file maintenance
+      hash: c564e839cd687e5eec840864e9eaac8f12e20164
+      body: |
+        Update 
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.43
+  title: ""
+  date: 2026-06-08T20:07:13.223Z
+- commits:
     - subject: Update dependency balena-sdk to ^23.2.1
       hash: 9ea41a2a3a652340a12d206c755ea111c6e4cd6a
       body: |
