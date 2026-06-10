@@ -38,7 +38,7 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "split": "^1.0.1",
-    "telnet-client": "^1.4.11",
+    "telnet-client": "^2.0.0",
     "typed-error": "^3.2.2",
     "winston": "^3.19.0"
   },
