@@ -27,6 +27,6 @@ jobs:
       docker_images: balena/open-balena-vpn
       docker_runs_on: >
         {
-          "linux/amd64": ["self-hosted"],
+          "linux/amd64": ["self-hosted","X64"],
           "linux/arm64": ["self-hosted","ARM64"]
         }
