@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update golang:1.26.4 Docker digest to 11fd8f7
+      hash: adb01b37b358e844e3a0d1bf51133237f4943eb9
+      body: |
+        Update golang
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.45
+  title: ""
+  date: 2026-06-10T21:09:29.818Z
+- commits:
     - subject: Add 'X64' label to linux/amd64 docker runs
       hash: 367e6813f69a708723e9f1de260139ca99c3ed75
       body: |
