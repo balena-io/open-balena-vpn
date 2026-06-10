@@ -1,4 +1,17 @@
 - commits:
+    - subject: Add 'X64' label to linux/amd64 docker runs
+      hash: 367e6813f69a708723e9f1de260139ca99c3ed75
+      body: |
+        This ensures we only test on the target architecture.
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Kyle Harding
+      nested: []
+  version: 12.3.44
+  title: ""
+  date: 2026-06-10T20:09:25.762Z
+- commits:
     - subject: Lock file maintenance
       hash: c564e839cd687e5eec840864e9eaac8f12e20164
       body: |
