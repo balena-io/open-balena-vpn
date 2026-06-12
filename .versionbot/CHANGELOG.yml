@@ -1,4 +1,29 @@
 - commits:
+    - subject: Fix test-compose TUN device setup for Podman on macOS
+      hash: 87827cd9741752b9f8b6161f28f66c0478c01349
+      body: |
+        - Map /dev/net/tun from the host (Podman VM) into the container via the
+          `devices` key so mknod is skipped when the device already exists.
+        - Change the guard from `[ ! -c ... ]` (is a character device) to
+          `[ ! -e ... ]` (exists at all) to handle Podman on macOS, where the
+          mapped device may not be recognised as a char-device type by the shell
+          test even though it is present.
+
+        Requires the Podman Machine to be running in rootful mode:
+          podman machine stop
+          podman machine set --rootful
+          podman machine start
+
+        Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Harald Fischer
+      nested: []
+  version: 12.3.46
+  title: ""
+  date: 2026-06-12T15:16:08.189Z
+- commits:
     - subject: Update golang:1.26.4 Docker digest to 11fd8f7
       hash: adb01b37b358e844e3a0d1bf51133237f4943eb9
       body: |
