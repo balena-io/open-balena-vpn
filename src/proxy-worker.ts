@@ -129,11 +129,15 @@ class Tunnel extends nodeTunnel.Tunnel {
 					);
 				}
 				if (vpnHost.id === this.serviceId) {
-					// Add a delay matching the interval for writing the VPN status file to allow time for the status file to be updated
-					// in case the previous failure to find locally was due to a race condition where the status file had not yet been updated
-					await setTimeout(VPN_STATUS_FILE_WRITE_INTERVAL_SECONDS * 1000);
-					if (await deviceIsLocal(uuid)) {
-						return await this.localConnect(port, host, client, req);
+					// Poll until the status file is written with the newly connected device, or the deadline passes.
+					// A single fixed sleep of the full interval risks exceeding the upstream connection timeout.
+					const deadline =
+						Date.now() + VPN_STATUS_FILE_WRITE_INTERVAL_SECONDS * 1000;
+					while (Date.now() < deadline) {
+						await setTimeout(1000);
+						if (await deviceIsLocal(uuid)) {
+							return await this.localConnect(port, host, client, req);
+						}
 					}
 					client.end(HTTP_500);
 					throw new errors.HandledTunnelingError(
