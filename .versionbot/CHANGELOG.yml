@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @balena/lint to ^9.4.3
+      hash: 34728d5e9c21986526f9daea0a3798f0c46b4a77
+      body: |
+        Update @balena/lint from 9.4.3 to 9.4.5
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.48
+  title: ""
+  date: 2026-06-18T10:47:41.162Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v21.0.25
       hash: 1954d673e6e72d5c4bbe3cf119df693b2b68a95c
       body: |
