@@ -43,7 +43,7 @@
     "winston": "^3.19.0"
   },
   "devDependencies": {
-    "@balena/lint": "^9.4.1",
+    "@balena/lint": "^9.4.3",
     "@swc-node/register": "^1.11.1",
     "@swc/core": "^1.15.33",
     "@types/bluebird": "^3.5.42",
