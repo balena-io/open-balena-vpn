@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update opentelemetry-js monorepo to v0.219.0
+      hash: b31446ef69375463834cb611ed47446a7c350c38
+      body: |
+        Update @opentelemetry/instrumentation-http from 0.218.0 to 0.219.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.52
+  title: ""
+  date: 2026-06-22T03:25:17.962Z
+- commits:
     - subject: Lock file maintenance
       hash: af02dea9486a9c0715e04d622645460e087da84d
       body: |
