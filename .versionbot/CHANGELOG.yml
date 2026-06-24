@@ -1,4 +1,30 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v21.0.27
+      hash: c9c8cbd7d390a6ee34f772dca0dbcc25f766baa8
+      body: |
+        Update balena/open-balena-base from 21.0.26 to 21.0.27
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Update Node.js to v24.18.0
+              hash: ec04a089608c4cfe955f174bc61b7cebebc92601
+              body: |
+                Update node from 24.17.0 to 24.18.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-21.0.27
+          title: ""
+          date: 2026-06-24T00:20:06.580Z
+  version: 12.3.53
+  title: ""
+  date: 2026-06-24T01:57:13.060Z
+- commits:
     - subject: Update opentelemetry-js monorepo to v0.219.0
       hash: b31446ef69375463834cb611ed47446a7c350c38
       body: |
