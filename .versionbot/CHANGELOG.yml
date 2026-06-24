@@ -1,4 +1,17 @@
 - commits:
+    - subject: Pin dependencies
+      hash: 8eadd67f1a070cbc5e4b1e0880131d20ced103cf
+      body: |
+        Update @swc-node/register
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.55
+  title: ""
+  date: 2026-06-24T03:07:48.202Z
+- commits:
     - subject: Update dependency lint-staged to ^17.0.7
       hash: 8e0722d9657b0604893d1bed8ef41c61aca3bcb6
       body: |
