@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update golang:1.26.4 Docker digest to 478231b
+      hash: 1f7fee32bd9d7fbbf8e10adb426a6a5429d4d83b
+      body: |
+        Update golang
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.56
+  title: ""
+  date: 2026-06-24T08:42:46.889Z
+- commits:
     - subject: Pin dependencies
       hash: 8eadd67f1a070cbc5e4b1e0880131d20ced103cf
       body: |
