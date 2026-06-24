@@ -137,10 +137,6 @@ export const apiFactory = (serviceId: number) => {
 			return res.status(400).end();
 		}
 
-		if (hasDurationData(req.body)) {
-			metrics.histogram(Metrics.SessionDuration, req.body.time_duration);
-		}
-
 		const workerId = parseInt(req.params.worker, 10);
 		const uuid = req.body.common_name;
 
@@ -154,6 +150,10 @@ export const apiFactory = (serviceId: number) => {
 			return res.status(400).end();
 		}
 		res.status(200).end();
+
+		if (hasDurationData(req.body)) {
+			metrics.histogram(Metrics.SessionDuration, req.body.time_duration);
+		}
 
 		metrics.dec(Metrics.OnlineDevices);
 
