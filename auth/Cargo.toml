@@ -6,4 +6,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ureq = "3.0.8"
+ureq = { version = "3.0.8", default-features = false }
+
+[profile.release]
+lto = true
+codegen-units = 1
+strip = true
+panic = "abort"
