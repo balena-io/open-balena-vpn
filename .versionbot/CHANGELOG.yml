@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @swc/core to v1.15.43
+      hash: 459ca6057bf4f77a42b8e90c0b2afa173789b13a
+      body: |
+        Update @swc/core from 1.15.41 to 1.15.43
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.62
+  title: ""
+  date: 2026-06-27T00:46:44.714Z
+- commits:
     - subject: Update rust:1-trixie Docker digest to 6df234c
       hash: 14cb6ca0267d264633b7626314773c179439f439
       body: |
