@@ -1,4 +1,17 @@
 - commits:
+    - subject: Lock file maintenance
+      hash: 949b359b9384a041fff917489b9df81bd7699463
+      body: |
+        Update 
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.63
+  title: ""
+  date: 2026-06-29T00:41:17.635Z
+- commits:
     - subject: Update dependency @swc/core to v1.15.43
       hash: 459ca6057bf4f77a42b8e90c0b2afa173789b13a
       body: |
