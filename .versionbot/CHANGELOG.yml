@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @opentelemetry/instrumentation-express to v0.67.0
+      hash: 7cdec58c716d2090ffe4d68256b6b81eb0b243d3
+      body: |
+        Update @opentelemetry/instrumentation-express from 0.66.0 to 0.67.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.65
+  title: ""
+  date: 2026-07-02T10:20:49.068Z
+- commits:
     - subject: Update dependency @balena/node-metrics-gatherer to v7
       hash: 63613fb5b86541e5738bf5ad8a8670e66600a024
       body: |
