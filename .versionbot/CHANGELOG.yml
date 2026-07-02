@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update rust:1-trixie Docker digest to 1f0dbad
+      hash: ed6d7b8a4355f9f757591184acab6306d3e294d2
+      body: |
+        Update rust
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.66
+  title: ""
+  date: 2026-07-02T12:06:56.973Z
+- commits:
     - subject: Update dependency @opentelemetry/instrumentation-express to v0.67.0
       hash: 7cdec58c716d2090ffe4d68256b6b81eb0b243d3
       body: |
