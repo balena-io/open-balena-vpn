@@ -1,4 +1,43 @@
 - commits:
+    - subject: Update dependency @balena/node-metrics-gatherer to v7
+      hash: 63613fb5b86541e5738bf5ad8a8670e66600a024
+      body: |
+        Update @balena/node-metrics-gatherer from 6.1.4 to 7.0.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Pin dependencies
+              hash: 6b6d451a8c60a0c7a413672ec117276731374233
+              body: |
+                Update @types/chai
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+          version: node-metrics-gatherer-7.0.1
+          title: ""
+          date: 2026-06-27T00:20:32.400Z
+        - commits:
+            - subject: Remove express dependency
+              hash: d41f7e8ab7e41bab693db2dbaff45b2fef31d522
+              body: |
+                The library now requires the caller to use
+                their copy of express to make use of the
+                request handler this library provides.
+              footer:
+                Change-type: major
+                change-type: major
+              author: joshbwlng
+          version: node-metrics-gatherer-7.0.0
+          title: ""
+          date: 2026-06-26T07:36:31.336Z
+  version: 12.3.64
+  title: ""
+  date: 2026-07-02T09:36:03.508Z
+- commits:
     - subject: Lock file maintenance
       hash: 949b359b9384a041fff917489b9df81bd7699463
       body: |
