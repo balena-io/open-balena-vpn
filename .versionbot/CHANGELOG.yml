@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency balena-sdk to v23.2.11
+      hash: 04b25dcac860a63dfd37eb20a52e239415fb9f0b
+      body: |
+        Update balena-sdk from 23.2.10 to 23.2.11
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.69
+  title: ""
+  date: 2026-07-04T14:55:39.938Z
+- commits:
     - subject: Update dependency debian_13/openvpn to v2.6.14-1+deb13u3
       hash: 62b871639b65b3cc3cd88ecef2aeaa4da353190c
       body: |
