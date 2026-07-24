@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update rust:1-trixie Docker digest to 1bcff4b
+      hash: c5414fe23b7a77503f5050db86c170f4f20eeb7b
+      body: |
+        Update rust
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.73
+  title: ""
+  date: 2026-07-24T17:28:46.282Z
+- commits:
     - subject: Treat 503 as an expected authentication response
       hash: 7855e4776ce4271dcecc5fb4bb07c60cc5df3ec9
       body: |
