@@ -47,23 +47,46 @@ const fromLocalHost: express.RequestHandler = (req, res, next) => {
 	next();
 };
 
-const checkDeviceAuth = memoize(
-	async (username: string, password: string) => {
-		const { statusCode } = await pooledRequest.get({
-			url: `${BALENA_API_INTERNAL_HOST}/services/vpn/auth/${username}`,
-			...getPassthrough(`Bearer ${password}`),
-		});
-		if ([200, 401, 403].includes(statusCode)) {
-			return statusCode;
+const checkDeviceAuth = (() => {
+	class ExpectedAuthError extends Error {
+		constructor(public statusCode: number) {
+			super();
 		}
-		throw new Error(`Unexpected status code from the API: ${statusCode}`);
-	},
-	{
-		maxAge: VPN_AUTH_CACHE_TIMEOUT,
-		primitive: true,
-		promise: true,
-	},
-);
+	}
+	const $checkDeviceAuth = memoize(
+		async (username: string, password: string) => {
+			const { statusCode } = await pooledRequest.get({
+				url: `${BALENA_API_INTERNAL_HOST}/services/vpn/auth/${username}`,
+				...getPassthrough(`Bearer ${password}`),
+			});
+			if ([200, 401, 403].includes(statusCode)) {
+				return statusCode;
+			}
+			if (statusCode === 503) {
+				// 503 is an expected error code but we don't want to cache it, so we throw a special error that will not be cached
+				// but will be caught and and have the actual status code returned to the client so it can do normal failure handling
+				// (eg delaying to reduce load).
+				throw new ExpectedAuthError(statusCode);
+			}
+			throw new Error(`Unexpected status code from the API: ${statusCode}`);
+		},
+		{
+			maxAge: VPN_AUTH_CACHE_TIMEOUT,
+			primitive: true,
+			promise: true,
+		},
+	);
+	return async (username: string, password: string) => {
+		try {
+			return await $checkDeviceAuth(username, password);
+		} catch (err) {
+			if (err instanceof ExpectedAuthError) {
+				return err.statusCode;
+			}
+			throw err;
+		}
+	};
+})();
 
 export const apiFactory = (serviceId: number) => {
 	const api = express.Router();
