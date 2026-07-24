@@ -1,4 +1,20 @@
 - commits:
+    - subject: Treat 503 as an expected authentication response
+      hash: 7855e4776ce4271dcecc5fb4bb07c60cc5df3ec9
+      body: |
+        This avoids spamming error reports on a 503 and instead uses the auth
+        failure delay mechanism which will reduce the load we create on the API
+        and also on openvpn from reconnect attempts and help reduce subsequent
+        503s and other slowness
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.72
+  title: ""
+  date: 2026-07-24T16:58:14.502Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v21.0.29
       hash: 4496b3f6f93f4ee898afc94d92d8b14fbca79c52
       body: |
