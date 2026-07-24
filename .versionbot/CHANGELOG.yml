@@ -1,4 +1,17 @@
 - commits:
+    - subject: Lock file maintenance
+      hash: a39e4429c5e7163cc1c59a9925fac6d015d3db60
+      body: |
+        Update 
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.75
+  title: ""
+  date: 2026-07-24T22:34:56.039Z
+- commits:
     - subject: Update pinejs-client-request to 8.2.0
       hash: c6071809323efc60d78077cb182b86751231bf25
       body: |
