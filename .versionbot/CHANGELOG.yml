@@ -1,4 +1,756 @@
 - commits:
+    - subject: Update pinejs-client-request to 8.2.0
+      hash: c6071809323efc60d78077cb182b86751231bf25
+      body: |
+        Update pinejs-client-request from 8.1.1 to 8.2.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Update pinejs-client-core to 8.5.29
+              hash: cd07bd7a8b76a2703f111abb8fe8770ae98ddc5f
+              body: |
+                Update pinejs-client-core from 8.4.0 to 8.5.29
+              footer:
+                Change-type: minor
+                change-type: minor
+              author: Pagan Gazzard
+              nested:
+                - commits:
+                    - subject: Type the bracketJoin separator as precise literals
+                      hash: 84d63fb7dd545e18ac43051f685ab9adbe430273
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Otavio Jacobi
+                      nested: []
+                    - subject: Avoid not necessary parenthesis on 'or' and 'and' expressions
+                      hash: 63cf798e9acaddc182bd7f7a8383ef493b0ef95d
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Otavio Jacobi
+                      nested: []
+                  version: pinejs-client-js-8.5.29
+                  title: ""
+                  date: 2026-06-30T18:06:27.823Z
+                - commits:
+                    - subject: Update dependency lint-staged to v17.0.8
+                      hash: ac25218dcd65c0315111528257b0288bd0398ec5
+                      body: |
+                        Update lint-staged from 17.0.7 to 17.0.8
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.28
+                  title: ""
+                  date: 2026-06-27T00:22:37.226Z
+                - commits:
+                    - subject: Combine the two iterations for `bracketJoin` into a single iteration
+                      hash: 953782eb706ea0f106c15ddb07438d9f302aff8f
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                      nested: []
+                    - subject: Use for loops in preference to `forEach`
+                      hash: 830f2a28dde51c40cd7e99eb3dcbc3d3fce781fc
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                      nested: []
+                  version: pinejs-client-js-8.5.27
+                  title: ""
+                  date: 2026-06-25T11:48:16.176Z
+                - commits:
+                    - subject: Pin dependencies
+                      hash: cf5271f82a86477a9d75ec347ea7e9b475dcf2c4
+                      body: |
+                        Update typescript
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.26
+                  title: ""
+                  date: 2026-06-20T00:17:37.547Z
+                - commits:
+                    - subject: Switch from custom `Dictionary` type to built in `Record` typing
+                      hash: 74417ed23af6f495e591eb00ad1f71734f39234f
+                      body: >
+                        This reduces the number of custom typings we
+                        maintain/need to know
+
+                        about
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                      nested: []
+                  version: pinejs-client-js-8.5.25
+                  title: ""
+                  date: 2026-06-16T14:40:02.640Z
+                - commits:
+                    - subject: Update typescript to 6.x
+                      hash: b91a0efec4ac27a23257a4d36711a13f1b8128ff
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                      nested: []
+                  version: pinejs-client-js-8.5.24
+                  title: ""
+                  date: 2026-06-16T14:24:49.759Z
+                - commits:
+                    - subject: Resolve lint errors
+                      hash: 2e8a6f76e8bce7735cfcf9114c59ff27a7c1e70e
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: joshbwlng
+                      nested: []
+                  version: pinejs-client-js-8.5.23
+                  title: ""
+                  date: 2026-06-15T09:05:01.572Z
+                - commits:
+                    - subject: Update dependency lint-staged to v17
+                      hash: 85be2ffb02aced80e158df0706df95996703813e
+                      body: |
+                        Update lint-staged from 16.4.0 to 17.0.7
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.22
+                  title: ""
+                  date: 2026-06-11T01:56:40.432Z
+                - commits:
+                    - subject: Update dependency chai to v6
+                      hash: c041b0b4748f01874bc398338c1922c701503ea3
+                      body: |
+                        Update chai from 4.5.0 to 6.2.2
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.21
+                  title: ""
+                  date: 2026-06-11T01:06:41.827Z
+                - commits:
+                    - subject: Pin dependencies
+                      hash: a64cc5b02a9112d27293f7e66f8eb046f5be9136
+                      body: |
+                        Update @types/chai
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.20
+                  title: ""
+                  date: 2026-06-10T14:13:42.209Z
+                - commits:
+                    - subject: Rename .lintstagedrc to .lintstagedrc.json
+                      hash: d3e589c185426bfbe2cc9794c0f893797b5521ec
+                      body: >
+                        In preparation for lint-staged v17 which recommends this
+                        rename
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: joshbwlng
+                      nested: []
+                  version: pinejs-client-js-8.5.19
+                  title: ""
+                  date: 2026-05-13T01:06:34.466Z
+                - commits:
+                    - subject: Revert flowzone pinning to master
+                      hash: 775abf61c5285ee8f508564f8bbc603448913429
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Kyle Harding
+                      nested: []
+                  version: pinejs-client-js-8.5.18
+                  title: ""
+                  date: 2026-03-26T17:22:04.625Z
+                - commits:
+                    - subject: Update product-os/flowzone digest to 8ea01d3
+                      hash: a1dd849a16906d27a4573962a0c788d7a6466a4a
+                      body: |
+                        Update product-os/flowzone
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.17
+                  title: ""
+                  date: 2026-03-26T12:14:01.783Z
+                - commits:
+                    - subject: Update product-os/flowzone digest to 3eb3c97
+                      hash: f786c613b210c84da35343ca6b8fc042781dc3cb
+                      body: |
+                        Update product-os/flowzone
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.16
+                  title: ""
+                  date: 2026-03-26T10:22:05.993Z
+                - commits:
+                    - subject: Update product-os/flowzone digest to 7b49c1e
+                      hash: 1173098d5cf1c490caabe8fa8c8a3d471919d442
+                      body: |
+                        Update product-os/flowzone
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.15
+                  title: ""
+                  date: 2026-03-26T09:23:25.764Z
+                - commits:
+                    - subject: Update product-os/flowzone digest to 8d926e2
+                      hash: d5a7df9f8bfe54c0980df817983e31bfe3ccc7c5
+                      body: |
+                        Update product-os/flowzone
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.14
+                  title: ""
+                  date: 2026-03-26T08:19:52.524Z
+                - commits:
+                    - subject: Update product-os/flowzone digest to 20a58d6
+                      hash: a1da014e7b5e29905ad3d85ff681a4aeebcc70f8
+                      body: |
+                        Update product-os/flowzone
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.13
+                  title: ""
+                  date: 2026-03-26T07:22:46.331Z
+                - commits:
+                    - subject: Update product-os/flowzone digest to 7b1359d
+                      hash: c42d30413cff32efaa2552fed4e8092c3e799945
+                      body: |
+                        Update product-os/flowzone
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.12
+                  title: ""
+                  date: 2026-03-26T06:24:11.314Z
+                - commits:
+                    - subject: Update product-os/flowzone digest to 7b87702
+                      hash: 518f7a4fb3e26074c865c91b5136d845d34b9c46
+                      body: |
+                        Update product-os/flowzone
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.11
+                  title: ""
+                  date: 2026-03-26T05:36:03.523Z
+                - commits:
+                    - subject: Update product-os/flowzone digest to cc9836f
+                      hash: 187986c683fc018014c67090d07fb62320c59967
+                      body: |
+                        Update product-os/flowzone
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.10
+                  title: ""
+                  date: 2026-03-26T03:56:09.233Z
+                - commits:
+                    - subject: Update product-os/flowzone digest to b79645a
+                      hash: ace258b5e5d99c69cf460e142a878246ee36cd97
+                      body: |
+                        Update product-os/flowzone
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.9
+                  title: ""
+                  date: 2026-03-26T02:51:01.585Z
+                - commits:
+                    - subject: Update product-os/flowzone digest to 4815186
+                      hash: 86f3e8f8410d30e08b681da8c3e9ea43edd57129
+                      body: |
+                        Update product-os/flowzone
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.8
+                  title: ""
+                  date: 2026-03-26T01:28:58.689Z
+                - commits:
+                    - subject: Update product-os/flowzone digest to 267495d
+                      hash: 153589a85f32d93f305828210134f181e3784b1a
+                      body: |
+                        Update product-os/flowzone
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.7
+                  title: ""
+                  date: 2026-03-26T00:09:24.641Z
+                - commits:
+                    - subject: Update product-os/flowzone digest to f955793
+                      hash: 456224dc955cf0e9c264a6e1bffbd0ed12814c06
+                      body: |
+                        Update product-os/flowzone
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.6
+                  title: ""
+                  date: 2026-03-25T23:17:11.074Z
+                - commits:
+                    - subject: Update product-os/flowzone digest to 8674dc5
+                      hash: 9923b560421a3f2f9cd98b70556ebd59e99ae4a7
+                      body: |
+                        Update product-os/flowzone
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.5
+                  title: ""
+                  date: 2026-03-25T21:43:21.001Z
+                - commits:
+                    - subject: Update product-os/flowzone digest to eb703ea
+                      hash: 465806246966cbb007f7f33673047f7be55fa815
+                      body: |
+                        Update product-os/flowzone
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.4
+                  title: ""
+                  date: 2026-03-25T20:10:19.383Z
+                - commits:
+                    - subject: Pin product-os/flowzone action to a53cf4b
+                      hash: b6e2e5410153b0b23f67f8764ad05d4e62882052
+                      body: |
+                        Update product-os/flowzone
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: balena-renovate[bot]
+                      nested: []
+                  version: pinejs-client-js-8.5.3
+                  title: ""
+                  date: 2026-03-24T18:22:20.728Z
+                - commits:
+                    - subject: Update dev dependencies
+                      hash: 2e78e8ed7e32fbe246fb1529801343b3ea88f067
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                      author: Pagan Gazzard
+                      nested: []
+                  version: pinejs-client-js-8.5.2
+                  title: ""
+                  date: 2026-02-25T00:12:06.863Z
+                - commits:
+                    - subject: "Add id-token: write permission for NPM OIDC publishing"
+                      hash: dd74259a43309107c0c42b3749233f829b9cfbb0
+                      body: ""
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                        Signed-off-by: Kyle Harding <kyle@balena.io>
+                        signed-off-by: Kyle Harding <kyle@balena.io>
+                      author: Kyle Harding
+                      nested: []
+                  version: pinejs-client-js-8.5.1
+                  title: ""
+                  date: 2026-02-19T01:46:49.865Z
+                - commits:
+                    - subject: Add support for `Set` in place of arrays in `$select`
+                      hash: 57f481ca5ff0cb2d71497d05c24d782b2f36a6dd
+                      body: ""
+                      footer:
+                        Change-type: minor
+                        change-type: minor
+                      author: Pagan Gazzard
+                      nested: []
+                  version: pinejs-client-js-8.5.0
+                  title: ""
+                  date: 2025-11-18T12:15:34.892Z
+                - commits:
+                    - subject: Stop adding white space after comma in $in expressions
+                      hash: a0530b427983bab8b826a0e3d313531fa15aa377
+                      body: >
+                        inExpr = RWS "in" RWS ( listExpr / commonExpr )
+
+                        listExpr  = OPEN BWS primitiveLiteral BWS *( COMMA BWS
+                        primitiveLiteral BWS ) CLOSE
+
+                        COMMA  = "," / "%2C"
+
+                        BWS =  f( SP / HTAB / "%20" / "%09" )  ; "bad"
+                        whitespace
+                      footer:
+                        Change-type: patch
+                        change-type: patch
+                        See: https://docs.oasis-open.org/odata/odata/v4.01/os/abnf/odata-abnf-construction-rules.txt
+                        see: https://docs.oasis-open.org/odata/odata/v4.01/os/abnf/odata-abnf-construction-rules.txt
+                      author: Thodoris Greasidis
+                      nested: []
+                  version: pinejs-client-js-8.4.1
+                  title: ""
+                  date: 2025-11-10T17:12:36.457Z
+          version: pinejs-client-request-8.2.0
+          title: ""
+          date: 2026-07-24T17:20:04.880Z
+        - commits:
+            - subject: Update dependency lint-staged to v17.0.8
+              hash: 9c0fc628780fcbcc109d29dbd622d8ca3e206f54
+              body: |
+                Update lint-staged from 17.0.7 to 17.0.8
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.24
+          title: ""
+          date: 2026-06-27T00:22:28.577Z
+        - commits:
+            - subject: Update dependency typescript to v6
+              hash: 5c391ecac61086f3f77810e1179a5f36024532c1
+              body: |
+                Update typescript from 5.9.3 to 6.0.3
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.23
+          title: ""
+          date: 2026-06-18T13:43:18.063Z
+        - commits:
+            - subject: Update dependency lint-staged to v17.0.7
+              hash: c603a221363c4006d1a8ac4b4e0288bf9e46112a
+              body: |
+                Update lint-staged from 17.0.5 to 17.0.7
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.22
+          title: ""
+          date: 2026-06-06T00:20:29.496Z
+        - commits:
+            - subject: Update dependency lint-staged to v17.0.5
+              hash: 1566f4f5a64525796ed4efd03333d4d8b603b82b
+              body: |
+                Update lint-staged from 17.0.4 to 17.0.5
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.21
+          title: ""
+          date: 2026-05-23T00:17:38.823Z
+        - commits:
+            - subject: Pin dependencies
+              hash: f3d1f5ab846b5e74e42c9cd1e868c95f69302eef
+              body: |
+                Update husky
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.20
+          title: ""
+          date: 2026-05-16T00:23:55.664Z
+        - commits:
+            - subject: Update dependency lint-staged to v17
+              hash: 239b4c57622851e83c65e5f8b6e60e8eac0191fb
+              body: |
+                Update lint-staged from 16.4.0 to 17.0.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.19
+          title: ""
+          date: 2026-05-12T04:27:31.411Z
+        - commits:
+            - subject: Revert flowzone pinning to master
+              hash: 02b7cf012c6eeaaab690428747822efa345c947e
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Kyle Harding
+              nested: []
+          version: pinejs-client-request-8.1.18
+          title: ""
+          date: 2026-03-26T17:19:11.027Z
+        - commits:
+            - subject: Update product-os/flowzone digest to 8ea01d3
+              hash: f7262e0393621ed72039ef758d3d33bb543a7fd3
+              body: |
+                Update product-os/flowzone
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.17
+          title: ""
+          date: 2026-03-26T12:13:37.775Z
+        - commits:
+            - subject: Update product-os/flowzone digest to 3eb3c97
+              hash: af96b590d8dcfefebe6e5ce680f82f3082165450
+              body: |
+                Update product-os/flowzone
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.16
+          title: ""
+          date: 2026-03-26T10:22:09.418Z
+        - commits:
+            - subject: Update product-os/flowzone digest to 7b49c1e
+              hash: 4e0b4c53c6ba775c6a4c18d12773397d76ce2861
+              body: |
+                Update product-os/flowzone
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.15
+          title: ""
+          date: 2026-03-26T09:23:15.556Z
+        - commits:
+            - subject: Update product-os/flowzone digest to 8d926e2
+              hash: 0fb90eb92b459455489e0f05ce9cdb428815812e
+              body: |
+                Update product-os/flowzone
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.14
+          title: ""
+          date: 2026-03-26T08:19:34.106Z
+        - commits:
+            - subject: Update product-os/flowzone digest to 20a58d6
+              hash: f01fcdcab3c222885fd9a887c2b41fb682b8f796
+              body: |
+                Update product-os/flowzone
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.13
+          title: ""
+          date: 2026-03-26T07:22:34.030Z
+        - commits:
+            - subject: Update product-os/flowzone digest to 7b1359d
+              hash: 9ee46e8bbc3602a319694aa5780a5a0c2e6fbb25
+              body: |
+                Update product-os/flowzone
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.12
+          title: ""
+          date: 2026-03-26T06:23:52.231Z
+        - commits:
+            - subject: Update product-os/flowzone digest to 7b87702
+              hash: 2cfb5ddf5d1216ca05e8b876858cb6c4596f64ad
+              body: |
+                Update product-os/flowzone
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.11
+          title: ""
+          date: 2026-03-26T05:35:31.949Z
+        - commits:
+            - subject: Update product-os/flowzone digest to cc9836f
+              hash: 6f474e15a56e77da02bc0731f8a115e655b59afe
+              body: |
+                Update product-os/flowzone
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.10
+          title: ""
+          date: 2026-03-26T03:55:44.495Z
+        - commits:
+            - subject: Update product-os/flowzone digest to b79645a
+              hash: 0d32ce6e6c9d1eb462f5153530b5187f317ba18d
+              body: |
+                Update product-os/flowzone
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.9
+          title: ""
+          date: 2026-03-26T02:50:54.656Z
+        - commits:
+            - subject: Update product-os/flowzone digest to 4815186
+              hash: 907dfb90aabf08cf3cbb334ee542ae8f7bd818fc
+              body: |
+                Update product-os/flowzone
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.8
+          title: ""
+          date: 2026-03-26T01:28:40.075Z
+        - commits:
+            - subject: Update product-os/flowzone digest to 267495d
+              hash: deb0a8046704c258fbfe61d92bbf04fcf240f975
+              body: |
+                Update product-os/flowzone
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.7
+          title: ""
+          date: 2026-03-26T00:09:11.857Z
+        - commits:
+            - subject: Update product-os/flowzone digest to f955793
+              hash: fb7c5cdb6f92344a83fcb0980886e8f5b33122e3
+              body: |
+                Update product-os/flowzone
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.6
+          title: ""
+          date: 2026-03-25T23:17:10.995Z
+        - commits:
+            - subject: Update product-os/flowzone digest to 8674dc5
+              hash: 31dd32feb445befeb9956e0db91580639cad4979
+              body: |
+                Update product-os/flowzone
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.5
+          title: ""
+          date: 2026-03-25T21:41:31.064Z
+        - commits:
+            - subject: Update product-os/flowzone digest to eb703ea
+              hash: ed5e3e29ec9e9720ee0a5fcdfa6188518b6d10a3
+              body: |
+                Update product-os/flowzone
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.4
+          title: ""
+          date: 2026-03-25T20:09:34.950Z
+        - commits:
+            - subject: Pin product-os/flowzone action to a53cf4b
+              hash: 2002974441e3d85b00cd31b89048f48e961e0bde
+              body: |
+                Update product-os/flowzone
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: pinejs-client-request-8.1.3
+          title: ""
+          date: 2026-03-24T18:21:57.763Z
+        - commits:
+            - subject: "Add id-token: write permission for NPM OIDC publishing"
+              hash: bec06a4dae797d13b3841e11b89aaa365873c3b7
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: pinejs-client-request-8.1.2
+          title: ""
+          date: 2026-02-19T01:58:53.864Z
+  version: 12.3.74
+  title: ""
+  date: 2026-07-24T21:35:33.313Z
+- commits:
     - subject: Update rust:1-trixie Docker digest to 1bcff4b
       hash: c5414fe23b7a77503f5050db86c170f4f20eeb7b
       body: |
