@@ -321,7 +321,7 @@ describe('VPN proxy', function () {
 		it('should refuse to forward via itself', async () => {
 			const scope = nock(BALENA_API_INTERNAL_HOST)
 				.get(
-					'/v7/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20d/is_connected_to_vpn)',
+					'/v7/service_instance?$select=id,ip_address&$filter=manages__device/any(d:d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27%20and%20d/is_connected_to_vpn)',
 				)
 				.reply(
 					200,
@@ -347,7 +347,7 @@ describe('VPN proxy', function () {
 		it('should detect forward loops', async () => {
 			const scope = nock(BALENA_API_INTERNAL_HOST)
 				.get(
-					'/v7/service_instance?$select=id,ip_address&$filter=manages__device/any(d:(d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27)%20and%20d/is_connected_to_vpn)',
+					'/v7/service_instance?$select=id,ip_address&$filter=manages__device/any(d:d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27%20and%20d/is_connected_to_vpn)',
 				)
 				.reply(
 					200,
