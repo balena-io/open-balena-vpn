@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @swc-node/register to v1.12.1
+      hash: e617961921356cd41c2b66b752f3622208c17f60
+      body: |
+        Update @swc-node/register from 1.11.1 to 1.12.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.77
+  title: ""
+  date: 2026-07-27T12:15:45.878Z
+- commits:
     - subject: Update golang Docker tag to v1.26.5
       hash: d70c13d236951f275f47af6725d1cc5468abe258
       body: |
