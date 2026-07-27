@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency balena-sdk to v23.2.13
+      hash: 6fc2be53a8576ef75107ac3e0faf5b406c4c9074
+      body: |
+        Update balena-sdk from 23.2.12 to 23.2.13
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.78
+  title: ""
+  date: 2026-07-27T12:28:35.232Z
+- commits:
     - subject: Update dependency @swc-node/register to v1.12.1
       hash: e617961921356cd41c2b66b752f3622208c17f60
       body: |
