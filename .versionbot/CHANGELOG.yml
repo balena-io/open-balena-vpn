@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @swc/core to v1.15.46
+      hash: 03b2d9c9b573115908abaa9d554bd5d92e0248ae
+      body: |
+        Update @swc/core from 1.15.43 to 1.15.46
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.80
+  title: ""
+  date: 2026-07-27T14:07:12.844Z
+- commits:
     - subject: Update dependency lint-staged to v17.2.0
       hash: ce4f4b036784e12316dafe041aa1a1facf16dd28
       body: |
