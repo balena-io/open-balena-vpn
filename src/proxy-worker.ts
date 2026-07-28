@@ -128,9 +128,12 @@ class Tunnel extends nodeTunnel.Tunnel {
 						'service instance not found for device',
 					);
 				}
-				if (vpnHost.id === this.serviceId) {
-					// Add a delay matching the interval for writing the VPN status file to allow time for the status file to be updated
-					// in case the previous failure to find locally was due to a race condition where the status file had not yet been updated
+				if (vpnHost === false || vpnHost.id === this.serviceId) {
+					// If we could not look up the alternate VPN host, or if the looked up VPN host is the same as the current then we should
+					// retry after a delay to allow time for the status file to be updated, handling the case that the previous failure to find
+					// the device locally was due to a race condition where the status file had not yet been updated. We match the delay to the
+					// interval for writing the VPN status file to ensure it definitely has enough time to be updated, however it would be possible
+					// to use a shorter delay/more retries to improve responsiveness.
 					await setTimeout(VPN_STATUS_FILE_WRITE_INTERVAL_SECONDS * 1000);
 					if (await deviceIsLocal(uuid)) {
 						return await this.localConnect(port, host, client, req);
