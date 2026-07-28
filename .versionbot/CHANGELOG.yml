@@ -1,4 +1,24 @@
 - commits:
+    - subject: Treat a 401 on `getDeviceVpnHost` as a signal to retry locally
+      hash: faafdf21d8756d4f193d8a96f0713714f0725866
+      body: |
+        If the authentication details are allowed to access the device but not
+        allowed to redirect to another instance then we treat it as that the
+        correct instance must have been targeted in the first place and so can
+        react the same as if the redirect instance would be the current
+        instance. This is most likely to come up in the case of the API making
+        requests where it uses a privileged key to update devices and we would
+        prefer to avoid giving that key the ability to also read every service
+        instance/device
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.81
+  title: ""
+  date: 2026-07-28T17:03:48.307Z
+- commits:
     - subject: Update dependency @swc/core to v1.15.46
       hash: 03b2d9c9b573115908abaa9d554bd5d92e0248ae
       body: |
