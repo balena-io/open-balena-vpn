@@ -96,7 +96,7 @@ interface VpnHost {
 export const getDeviceVpnHost = async (
 	uuid: string,
 	auth?: Buffer,
-): Promise<VpnHost | undefined> => {
+): Promise<VpnHost | undefined | false> => {
 	try {
 		const services = await balenaApi.get({
 			resource: 'service_instance',
@@ -118,7 +118,13 @@ export const getDeviceVpnHost = async (
 		});
 		return services[0];
 	} catch (err) {
-		if (!(err instanceof StatusError) || err.statusCode !== 401) {
+		if (err instanceof StatusError && err.statusCode === 401) {
+			// If we got a 401 it means we can not look up an alternate VPN host, so we return false
+			// to signify that and allow retrying on this device with the expectation that the request
+			// had to explicitly target the correct instance already.
+			return false;
+		}
+		if (!(err instanceof StatusError)) {
 			// Do not capture `Unauthorized` errors
 			captureException(err, 'device-vpn-host-lookup-error');
 		}
