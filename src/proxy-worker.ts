@@ -98,10 +98,15 @@ class Tunnel extends nodeTunnel.Tunnel {
 	) {
 		this.logger.info(`connecting to ${host}:${port}`);
 		const socket = await super.connect(port, host, client, req);
+		const startTime = process.hrtime()[0];
 		metrics.inc(Metrics.ActiveTunnels);
 		metrics.inc(Metrics.TotalTunnels);
 		socket.on('close', (hadError) => {
 			metrics.dec(Metrics.ActiveTunnels);
+			metrics.histogram(
+				Metrics.TunnelDuration,
+				process.hrtime()[0] - startTime,
+			);
 			if (hadError) {
 				metrics.inc(Metrics.TunnelErrors);
 			}
