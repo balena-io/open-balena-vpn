@@ -58,7 +58,7 @@
     "@types/node": "24.13.3",
     "@types/request-promise": "4.1.51",
     "@types/split": "1.0.5",
-    "balena-sdk": "23.2.13",
+    "balena-sdk": "23.2.14",
     "bluebird": "3.7.2",
     "chai": "6.2.2",
     "chai-as-promised": "8.0.2",
