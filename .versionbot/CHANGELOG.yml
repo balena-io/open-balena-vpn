@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @types/node to v24.13.3
+      hash: 6372676a31bb622ba5d9504229e6fc8f87618e39
+      body: |
+        Update @types/node from 24.13.2 to 24.13.3
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.82
+  title: ""
+  date: 2026-08-01T00:40:31.378Z
+- commits:
     - subject: Treat a 401 on `getDeviceVpnHost` as a signal to retry locally
       hash: faafdf21d8756d4f193d8a96f0713714f0725866
       body: |
