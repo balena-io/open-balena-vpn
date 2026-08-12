@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency mocha to v11.8.0
+      hash: 6a6291f88e02292e273a5214f2eee34a5b71546b
+      body: |
+        Update mocha from 11.7.6 to 11.8.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.85
+  title: ""
+  date: 2026-08-12T16:41:23.320Z
+- commits:
     - subject: Update golang:1.26.5 Docker digest to 7caba52
       hash: d033e2b75312648e2aaa40aa52a044ee7ef4ab6f
       body: |
