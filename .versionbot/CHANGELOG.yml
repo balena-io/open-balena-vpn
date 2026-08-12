@@ -1,4 +1,56 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v21.0.32
+      hash: e8897c5d962c5d2e9acd87277b8a6d721191aae8
+      body: |
+        Update balena/open-balena-base from 21.0.29 to 21.0.32
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Update debian:13 Docker digest to 34cd9e9
+              hash: d346d96ae4fefe721dd7cc6e8f363f349353e763
+              body: |
+                Update debian
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-21.0.32
+          title: ""
+          date: 2026-08-05T02:52:37.645Z
+        - commits:
+            - subject: Update dependency just-containers/s6-overlay to v3.2.3.2
+              hash: 7ac98dbdf60bc7ad3070fdee79be7c298b788f3a
+              body: |
+                Update just-containers/s6-overlay from 3.2.3.0 to 3.2.3.2
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-21.0.31
+          title: ""
+          date: 2026-08-03T15:54:50.208Z
+        - commits:
+            - subject: Update Node.js to v24.19.0
+              hash: 1c4baba720c4aed914e24a1da33239a2e1670b6a
+              body: |
+                Update node from 24.18.0 to 24.19.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-21.0.30
+          title: ""
+          date: 2026-08-03T14:54:00.184Z
+  version: 12.3.87
+  title: ""
+  date: 2026-08-12T23:30:44.225Z
+- commits:
     - subject: Lock file maintenance
       hash: d3d5b0f72fae52d2481ebaade1c611579c9b4b81
       body: |
