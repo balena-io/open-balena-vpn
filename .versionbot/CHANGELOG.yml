@@ -1,4 +1,17 @@
 - commits:
+    - subject: Lock file maintenance
+      hash: d3d5b0f72fae52d2481ebaade1c611579c9b4b81
+      body: |
+        Update 
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.86
+  title: ""
+  date: 2026-08-12T22:44:16.659Z
+- commits:
     - subject: Update dependency mocha to v11.8.0
       hash: 6a6291f88e02292e273a5214f2eee34a5b71546b
       body: |
