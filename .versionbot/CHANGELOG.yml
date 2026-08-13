@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency lint-staged to v17.3.0
+      hash: 857638ab577c76ba358bd96885dc2b050d120fd5
+      body: |
+        Update lint-staged from 17.2.0 to 17.3.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.90
+  title: ""
+  date: 2026-08-13T03:00:47.821Z
+- commits:
     - subject: Update rust:1-trixie Docker digest to 3382bd2
       hash: f9465fe3cc8dad195b057fb78b9ea4868bf3ffa3
       body: |
