@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @opentelemetry/instrumentation-express to v0.69.0
+      hash: 5009fd924fde31f7d0ecf824c44595d16e49e9d4
+      body: |
+        Update @opentelemetry/instrumentation-express from 0.67.0 to 0.69.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.94
+  title: ""
+  date: 2026-08-13T22:25:43.359Z
+- commits:
     - subject: Update golang Docker tag to v1.26.6
       hash: 940bca088da76d6e8553a4e27debea51bda105ea
       body: |
