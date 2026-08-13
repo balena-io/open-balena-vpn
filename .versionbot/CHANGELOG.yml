@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update opentelemetry-js monorepo to v0.221.0
+      hash: d851ba380417933c43bd6b689543dc23f51198ba
+      body: |
+        Update @opentelemetry/instrumentation-http from 0.219.0 to 0.221.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.92
+  title: ""
+  date: 2026-08-13T13:22:51.007Z
+- commits:
     - subject: Update golang:1.26.5 Docker digest to 705e964
       hash: 95e2a89198020f15bd1f72be2458ab9d27d9f966
       body: |
