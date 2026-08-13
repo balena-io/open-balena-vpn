@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update golang:1.26.5 Docker digest to 705e964
+      hash: 95e2a89198020f15bd1f72be2458ab9d27d9f966
+      body: |
+        Update golang
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.91
+  title: ""
+  date: 2026-08-13T08:36:31.588Z
+- commits:
     - subject: Update dependency lint-staged to v17.3.0
       hash: 857638ab577c76ba358bd96885dc2b050d120fd5
       body: |
