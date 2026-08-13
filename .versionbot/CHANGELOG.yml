@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update golang Docker tag to v1.26.6
+      hash: 940bca088da76d6e8553a4e27debea51bda105ea
+      body: |
+        Update golang from 1.26.5 to 1.26.6
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.93
+  title: ""
+  date: 2026-08-13T21:29:22.527Z
+- commits:
     - subject: Update opentelemetry-js monorepo to v0.221.0
       hash: d851ba380417933c43bd6b689543dc23f51198ba
       body: |
