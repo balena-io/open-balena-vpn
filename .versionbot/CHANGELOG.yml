@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @swc/core to v1.15.47
+      hash: 39d9191ebe6da60ae48289eb483d37a99a121e63
+      body: |
+        Update @swc/core from 1.15.46 to 1.15.47
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.88
+  title: ""
+  date: 2026-08-13T00:35:07.660Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v21.0.32
       hash: e8897c5d962c5d2e9acd87277b8a6d721191aae8
       body: |
