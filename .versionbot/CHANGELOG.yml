@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update rust:1-trixie Docker digest to 3382bd2
+      hash: f9465fe3cc8dad195b057fb78b9ea4868bf3ffa3
+      body: |
+        Update rust
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.89
+  title: ""
+  date: 2026-08-13T01:34:21.973Z
+- commits:
     - subject: Update dependency @swc/core to v1.15.47
       hash: 39d9191ebe6da60ae48289eb483d37a99a121e63
       body: |
