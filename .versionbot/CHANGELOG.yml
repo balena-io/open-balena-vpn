@@ -1,4 +1,17 @@
 - commits:
+    - subject: Lock file maintenance
+      hash: 18f989e6a3923186a4117d937f3384bf11b64fef
+      body: |
+        Update 
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.106
+  title: ""
+  date: 2026-08-24T00:29:40.976Z
+- commits:
     - subject: Update rust:1-trixie Docker digest to 7f7a53a
       hash: dff843779cd067d3f5b6c64fb424eb2f4eece1b6
       body: |
