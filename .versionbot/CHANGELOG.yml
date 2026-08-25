@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update golang:1.27.0 Docker digest to 713ecb4
+      hash: e998c8180c1994c58313f938afa699358f867131
+      body: |
+        Update golang
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.109
+  title: ""
+  date: 2026-08-25T05:38:41.017Z
+- commits:
     - subject: Update dependency flowzonify to v0.4.0
       hash: 45cf853f56b3815e3da709cdd8f63aa5a3e64c37
       body: |
