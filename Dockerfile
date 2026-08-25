@@ -79,7 +79,7 @@ RUN cargo build --release
 # Eget Builder
 ########################################################
 
-FROM golang:1.27.0@sha256:713ecb45d77c39af241e08371ada5bb5643e1e9806994e955ac90cbf17fa5ffd AS eget-builder
+FROM golang:1.27.0@sha256:f42f8545265b7fe4124ecdd50a7778c15d5e3fc4d0af648e508e4f4c6a4c572b AS eget-builder
 
 WORKDIR /src
 
