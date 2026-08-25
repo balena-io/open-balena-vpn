@@ -1,4 +1,43 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v21.0.34
+      hash: 042257b7b683475ab130e495171b5b56e793403f
+      body: |
+        Update balena/open-balena-base from 21.0.32 to 21.0.34
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Update dependency flowzonify to v0.4.0
+              hash: 087476811f1767ecbcb2b409105794cacf11b62b
+              body: |
+                Update flowzonify from 0.0.0 to 0.4.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-21.0.34
+          title: ""
+          date: 2026-08-25T04:19:51.547Z
+        - commits:
+            - subject: Update debian:13 Docker digest to f324c7f
+              hash: 3d8b4d26b8b69a354e603cc5c9a6dd76ba210639
+              body: |
+                Update debian
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-21.0.33
+          title: ""
+          date: 2026-08-25T03:21:58.638Z
+  version: 12.3.110
+  title: ""
+  date: 2026-08-25T07:35:33.334Z
+- commits:
     - subject: Update golang:1.27.0 Docker digest to 713ecb4
       hash: e998c8180c1994c58313f938afa699358f867131
       body: |
