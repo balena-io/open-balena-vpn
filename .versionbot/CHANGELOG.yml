@@ -1,4 +1,17 @@
 - commits:
+    - subject: Lock file maintenance
+      hash: 38f630357d066948b997335394f7966fd93878d3
+      body: |
+        Update 
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.119
+  title: ""
+  date: 2026-08-31T00:17:00.219Z
+- commits:
     - subject: Update golang:1.27.0 Docker digest to 4013ae0
       hash: fd668fadbdeea38ac981277fba2d72caccbdac3d
       body: |
