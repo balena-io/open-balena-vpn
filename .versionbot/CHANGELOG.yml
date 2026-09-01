@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update rust:1-trixie Docker digest to 620dbcd
+      hash: 7c044b52ba5008ed83e681bd973f2a26bb16ec10
+      body: |
+        Update rust
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.120
+  title: ""
+  date: 2026-09-01T05:22:25.309Z
+- commits:
     - subject: Lock file maintenance
       hash: 38f630357d066948b997335394f7966fd93878d3
       body: |
