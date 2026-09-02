@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update golang Docker tag to v1.27.1
+      hash: 0748555906ada9673d9c19b8f08565e507cfc2d7
+      body: |
+        Update golang from 1.27.0 to 1.27.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.121
+  title: ""
+  date: 2026-09-02T02:38:54.507Z
+- commits:
     - subject: Update rust:1-trixie Docker digest to 620dbcd
       hash: 7c044b52ba5008ed83e681bd973f2a26bb16ec10
       body: |
