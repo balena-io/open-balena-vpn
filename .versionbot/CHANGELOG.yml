@@ -1,4 +1,16 @@
 - commits:
+    - subject: Switch from pinejs-client-request to pinejs-client-fetch
+      hash: 60b2d71afbdf0aed6a890402ab1c3321ec242a6b
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.128
+  title: ""
+  date: 2026-09-21T20:33:37.430Z
+- commits:
     - subject: Migrate test/app.ts API mocks from nock to mockttp, drop nock
       hash: 0cde876962bbcc8ca25ecf948b1679c2e1cf28c1
       body: >
