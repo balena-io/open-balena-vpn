@@ -16,19 +16,19 @@
 */
 
 import { expect } from 'chai';
-import nock from 'nock';
 
 import { service } from '../src/utils/service.js';
-import { BALENA_API_INTERNAL_HOST } from '../src/utils/config.js';
+import { apiHostname, mockApi } from './mock-api.js';
 
 const serviceId = 10;
 
 export default () => {
 	describe('id', () => {
-		before(() => {
-			nock(BALENA_API_INTERNAL_HOST)
-				.post('/v7/service_instance')
-				.reply(200, { id: serviceId });
+		before(async () => {
+			await mockApi
+				.forPost('/v7/service_instance')
+				.forHostname(apiHostname)
+				.thenJson(200, { id: serviceId });
 		});
 
 		it('should throw error when service is not registered', () => {
@@ -45,13 +45,15 @@ export default () => {
 		let called = 0;
 		let isAlive = false;
 
-		before(() => {
-			nock(BALENA_API_INTERNAL_HOST)
-				.patch(`/v7/service_instance(${serviceId})`)
-				.reply(200, (_uri: string, body: any) => {
+		before(async () => {
+			await mockApi
+				.forPatch(`/v7/service_instance(${serviceId})`)
+				.forHostname(apiHostname)
+				.thenCallback(async (req) => {
 					called++;
+					const body = (await req.body.getJson()) as { is_alive: boolean };
 					isAlive = body.is_alive;
-					return 'OK';
+					return { statusCode: 200, body: 'OK' };
 				});
 		});
 

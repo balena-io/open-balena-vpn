@@ -1,5 +1,5 @@
 /*
-	Copyright (C) 2018 Balena Ltd.
+	Copyright (C) 2026 Balena Ltd.
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as published
@@ -15,30 +15,24 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import 'mocha';
-import connectProxyTests from './connect-proxy/index.js';
-import serviceTests from './service.js';
-import utilsTests from './utils/index.js';
-import throttlingTests from './throttling.js';
-import { startMockApi, stopMockApi } from './mock-api.js';
+import * as mockttp from 'mockttp';
+import { BALENA_API_INTERNAL_HOST } from '../src/utils/config.js';
 
-before(async () => {
-	await startMockApi();
-});
+export const mockApi = mockttp.getLocal();
 
-after(async () => {
-	await stopMockApi();
-});
+export const apiHostname = new URL(BALENA_API_INTERNAL_HOST).hostname;
 
-describe('connect-proxy', () => {
-	connectProxyTests();
-});
-describe('service', () => {
-	serviceTests();
-});
-describe('utils', () => {
-	utilsTests();
-});
-describe('throttling', () => {
-	throttlingTests();
-});
+export const startMockApi = async () => {
+	await mockApi.start();
+
+	process.env.HTTP_PROXY = mockApi.proxyEnv.HTTP_PROXY;
+	process.env.HTTPS_PROXY = mockApi.proxyEnv.HTTPS_PROXY;
+	process.env.NO_PROXY = 'localhost,127.0.0.1';
+};
+
+export const stopMockApi = async () => {
+	await mockApi.stop();
+	delete process.env.HTTP_PROXY;
+	delete process.env.HTTPS_PROXY;
+	delete process.env.NO_PROXY;
+};

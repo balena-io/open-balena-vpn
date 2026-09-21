@@ -18,42 +18,38 @@
 import { optionalVar } from '@balena/env-parsing';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import nock from 'nock';
-import { BALENA_API_INTERNAL_HOST } from '../../src/utils/config.js';
+import { apiHostname, mockApi } from '../mock-api.js';
 
 import { isDeviceConnectedToVpn } from '../../src/utils/device.js';
 
 export default () => {
 	chai.use(chaiAsPromised);
 	const { expect } = chai;
-	nock.disableNetConnect();
 
 	const VPN_SERVICE_API_KEY = Buffer.from(
 		optionalVar('VPN_SERVICE_API_KEY', 'test_vpn_string'),
 	);
 
 	describe('isDeviceConnectedToVpn()', function () {
-		before(function () {
-			nock(BALENA_API_INTERNAL_HOST)
-				.get('/v7/device(@id)')
-				.query({
+		before(async function () {
+			await mockApi
+				.forGet('/v7/device(@id)')
+				.forHostname(apiHostname)
+				.withQuery({
 					$select: 'id',
 					$filter: 'is_connected_to_vpn',
 					'@id': 1234,
 				})
-				.reply(200, { d: [] });
-			nock(BALENA_API_INTERNAL_HOST)
-				.get('/v7/device(@id)')
-				.query({
+				.thenJson(200, { d: [] });
+			await mockApi
+				.forGet('/v7/device(@id)')
+				.forHostname(apiHostname)
+				.withQuery({
 					$select: 'id',
 					$filter: 'is_connected_to_vpn',
 					'@id': 3456,
 				})
-				.reply(200, { d: [{ id: 3456 }] });
-		});
-
-		after(() => {
-			nock.cleanAll();
+				.thenJson(200, { d: [{ id: 3456 }] });
 		});
 
 		it('should return a promise that resolves to false when not connected', async () => {
