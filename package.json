@@ -65,7 +65,7 @@
     "husky": "9.1.7",
     "lint-staged": "17.4.1",
     "mocha": "11.8.0",
-    "nock": "13.5.6",
+    "mockttp": "^4.6.3",
     "openvpn-client": "0.0.2",
     "typescript": "6.0.3"
   },

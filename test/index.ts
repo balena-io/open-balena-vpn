@@ -20,6 +20,15 @@ import connectProxyTests from './connect-proxy/index.js';
 import serviceTests from './service.js';
 import utilsTests from './utils/index.js';
 import throttlingTests from './throttling.js';
+import { startMockApi, stopMockApi } from './mock-api.js';
+
+before(async () => {
+	await startMockApi();
+});
+
+after(async () => {
+	await stopMockApi();
+});
 
 describe('connect-proxy', () => {
 	connectProxyTests();
