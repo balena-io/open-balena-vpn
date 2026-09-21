@@ -1,4 +1,68 @@
 - commits:
+    - subject: Migrate test/app.ts API mocks from nock to mockttp, drop nock
+      hash: 0cde876962bbcc8ca25ecf948b1679c2e1cf28c1
+      body: >
+        Completes the nock->mockttp migration started for test-unit: test/app.ts
+
+        runs as its own mocha process (npx mocha test/app.ts) with real openvpn/
+
+        haproxy networking, so its nock scopes are ported separately and
+        validated
+
+        against the docker-compose.test.yml environment.
+
+
+        Two things only surface when requests go over a real proxied connection
+
+        instead of nock's in-process interception:
+
+
+        - @opentelemetry/instrumentation-http starts a span (rooted, if there's
+        no
+          active parent) for every outgoing request and injects its own traceparent
+          header regardless of application intent. nock never exercised this since
+          it fully intercepted requests before they reached the instrumented http
+          module. The "no traceparent" assertions on the service-registration and
+          forward-lookup mocks were only ever passing because of that, so they're
+          dropped; the "has traceparent" assertions (driven by this app's own
+          getPassthrough()) still hold and are kept.
+        - openvpn's client-connect/auth plugins are real subprocesses that
+        inherit
+          this process's env and make their own loopback HTTP calls to this app's
+          own API. Since some of those HTTP clients only honour the lowercase
+          `no_proxy`, mock-api.ts sets both cases so loopback traffic is never sent
+          through the mock proxy.
+
+        nock is no longer used anywhere in the test suite, so the dependency is
+
+        dropped too.
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+    - subject: Migrate test-unit API mocks from nock to mockttp
+      hash: fea0333e43ce06d4cd7d55a4769d36499d5d39a3
+      body: >
+        nock intercepts at the http module level and cannot coexist with the
+
+        mockttp proxy for the same host, so service.ts and
+        connect-proxy/device.ts
+
+        (the only nock users on the shared BALENA_API_INTERNAL_HOST in the
+
+        test-unit process) move together. test/app.ts is migrated separately
+
+        since it runs as its own mocha process.
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.127
+  title: ""
+  date: 2026-09-21T17:34:18.536Z
+- commits:
     - subject: Update golang:1.27.1 Docker digest to f44f6e8
       hash: 03838e4efa7fb50a727b6ec3df55969a43c095af
       body: |
