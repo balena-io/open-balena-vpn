@@ -17,7 +17,9 @@
 
 import * as mockttp from 'mockttp';
 import { BALENA_API_INTERNAL_HOST } from '../src/utils/config.js';
+import { getGlobalDispatcher, ProxyAgent, setGlobalDispatcher } from 'undici';
 
+const defaultDispatcher = getGlobalDispatcher();
 export const mockApi = mockttp.getLocal();
 
 export const apiHostname = new URL(BALENA_API_INTERNAL_HOST).hostname;
@@ -34,6 +36,7 @@ export const startMockApi = async () => {
 	// sure loopback traffic is never sent through the mock proxy.
 	process.env.NO_PROXY = 'localhost,127.0.0.1';
 	process.env.no_proxy = process.env.NO_PROXY;
+	setGlobalDispatcher(new ProxyAgent(mockApi.proxyEnv.HTTP_PROXY));
 };
 
 export const stopMockApi = async () => {
@@ -42,4 +45,5 @@ export const stopMockApi = async () => {
 	delete process.env.HTTPS_PROXY;
 	delete process.env.NO_PROXY;
 	delete process.env.no_proxy;
+	setGlobalDispatcher(defaultDispatcher);
 };
