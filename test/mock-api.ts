@@ -27,7 +27,13 @@ export const startMockApi = async () => {
 
 	process.env.HTTP_PROXY = mockApi.proxyEnv.HTTP_PROXY;
 	process.env.HTTPS_PROXY = mockApi.proxyEnv.HTTPS_PROXY;
+	// test/app.ts spawns real openvpn subprocesses (and their auth/connect
+	// plugins) that inherit this env and make their own loopback HTTP calls to
+	// this app's own API. Some of those HTTP clients (e.g. the openvpn auth
+	// plugin's `ureq`) only honour the lowercase form, so both are set to make
+	// sure loopback traffic is never sent through the mock proxy.
 	process.env.NO_PROXY = 'localhost,127.0.0.1';
+	process.env.no_proxy = process.env.NO_PROXY;
 };
 
 export const stopMockApi = async () => {
@@ -35,4 +41,5 @@ export const stopMockApi = async () => {
 	delete process.env.HTTP_PROXY;
 	delete process.env.HTTPS_PROXY;
 	delete process.env.NO_PROXY;
+	delete process.env.no_proxy;
 };

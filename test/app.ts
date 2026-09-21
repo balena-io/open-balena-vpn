@@ -21,7 +21,7 @@ import Bluebird from 'bluebird';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import http from 'http';
-import nock from 'nock';
+import type { CompletedRequest } from 'mockttp';
 import vpnClient from 'openvpn-client';
 
 chai.use(chaiAsPromised);
@@ -33,9 +33,10 @@ import type { VpnManager } from '../src/utils/openvpn.js';
 
 import proxyWorker from '../src/proxy-worker.js';
 import vpnWorker from '../src/vpn-worker.js';
-import { BALENA_API_INTERNAL_HOST, VPN_API_PORT } from '../src/utils/config.js';
+import { VPN_API_PORT } from '../src/utils/config.js';
 import { optionalVar } from '@balena/env-parsing';
 import { pooledRequest } from '../src/utils/request.js';
+import { apiHostname, mockApi, startMockApi, stopMockApi } from './mock-api.js';
 
 const vpnHost = optionalVar('VPN_HOST', '127.0.0.1');
 const vpnPort = optionalVar('VPN_PORT', '443');
@@ -60,40 +61,50 @@ const vpnDefaultOpts = [
 	'3',
 ];
 
-const expectTraceParent = (headers: Record<string, string>) => {
+const expectTraceParent = (headers: CompletedRequest['headers']) => {
 	// Check that we are forwarding the traceparent header
 	expect(headers).to.have.property('traceparent').that.is.a('string');
 };
-const checkTraceParentReturningBody = (body: nock.Body) =>
-	function (this: nock.ReplyFnContext) {
-		expectTraceParent(this.req.headers);
-		return body;
+
+const jsonOrTextResponse = (body: string | object) =>
+	typeof body === 'string'
+		? { statusCode: 200, body }
+		: { statusCode: 200, json: body };
+
+// `@opentelemetry/instrumentation-http` starts a (rooted, if there's no active
+// span) span for every outgoing request and injects its own traceparent header
+// regardless of application intent - nock never exercised this because it fully
+// intercepted requests before they reached the instrumented http module, so
+// those calls never carried a traceparent even where the app didn't add one
+// itself. Going through a real proxy (mockttp) exercises the instrumented path
+// for real, so a traceparent is always present here; only the header this app's
+// own `getPassthrough()` adds is worth asserting on.
+const checkTraceParentReturningBody =
+	(body: string | object) => (req: CompletedRequest) => {
+		expectTraceParent(req.headers);
+		return jsonOrTextResponse(body);
 	};
 
-// We check the lack of traceparent for certain things because the internal service instance heartbeat loop does not have a trace
-// and the proxy-worker connect method also does not have a trace
-const checkNoTraceParentReturningBody = (body: nock.Body) =>
-	function (this: nock.ReplyFnContext) {
-		expect(this.req.headers).to.not.have.property('traceparent');
-		return body;
-	};
+before(async () => {
+	await startMockApi();
+});
 
-after(() => {
+after(async () => {
+	await stopMockApi();
 	manager?.stop();
 });
 
 describe('vpn worker', function () {
 	this.timeout(15 * 1000);
 
-	before(() => {
-		nock(BALENA_API_INTERNAL_HOST)
-			.post('/v7/service_instance')
-			.reply(
-				200,
-				checkNoTraceParentReturningBody({
-					id: Math.floor(1 + Math.random() * 1023),
-				}),
-			);
+	before(async () => {
+		await mockApi
+			.forPost('/v7/service_instance')
+			.forHostname(apiHostname)
+			.once()
+			.thenJson(200, {
+				id: Math.floor(1 + Math.random() * 1023),
+			});
 	});
 
 	it('should resolve true when ready', async () => {
@@ -117,50 +128,76 @@ describe('api server', () =>
 describe('VPN Events', function () {
 	this.timeout(30 * 1000);
 
-	const getEvent = (name: string) =>
-		new Promise<string>((resolve) => {
-			nock(BALENA_API_INTERNAL_HOST)
-				.post(`/services/vpn/client-${name}`, /"uuids":.*"user2"/g)
-				.reply(200, function (_uri, body) {
-					expectTraceParent(this.req.headers);
-					resolve(body as string);
-					return 'OK';
-				});
+	// Registers the mock rule and waits for it to be active before returning,
+	// since (unlike nock) mockttp rule registration is asynchronous - the
+	// caller must await this before triggering the real openvpn event that
+	// will hit it. Returns a thunk rather than the event promise itself,
+	// since returning a promise directly from an async function makes the
+	// caller's `await` chain onto it too - which would block here, before
+	// the real event that resolves it has even been triggered.
+	async function prepareEvent(
+		name: string,
+	): Promise<() => Promise<Record<string, unknown>>> {
+		let resolveEvent!: (body: Record<string, unknown>) => void;
+		const eventPromise = new Promise<Record<string, unknown>>((resolve) => {
+			resolveEvent = resolve;
 		});
 
-	before(() => {
-		nock(BALENA_API_INTERNAL_HOST)
-			.get('/services/vpn/auth/user2')
-			.reply(200, checkTraceParentReturningBody('OK'));
+		await mockApi
+			.forPost(`/services/vpn/client-${name}`)
+			.forHostname(apiHostname)
+			.matching(async (req) =>
+				/"uuids":.*"user2"/.test((await req.body.getText()) ?? ''),
+			)
+			.once()
+			.thenCallback(async (req) => {
+				expectTraceParent(req.headers);
+				resolveEvent((await req.body.getJson()) as Record<string, unknown>);
+				return { statusCode: 200, body: 'OK' };
+			});
+
+		return () => eventPromise;
+	}
+
+	before(async () => {
+		await mockApi
+			.forGet('/services/vpn/auth/user2')
+			.forHostname(apiHostname)
+			.once()
+			.thenCallback(checkTraceParentReturningBody('OK'));
 	});
 
-	async function verifyEvent(event: string) {
-		const body = await getEvent(event);
+	function verifyEvent(body: Record<string, unknown>) {
 		expect(body).to.have.property('serviceId').that.equals(instance.getId());
 		expect(body).to.have.property('uuids').that.deep.equals(['user2']);
 		expect(body).to.not.have.property('real_address');
 		expect(body).to.not.have.property('virtual_address');
 	}
 
-	it('should send a client-connect event', function () {
+	it('should send a client-connect event', async function () {
 		this.client = vpnClient.create(vpnDefaultOpts);
 		this.client.authenticate('user2', 'pass');
-		return this.client.connect().return(verifyEvent('connect'));
+		const getEvent = await prepareEvent('connect');
+		await this.client.connect();
+		verifyEvent(await getEvent());
 	});
 
-	it('should send a client-disconnect event', function () {
-		return this.client.disconnect().return(verifyEvent('disconnect'));
+	it('should send a client-disconnect event', async function () {
+		const getEvent = await prepareEvent('disconnect');
+		await this.client.disconnect();
+		verifyEvent(await getEvent());
 	});
 });
 
 describe('More than one client', function () {
 	this.timeout(30 * 1000);
 
-	before(() => {
-		nock(BALENA_API_INTERNAL_HOST)
-			.get(/\/services\/vpn\/auth\/user[23]/)
+	before(async () => {
+		await mockApi
+			.forGet(/\/services\/vpn\/auth\/user[23]/)
+			.forHostname(apiHostname)
 			.twice()
-			.reply(200, 'OK');
+			.thenReply(200, 'OK');
 	});
 	it('should connect two clients', async function () {
 		this.client = vpnClient.create(vpnDefaultOpts);
@@ -207,27 +244,30 @@ describe('VPN proxy', function () {
 		);
 	};
 
-	beforeEach(() => {
-		nock(BALENA_API_INTERNAL_HOST)
-			.get(/\/services\/vpn\/auth\/user[345]/)
-			.reply(200, checkTraceParentReturningBody('OK'))
-
-			.post(/\/services\/vpn\/client-(?:dis)?connect/, /common_name=user[345]/g)
-			.times(2)
-			.reply(200, checkTraceParentReturningBody('OK'));
+	beforeEach(async () => {
+		// The equivalent nock rule also matched `/services/vpn/client-(dis)?connect`
+		// with a `common_name=user[345]` body regex, but `setConnected` posts a JSON
+		// `{ uuids: [...] }` body that never contains that text, so it never matched
+		// there either - dropped rather than ported as dead weight.
+		await mockApi
+			.forGet(/\/services\/vpn\/auth\/user[345]/)
+			.forHostname(apiHostname)
+			.once()
+			.thenCallback(checkTraceParentReturningBody('OK'));
 	});
 
 	describe('web accessible device', () => {
-		beforeEach(() => {
-			nock(BALENA_API_INTERNAL_HOST)
-				.get('/v7/device(@id)')
-				.query({
+		beforeEach(async () => {
+			await mockApi
+				.forGet('/v7/device(@id)')
+				.forHostname(apiHostname)
+				.withQuery({
 					$select: 'id',
 					$filter: 'is_connected_to_vpn',
 					'@id': '1',
 				})
-				.reply(
-					200,
+				.once()
+				.thenCallback(
 					checkTraceParentReturningBody({
 						d: [
 							{
@@ -237,12 +277,15 @@ describe('VPN proxy', function () {
 					}),
 				);
 
-			nock(BALENA_API_INTERNAL_HOST)
-				.post("/v7/device(uuid=@uuid)/canAccess?@uuid='deadbeef1'", {
+			await mockApi
+				.forPost('/v7/device(uuid=@uuid)/canAccess')
+				.forHostname(apiHostname)
+				.withQuery({ '@uuid': "'deadbeef1'" })
+				.withJsonBody({
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
-				.reply(
-					200,
+				.once()
+				.thenCallback(
 					checkTraceParentReturningBody({
 						d: [
 							{
@@ -283,16 +326,17 @@ describe('VPN proxy', function () {
 	});
 
 	describe('tunnel forwarding', () => {
-		beforeEach(() => {
-			nock(BALENA_API_INTERNAL_HOST)
-				.get('/v7/device(@id)')
-				.query({
+		beforeEach(async () => {
+			await mockApi
+				.forGet('/v7/device(@id)')
+				.forHostname(apiHostname)
+				.withQuery({
 					$select: 'id',
 					$filter: 'is_connected_to_vpn',
 					'@id': '3',
 				})
-				.reply(
-					200,
+				.once()
+				.thenCallback(
 					checkTraceParentReturningBody({
 						d: [
 							{
@@ -302,12 +346,15 @@ describe('VPN proxy', function () {
 					}),
 				);
 
-			nock(BALENA_API_INTERNAL_HOST)
-				.post("/v7/device(uuid=@uuid)/canAccess?@uuid='c0ffeec0ffeec0ffee'", {
+			await mockApi
+				.forPost('/v7/device(uuid=@uuid)/canAccess')
+				.forHostname(apiHostname)
+				.withQuery({ '@uuid': "'c0ffeec0ffeec0ffee'" })
+				.withJsonBody({
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
-				.reply(
-					200,
+				.once()
+				.thenCallback(
 					checkTraceParentReturningBody({
 						d: [
 							{
@@ -319,16 +366,18 @@ describe('VPN proxy', function () {
 		});
 
 		it('should refuse to forward via itself', async () => {
-			const scope = nock(BALENA_API_INTERNAL_HOST)
-				.get(
-					'/v7/service_instance?$select=id,ip_address&$filter=manages__device/any(d:d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27%20and%20d/is_connected_to_vpn)',
-				)
-				.reply(
-					200,
-					checkNoTraceParentReturningBody({
-						d: [{ id: instance.getId(), ip_address: '127.0.0.1' }],
-					}),
-				);
+			const scope = await mockApi
+				.forGet('/v7/service_instance')
+				.forHostname(apiHostname)
+				.withQuery({
+					$select: 'id,ip_address',
+					$filter:
+						"manages__device/any(d:d/uuid eq 'c0ffeec0ffeec0ffee' and d/is_connected_to_vpn)",
+				})
+				.once()
+				.thenJson(200, {
+					d: [{ id: instance.getId(), ip_address: '127.0.0.1' }],
+				});
 
 			await vpnTest(
 				{ user: 'user3', pass: 'pass' },
@@ -341,20 +390,22 @@ describe('VPN proxy', function () {
 						}),
 					).to.eventually.be.rejected,
 			);
-			expect(scope.isDone()).to.be.true;
+			expect((await scope.getSeenRequests()).length).to.be.greaterThan(0);
 		});
 
 		it('should detect forward loops', async () => {
-			const scope = nock(BALENA_API_INTERNAL_HOST)
-				.get(
-					'/v7/service_instance?$select=id,ip_address&$filter=manages__device/any(d:d/uuid%20eq%20%27c0ffeec0ffeec0ffee%27%20and%20d/is_connected_to_vpn)',
-				)
-				.reply(
-					200,
-					checkNoTraceParentReturningBody({
-						d: [{ id: 0, ip_address: '127.0.0.1' }],
-					}),
-				);
+			const scope = await mockApi
+				.forGet('/v7/service_instance')
+				.forHostname(apiHostname)
+				.withQuery({
+					$select: 'id,ip_address',
+					$filter:
+						"manages__device/any(d:d/uuid eq 'c0ffeec0ffeec0ffee' and d/is_connected_to_vpn)",
+				})
+				.once()
+				.thenJson(200, {
+					d: [{ id: 0, ip_address: '127.0.0.1' }],
+				});
 
 			await vpnTest(
 				{ user: 'user3', pass: 'pass' },
@@ -372,21 +423,22 @@ describe('VPN proxy', function () {
 						}),
 					).to.eventually.be.rejected,
 			);
-			expect(scope.isDone()).to.be.true;
+			expect((await scope.getSeenRequests()).length).to.be.greaterThan(0);
 		});
 	});
 
 	describe('not web accessible device', () => {
-		beforeEach(() => {
-			nock(BALENA_API_INTERNAL_HOST)
-				.get('/v7/device(@id)')
-				.query({
+		beforeEach(async () => {
+			await mockApi
+				.forGet('/v7/device(@id)')
+				.forHostname(apiHostname)
+				.withQuery({
 					$select: 'id',
 					$filter: 'is_connected_to_vpn',
 					'@id': '2',
 				})
-				.reply(
-					200,
+				.once()
+				.thenCallback(
 					checkTraceParentReturningBody({
 						d: [
 							{
@@ -398,11 +450,15 @@ describe('VPN proxy', function () {
 		});
 
 		it('should not allow port 8080 without authentication', async () => {
-			const scope = nock(BALENA_API_INTERNAL_HOST)
-				.post("/v7/device(uuid=@uuid)/canAccess?@uuid='deadbeef2'", {
+			const scope = await mockApi
+				.forPost('/v7/device(uuid=@uuid)/canAccess')
+				.forHostname(apiHostname)
+				.withQuery({ '@uuid': "'deadbeef2'" })
+				.withJsonBody({
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
-				.reply(200, checkTraceParentReturningBody({ d: [] }));
+				.once()
+				.thenCallback(checkTraceParentReturningBody({ d: [] }));
 
 			await vpnTest(
 				{ user: 'user4', pass: 'pass' },
@@ -415,16 +471,19 @@ describe('VPN proxy', function () {
 						}),
 					).to.eventually.be.rejected,
 			);
-			expect(scope.isDone()).to.be.true;
+			expect((await scope.getSeenRequests()).length).to.be.greaterThan(0);
 		});
 
 		it('should allow port 8080 with authentication', async () => {
-			const scope = nock(BALENA_API_INTERNAL_HOST)
-				.post("/v7/device(uuid=@uuid)/canAccess?@uuid='deadbeef2'", {
+			const scope = await mockApi
+				.forPost('/v7/device(uuid=@uuid)/canAccess')
+				.forHostname(apiHostname)
+				.withQuery({ '@uuid': "'deadbeef2'" })
+				.withJsonBody({
 					action: { or: ['tunnel-any', 'tunnel-8080'] },
 				})
-				.reply(
-					200,
+				.once()
+				.thenCallback(
 					checkTraceParentReturningBody({
 						d: [
 							{
@@ -444,7 +503,7 @@ describe('VPN proxy', function () {
 				expect(response)
 					.to.have.property('body')
 					.that.equals('hello from 8080');
-				expect(scope.isDone()).to.be.true;
+				expect((await scope.getSeenRequests()).length).to.be.greaterThan(0);
 			});
 		});
 	});
