@@ -1,4 +1,4 @@
-FROM balena/open-balena-base:21.0.35-s6-overlay@sha256:70ff6cf049b10af13fcc31f77e4001e74f916e730f25aa4a1a938d3a5e9defdf AS base
+FROM balena/open-balena-base:21.0.37-s6-overlay@sha256:e12d141a252f2a0d6e195665d117b932870dd9c77e948022e1bf3f8453376baa AS base
 
 FROM base AS builder
 COPY package.json package-lock.json /usr/src/app/
