@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency mocha to v12
+      hash: 77207a251359e06ee31ec347cb746b23f8b56c2e
+      body: |
+        Update mocha from 11.8.0 to 12.0.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.129
+  title: ""
+  date: 2026-09-24T12:47:48.164Z
+- commits:
     - subject: Switch from pinejs-client-request to pinejs-client-fetch
       hash: 60b2d71afbdf0aed6a890402ab1c3321ec242a6b
       body: ""
