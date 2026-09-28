@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update opentelemetry-js monorepo to v0.222.0
+      hash: 62b0ee7a99d754a7741055234dfc12359e78963d
+      body: |
+        Update @opentelemetry/instrumentation-http from 0.221.0 to 0.222.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.134
+  title: ""
+  date: 2026-09-28T14:05:43.055Z
+- commits:
     - subject: Update balena/open-balena-base to 22.0.0
       hash: 2dec9151a8523b32a27fdf7176ee54049bcc4509
       body: |
