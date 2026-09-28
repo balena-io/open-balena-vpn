@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @opentelemetry/instrumentation-express to v0.70.0
+      hash: 1f62164069b6db234d3abee7c1b49ce869ca8f30
+      body: |
+        Update @opentelemetry/instrumentation-express from 0.69.0 to 0.70.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.135
+  title: ""
+  date: 2026-09-28T14:55:27.088Z
+- commits:
     - subject: Update opentelemetry-js monorepo to v0.222.0
       hash: 62b0ee7a99d754a7741055234dfc12359e78963d
       body: |
