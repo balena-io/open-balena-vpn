@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update golang:1.27.1 Docker digest to e0174e5
+      hash: 974f4a6ff9628e48ca643b6a14c006632df1de13
+      body: |
+        Update golang
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.137
+  title: ""
+  date: 2026-09-30T08:27:23.650Z
+- commits:
     - subject: Update dependency morgan to v1.12.1 [SECURITY]
       hash: a64c784b5354a9d8eefedc94b09cdd0999a59b62
       body: |
