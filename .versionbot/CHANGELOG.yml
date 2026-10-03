@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency chai to v6.3.0
+      hash: 36dd62437c6aa883f0ff53f8421740101a35b49f
+      body: |
+        Update chai from 6.2.2 to 6.3.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.147
+  title: ""
+  date: 2026-10-03T20:09:17.460Z
+- commits:
     - subject: Update dependency @swc/core to v1.16.13
       hash: 3291133f8c0cf3c9085583e0c7463d8a3fdd1bf8
       body: |
