@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency undici to v8.11.2
+      hash: 47142c7c3e0e19777ccfa0cfc299253718ac52a9
+      body: |
+        Update undici from 8.10.2 to 8.11.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.145
+  title: ""
+  date: 2026-10-03T06:25:40.332Z
+- commits:
     - subject: Update dependency lint-staged to v17.6.0
       hash: 120be1ea979e39404fb590bbdf3c4b83f703f732
       body: |
