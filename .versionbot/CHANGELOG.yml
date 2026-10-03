@@ -1,4 +1,17 @@
 - commits:
+    - subject: Pin dependencies
+      hash: 302c9f6873daced38ea1a218195b7e1a4b7cecbd
+      body: |
+        Update mockttp
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.141
+  title: ""
+  date: 2026-10-03T02:38:20.185Z
+- commits:
     - subject: Update dependency @balena/lint to ^9.4.8
       hash: 4aa201778b01163d67a12396aa43bf733ae25951
       body: |
