@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @types/node to v26.6.3
+      hash: 10029e4260bda71c93486bf1031a4eae8d80fbe0
+      body: |
+        Update @types/node from 26.6.2 to 26.6.3
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.143
+  title: ""
+  date: 2026-10-03T04:31:37.817Z
+- commits:
     - subject: Update dependency @swc/core to v1.16.12
       hash: d89904cdb401a6dd9978dab5150436853acf2464
       body: |
