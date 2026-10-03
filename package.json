@@ -60,7 +60,7 @@
     "@types/split": "1.0.5",
     "balena-sdk": "23.2.15",
     "bluebird": "3.7.2",
-    "chai": "6.2.2",
+    "chai": "6.3.0",
     "chai-as-promised": "8.0.2",
     "husky": "9.1.7",
     "lint-staged": "17.6.0",
