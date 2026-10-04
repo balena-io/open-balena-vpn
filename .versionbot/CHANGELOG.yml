@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update rust:1-trixie Docker digest to 3745c05
+      hash: b514b50b993f9467697fac08874e486a8e708b8d
+      body: |
+        Update rust
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.149
+  title: ""
+  date: 2026-10-04T20:24:29.473Z
+- commits:
     - subject: Update dependency mocha to v12.0.3
       hash: bfc3b5b7ed7cced130125f2a4b36b0bb11d3ac53
       body: |
