@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency mocha to v12.0.3
+      hash: bfc3b5b7ed7cced130125f2a4b36b0bb11d3ac53
+      body: |
+        Update mocha from 12.0.2 to 12.0.3
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.148
+  title: ""
+  date: 2026-10-04T07:01:10.698Z
+- commits:
     - subject: Update dependency chai to v6.3.0
       hash: 36dd62437c6aa883f0ff53f8421740101a35b49f
       body: |
