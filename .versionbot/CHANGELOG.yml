@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @types/node to v26.6.4
+      hash: a6fb9175522d4172fd4fb355f338559ad5dd4e8a
+      body: |
+        Update @types/node from 26.6.3 to 26.6.4
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.150
+  title: ""
+  date: 2026-10-04T23:20:45.909Z
+- commits:
     - subject: Update rust:1-trixie Docker digest to 3745c05
       hash: b514b50b993f9467697fac08874e486a8e708b8d
       body: |
