@@ -69,7 +69,7 @@ RUN git clone https://github.com/fac/auth-script-openvpn.git . \
 # Rust Builder
 ########################################################
 
-FROM rust:1-trixie@sha256:3745c050d12adc738eff16ebfc81ed044bfb2cc27c6828850ff1666beb1c7a49 AS rust-builder
+FROM rust:1-trixie@sha256:15ad267e7a4cb2dce5905c90c76765adb6714945c5ea6d7c82673897a5e4067b AS rust-builder
 
 WORKDIR /usr/src/app
 COPY auth .
