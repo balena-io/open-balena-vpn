@@ -1,4 +1,19 @@
 - commits:
+    - subject: Use `metrics.client` for `prom-client` rather than relying on an
+        undeclared dependency
+      hash: ea36e5cdf49069586c701cec7046ce70c505ac7d
+      body: |
+        This means we will definitely track the version of the prom-client
+        exposed by `@balena/node-metrics-gatherer` and so will stay in sync
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.159
+  title: ""
+  date: 2026-10-07T16:02:24.586Z
+- commits:
     - subject: Update rust:1-trixie Docker digest to 6ff07ed
       hash: 836880667e83e651a42e070040d596d5b1567d84
       body: |
