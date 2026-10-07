@@ -16,7 +16,7 @@
 */
 
 import cluster from 'cluster';
-import prometheus from 'prom-client';
+import { metrics } from '@balena/node-metrics-gatherer';
 
 import { getLogger } from './utils/index.js';
 
@@ -31,9 +31,9 @@ if (!cluster.isWorker) {
 
 describeWorkerMetrics();
 
-// Ensure the prom-client worker listener is registered by instantiating the class
+// Ensure the metrics.client.AggregatorRegistry worker listener is registered by instantiating the class
 // tslint:disable-next-line:no-unused-expression-chai
-new prometheus.AggregatorRegistry();
+new metrics.client.AggregatorRegistry();
 
 const instanceId = intVar('WORKER_ID');
 const serviceId = intVar('SERVICE_ID');

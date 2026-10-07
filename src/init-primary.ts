@@ -18,7 +18,6 @@
 import { metrics } from '@balena/node-metrics-gatherer';
 import cluster from 'cluster';
 import express from 'express';
-import prometheus from 'prom-client';
 import pTimeout from 'p-timeout';
 
 import { apiServer } from './api.js';
@@ -175,7 +174,7 @@ try {
 				restartWorker();
 			}
 
-			const aggregatorRegistry = new prometheus.AggregatorRegistry();
+			const aggregatorRegistry = new metrics.client.AggregatorRegistry();
 
 			const app = express();
 			app.set('trust proxy', TRUST_PROXY);
@@ -211,14 +210,14 @@ try {
 					}
 					try {
 						const [promMetrics, clusterMetrics] = await Promise.all([
-							pTimeout(prometheus.register.metrics(), {
+							pTimeout(metrics.client.register.metrics(), {
 								milliseconds: METRICS_TIMEOUT,
 							}),
 							pTimeout(getClusterMetrics(), {
 								milliseconds: METRICS_TIMEOUT,
 							}),
 						]);
-						res.set('Content-Type', prometheus.register.contentType);
+						res.set('Content-Type', metrics.client.register.contentType);
 						res.write(promMetrics);
 						res.write('\n');
 						res.write(clusterMetrics);
