@@ -174,7 +174,7 @@ try {
 				restartWorker();
 			}
 
-			const aggregatorRegistry = new metrics.client.AggregatorRegistry();
+			const aggregatorRegistry = new metrics.client.ClusterRegistry();
 
 			const app = express();
 			app.set('trust proxy', TRUST_PROXY);

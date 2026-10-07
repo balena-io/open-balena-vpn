@@ -31,9 +31,9 @@ if (!cluster.isWorker) {
 
 describeWorkerMetrics();
 
-// Ensure the metrics.client.AggregatorRegistry worker listener is registered by instantiating the class
+// Ensure the metrics.client.ClusterRegistry worker listener is registered by instantiating the class
 // tslint:disable-next-line:no-unused-expression-chai
-new metrics.client.AggregatorRegistry();
+new metrics.client.ClusterRegistry();
 
 const instanceId = intVar('WORKER_ID');
 const serviceId = intVar('SERVICE_ID');
