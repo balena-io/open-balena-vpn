@@ -1,4 +1,130 @@
 - commits:
+    - subject: Update @balena/node-metrics-gatherer to 8.x
+      hash: 1c67e91bcf4c7c087e6602d2bf61366e0ad2057c
+      body: |
+        Update @balena/node-metrics-gatherer from 7.0.0 to 8.0.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested:
+        - commits:
+            - subject: Remove typed-error dependency
+              hash: a069dd18c21300dbb5b2e775d237ad470e2ddea9
+              body: ""
+              footer:
+                Change-type: major
+                change-type: major
+              author: Pagan Gazzard
+            - subject: Change `MetricsGatherer` to a type-only export, use the `metrics`
+                singleton
+              hash: a8d4b31c5c4315a64cf891ec240a152014a46e6d
+              body: ""
+              footer:
+                Change-type: major
+                change-type: major
+              author: Pagan Gazzard
+            - subject: Convert to ESM
+              hash: 48772f9ee5267aad67ff36c8c0b8c835c4741daa
+              body: ""
+              footer:
+                Change-type: major
+                change-type: major
+              author: Pagan Gazzard
+            - subject: Switch from deprecated `prom-client` to `@prometheus-io/client`
+              hash: 59419b72598a4afd05cee3216d2b95031e9f1286
+              body: >
+                The repo was transferred and the module renamed but is otherwise
+                a
+
+                direct successor
+              footer:
+                Change-type: major
+                change-type: major
+              author: Pagan Gazzard
+            - subject: Set minimum support nodejs version to 24.x
+              hash: 280a51722d407b2fc1c11c04fa3bbdf4ace4d1e3
+              body: ""
+              footer:
+                Change-type: major
+                change-type: major
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-8.0.0
+          title: ""
+          date: 2026-10-07T15:55:15.467Z
+        - commits:
+            - subject: Fix described metric name to match the one we use for collection of
+                `api_latency_milliseconds`
+              hash: 4639cfa935d06c41881dee25b4b3e2029b43665f
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-7.0.6
+          title: ""
+          date: 2026-10-07T14:47:57.021Z
+        - commits:
+            - subject: Remove unnecessary `MetricConstructor` wrapper class
+              hash: 434ca13734a34e9d1e9c79e87179802b0c463c94
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-7.0.5
+          title: ""
+          date: 2026-10-07T14:27:37.742Z
+        - commits:
+            - subject: Remove `@types/chai-http` as `chai-http` already includes types
+              hash: c433bb2531a27438e9ae86a46191f63e2dc6097a
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-7.0.4
+          title: ""
+          date: 2026-10-07T13:48:07.817Z
+        - commits:
+            - subject: Use the json parser exposed by express rather than relying on an
+                undeclared dependency
+              hash: 0beb1aa82ef3df21820591e603e8282d196a221f
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Pagan Gazzard
+          version: node-metrics-gatherer-7.0.3
+          title: ""
+          date: 2026-10-07T13:43:26.085Z
+        - commits:
+            - subject: Update typescript to v6
+              hash: 8cd5d6fd9ee1db6d3e849941d9093c9242a1e129
+              body: ""
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: joshbwlng
+          version: node-metrics-gatherer-7.0.2
+          title: ""
+          date: 2026-07-01T23:58:53.406Z
+        - commits:
+            - subject: Pin dependencies
+              hash: 6b6d451a8c60a0c7a413672ec117276731374233
+              body: |
+                Update @types/chai
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+          version: node-metrics-gatherer-7.0.1
+          title: ""
+          date: 2026-06-27T00:20:32.400Z
+  version: 12.3.160
+  title: ""
+  date: 2026-10-07T18:16:24.120Z
+- commits:
     - subject: Use `metrics.client` for `prom-client` rather than relying on an
         undeclared dependency
       hash: ea36e5cdf49069586c701cec7046ce70c505ac7d
