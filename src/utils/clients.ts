@@ -173,6 +173,12 @@ export const setConnected = (() => {
 		} else {
 			deviceState.targetConnected = connected;
 			deviceState.targetWorkerId = workerId;
+			if (connected) {
+				// Always report a new connection, as other VPN instances may have changed the device state
+				// in the API since it was last reported, eg `pod-1` -> `pod-2` -> `pod-1` where `pod-2`
+				// reported a disconnect, which would otherwise leave the device marked as disconnected
+				deviceState.currentConnected = undefined;
+			}
 		}
 		pendingUpdates.add(uuid);
 		void updateLoop(serviceId, logger);
