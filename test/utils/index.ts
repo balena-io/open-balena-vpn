@@ -16,9 +16,13 @@
 */
 
 import 'mocha';
+import clientsTests from './clients.js';
 import netmaskTests from './netmask.js';
 
 export default () => {
+	describe('clients', () => {
+		clientsTests();
+	});
 	describe('netmask', () => {
 		netmaskTests();
 	});
