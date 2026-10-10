@@ -24,7 +24,7 @@
     "@opentelemetry/instrumentation-express": "0.70.0",
     "@opentelemetry/instrumentation-http": "0.222.0",
     "@opentelemetry/sdk-node": "0.222.0",
-    "@sentry/node": "^10.32.1",
+    "@sentry/node": "^11.0.0",
     "body-parser": "^2.2.1",
     "compression": "^1.8.1",
     "eventemitter3": "^5.0.1",
