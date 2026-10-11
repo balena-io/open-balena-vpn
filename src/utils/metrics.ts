@@ -12,7 +12,23 @@ export const enum Metrics {
 	ActiveTunnels = 'vpn_proxy_active_tunnels',
 	TotalTunnels = 'vpn_proxy_total_tunnels',
 	TunnelErrors = 'vpn_proxy_tunnel_errors',
+	TunnelDuration = 'vpn_proxy_tunnel_duration',
 }
+
+const min = 60;
+const hour = 60 * min;
+const day = 24 * hour;
+const week = 7 * day;
+const durationBuckets = [
+	1 * min,
+	5 * min,
+	15 * min,
+	1 * hour,
+	6 * hour,
+	12 * hour,
+	1 * day,
+	1 * week, // 1w  - very stable long-running sessions, could be affected by deployment restarts, but still worth tracking
+];
 
 export const describeWorkerMetrics = () => {
 	metrics.describe.gauge(Metrics.OnlineDevices, 'vpn current online devices');
@@ -52,6 +68,11 @@ export const describeWorkerMetrics = () => {
 		'number of tunnels failed due to transmission error',
 	);
 	metrics.counter(Metrics.TunnelErrors, 0);
+	metrics.describe.histogram(
+		Metrics.TunnelDuration,
+		'histogram showing duration of proxy tunnel sessions',
+		{ buckets: durationBuckets },
+	);
 };
 export const describePrimaryMetrics = () => {
 	const kb = 2 ** 10; // 1024
@@ -99,21 +120,6 @@ export const describePrimaryMetrics = () => {
 		'histogram of average tx rate per vpn client',
 		{ buckets: bitrateBuckets },
 	);
-	const min = 60;
-	const hour = 60 * min;
-	const day = 24 * hour;
-	const week = 7 * day;
-	const durationBuckets = [
-		1 * min,
-		5 * min,
-		15 * min,
-		1 * hour,
-		6 * hour,
-		12 * hour,
-		1 * day,
-		1 * week, // 1w  - very stable long-running sessions, could be affected by deployment restarts, but still worth tracking
-	];
-
 	metrics.describe.histogram(
 		Metrics.SessionDuration,
 		'histogram showing duration of vpn sessions',
