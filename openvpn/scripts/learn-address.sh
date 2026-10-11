@@ -89,27 +89,31 @@ function trace() {
     fi
 }
 
+function compute_classid() {
+    # Derives a tc classid (1–65534) deterministically from the client IP
+    # (last 2 octets), eliminating the need for persistent classid state files.
+    #
+    # Collision safety: VPN_INSTANCE_SUBNET_BITMASK is clamped to a minimum of
+    # /16 (see src/utils/config.ts), so oct1 and oct2 are always fixed per
+    # instance. The (oct3 * 256 + oct4) expression therefore produces a unique
+    # index for every client address in the pool. The only wrap-around at
+    # index 65534 maps to classid 1, which would only alias the network base
+    # address (e.g. 100.64.0.0) — never assigned to a client. In practice,
+    # max-clients 32768 keeps the pool well within half of this space.
+    local ip=$1
+    IFS='.' read -r oct1 oct2 oct3 oct4 <<< "$ip"
+    echo $(( (oct3 * 256 + oct4) % 65534 + 1 ))
+}
+
 function bwlimit-enable() {
     ip=$1
 
-		trace "PRE-ENABLE" "$dev"
+    trace "PRE-ENABLE" "$dev"
 
     # Disable if already enabled.
     bwlimit-disable $ip
 
-    # Find unique classid.
-    if [ -f $statedir/$ip.classid ]; then
-        # Reuse this IP's classid
-        classid=`cat $statedir/$ip.classid`
-    else
-        if [ -f $statedir/last_classid ]; then
-            classid=`cat $statedir/last_classid`
-            classid=$((classid+1))
-        else
-            classid=1
-        fi
-        echo $classid > $statedir/last_classid
-    fi
+    classid=$(compute_classid "$ip")
 
     # Limit traffic from VPN server to client (download)
     if [[ $DEBUG -eq 1 ]]; then
@@ -134,29 +138,24 @@ function bwlimit-enable() {
         echo "[ERROR] Failed to add tc ingress filter for client $ip" >&2
     fi
 
-    # Store classid and dev for further use.
-    echo $classid > $statedir/$ip.classid
     echo $dev > $statedir/$ip.dev
 
-		trace "POST-ENABLE" "$dev"
+    trace "POST-ENABLE" "$dev"
 }
 
 function bwlimit-disable() {
     ip=$1
 
-    if [ ! -f $statedir/$ip.classid ]; then
-        return
-    fi
     if [ ! -f $statedir/$ip.dev ]; then
         return
     fi
 
-    classid=`cat $statedir/$ip.classid`
+    classid=$(compute_classid "$ip")
 
-		local dev_from_state
-		dev_from_state=$(cat "$statedir/$ip.dev")
+    local dev_from_state
+    dev_from_state=$(cat "$statedir/$ip.dev")
 
-		trace "PRE-DISABLE" "$dev_from_state"
+    trace "PRE-DISABLE" "$dev_from_state"
 
     # Remove tc rules with proper error handling
     if [[ $DEBUG -eq 1 ]]; then
@@ -167,10 +166,9 @@ function bwlimit-disable() {
     tc class del dev "$dev_from_state" classid "1:$classid" 2>/dev/null || true
     tc filter del dev "$dev_from_state" parent ffff: protocol all prio 1 u32 match ip src "$ip/32" 2>/dev/null || true
 
-    # Remove .dev but keep .classid so it can be reused.
     rm -f "$statedir/$ip.dev"
 
-		trace "POST-DISABLE" "$dev_from_state"
+    trace "POST-DISABLE" "$dev_from_state"
 }
 
 # Make sure queueing discipline is enabled on the device
