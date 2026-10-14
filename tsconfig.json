@@ -2,6 +2,7 @@
 	"compilerOptions": {
 		"allowJs": false,
 		"forceConsistentCasingInFileNames": true,
+		"lib": ["es2025"],
 		"module": "NodeNext",
 		"noErrorTruncation": true,
 		"noFallthroughCasesInSwitch": true,

@@ -28,8 +28,7 @@
 import { setTimeout } from 'timers/promises';
 import type { Logger } from 'winston';
 
-import type { Response } from './request.js';
-import { request, REQUEST_TIMEOUT } from './request.js';
+import { request } from './request.js';
 import {
 	API_DEVICE_STATE_POST_BATCH_SIZE,
 	BALENA_API_INTERNAL_HOST,
@@ -71,23 +70,23 @@ export const setConnected = (() => {
 		await Promise.allSettled(
 			uuidChunks.map(async (uuidChunk) => {
 				try {
-					const response: Response = await request
-						.post({
-							url: `${BALENA_API_INTERNAL_HOST}/services/vpn/client-${eventType}`,
-							json: true,
-							body: {
+					const { status } = await request(
+						`${BALENA_API_INTERNAL_HOST}/services/vpn/client-${eventType}`,
+						{
+							method: 'POST',
+							headers: {
+								...getPassthrough(`Bearer ${VPN_SERVICE_API_KEY}`).headers,
+								'Content-Type': 'application/json',
+							},
+							body: JSON.stringify({
 								serviceId,
 								uuids: uuidChunk,
 								connected,
-							},
-							...getPassthrough(`Bearer ${VPN_SERVICE_API_KEY}`),
-						})
-						.promise()
-						.timeout(REQUEST_TIMEOUT);
-					if (response.statusCode !== 200) {
-						throw new Error(
-							`Status code was '${response.statusCode}', expected '200'`,
-						);
+							}),
+						},
+					);
+					if (status !== 200) {
+						throw new Error(`Status code was '${status}', expected '200'`);
 					}
 					// Update the current state on success
 					for (const uuid of uuidChunk) {
