@@ -55,10 +55,10 @@ const checkDeviceAuth = (() => {
 	}
 	const $checkDeviceAuth = memoize(
 		async (username: string, password: string) => {
-			const { statusCode } = await pooledRequest.get({
-				url: `${BALENA_API_INTERNAL_HOST}/services/vpn/auth/${username}`,
-				...getPassthrough(`Bearer ${password}`),
-			});
+			const { status: statusCode } = await pooledRequest(
+				`${BALENA_API_INTERNAL_HOST}/services/vpn/auth/${username}`,
+				getPassthrough(`Bearer ${password}`),
+			);
 			if ([200, 401, 403].includes(statusCode)) {
 				return statusCode;
 			}

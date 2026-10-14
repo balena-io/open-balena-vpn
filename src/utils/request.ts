@@ -16,20 +16,29 @@
 */
 
 import { intVar } from '@balena/env-parsing';
-import { Agent } from 'https';
-import rp from 'request-promise';
-export type { Response } from 'request';
+import PQueue from 'p-queue';
 
-export const REQUEST_TIMEOUT = 59000;
-export const request = rp.defaults({
-	resolveWithFullResponse: true,
-	simple: false,
-	timeout: REQUEST_TIMEOUT,
+const REQUEST_TIMEOUT = 59000;
+
+// Nothing uses the response body so it is discarded rather than buffered, but it is still consumed
+// in full so that the connection can be reused and so that the timeout covers the entire request
+export const request = async (
+	url: string,
+	init?: Omit<RequestInit, 'signal'>,
+) => {
+	const response = await fetch(url, {
+		...init,
+		signal: AbortSignal.timeout(REQUEST_TIMEOUT),
+	});
+	await response.body?.pipeTo(new WritableStream());
+	return response;
+};
+
+const pooledRequestQueue = new PQueue({
+	concurrency: intVar('MAX_API_POST_WORKERS', 20),
 });
 
-const maxSockets = intVar('MAX_API_POST_WORKERS', 20);
-
-const pool = new Agent({
-	maxSockets,
-});
-export const pooledRequest = request.defaults({ pool });
+// Pooled requests go into a promise-queue to limit concurrency in order to avoid overwhelming the API during mass auth requests
+// eg during redeploys where every device reconnects
+export const pooledRequest = (...args: Parameters<typeof request>) =>
+	pooledRequestQueue.add(() => request(...args));

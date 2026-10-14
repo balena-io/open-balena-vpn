@@ -23,6 +23,7 @@ import chaiAsPromised from 'chai-as-promised';
 import http from 'http';
 import type { CompletedRequest } from 'mockttp';
 import vpnClient from 'openvpn-client';
+import { ProxyAgent } from 'undici';
 
 chai.use(chaiAsPromised);
 const { expect } = chai;
@@ -35,7 +36,6 @@ import proxyWorker from '../src/proxy-worker.js';
 import vpnWorker from '../src/vpn-worker.js';
 import { VPN_API_PORT } from '../src/utils/config.js';
 import { optionalVar } from '@balena/env-parsing';
-import { pooledRequest } from '../src/utils/request.js';
 import { apiHostname, mockApi, startMockApi, stopMockApi } from './mock-api.js';
 
 const vpnHost = optionalVar('VPN_HOST', '127.0.0.1');
@@ -244,6 +244,28 @@ describe('VPN proxy', function () {
 		);
 	};
 
+	// Makes a request to `url` tunnelled through the VPN proxy via CONNECT
+	const tunnelRequest = async (
+		url: string,
+		{
+			proxy = 'http://localhost:3128',
+			proxyHeaders,
+		}: { proxy?: string; proxyHeaders?: Record<string, string> } = {},
+	) => {
+		const dispatcher = new ProxyAgent({
+			uri: proxy,
+			// undici only tunnels plain http requests via CONNECT when explicitly told to
+			proxyTunnel: true,
+			headers: proxyHeaders,
+		});
+		try {
+			const response = await fetch(url, { dispatcher });
+			return { status: response.status, body: await response.text() };
+		} finally {
+			await dispatcher.close();
+		}
+	};
+
 	beforeEach(async () => {
 		// The equivalent nock rule also matched `/services/vpn/client-(dis)?connect`
 		// with a `common_name=user[345]` body regex, but `setConnected` posts a JSON
@@ -298,12 +320,10 @@ describe('VPN proxy', function () {
 
 		it('should allow port 8080 without authentication (.balena)', async () => {
 			await vpnTest({ user: 'user3', pass: 'pass' }, async () => {
-				const response = await pooledRequest({
-					url: 'http://deadbeef1.balena:8080/test',
-					proxy: 'http://localhost:3128',
-					tunnel: true,
-				});
-				expect(response).to.have.property('statusCode').that.equals(200);
+				const response = await tunnelRequest(
+					'http://deadbeef1.balena:8080/test',
+				);
+				expect(response).to.have.property('status').that.equals(200);
 				expect(response)
 					.to.have.property('body')
 					.that.equals('hello from 8080');
@@ -312,12 +332,10 @@ describe('VPN proxy', function () {
 
 		it('should allow port 8080 without authentication (.resin)', async () => {
 			await vpnTest({ user: 'user3', pass: 'pass' }, async () => {
-				const response = await pooledRequest({
-					url: 'http://deadbeef1.resin:8080/test',
-					proxy: 'http://localhost:3128',
-					tunnel: true,
-				});
-				expect(response).to.have.property('statusCode').that.equals(200);
+				const response = await tunnelRequest(
+					'http://deadbeef1.resin:8080/test',
+				);
+				expect(response).to.have.property('status').that.equals(200);
 				expect(response)
 					.to.have.property('body')
 					.that.equals('hello from 8080');
@@ -382,13 +400,8 @@ describe('VPN proxy', function () {
 			await vpnTest(
 				{ user: 'user3', pass: 'pass' },
 				() =>
-					expect(
-						pooledRequest({
-							url: 'http://c0ffeec0ffeec0ffee.balena:8080/test',
-							proxy: 'http://localhost:3128',
-							tunnel: true,
-						}),
-					).to.eventually.be.rejected,
+					expect(tunnelRequest('http://c0ffeec0ffeec0ffee.balena:8080/test')).to
+						.eventually.be.rejected,
 			);
 			expect((await scope.getSeenRequests()).length).to.be.greaterThan(0);
 		});
@@ -411,15 +424,10 @@ describe('VPN proxy', function () {
 				{ user: 'user3', pass: 'pass' },
 				() =>
 					expect(
-						pooledRequest.defaults({
-							proxyHeaderWhiteList: ['Forwarded'],
-						} as any)({
-							url: 'http://c0ffeec0ffeec0ffee.balena:8080/test',
-							headers: {
+						tunnelRequest('http://c0ffeec0ffeec0ffee.balena:8080/test', {
+							proxyHeaders: {
 								Forwarded: `By=open-balena-vpn(${instance.getId()})`,
 							},
-							proxy: 'http://localhost:3128',
-							tunnel: true,
 						}),
 					).to.eventually.be.rejected,
 			);
@@ -463,13 +471,8 @@ describe('VPN proxy', function () {
 			await vpnTest(
 				{ user: 'user4', pass: 'pass' },
 				() =>
-					expect(
-						pooledRequest({
-							url: 'http://deadbeef2.balena:8080/test',
-							proxy: 'http://localhost:3128',
-							tunnel: true,
-						}),
-					).to.eventually.be.rejected,
+					expect(tunnelRequest('http://deadbeef2.balena:8080/test')).to
+						.eventually.be.rejected,
 			);
 			expect((await scope.getSeenRequests()).length).to.be.greaterThan(0);
 		});
@@ -494,12 +497,11 @@ describe('VPN proxy', function () {
 				);
 
 			await vpnTest({ user: 'user5', pass: 'pass' }, async () => {
-				const response = await pooledRequest({
-					url: 'http://deadbeef2.balena:8080/test',
-					proxy: 'http://BALENA_api:test_api_key@localhost:3128',
-					tunnel: true,
-				});
-				expect(response).to.have.property('statusCode').that.equals(200);
+				const response = await tunnelRequest(
+					'http://deadbeef2.balena:8080/test',
+					{ proxy: 'http://BALENA_api:test_api_key@localhost:3128' },
+				);
+				expect(response).to.have.property('status').that.equals(200);
 				expect(response)
 					.to.have.property('body')
 					.that.equals('hello from 8080');
