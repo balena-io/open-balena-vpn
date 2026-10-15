@@ -21,19 +21,19 @@ import express from 'express';
 import memoize from 'memoizee';
 import morgan from 'morgan';
 
-import { getLogger, getPassthrough } from './utils/index.js';
+import { getLogger, getPassthrough } from './utils/index.ts';
 import {
 	BALENA_API_INTERNAL_HOST,
 	DELAY_ON_AUTH_FAIL,
 	TRUST_PROXY,
 	VPN_AUTH_CACHE_TIMEOUT,
-} from './utils/config.js';
-import { captureException, Sentry } from './utils/errors.js';
-import { hasDurationData, hasCommonName } from './utils/openvpn.js';
+} from './utils/config.ts';
+import { captureException, Sentry } from './utils/errors.ts';
+import { hasDurationData, hasCommonName } from './utils/openvpn.ts';
 import { setTimeout } from 'timers/promises';
-import { pooledRequest } from './utils/request.js';
-import { Metrics } from './utils/metrics.js';
-import { setConnected } from './utils/clients.js';
+import { pooledRequest } from './utils/request.ts';
+import { Metrics } from './utils/metrics.ts';
+import { setConnected } from './utils/clients.ts';
 import { trace } from '@opentelemetry/api';
 import bodyParser from 'body-parser';
 
@@ -49,8 +49,10 @@ const fromLocalHost: express.RequestHandler = (req, res, next) => {
 
 const checkDeviceAuth = (() => {
 	class ExpectedAuthError extends Error {
-		constructor(public statusCode: number) {
+		public statusCode: number;
+		constructor(statusCode: number) {
 			super();
+			this.statusCode = statusCode;
 		}
 	}
 	const $checkDeviceAuth = memoize(

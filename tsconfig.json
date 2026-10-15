@@ -1,22 +1,22 @@
 {
 	"compilerOptions": {
+		"allowImportingTsExtensions": true,
 		"allowJs": false,
+		"erasableSyntaxOnly": true,
 		"forceConsistentCasingInFileNames": true,
 		"lib": ["es2025"],
 		"module": "NodeNext",
+		"noEmit": true,
 		"noErrorTruncation": true,
 		"noFallthroughCasesInSwitch": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"outDir": "build/",
-		"preserveConstEnums": true,
-		"removeComments": true,
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
-		"sourceMap": true,
 		"strict": true,
 		"useUnknownInCatchVariables": false,
-		"target": "es2025"
+		"target": "es2025",
+		"verbatimModuleSyntax": true
 	},
 	"exclude": [
 		"node_modules"

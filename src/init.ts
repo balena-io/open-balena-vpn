@@ -15,14 +15,14 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import './init-instrumentation.js';
+import './init-instrumentation.ts';
 
 import cluster from 'cluster';
 
 if (cluster.isPrimary) {
-	await import('./init-primary.js');
+	await import('./init-primary.ts');
 }
 
 if (cluster.isWorker) {
-	await import('./init-worker.js');
+	await import('./init-worker.ts');
 }

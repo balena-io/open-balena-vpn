@@ -20,8 +20,8 @@ import cluster from 'cluster';
 import express from 'express';
 import pTimeout from 'p-timeout';
 
-import { apiServer } from './api.js';
-import { getLogger, VERSION } from './utils/index.js';
+import { apiServer } from './api.ts';
+import { getLogger, VERSION } from './utils/index.ts';
 import {
 	DEFAULT_SIGTERM_TIMEOUT,
 	METRICS_TIMEOUT,
@@ -30,10 +30,10 @@ import {
 	VPN_INSTANCE_COUNT,
 	VPN_SERVICE_ADDRESS,
 	VPN_VERBOSE_LOGS,
-} from './utils/config.js';
+} from './utils/config.ts';
 
-import { describePrimaryMetrics, Metrics } from './utils/metrics.js';
-import { service } from './utils/service.js';
+import { describePrimaryMetrics, Metrics } from './utils/metrics.ts';
+import { service } from './utils/service.ts';
 
 if (!cluster.isPrimary) {
 	throw new Error(

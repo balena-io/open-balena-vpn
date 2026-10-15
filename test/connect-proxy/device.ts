@@ -18,9 +18,9 @@
 import { optionalVar } from '@balena/env-parsing';
 import * as chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { apiHostname, mockApi } from '../mock-api.js';
+import { apiHostname, mockApi } from '../mock-api.ts';
 
-import { isDeviceConnectedToVpn } from '../../src/utils/device.js';
+import { isDeviceConnectedToVpn } from '../../src/utils/device.ts';
 
 export default () => {
 	chai.use(chaiAsPromised);

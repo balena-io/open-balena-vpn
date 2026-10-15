@@ -16,15 +16,18 @@
 */
 
 import { setTimeout } from 'timers/promises';
-import { balenaApi, getPassthrough } from './index.js';
-import { VPN_SERVICE_API_KEY } from './config.js';
-import { captureException, ServiceRegistrationError } from './errors.js';
+import { balenaApi, getPassthrough } from './index.ts';
+import { VPN_SERVICE_API_KEY } from './config.ts';
+import { captureException, ServiceRegistrationError } from './errors.ts';
 import type { BalenaModel } from 'balena-sdk';
 
 class ServiceInstance {
 	private _id: number | null = null;
+	private interval: number;
 
-	constructor(private interval: number = 10 * 1000) {}
+	constructor(interval: number = 10 * 1000) {
+		this.interval = interval;
+	}
 
 	private captureException(err: Error, fingerprint: string) {
 		const tags: { [key: string]: string } = {};

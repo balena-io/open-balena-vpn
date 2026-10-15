@@ -6,7 +6,7 @@ RUN npm ci && npm cache clean --force 2>/dev/null
 COPY tsconfig.json tsconfig.dev.json /usr/src/app/
 COPY test /usr/src/app/test
 COPY src /usr/src/app/src
-RUN npm run build
+RUN npm run check
 
 ########################################################
 # Plugins
@@ -195,7 +195,8 @@ COPY package.json package-lock.json /usr/src/app/
 RUN npm ci --omit=dev && npm cache clean --force
 
 COPY --from=auth-plugin /usr/src/app/auth-script-openvpn/openvpn-plugin-auth-script.so /etc/openvpn/plugins/
-COPY --from=builder /usr/src/app/build /usr/src/app/build
+# Copy src from the builder stage (not the context) so its type check is part of the build
+COPY --from=builder /usr/src/app/src /usr/src/app/src
 COPY --from=connect-disconnect-plugin /usr/src/app/connect-disconnect-script-openvpn/openvpn-plugin-connect-disconnect-script.so /etc/openvpn/plugins/
 COPY --from=learn-address-plugin /usr/src/app/learn-address-script-openvpn/openvpn-plugin-learn-address-script.so /etc/openvpn/plugins/
 COPY --from=rust-builder /usr/src/app/target/release/auth /usr/src/app/openvpn/scripts/auth

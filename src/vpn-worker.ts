@@ -28,14 +28,14 @@ import {
 	VPN_GATEWAY,
 	VPN_INSTANCE_SUBNET_BITMASK,
 	VPN_VERBOSE_LOGS,
-} from './utils/config.js';
+} from './utils/config.ts';
 
-import { getLogger } from './utils/index.js';
-import { VpnManager, type VpnClientBytecountData } from './utils/openvpn.js';
-import { Netmask } from './utils/netmask.js';
-import { Metrics } from './utils/metrics.js';
-import { HAProxy } from './utils/haproxy.js';
-import type { BitrateMessage } from './init-primary.js';
+import { getLogger } from './utils/index.ts';
+import { VpnManager, type VpnClientBytecountData } from './utils/openvpn.ts';
+import { Netmask } from './utils/netmask.ts';
+import { Metrics } from './utils/metrics.ts';
+import { HAProxy } from './utils/haproxy.ts';
+import type { BitrateMessage } from './init-primary.ts';
 
 const getInstanceSubnet = (instanceId: number) => {
 	const network = new Netmask(VPN_BASE_IP, VPN_BASE_MASK);

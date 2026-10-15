@@ -18,8 +18,8 @@
 import { optionalVar } from '@balena/env-parsing';
 import memoize from 'memoizee';
 
-import { balenaApi, getPassthrough, RequestError } from './index.js';
-import { APIError, captureException } from './errors.js';
+import { balenaApi, getPassthrough, RequestError } from './index.ts';
+import { APIError, captureException } from './errors.ts';
 
 const VPN_GUEST_API_KEY = optionalVar('VPN_GUEST_API_KEY');
 

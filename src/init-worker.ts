@@ -18,12 +18,12 @@
 import cluster from 'cluster';
 import { metrics } from '@balena/node-metrics-gatherer';
 
-import { getLogger } from './utils/index.js';
+import { getLogger } from './utils/index.ts';
 
-import proxyWorker from './proxy-worker.js';
-import vpnWorker from './vpn-worker.js';
+import proxyWorker from './proxy-worker.ts';
+import vpnWorker from './vpn-worker.ts';
 import { intVar } from '@balena/env-parsing';
-import { describeWorkerMetrics } from './utils/metrics.js';
+import { describeWorkerMetrics } from './utils/metrics.ts';
 
 if (!cluster.isWorker) {
 	throw new Error('init-worker should only be imported by a worker process');

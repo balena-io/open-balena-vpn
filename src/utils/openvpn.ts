@@ -28,8 +28,8 @@ import {
 	VPN_UPRATE,
 	LEARN_ADDRESS_DEBUG,
 	VPN_STATUS_FILE_WRITE_INTERVAL_SECONDS,
-} from './config.js';
-import type { Netmask } from './netmask.js';
+} from './config.ts';
+import type { Netmask } from './netmask.ts';
 
 import { createRequire } from 'node:module';
 import { setTimeout } from 'node:timers/promises';
@@ -135,16 +135,26 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 	private buf = '';
 	private readonly pidFile: string;
 	private readonly mgtHost = '127.0.0.1';
+	private instanceId: number;
+	private vpnPort: number;
+	private mgtPort: number;
+	private subnet: Netmask;
+	private gateway?: string;
 
 	constructor(
-		private instanceId: number,
-		private vpnPort: number,
-		private mgtPort: number,
-		private subnet: Netmask,
-		private gateway?: string,
+		instanceId: number,
+		vpnPort: number,
+		mgtPort: number,
+		subnet: Netmask,
+		gateway?: string,
 		debug?: boolean,
 	) {
 		super();
+		this.instanceId = instanceId;
+		this.vpnPort = vpnPort;
+		this.mgtPort = mgtPort;
+		this.subnet = subnet;
+		this.gateway = gateway;
 		this.pidFile = `/var/run/openvpn/server-${this.instanceId}.pid`;
 		// proxy `data` events from connector, splitting at newlines
 		this.connector.on('data', (data) => {

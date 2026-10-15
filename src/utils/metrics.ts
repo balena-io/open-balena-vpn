@@ -1,18 +1,18 @@
 import { metrics } from '@balena/node-metrics-gatherer';
 
-export const enum Metrics {
-	SessionDuration = 'vpn_session_duration',
-	SessionRxBitrate = 'vpn_session_avg_rx_bitrate',
-	SessionTxBitrate = 'vpn_session_avg_tx_bitrate',
-	RxBytes = 'vpn_rx_bytes_total',
-	TxBytes = 'vpn_tx_bytes_total',
-	OnlineDevices = 'vpn_online_devices',
-	TotalDevices = 'vpn_devices_total',
-	AuthFailures = 'vpn_auth_failures_total',
-	ActiveTunnels = 'vpn_proxy_active_tunnels',
-	TotalTunnels = 'vpn_proxy_total_tunnels',
-	TunnelErrors = 'vpn_proxy_tunnel_errors',
-}
+export const Metrics = {
+	SessionDuration: 'vpn_session_duration',
+	SessionRxBitrate: 'vpn_session_avg_rx_bitrate',
+	SessionTxBitrate: 'vpn_session_avg_tx_bitrate',
+	RxBytes: 'vpn_rx_bytes_total',
+	TxBytes: 'vpn_tx_bytes_total',
+	OnlineDevices: 'vpn_online_devices',
+	TotalDevices: 'vpn_devices_total',
+	AuthFailures: 'vpn_auth_failures_total',
+	ActiveTunnels: 'vpn_proxy_active_tunnels',
+	TotalTunnels: 'vpn_proxy_total_tunnels',
+	TunnelErrors: 'vpn_proxy_tunnel_errors',
+} as const;
 
 export const describeWorkerMetrics = () => {
 	metrics.describe.gauge(Metrics.OnlineDevices, 'vpn current online devices');

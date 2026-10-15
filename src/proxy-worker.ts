@@ -21,20 +21,20 @@ import net from 'net';
 import * as nodeTunnel from 'node-tunnel';
 import type winston from 'winston';
 
-import { getLogger } from './utils/index.js';
+import { getLogger } from './utils/index.ts';
 import {
 	VPN_CONNECT_PROXY_PORT,
 	VPN_FORWARD_PROXY_PORT,
 	VPN_SERVICE_API_KEY,
 	VPN_STATUS_FILE_WRITE_INTERVAL_SECONDS,
-} from './utils/config.js';
-import * as errors from './utils/errors.js';
-import { Metrics } from './utils/metrics.js';
+} from './utils/config.ts';
+import * as errors from './utils/errors.ts';
+import { Metrics } from './utils/metrics.ts';
 import {
 	canAccessDevice,
 	isDeviceConnectedToVpn,
 	getDeviceVpnHost,
-} from './utils/device.js';
+} from './utils/device.ts';
 import { context, propagation, trace } from '@opentelemetry/api';
 import { setTimeout } from 'timers/promises';
 
@@ -51,12 +51,13 @@ const deviceIsLocal = async (uuid: string) => {
 
 class Tunnel extends nodeTunnel.Tunnel {
 	private readonly logger: winston.Logger;
+	private readonly instanceId: number;
+	private readonly serviceId: number;
 
-	constructor(
-		private readonly instanceId: number,
-		private readonly serviceId: number,
-	) {
+	constructor(instanceId: number, serviceId: number) {
 		super();
+		this.instanceId = instanceId;
+		this.serviceId = serviceId;
 		this.logger = getLogger('proxy', this.serviceId, this.instanceId);
 
 		this.on('error', (err) => {
