@@ -1,4 +1,26 @@
 - commits:
+    - subject: "Switch from swc-node to node's built-in type stripping- #419"
+      hash: e70c53e89ebd1b0d310072c06183d2d6f13c58c3
+      body: >
+        Node now runs the typescript sources directly everywhere. This means the
+        build stage has been removed and replaced with a purely type
+        checking/test stage.
+
+
+        Type stripping only supports erasable syntax and does not rewrite import
+        specifiers so tsconfig has been updated to enable/enforce that
+
+
+        https://balena.fibery.io/Work/Project/3059
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.164
+  title: ""
+  date: 2026-10-15T16:37:56.122Z
+- commits:
     - subject: Replace `request` with native `fetch` usage
       hash: f7b07b608f4845975c2c600eeeb23695ad298a9e
       body: |
