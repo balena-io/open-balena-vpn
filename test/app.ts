@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import '../src/init-instrumentation.js';
+import '../src/init-instrumentation.ts';
 
 import Bluebird from 'bluebird';
 import * as chai from 'chai';
@@ -28,15 +28,15 @@ import { ProxyAgent } from 'undici';
 chai.use(chaiAsPromised);
 const { expect } = chai;
 
-import { apiServer } from '../src/api.js';
-import { service } from '../src/utils/service.js';
-import type { VpnManager } from '../src/utils/openvpn.js';
+import { apiServer } from '../src/api.ts';
+import { service } from '../src/utils/service.ts';
+import type { VpnManager } from '../src/utils/openvpn.ts';
 
-import proxyWorker from '../src/proxy-worker.js';
-import vpnWorker from '../src/vpn-worker.js';
-import { VPN_API_PORT } from '../src/utils/config.js';
+import proxyWorker from '../src/proxy-worker.ts';
+import vpnWorker from '../src/vpn-worker.ts';
+import { VPN_API_PORT } from '../src/utils/config.ts';
 import { optionalVar } from '@balena/env-parsing';
-import { apiHostname, mockApi, startMockApi, stopMockApi } from './mock-api.js';
+import { apiHostname, mockApi, startMockApi, stopMockApi } from './mock-api.ts';
 
 const vpnHost = optionalVar('VPN_HOST', '127.0.0.1');
 const vpnPort = optionalVar('VPN_PORT', '443');

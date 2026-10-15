@@ -19,7 +19,7 @@ import winston from 'winston';
 
 import PinejsClientFetch from 'pinejs-client-fetch';
 export { RequestError } from 'pinejs-client-fetch';
-import { BALENA_API_INTERNAL_HOST } from './config.js';
+import { BALENA_API_INTERNAL_HOST } from './config.ts';
 import type { PineClient as BalenaPineClient } from 'balena-sdk';
 
 import packageJSON from '../../package.json' with { type: 'json' };

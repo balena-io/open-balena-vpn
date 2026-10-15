@@ -16,7 +16,7 @@
 */
 
 import * as mockttp from 'mockttp';
-import { BALENA_API_INTERNAL_HOST } from '../src/utils/config.js';
+import { BALENA_API_INTERNAL_HOST } from '../src/utils/config.ts';
 import { getGlobalDispatcher, ProxyAgent, setGlobalDispatcher } from 'undici';
 
 const defaultDispatcher = getGlobalDispatcher();

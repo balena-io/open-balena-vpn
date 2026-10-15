@@ -28,14 +28,14 @@
 import { setTimeout } from 'timers/promises';
 import type { Logger } from 'winston';
 
-import { request } from './request.js';
+import { request } from './request.ts';
 import {
 	API_DEVICE_STATE_POST_BATCH_SIZE,
 	BALENA_API_INTERNAL_HOST,
 	VPN_SERVICE_API_KEY,
-} from './config.js';
-import { captureException } from './errors.js';
-import { getPassthrough } from './index.js';
+} from './config.ts';
+import { captureException } from './errors.ts';
+import { getPassthrough } from './index.ts';
 
 interface DeviceStateTracker {
 	targetConnected: boolean;

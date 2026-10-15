@@ -6,7 +6,6 @@
   "type": "module",
   "license": "AGPL-3.0",
   "scripts": {
-    "build": "tsc --project .",
     "check": "tsc --pretty --noEmit --diagnostics --project ./tsconfig.json",
     "check:dev": "tsc --pretty --noEmit --diagnostics --project ./tsconfig.dev.json",
     "lint": "balena-lint -t ./tsconfig.dev.json src/ test/",
@@ -43,8 +42,6 @@
   },
   "devDependencies": {
     "@balena/lint": "^9.4.8",
-    "@swc-node/register": "1.12.1",
-    "@swc/core": "1.16.13",
     "@types/bluebird": "3.5.42",
     "@types/chai": "5.2.3",
     "@types/chai-as-promised": "8.0.2",
@@ -80,7 +77,6 @@
   "mocha": {
     "bail": true,
     "reporter": "spec",
-    "require": "@swc-node/register/esm-register",
     "exit": true
   },
   "versionist": {

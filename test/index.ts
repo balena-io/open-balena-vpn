@@ -16,11 +16,11 @@
 */
 
 import 'mocha';
-import connectProxyTests from './connect-proxy/index.js';
-import serviceTests from './service.js';
-import utilsTests from './utils/index.js';
-import throttlingTests from './throttling.js';
-import { startMockApi, stopMockApi } from './mock-api.js';
+import connectProxyTests from './connect-proxy/index.ts';
+import serviceTests from './service.ts';
+import utilsTests from './utils/index.ts';
+import throttlingTests from './throttling.ts';
+import { startMockApi, stopMockApi } from './mock-api.ts';
 
 before(async () => {
 	await startMockApi();

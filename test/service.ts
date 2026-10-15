@@ -17,8 +17,8 @@
 
 import { expect } from 'chai';
 
-import { service } from '../src/utils/service.js';
-import { apiHostname, mockApi } from './mock-api.js';
+import { service } from '../src/utils/service.ts';
+import { apiHostname, mockApi } from './mock-api.ts';
 
 const serviceId = 10;
 

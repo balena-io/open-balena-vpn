@@ -28,16 +28,11 @@ fi
 /usr/sbin/iptables-legacy -P FORWARD "${IPTABLES_FORWARD_POLICY}"
 
 command="$(command -v node)"
-args=("--enable-source-maps")
-entrypoint="build/src/init.js"
-if [[ ${NODE_ENV} = "development" ]]; then
-	args=('--enable-source-maps' '--import @swc-node/register/esm-register')
-	entrypoint="src/init.ts"
-fi
+entrypoint="src/init.ts"
 
 if [[ ! -x ${command} ]] || [[ ! -f ${entrypoint} ]]; then
 	echo "ERROR: Invalid command \`${command} ${entrypoint}\`"
 	exit 1
 fi
 
-exec "${command}" "${args[@]}" "${entrypoint}" "$@"
+exec "${command}" "${entrypoint}" "$@"

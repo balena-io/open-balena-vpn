@@ -18,7 +18,11 @@
 import net from 'net';
 
 export class HAProxy {
-	constructor(private sockPath: string) {}
+	private sockPath: string;
+
+	constructor(sockPath: string) {
+		this.sockPath = sockPath;
+	}
 
 	protected async connect(): Promise<net.Socket> {
 		return await new Promise((resolve, reject) => {
