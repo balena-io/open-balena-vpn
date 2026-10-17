@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency p-queue to v10
+      hash: 52477aef7e888f1c23f082f964203522b3b9c8a7
+      body: |
+        Update p-queue from 9.3.5 to 10.0.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.168
+  title: ""
+  date: 2026-10-17T23:23:29.374Z
+- commits:
     - subject: Update golang:1.27.2 Docker digest to 8201530
       hash: 8483ff4354d1aa758984e32a5a8f3baedb10c4e0
       body: |
