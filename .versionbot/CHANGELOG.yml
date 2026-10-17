@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update opentelemetry-js monorepo to v0.223.0
+      hash: 229379944ffe7f537b1b40f23aa8d3c7fd9b8a4f
+      body: |
+        Update @opentelemetry/instrumentation-http from 0.222.0 to 0.223.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.165
+  title: ""
+  date: 2026-10-17T20:53:42.329Z
+- commits:
     - subject: "Switch from swc-node to node's built-in type stripping- #419"
       hash: e70c53e89ebd1b0d310072c06183d2d6f13c58c3
       body: >
