@@ -32,7 +32,7 @@
     "morgan": "^1.10.1",
     "netmask": "^2.0.2",
     "node-tunnel": "^4.0.8",
-    "p-queue": "^9.3.5",
+    "p-queue": "^10.0.0",
     "p-timeout": "^7.0.1",
     "pinejs-client-fetch": "^2.1.12",
     "split": "^1.0.1",
