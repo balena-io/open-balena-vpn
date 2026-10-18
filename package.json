@@ -51,7 +51,7 @@
     "@types/mocha": "10.0.10",
     "@types/morgan": "1.9.10",
     "@types/netmask": "2.0.6",
-    "@types/node": "26.6.4",
+    "@types/node": "26.6.5",
     "@types/split": "1.0.5",
     "balena-sdk": "23.2.15",
     "bluebird": "3.7.2",
