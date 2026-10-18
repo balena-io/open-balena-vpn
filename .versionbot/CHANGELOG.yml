@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update rust:1-trixie Docker digest to e259494
+      hash: f3419be5997192eff5eeb8286159fc207d5151cb
+      body: |
+        Update rust
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.169
+  title: ""
+  date: 2026-10-18T00:21:55.782Z
+- commits:
     - subject: Update dependency p-queue to v10
       hash: 52477aef7e888f1c23f082f964203522b3b9c8a7
       body: |
