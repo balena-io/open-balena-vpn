@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency debian_13/haproxy to v3.0.11-1+deb13u4
+      hash: 7ca440b46e3621a814e0f2842124d8e6e0887ddc
+      body: |
+        Update debian_13/haproxy from 3.0.11-1+deb13u3 to 3.0.11-1+deb13u4
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.176
+  title: ""
+  date: 2026-10-18T17:20:23.258Z
+- commits:
     - subject: Update dependency p-timeout to v8
       hash: 12d7c8263d0a1bda309820b1b0f612fd8c9f04fb
       body: |
