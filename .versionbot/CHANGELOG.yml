@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @balena/lint to ^9.4.10
+      hash: b72676d2aa57a7a60a5d27e23f6cbaa773885225
+      body: |
+        Update @balena/lint from 9.4.10 to 9.4.11
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.170
+  title: ""
+  date: 2026-10-18T01:49:03.394Z
+- commits:
     - subject: Update rust:1-trixie Docker digest to e259494
       hash: f3419be5997192eff5eeb8286159fc207d5151cb
       body: |
