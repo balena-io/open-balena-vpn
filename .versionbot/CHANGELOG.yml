@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency undici to v8.12.2
+      hash: 16e944805bfca57659c54960f7cde894d34a0e81
+      body: |
+        Update undici from 8.12.1 to 8.12.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.177
+  title: ""
+  date: 2026-10-18T18:16:53.509Z
+- commits:
     - subject: Update dependency debian_13/haproxy to v3.0.11-1+deb13u4
       hash: 7ca440b46e3621a814e0f2842124d8e6e0887ddc
       body: |
