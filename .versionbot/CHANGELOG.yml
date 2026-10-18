@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @types/node to v26.6.5
+      hash: b70a042243826960b04fb62421ded2a84d876b4b
+      body: |
+        Update @types/node from 26.6.4 to 26.6.5
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.171
+  title: ""
+  date: 2026-10-18T02:25:36.166Z
+- commits:
     - subject: Update dependency @balena/lint to ^9.4.10
       hash: b72676d2aa57a7a60a5d27e23f6cbaa773885225
       body: |
