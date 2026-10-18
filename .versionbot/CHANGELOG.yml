@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @opentelemetry/instrumentation-express to v0.71.1
+      hash: de522134f1d4102fb547078023ee765b9ee3a4ff
+      body: |
+        Update @opentelemetry/instrumentation-express from 0.71.0 to 0.71.1
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.178
+  title: ""
+  date: 2026-10-18T21:17:01.482Z
+- commits:
     - subject: Update dependency undici to v8.12.2
       hash: 16e944805bfca57659c54960f7cde894d34a0e81
       body: |
