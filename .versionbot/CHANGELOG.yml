@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency p-timeout to v8
+      hash: 12d7c8263d0a1bda309820b1b0f612fd8c9f04fb
+      body: |
+        Update p-timeout from 7.0.2 to 8.0.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.175
+  title: ""
+  date: 2026-10-18T16:17:02.597Z
+- commits:
     - subject: Update dependency @opentelemetry/instrumentation-express to v0.71.0
       hash: 65dee1d1522d961cb0cb36fd0ae63081c70cd080
       body: |
