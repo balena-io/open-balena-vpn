@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update golang:1.27.3 Docker digest to f20d83a
+      hash: 0dd9f986815052db1f221999b49aeab7b275bd82
+      body: |
+        Update golang
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.188
+  title: ""
+  date: 2026-10-21T17:31:22.021Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v22.0.5
       hash: 067a3a793594abd152bfc0b4496e57ee18c396d5
       body: |
