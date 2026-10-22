@@ -21,6 +21,7 @@ fn main() {
     let username = std::env::var("username").unwrap();
     let password = std::env::var("password").unwrap();
     let auth_control_file = std::env::var("auth_control_file").unwrap();
+    let auth_failed_reason_file = std::env::var("auth_failed_reason_file").unwrap();
     let vpn_api_port = std::env::args().nth(1).unwrap();
 
     match ureq::post(&format!("http://127.0.0.1:{}/api/v1/auth/", vpn_api_port))
@@ -34,6 +35,8 @@ fn main() {
             std::fs::write(auth_control_file, "1").unwrap();
         }
         Err(_) => {
+            // Mark as a temp failure so that we can specify a backoff rather than have clients forever retry at their own rate
+            std::fs::write(auth_failed_reason_file, "TEMP[backoff 60]").unwrap();
             // Writing 0 rejects login.
             std::fs::write(auth_control_file, "0").unwrap();
         }
