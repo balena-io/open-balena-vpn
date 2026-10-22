@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update rust:1-trixie Docker digest to 931c2c0
+      hash: 9bf675522324881e646484bcb9b7e0ffcfecfd3c
+      body: |
+        Update rust
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.191
+  title: ""
+  date: 2026-10-22T11:26:28.215Z
+- commits:
     - subject: Update rust:1-trixie Docker digest to a5ab429
       hash: f4e7a9efb1d5210e0ccb2c433e7a0516e312d1e9
       body: |
