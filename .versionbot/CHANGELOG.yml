@@ -1,4 +1,21 @@
 - commits:
+    - subject: Force update on device connects to avoid potential cross-instance races
+      hash: 16c70069e524be321ba5c9f78115ca7c172013c4
+      body: |
+        This can avoid a case where the device is connected to instance A, then
+        connects to instance B without instance A observing the disconnect yet,
+        then reconnecting to instance A whilst still being "owned" by instance
+        B so we must always trigger the connect event to ensure instance A
+        takes back ownership if necessary
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.192
+  title: ""
+  date: 2026-10-22T12:06:18.608Z
+- commits:
     - subject: Update rust:1-trixie Docker digest to 931c2c0
       hash: 9bf675522324881e646484bcb9b7e0ffcfecfd3c
       body: |
