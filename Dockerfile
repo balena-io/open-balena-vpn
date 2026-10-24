@@ -73,7 +73,9 @@ FROM rust:1-trixie@sha256:931c2c0531a8b143e044f0f3914dfe802f15bb3d1955f0b657e935
 
 WORKDIR /usr/src/app
 COPY auth .
-RUN cargo build --release
+# Run the tests as part of the build so that they are checked in CI
+RUN cargo build --release \
+	&& cargo test --release
 
 ########################################################
 # Eget Builder
