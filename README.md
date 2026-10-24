@@ -54,6 +54,14 @@ VPN client authentication is initiated via an event from the vpn management
 console which proxies the credentials to the balena api which ultimately
 decides the fate of the client.
 
+Rejected clients have their auth failure response delayed by `DELAY_ON_AUTH_FAIL`
+milliseconds (default `10000`) in order to slow down clients that retry
+immediately. If this is set higher than the client's push request timeout (60s
+with the default `hand-window`), eg `75000`, then clients will give up waiting
+before receiving the auth failure. For balenaOS clients this keeps openvpn
+running so that its exponential reconnect backoff (`--connect-retry`) applies,
+rather than exiting on the auth failure and being restarted by systemd.
+
 ## Accessing Clients
 
 Connections to devices can be established via `open-balena-connect-proxy` which
