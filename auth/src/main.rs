@@ -17,6 +17,23 @@
 
 extern crate ureq;
 
+use std::io::Write;
+
+fn write_auth_control_file(auth_control_file: &str, value: &str) {
+    // We must not create the file as openvpn deletes it when the client disconnects, which can
+    // happen before we respond (eg the client gives up waiting due to `DELAY_ON_AUTH_FAIL`), and
+    // recreating it would leave a stray file behind for every such connection attempt
+    match std::fs::OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .open(auth_control_file)
+    {
+        Ok(mut file) => file.write_all(value.as_bytes()).unwrap(),
+        Err(err) if err.kind() == std::io::ErrorKind::NotFound => {}
+        Err(err) => panic!("{}", err),
+    }
+}
+
 fn main() {
     let username = std::env::var("username").unwrap();
     let password = std::env::var("password").unwrap();
@@ -31,11 +48,11 @@ fn main() {
         )) {
         Ok(_) => {
             // Writing 1 authorizes login.
-            std::fs::write(auth_control_file, "1").unwrap();
+            write_auth_control_file(&auth_control_file, "1");
         }
         Err(_) => {
             // Writing 0 rejects login.
-            std::fs::write(auth_control_file, "0").unwrap();
+            write_auth_control_file(&auth_control_file, "0");
         }
     }
 }

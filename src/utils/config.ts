@@ -176,4 +176,6 @@ export const API_DEVICE_STATE_POST_BATCH_SIZE = intVar(
 	8000,
 );
 
+// Values above the client's push request timeout (60s by default) make clients give up waiting
+// and back off rather than receive the auth failure, see the README
 export const DELAY_ON_AUTH_FAIL = intVar('DELAY_ON_AUTH_FAIL', 10 * SECONDS);

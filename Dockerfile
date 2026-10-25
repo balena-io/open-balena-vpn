@@ -71,9 +71,15 @@ RUN git clone https://github.com/fac/auth-script-openvpn.git . \
 
 FROM rust:1-trixie@sha256:931c2c0531a8b143e044f0f3914dfe802f15bb3d1955f0b657e9359327ac2ffc AS rust-builder
 
+# The rust image uses rustup's minimal profile which does not include rustfmt
+RUN rustup component add rustfmt
+
 WORKDIR /usr/src/app
 COPY auth .
-RUN cargo build --release
+# Run the format check and tests as part of the build so that they are checked in CI
+RUN cargo fmt --check \
+	&& cargo build --release \
+	&& cargo test --release
 
 ########################################################
 # Eget Builder
