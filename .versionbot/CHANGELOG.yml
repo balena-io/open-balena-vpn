@@ -1,4 +1,66 @@
 - commits:
+    - subject: Check the auth script's formatting as part of the docker build
+      hash: 915ff93cd80390fa7bd0c29f1776d89c400de90d
+      body: |
+        This runs `cargo fmt --check` alongside the tests so that formatting is
+        checked in CI. The rust image installs rustup's minimal profile, which
+        does not include rustfmt, so it is added in its own layer to keep it
+        cached across source changes.
+
+        https://balena.fibery.io/Work/Project/3083
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+    - subject: Add tests for the auth script's handling of the auth control file
+      hash: 797a3ad6fc8630b2edb2f4fbb0b015da3600551b
+      body: |
+        These run the auth binary against a stub of the vpn api to check that it
+        authorizes/rejects via the auth control file, and that it does not
+        recreate the file if openvpn has already deleted it. They run as part of
+        the docker build so that they are checked in CI.
+
+        https://balena.fibery.io/Work/Project/3083
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+    - subject: Avoid recreating the auth control file after the client disconnects
+      hash: 09270ec5c2dd45722f436d99f8ca36058190964e
+      body: >
+        OpenVPN deletes the auth control file when the client disconnects, so if
+
+        we respond after that, eg because `DELAY_ON_AUTH_FAIL` is longer than
+        the
+
+        client waits, writing the result with `std::fs::write` would recreate it
+
+        and leave a stray file behind for every such connection attempt.
+
+
+        This allows setting `DELAY_ON_AUTH_FAIL` above the client's push request
+
+        timeout (60s by default) so that balenaOS clients give up waiting rather
+
+        than receive the auth failure, which keeps openvpn running and using its
+
+        exponential reconnect backoff instead of exiting and being restarted by
+
+        systemd after 10s.
+
+
+        https://balena.fibery.io/Work/Project/3083
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.193
+  title: ""
+  date: 2026-10-25T22:21:34.084Z
+- commits:
     - subject: Force update on device connects to avoid potential cross-instance races
       hash: 16c70069e524be321ba5c9f78115ca7c172013c4
       body: |
