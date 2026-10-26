@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency body-parser to v2.4.0 [SECURITY]
+      hash: d358673fcca7ae53d0ed3b651ee9f40a2e741f0e
+      body: |
+        Update body-parser from 2.3.0 to 2.4.0
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.3.194
+  title: ""
+  date: 2026-10-26T00:11:50.949Z
+- commits:
     - subject: Check the auth script's formatting as part of the docker build
       hash: 915ff93cd80390fa7bd0c29f1776d89c400de90d
       body: |
