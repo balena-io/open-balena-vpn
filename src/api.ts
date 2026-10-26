@@ -141,6 +141,7 @@ export const apiFactory = (serviceId: number) => {
 				req.body.password,
 			);
 			if (statusCode === 200) {
+				metrics.inc(Metrics.AuthSuccesses);
 				return res.send('OK');
 			} else {
 				logger.info(

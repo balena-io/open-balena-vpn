@@ -9,6 +9,7 @@ export const Metrics = {
 	OnlineDevices: 'vpn_online_devices',
 	TotalDevices: 'vpn_devices_total',
 	AuthFailures: 'vpn_auth_failures_total',
+	AuthSuccesses: 'vpn_auth_successes_total',
 	ActiveTunnels: 'vpn_proxy_active_tunnels',
 	TotalTunnels: 'vpn_proxy_total_tunnels',
 	TunnelErrors: 'vpn_proxy_tunnel_errors',
