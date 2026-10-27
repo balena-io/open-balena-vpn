@@ -1,4 +1,16 @@
 - commits:
+    - subject: Build ureq with default-features false
+      hash: 8a809f5e6129c9c3684e1ffb3691478585e36105
+      body: ""
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Otavio Jacobi
+      nested: []
+  version: 12.3.195
+  title: ""
+  date: 2026-10-27T11:53:05.884Z
+- commits:
     - subject: Update dependency body-parser to v2.4.0 [SECURITY]
       hash: d358673fcca7ae53d0ed3b651ee9f40a2e741f0e
       body: |
