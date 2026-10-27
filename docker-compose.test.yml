@@ -59,9 +59,3 @@ services:
 
         /command/with-contenv npm run test-unit
         /command/with-contenv npx mocha test/app.ts
-
-        # Test the learn-address script directly
-        env LEARN_ADDRESS_DEBUG=true /usr/src/app/openvpn/scripts/learn-address.sh 10mbit 5mbit add 10.0.0.100 test-client debug lo
-        # Check if log file was created and show its contents
-        ls -la /var/log/openvpn/
-        cat /var/log/openvpn/learn-address.log
