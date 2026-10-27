@@ -16,9 +16,13 @@
 */
 
 import 'mocha';
+import haproxyTests from './haproxy.ts';
 import netmaskTests from './netmask.ts';
 
 export default () => {
+	describe('haproxy', () => {
+		haproxyTests();
+	});
 	describe('netmask', () => {
 		netmaskTests();
 	});
