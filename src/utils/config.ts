@@ -25,31 +25,7 @@ import {
 	SECONDS,
 	trustProxyVar,
 } from '@balena/env-parsing';
-import fs from 'fs';
 import os from 'os';
-
-// resolve number of workers based on number of CPUs assigned to pods or available CPUs
-const getInstanceCount = (varName: string) => {
-	let instanceCount = intVar(varName, null);
-	if (instanceCount != null && instanceCount > 0) {
-		return instanceCount;
-	}
-	try {
-		const maybeInstanceCount = checkInt(
-			fs.readFileSync('/etc/podinfo/cpu_request', 'utf8'),
-		);
-		if (maybeInstanceCount == null) {
-			throw new Error('/etc/podinfo/cpu_request was not an integer');
-		}
-		instanceCount = maybeInstanceCount;
-		console.log(`Using pod info core count of: ${instanceCount}`);
-	} catch (err) {
-		instanceCount = os.cpus().length;
-		console.log('Could not find pod info for cpu count:', err);
-		console.log(`Defaulting to all cores: ${instanceCount}`);
-	}
-	return instanceCount;
-};
 
 const getIPv4InterfaceInfo = (iface?: string): os.NetworkInterfaceInfo[] => {
 	return Object.entries(os.networkInterfaces())
@@ -106,7 +82,11 @@ export const MAXIMUM_DRAIN_DELAY = Math.round(
 	(1 * MINUTES) / intVar('MINIMUM_DRAIN_RATE_PER_MINUTE', 500),
 );
 
-export const VPN_INSTANCE_COUNT = getInstanceCount('VPN_INSTANCE_COUNT');
+// entry.sh resolves the instance count for every service
+export const VPN_INSTANCE_COUNT = intVar('VPN_INSTANCE_COUNT');
+if (VPN_INSTANCE_COUNT < 1) {
+	throw new Error('VPN_INSTANCE_COUNT must be a positive integer');
+}
 const VPN_OPENVPN_PROTO = optionalVar('VPN_OPENVPN_PROTO');
 if (VPN_OPENVPN_PROTO) {
 	if (/^udp[4-6]?$/.test(VPN_OPENVPN_PROTO)) {

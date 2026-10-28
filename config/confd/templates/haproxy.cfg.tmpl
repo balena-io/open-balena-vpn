@@ -5,8 +5,8 @@
 {{ $vpnPort := getenv "VPN_PORT" -}}
 {{- /* bindOpts = "accept-proxy" unless VPN_HAPROXY_ACCEPT_PROXY == 'false' */ -}}
 {{ $bindOpt := (or (and (eq (getenv "VPN_HAPROXY_USEPROXYPROTOCOL" "false") "true") "accept-proxy") "") -}}
-{{- /* servers = getenv(VPN_INSTANCE_COUNT, default=getenv(NPROC) if production else 1) */ -}}
-{{ $servers := (getenv "VPN_INSTANCE_COUNT" (or (and (eq (getenv "PRODUCTION_MODE") "true") (getenv "NPROC")) "1")) -}}
+{{- /* entry.sh resolves VPN_INSTANCE_COUNT */ -}}
+{{ $servers := getenv "VPN_INSTANCE_COUNT" -}}
 {{ $socket := getenv "VPN_HAPROXY_SOCKET" "/run/haproxy.sock" -}}
 {{- /* https://www.haproxy.com/blog/multithreading-in-haproxy/#multithreading-configuration */ -}}
 {{- /* http://cbonte.github.io/haproxy-dconv/1.8/configuration.html#3.1-nbthread */ -}}
