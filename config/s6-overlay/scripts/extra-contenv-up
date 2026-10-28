@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-set -e
-
-# Inject count of processors into environment.
-# This value is used by haproxy and openvpn config templates.
-printf "%s" "$(nproc)" > /run/s6/container_environment/NPROC
