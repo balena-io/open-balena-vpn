@@ -1,4 +1,32 @@
 - commits:
+    - subject: Reduce the per-client TCP output queue with bcast-buffers 128
+      hash: cb71890eb449a7399ea647873eac9847de0c573e
+      body: |
+        Each TCP client gets an output queue of bcast-buffers slots (default
+        256, 16 bytes each), but tunnel traffic is only queued while the queue
+        holds at most tcp-queue-limit (default 64) packets, so most of it is
+        never used. Halving it saves 2KiB of memory per client and still
+        leaves headroom for the packets that bypass tcp-queue-limit, such as
+        pings and control channel packets. A full queue drops its oldest
+        packet.
+
+        The same option sizes the server-wide broadcast queue, but no
+        broadcasts are expected. With a tun device, openvpn only broadcasts
+        multicast packets. It only does that for packets from clients when
+        client-to-client is enabled, which it is not. Nothing on the server
+        sends multicast out of the tun interfaces: avahi-daemon ignores
+        point-to-point interfaces by default.
+
+        https://balena.fibery.io/Work/Project/3083
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.3.196
+  title: ""
+  date: 2026-10-28T01:34:32.228Z
+- commits:
     - subject: Build ureq with default-features false
       hash: 8a809f5e6129c9c3684e1ffb3691478585e36105
       body: ""
