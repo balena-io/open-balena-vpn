@@ -3,8 +3,6 @@
 
 set -ae
 
-[[ ${DEFAULT_VERBOSE_LOGS} =~ on|On|Yes|yes|true|True ]] && set -x
-
 WORK_DIR="/usr/src/app"
 PATH="${WORK_DIR}/node_modules/.bin:${PATH}"
 
@@ -18,6 +16,8 @@ trap 'cleanup' EXIT
 cd "${WORK_DIR}"
 
 test -f "${WORK_DIR}/config/env" && source "${WORK_DIR}/config/env"
+
+[[ ${DEFAULT_VERBOSE_LOGS} =~ on|On|Yes|yes|true|True ]] && set -x
 
 mkdir -p /dev/net /run/openvpn /run/openvpn-client /run/openvpn-server
 
