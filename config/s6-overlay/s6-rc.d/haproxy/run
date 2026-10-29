@@ -5,8 +5,7 @@
 
 set -euo pipefail
 
-# Redirect all future stdout/stderr to s6-log
-exec > >(exec s6-log p"haproxy[$$]:" 1 || true) 2>&1
+exec 2>&1
 
 # Change to working directory
 cd /usr/src/app || exit 1
