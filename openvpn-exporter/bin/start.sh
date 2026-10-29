@@ -2,13 +2,6 @@
 
 # Get VPN_INSTANCE_COUNT from the environment file that confd already generated
 INSTANCE_COUNT=$(grep "^VPN_INSTANCE_COUNT=" /usr/src/app/config/env | cut -d= -f2)
-NPROC=$(nproc)
-
-# Handle status paths based on VPN_INSTANCE_COUNT
-if [ "$INSTANCE_COUNT" = "0" ]; then
-    echo "INSTANCE_COUNT is 0, using NPROC"
-		INSTANCE_COUNT=$NPROC
-fi
 
 # Build comma-separated list of status files
 STATUS_PATHS=""
