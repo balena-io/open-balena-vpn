@@ -1,4 +1,28 @@
 - commits:
+    - subject: Start through the base image s6-init script
+      hash: 58f72164eaf3e1a3b0370f6372026eec8f029ca1
+      body: |
+        entry.sh now exports NPROC and execs the base s6-init instead of
+        running confd and /init itself. s6 copies the exported NPROC into
+        /run/s6/container_environment, so confd and with-contenv services see
+        it without the extra-contenv oneshot.
+
+        The next open-balena-base major runs configure-balena.sh in s6-init
+        and makes the confd oneshot a no-op, so calling /init directly would
+        skip it.
+      footer:
+        See: https://github.com/balena-io-modules/open-balena-base/pull/483
+        see: https://github.com/balena-io-modules/open-balena-base/pull/483
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 12.3.197
+  title: ""
+  date: 2026-10-29T13:34:40.864Z
+- commits:
     - subject: Reduce the per-client TCP output queue with bcast-buffers 128
       hash: cb71890eb449a7399ea647873eac9847de0c573e
       body: |

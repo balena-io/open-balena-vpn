@@ -1,7 +1,7 @@
 {
   "name": "open-balena-vpn",
   "private": true,
-  "version": "12.3.196",
+  "version": "12.3.197",
   "description": "RESTful VPN api",
   "type": "module",
   "license": "AGPL-3.0",
@@ -80,6 +80,6 @@
     "exit": true
   },
   "versionist": {
-    "publishedAt": "2026-10-28T01:34:32.540Z"
+    "publishedAt": "2026-10-29T13:34:41.220Z"
   }
 }
