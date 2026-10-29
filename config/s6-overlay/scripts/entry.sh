@@ -2,12 +2,9 @@
 
 set -e
 
-# Manually run confd once to populate the timeout-kill files
-# before starting s6 overlay
-/usr/local/bin/confd \
-  -onetime \
-  -confdir=/usr/src/app/config/confd \
-  -backend env
+# Count of processors, used by the haproxy and env config templates.
+NPROC="$(nproc)"
+export NPROC
 
-# start s6 overlay
-exec /init "${@}"
+# start s6 overlay via the base image init script
+exec /etc/s6-overlay/scripts/s6-init "${@}"
