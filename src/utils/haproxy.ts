@@ -34,28 +34,36 @@ export class HAProxy {
 		});
 	}
 
+	private async send(command: string): Promise<string> {
+		const socket = await this.connect();
+		return await new Promise((resolve, reject) => {
+			let response = '';
+			socket.setEncoding('utf8');
+			socket.on('data', (chunk: string) => {
+				response += chunk;
+			});
+			socket.on('end', () => {
+				resolve(response.trim());
+			});
+			socket.on('error', reject);
+			socket.end(`${command}\n`);
+		});
+	}
+
 	public async register(
 		name: string,
 		port: number,
 		host = '127.0.0.1',
 	): Promise<boolean> {
 		const preamble = `set server ${name}`;
-		const socket = await this.connect();
-		socket.write(
-			`${preamble} addr ${host} port ${port};${preamble} state ready;`,
-			() => {
-				socket.destroy();
-			},
+		await this.send(
+			`${preamble} addr ${host} port ${port}; ${preamble} state ready`,
 		);
 		return true;
 	}
 
 	public async drain(name: string): Promise<boolean> {
-		const preamble = `set server ${name}`;
-		const socket = await this.connect();
-		socket.write(`${preamble} state drain;`, () => {
-			socket.destroy();
-		});
+		await this.send(`set server ${name} state drain`);
 		return true;
 	}
 }
