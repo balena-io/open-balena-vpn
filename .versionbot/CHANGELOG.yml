@@ -1,4 +1,158 @@
 - commits:
+    - subject: Update balena/open-balena-base Docker tag to v22.1.2
+      hash: 5f352c90d559d8234f38eb77fd6c8979212f6647
+      body: |
+        Update balena/open-balena-base from 22.0.5 to 22.1.2
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested:
+        - commits:
+            - subject: Pin bats test tools with a lockfile
+              hash: 61489ffca266a90666199c8cbc079051b7cef518
+              body: >
+                The test compose file ran `npm install -g` for bats,
+                bats-support and
+
+                bats-assert with no versions. Pin them in bats/package.json with
+                a
+
+                lockfile so Renovate manages them, and install with `npm ci`
+                into
+
+                /opt/bats.
+
+
+                The manifest lives in bats/ because a root package.json triggers
+
+                Flowzone's npm jobs and the org Renovate preset ignores tests/.
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-22.1.2
+          title: ""
+          date: 2026-10-29T15:17:46.663Z
+        - commits:
+            - subject: Quote values configure-balena writes to /etc/docker.env
+              hash: 4812e27acb59f3c824697edf7e65b60e1ed76c31
+              body: >
+                s6-init sources /etc/docker.env as root before /init, and
+
+                configure-balena appended raw KEY=VALUE lines to it. A value
+                with
+
+                $(...), backticks, quotes or a newline ran or broke the source.
+
+
+                All writes now go through set_docker_env_var, which uses printf
+                %q
+
+                like the s6-init dump. The CONF file format is unchanged.
+              footer:
+                Change-type: patch
+                change-type: patch
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-22.1.1
+          title: ""
+          date: 2026-10-29T14:59:12.786Z
+        - commits:
+            - subject: Run configure-balena before s6 init and export its env
+              hash: 76851befbf2b82afcf6fabb66a1c07b5ad42867b
+              body: >
+                configure-balena.sh now runs in s6-init, before /init. s6-init
+                exports
+
+                /etc/docker.env, so generated values reach
+                /run/s6/container_environment
+
+                and every with-contenv service. config/env and load_env_file are
+                now
+
+                optional for with-contenv services.
+
+
+                The confd oneshot runs true, kept so dependencies.d/confd
+                resolves.
+
+
+                Images with a custom ENTRYPOINT must exec
+
+                /etc/s6-overlay/scripts/s6-init instead of /init.
+              footer:
+                Change-type: minor
+                change-type: minor
+                Signed-off-by: Kyle Harding <kyle@balena.io>
+                signed-off-by: Kyle Harding <kyle@balena.io>
+              author: Kyle Harding
+              nested: []
+          version: open-balena-base-22.1.0
+          title: ""
+          date: 2026-10-29T14:17:39.025Z
+        - commits:
+            - subject: Update debian:13 Docker digest to 2dc419c
+              hash: c36f3a8940e2d704398ecfa34763c742e48f102b
+              body: |
+                Update debian
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-22.0.9
+          title: ""
+          date: 2026-10-28T21:05:46.415Z
+        - commits:
+            - subject: Update Node.js to v26.13.0
+              hash: 1d7c79c7d5dc8454f8e93f972dae65d1fd73f130
+              body: |
+                Update node from 26.12.1 to 26.13.0
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-22.0.8
+          title: ""
+          date: 2026-10-28T17:25:32.756Z
+        - commits:
+            - subject: Update debian:13 Docker digest to 8c4733a
+              hash: 195ff54bc82060608ded8313a7b31c3a9647772b
+              body: |
+                Update debian
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: balena-renovate[bot]
+              nested: []
+          version: open-balena-base-22.0.7
+          title: ""
+          date: 2026-10-28T03:04:34.211Z
+        - commits:
+            - subject: Rebuild to pick up libbrotli1 fix for CVE-2026-111497
+              hash: 30cc6f6cc6e198188d2ea672622133a26fa3a0c1
+              body: >
+                Add a test that fails if libbrotli1 or Node.js's bundled brotli
+                is older than the fixed version.
+              footer:
+                Change-type: patch
+                change-type: patch
+              author: Harald Fischer
+              nested: []
+          version: open-balena-base-22.0.6
+          title: ""
+          date: 2026-10-27T13:13:24.264Z
+  version: 12.4.1
+  title: ""
+  date: 2026-10-29T20:35:08.882Z
+- commits:
     - subject: Resolve the openvpn instance count once in entry.sh
       hash: 726557440dff6a6695fe146d3f7081d59ffd7287
       body: |
