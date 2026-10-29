@@ -1,4 +1,37 @@
 - commits:
+    - subject: Resolve the openvpn instance count once in entry.sh
+      hash: 726557440dff6a6695fe146d3f7081d59ffd7287
+      body: |
+        haproxy, the app and openvpn-exporter each worked out the instance
+        count with their own rules, so they could disagree. With a k8s
+        cpu_request of 4 on a 16 CPU node the app started 4 workers while
+        haproxy and the exporter expected 16, and the exporter restarted in a
+        loop waiting for status files that never appear.
+
+        entry.sh now resolves VPN_INSTANCE_COUNT and exports it:
+        - an explicit positive value wins
+        - non-production uses 1
+        - production uses /etc/podinfo/cpu_request, else nproc
+
+        An invalid value fails the container at start. The confd templates,
+        the exporter and the app read that one value.
+
+        Auto count now uses nproc, which respects the container cpuset,
+        instead of os.cpus(), which reports every host CPU. An explicit count
+        in non-production is no longer forced to 1.
+      footer:
+        See: https://balena.fibery.io/Work/Project/Consolidate-env-var-handling-in-backend-services-2312
+        see: https://balena.fibery.io/Work/Project/Consolidate-env-var-handling-in-backend-services-2312
+        Change-type: minor
+        change-type: minor
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 12.4.0
+  title: ""
+  date: 2026-10-29T13:58:41.335Z
+- commits:
     - subject: Start through the base image s6-init script
       hash: 58f72164eaf3e1a3b0370f6372026eec8f029ca1
       body: |
