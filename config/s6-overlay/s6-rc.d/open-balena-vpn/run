@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-# shellcheck disable=SC1091
+#!/command/with-contenv bash
 
 set -euo pipefail
 
@@ -9,9 +8,6 @@ exec > >(exec s6-log p"vpn[$$]:" 1 || true) 2>&1
 # Change to working directory
 cd /usr/src/app || exit 1
 
-# Load environment variables for this service
-source /etc/s6-overlay/scripts/functions.sh
-[[ -f "config/env" ]] && load_env_file "config/env"
-
-# Start in the foreground with exec to pass signals through
-exec /etc/s6-overlay/scripts/start.sh
+# Start in the foreground with exec to pass signals through.
+# config/env values override the container env.
+exec /command/envfile config/env /etc/s6-overlay/scripts/start.sh
