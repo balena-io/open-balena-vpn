@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1091,SC2154
+# shellcheck disable=SC2154
 
 set -ae
 
@@ -16,8 +16,6 @@ function cleanup() {
 trap 'cleanup' EXIT
 
 cd "${WORK_DIR}"
-
-test -f "${WORK_DIR}/config/env" && source "${WORK_DIR}/config/env"
 
 mkdir -p /dev/net /run/openvpn /run/openvpn-client /run/openvpn-server
 
