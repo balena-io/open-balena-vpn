@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update rust:1-trixie Docker digest to 09027f8
+      hash: c052256bfaf79fa54496bc580664d5a08ede0b47
+      body: |
+        Update rust
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.4.3
+  title: ""
+  date: 2026-11-03T02:27:40.122Z
+- commits:
     - subject: Update golang:1.27.3 Docker digest to 2920bb1
       hash: 6c3f25a2723a8687951d8f79273eaaafc6e78be0
       body: |
