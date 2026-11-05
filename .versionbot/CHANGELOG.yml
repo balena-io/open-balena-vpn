@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update rust:1-trixie Docker digest to edc584c
+      hash: 2e14d99f5972b5874003601cd4a626801ae3fe73
+      body: |
+        Update rust
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.4.8
+  title: ""
+  date: 2026-11-05T11:22:49.548Z
+- commits:
     - subject: Update balena/open-balena-base Docker tag to v22.1.3
       hash: 90efbb83d1d2d7ca2e3b845f5e2bfa4209ead59c
       body: |
