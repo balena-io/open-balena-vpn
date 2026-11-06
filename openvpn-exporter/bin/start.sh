@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Get VPN_INSTANCE_COUNT from the environment file that confd already generated
-INSTANCE_COUNT=$(grep "^VPN_INSTANCE_COUNT=" /usr/src/app/config/env | cut -d= -f2)
+# entry.sh resolves VPN_INSTANCE_COUNT into the container env
+INSTANCE_COUNT=${VPN_INSTANCE_COUNT}
 
 # Build comma-separated list of status files
 STATUS_PATHS=""
