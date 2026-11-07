@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency @types/node to v26.6.6
+      hash: 0930747ba43e6e1b1d4beea863fe3ee46316cf57
+      body: |
+        Update @types/node from 26.6.5 to 26.6.6
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.4.15
+  title: ""
+  date: 2026-11-07T01:27:12.198Z
+- commits:
     - subject: Update dependency balena-sdk to v23.2.18
       hash: 5c60b9a69f7018af8f4002059e19a0e2879668cc
       body: |
