@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency balena-sdk to v23.2.18
+      hash: 5c60b9a69f7018af8f4002059e19a0e2879668cc
+      body: |
+        Update balena-sdk from 23.2.16 to 23.2.18
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.4.14
+  title: ""
+  date: 2026-11-07T00:20:00.088Z
+- commits:
     - subject: Update rust:1-trixie Docker digest to 8a4e90c
       hash: b8e41b3e0eabeb92d88f9cedcd6a649a7a0e97dc
       body: |
