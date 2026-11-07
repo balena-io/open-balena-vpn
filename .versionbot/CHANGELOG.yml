@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency undici to v8.12.3
+      hash: 6c090f26ba9d03013618862e85ae6aeb7a94e7ae
+      body: |
+        Update undici from 8.12.2 to 8.12.3
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.4.16
+  title: ""
+  date: 2026-11-07T03:19:10.800Z
+- commits:
     - subject: Update dependency @types/node to v26.6.6
       hash: 0930747ba43e6e1b1d4beea863fe3ee46316cf57
       body: |
