@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency balena-sdk to v23.2.19
+      hash: f5aee9e421b59b9f458402cff92e00ce3b4e89a2
+      body: |
+        Update balena-sdk from 23.2.18 to 23.2.19
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.4.17
+  title: ""
+  date: 2026-11-08T19:07:24.212Z
+- commits:
     - subject: Update dependency undici to v8.12.3
       hash: 6c090f26ba9d03013618862e85ae6aeb7a94e7ae
       body: |
