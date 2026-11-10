@@ -36,7 +36,7 @@ const getIPv4InterfaceInfo = (iface?: string): os.NetworkInterfaceInfo[] => {
 
 export const TRUST_PROXY = trustProxyVar('TRUST_PROXY', false);
 
-export const VPN_API_PORT = intVar('VPN_API_PORT');
+export const VPN_API_PORT = intVar('VPN_API_PORT', 30000);
 
 export const VPN_STATUS_FILE_WRITE_INTERVAL_SECONDS = intVar(
 	'VPN_STATUS_FILE_WRITE_INTERVAL_SECONDS',
@@ -76,7 +76,7 @@ export const METRICS_TIMEOUT = intVar('METRICS_TIMEOUT', 20 * SECONDS);
 
 // milliseconds
 export const DEFAULT_SIGTERM_TIMEOUT =
-	intVar('DEFAULT_SIGTERM_TIMEOUT') * SECONDS;
+	intVar('DEFAULT_SIGTERM_TIMEOUT', 120) * SECONDS;
 // We convert the drain rate per minute to the equivalent max delay for ease of use elsewhere
 export const MAXIMUM_DRAIN_DELAY = Math.round(
 	(1 * MINUTES) / intVar('MINIMUM_DRAIN_RATE_PER_MINUTE', 500),
@@ -105,7 +105,8 @@ export const VPN_SERVICE_ADDRESS = getIPv4InterfaceInfo(
 )?.[0]?.address;
 
 export const VPN_GATEWAY = optionalVar('VPN_GATEWAY');
-const VPN_BASE_SUBNET = requiredVar('VPN_BASE_SUBNET');
+// VPN_BASE_SUBNET is divided into contiguous subnets of size VPN_INSTANCE_SUBNET_BITMASK
+const VPN_BASE_SUBNET = optionalVar('VPN_BASE_SUBNET', '100.64.0.0/10');
 export const [VPN_BASE_IP, netMask] = VPN_BASE_SUBNET.split('/');
 export const maybeVpnBaseMask = checkInt(netMask);
 if (maybeVpnBaseMask == null) {
@@ -122,11 +123,15 @@ export const VPN_INSTANCE_SUBNET_BITMASK = Math.max(
 		VPN_BASE_MASK + Math.ceil(Math.log2(VPN_INSTANCE_COUNT)),
 	),
 );
-export const VPN_BASE_PORT = intVar('VPN_BASE_PORT');
-export const VPN_BASE_MANAGEMENT_PORT = intVar('VPN_BASE_MANAGEMENT_PORT');
+// VPN_INSTANCE_ID (1-indexed) is added to the base ports
+export const VPN_BASE_PORT = intVar('VPN_BASE_PORT', 10000);
+export const VPN_BASE_MANAGEMENT_PORT = intVar(
+	'VPN_BASE_MANAGEMENT_PORT',
+	20000,
+);
 
-// disable bytecount reporting by default
-export const VPN_BYTECOUNT_INTERVAL = intVar('VPN_BYTECOUNT_INTERVAL', 0);
+// seconds, 0 disables bytecount reporting
+export const VPN_BYTECOUNT_INTERVAL = intVar('VPN_BYTECOUNT_INTERVAL', 60);
 
 const apiHostForInternalUse = requiredVar([
 	'BALENA_API_INTERNAL_HOST',
@@ -141,8 +146,8 @@ export const BALENA_API_INTERNAL_HOST =
 export const VPN_SERVICE_API_KEY = Buffer.from(
 	requiredVar('VPN_SERVICE_API_KEY'),
 );
-export const VPN_CONNECT_PROXY_PORT = intVar('VPN_CONNECT_PROXY_PORT');
-export const VPN_FORWARD_PROXY_PORT = intVar('VPN_FORWARD_PROXY_PORT');
+export const VPN_CONNECT_PROXY_PORT = intVar('VPN_CONNECT_PROXY_PORT', 3128);
+export const VPN_FORWARD_PROXY_PORT = intVar('VPN_FORWARD_PROXY_PORT', 3128);
 
 export const VPN_AUTH_CACHE_TIMEOUT = intVar(
 	'VPN_AUTH_CACHE_TIMEOUT',

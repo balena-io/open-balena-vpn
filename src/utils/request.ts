@@ -35,7 +35,7 @@ export const request = async (
 };
 
 const pooledRequestQueue = new PQueue({
-	concurrency: intVar('MAX_API_POST_WORKERS', 20),
+	concurrency: intVar('MAX_API_POST_WORKERS', 80),
 });
 
 // Pooled requests go into a promise-queue to limit concurrency in order to avoid overwhelming the API during mass auth requests
