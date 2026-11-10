@@ -1,4 +1,46 @@
 - commits:
+    - subject: Move env defaults from the template into code
+      hash: 97129fa4669fcecfe07273a6ba1281a40abbd88a
+      body: |
+        The defaults and constants in env.tmpl now live in config.ts and
+        request.ts, UV_THREADPOOL_SIZE is an image ENV since libuv reads it
+        before any app code runs, and start.sh sets the FORWARD policy to DROP
+        directly. The ports and MAX_API_POST_WORKERS were fixed by the template
+        and can now be overridden from the container env, nothing sets them
+        today.
+
+        VPN_HOST, VPN_CONNECT_INSTANCE_COUNT, VPN_KEEPALIVE_* and
+        VPN_HAPROXY_SOCKET had no reader in node, so they are dropped. The
+        confd templates read the container env for those directly.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+    - subject: Load config/env with envfile
+      hash: 2f3c732670741bd95cae14a43d27e419546c49a5
+      body: |
+        load_env_file never overrides a var that already exists, so under
+        with-contenv the derived config/env values would lose to the container
+        env. envfile overrides them.
+
+        The vpn service runs with-contenv and starts start.sh through envfile,
+        so start.sh no longer sources config/env. env.tmpl keeps only derived
+        values and constants. haproxy no longer reads config/env, and the
+        openvpn exporter reads VPN_INSTANCE_COUNT from the container env.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Kyle Harding <kyle@balena.io>
+        signed-off-by: Kyle Harding <kyle@balena.io>
+      author: Kyle Harding
+      nested: []
+  version: 12.4.20
+  title: ""
+  date: 2026-11-10T19:43:25.539Z
+- commits:
     - subject: Update dependency balena-sdk to v23.2.20
       hash: 7085395dcb7281ded306168546e6700c03882052
       body: |
