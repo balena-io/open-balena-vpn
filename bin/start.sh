@@ -22,7 +22,7 @@ if [[ ! -c /dev/net/tun ]]; then
 	mknod /dev/net/tun c 10 200
 fi
 
-/usr/sbin/iptables-legacy -P FORWARD "${IPTABLES_FORWARD_POLICY}"
+/usr/sbin/iptables-legacy -P FORWARD DROP
 
 command="$(command -v node)"
 entrypoint="src/init.ts"

@@ -172,6 +172,8 @@ FROM base AS main
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+ENV UV_THREADPOOL_SIZE=128
+
 COPY --from=node-exporter /usr/local/bin/node_exporter /usr/local/bin/
 COPY --from=process-exporter /usr/local/bin/process-exporter /usr/local/bin/
 COPY --from=openvpn-exporter /usr/local/bin/openvpn-exporter /usr/local/bin/
