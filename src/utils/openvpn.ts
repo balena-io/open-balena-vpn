@@ -129,6 +129,15 @@ export declare interface VpnManagerEvents {
 	): this;
 }
 
+/** Returns true when the signal reached the pid, i.e. the pid exists. */
+export const signalPid = (pid: number, signal: NodeJS.Signals | 0) => {
+	try {
+		return process.kill(pid, signal);
+	} catch {
+		return false;
+	}
+};
+
 export class VpnManager extends EventEmitter implements VpnManagerEvents {
 	private process?: ChildProcess;
 	private readonly connector = new Telnet();
@@ -320,23 +329,18 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 		);
 		/** Signal 0 can be used to check the existence of the PID */
 		const SIGPING = 0 as const;
-		const kill = (signal?: typeof SIGPING | 'SIGTERM' | 'SIGKILL') => {
-			try {
-				return process.kill(pid, signal);
-			} catch {
-				return false;
-			}
-		};
+		const kill = (signal: typeof SIGPING | 'SIGTERM' | 'SIGKILL') =>
+			signalPid(pid, signal);
 
 		const start = Date.now();
-		let error = kill('SIGTERM');
-		while (!error) {
+		let alive = kill('SIGTERM');
+		while (alive) {
 			await setTimeout(100);
 			const elapsedTime = Date.now() - start;
 			if (elapsedTime < TERM_TIMEOUT) {
-				error = kill(SIGPING);
+				alive = kill(SIGPING);
 			} else if (elapsedTime < KILL_TIMEOUT) {
-				error = kill('SIGKILL');
+				alive = kill('SIGKILL');
 			} else {
 				throw new TimeoutError('orphan openvpn process did not go away');
 			}
