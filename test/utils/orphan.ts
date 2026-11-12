@@ -16,9 +16,10 @@
 */
 
 import { expect } from 'chai';
-import { spawn, type ChildProcess } from 'child_process';
+import { execSync, spawn, type ChildProcess } from 'child_process';
 import { once } from 'events';
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import 'mocha';
 
@@ -29,6 +30,9 @@ export default () => {
 	const vpn = new VpnManager(99, 0, 0, new Netmask('100.64.0.0', 20));
 	const pidFile: string = vpn['pidFile'];
 	let child: ChildProcess | undefined;
+	let tmpDir: string;
+	// The kernel takes comm from the exec path basename, so this symlink passes the comm check.
+	let fakeOpenvpn: string;
 
 	before(function () {
 		try {
@@ -36,6 +40,15 @@ export default () => {
 			fs.accessSync(path.dirname(pidFile), fs.constants.W_OK);
 		} catch {
 			this.skip();
+		}
+		tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'orphan-'));
+		fakeOpenvpn = path.join(tmpDir, 'openvpn');
+		fs.symlinkSync(execSync('command -v sleep').toString().trim(), fakeOpenvpn);
+	});
+
+	after(() => {
+		if (tmpDir) {
+			fs.rmSync(tmpDir, { recursive: true, force: true });
 		}
 	});
 
@@ -45,12 +58,21 @@ export default () => {
 	});
 
 	it('should wait until a live orphan exits', async () => {
-		child = spawn('sleep', ['60']);
+		child = spawn(fakeOpenvpn, ['60']);
 		const pid = child.pid!;
 		fs.writeFileSync(pidFile, `${pid}\n`);
 
 		await vpn['killOrphan']();
 		expect(signalPid(pid, 0)).to.equal(false);
+	});
+
+	it('should not signal a pid that another program reused', async () => {
+		child = spawn('sleep', ['60']);
+		const pid = child.pid!;
+		fs.writeFileSync(pidFile, `${pid}\n`);
+
+		await vpn['killOrphan']();
+		expect(signalPid(pid, 0)).to.equal(true);
 	});
 
 	it('should return at once when the pid file is stale', async function () {
