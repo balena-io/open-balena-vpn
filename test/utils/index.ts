@@ -17,9 +17,13 @@
 
 import 'mocha';
 import netmaskTests from './netmask.ts';
+import openvpnTests from './openvpn.ts';
 
 export default () => {
 	describe('netmask', () => {
 		netmaskTests();
+	});
+	describe('openvpn', () => {
+		openvpnTests();
 	});
 };
