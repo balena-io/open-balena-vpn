@@ -15,7 +15,7 @@
 	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import pTimeout, { TimeoutError } from 'p-timeout';
+import { TimeoutError } from 'p-timeout';
 import type { ChildProcess } from 'child_process';
 import { spawn } from 'child_process';
 import split from 'split';
@@ -88,6 +88,8 @@ type ValueOf<T> = T[keyof T];
 
 const SECONDS = 1000;
 const STARTUP_TIMEOUT = 5 * SECONDS;
+const PROBE_INTERVAL = 50;
+const PROBE_TIMEOUT = 1 * SECONDS;
 const TERM_TIMEOUT = 5 * SECONDS;
 const KILL_TIMEOUT = TERM_TIMEOUT * 2;
 
@@ -128,6 +130,35 @@ export declare interface VpnManagerEvents {
 		callback?: (clientId: number, data: VpnClientDisconnectData) => void,
 	): this;
 }
+
+/**
+ * Resolves true when a listener accepts a TCP connection on host:port.
+ * Resolves false when the connection fails or times out.
+ * Resolves false on a TCP self-connect. Linux can select the destination port
+ * as the source port when nothing listens and the port is inside
+ * ip_local_port_range.
+ * The probe always closes with a reset. A FIN close leaves a 60s TIME_WAIT on
+ * the source port, and that port can be one that openvpn must bind.
+ */
+export const probePort = (port: number, host: string) =>
+	new Promise<boolean>((resolve) => {
+		const socket = new net.Socket();
+		socket.setTimeout(PROBE_TIMEOUT, () => {
+			socket.destroy();
+			resolve(false);
+		});
+		socket.on('ready', () => {
+			const isSelfConnect =
+				socket.localPort === socket.remotePort &&
+				socket.localAddress === socket.remoteAddress;
+			socket.resetAndDestroy();
+			resolve(!isSelfConnect);
+		});
+		socket.on('error', () => {
+			resolve(false);
+		});
+		socket.connect(port, host);
+	});
 
 export class VpnManager extends EventEmitter implements VpnManagerEvents {
 	private process?: ChildProcess;
@@ -367,31 +398,13 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 		await this.waitForStart();
 	}
 
-	private async waitForStart(since: number = Date.now()) {
-		try {
-			await pTimeout(
-				new Promise<void>((resolve, reject) => {
-					const socket = new net.Socket();
-					const errorHandler = () => {
-						socket.destroy();
-						reject(new Error('socket not ready'));
-					};
-					const readyHandler = () => {
-						socket.end();
-						resolve();
-					};
-					socket.on('ready', readyHandler);
-					socket.on('error', errorHandler);
-					socket.on('timeout', errorHandler);
-					socket.connect(this.mgtPort, this.mgtHost);
-				}),
-				{ milliseconds: STARTUP_TIMEOUT - (Date.now() - since) },
-			);
-		} catch (err) {
-			if (err instanceof TimeoutError) {
-				throw err;
+	private async waitForStart() {
+		const deadline = Date.now() + STARTUP_TIMEOUT;
+		while (!(await probePort(this.mgtPort, this.mgtHost))) {
+			if (Date.now() >= deadline) {
+				throw new TimeoutError('openvpn management port did not open');
 			}
-			await this.waitForStart(since);
+			await setTimeout(PROBE_INTERVAL);
 		}
 	}
 
