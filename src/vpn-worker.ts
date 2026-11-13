@@ -193,6 +193,11 @@ const worker = async (instanceId: number, serviceId: number) => {
 		VPN_GATEWAY,
 		verbose,
 	);
+	// process.exit() skips cleanup, so stop openvpn here or it outlives the worker.
+	// child.kill() is synchronous, so it is safe in an exit handler.
+	process.on('exit', () => {
+		vpn.stop();
+	});
 
 	vpn.on('log', (level, message) => {
 		if (verbose || logger.levels[level] <= logger.levels.warning) {
