@@ -20,13 +20,28 @@ import winston from 'winston';
 import PinejsClientFetch from 'pinejs-client-fetch';
 export { RequestError } from 'pinejs-client-fetch';
 import { BALENA_API_INTERNAL_HOST } from './config.ts';
+import { REQUEST_TIMEOUT } from './request.ts';
 import type { PineClient as BalenaPineClient } from 'balena-sdk';
 
 import packageJSON from '../../package.json' with { type: 'json' };
 import { context, propagation } from '@opentelemetry/api';
 export const VERSION = packageJSON.version;
 
-export const balenaApi = new PinejsClientFetch({
+class BalenaApiClient extends PinejsClientFetch {
+	// Without a signal fetch only gives up after undici's 300s headers timeout followed by its 300s body
+	// timeout, so a hung API would hold every in flight request (and any proxy client waiting on one)
+	// for up to 10 minutes. This is called for each attempt so retries get their own timeout
+	public override async _request(
+		params: Parameters<PinejsClientFetch['_request']>[0],
+	) {
+		return await super._request({
+			...params,
+			signal: AbortSignal.timeout(REQUEST_TIMEOUT),
+		});
+	}
+}
+
+export const balenaApi = new BalenaApiClient({
 	apiPrefix: `${BALENA_API_INTERNAL_HOST}/v7/`,
 }) satisfies BalenaPineClient as BalenaPineClient;
 
