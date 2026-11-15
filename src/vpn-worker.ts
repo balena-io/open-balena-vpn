@@ -70,6 +70,19 @@ const worker = async (instanceId: number, serviceId: number) => {
 			bytes_sent: number;
 		}
 	>();
+	// openvpn is not started with --management-client-auth so it never sends >CLIENT:DISCONNECT, which
+	// means we have to work out ourselves when a client is gone in order to remove it from the cache
+	const clientIdsByUuid = new Map<string, number>();
+	const removeClient = (clientId: number) => {
+		const clientEntry = clientCache.get(clientId);
+		if (clientEntry == null) {
+			return;
+		}
+		clientCache.delete(clientId);
+		if (clientIdsByUuid.get(clientEntry.uuid) === clientId) {
+			clientIdsByUuid.delete(clientEntry.uuid);
+		}
+	};
 	const writeBandwidthMetrics = (
 		clientId: number,
 		data: VpnClientBytecountData,
@@ -218,10 +231,18 @@ const worker = async (instanceId: number, serviceId: number) => {
 		logger.info(
 			`connection established with client_id=${clientId} uuid=${data.common_name}`,
 		);
+		// We need to flatten the uuid because otherwise it's a sliced string and keeps the
+		// original, rather large, string in memory forever
+		const uuid = flatstr(data.common_name);
+		// Without --duplicate-cn openvpn disconnects any existing client with the same common name
+		// when a new one connects, so a previous entry for this uuid belongs to a client that is gone
+		const previousClientId = clientIdsByUuid.get(uuid);
+		if (previousClientId != null) {
+			removeClient(previousClientId);
+		}
+		clientIdsByUuid.set(uuid, clientId);
 		clientCache.set(clientId, {
-			// We need to flatten the uuid because otherwise it's a sliced string and keeps the
-			// original, rather large, string in memory forever
-			uuid: flatstr(data.common_name),
+			uuid,
 			bytes_received: 0,
 			bytes_sent: 0,
 			ts: process.hrtime()[0],
@@ -231,6 +252,20 @@ const worker = async (instanceId: number, serviceId: number) => {
 	vpn.on('client:bytecount', (clientId, data) => {
 		writeBandwidthMetrics(clientId, data);
 	});
+
+	if (VPN_BYTECOUNT_INTERVAL > 0) {
+		// openvpn sends a >BYTECOUNT_CLI for every connected client each interval, which advances `ts`,
+		// so a client that has missed several in a row has disconnected and can be removed
+		const staleAfterSeconds = VPN_BYTECOUNT_INTERVAL * 3;
+		setInterval(() => {
+			const now = process.hrtime()[0];
+			for (const [clientId, { ts }] of clientCache) {
+				if (now - ts > staleAfterSeconds) {
+					removeClient(clientId);
+				}
+			}
+		}, VPN_BYTECOUNT_INTERVAL * 1000).unref();
+	}
 
 	try {
 		logger.notice('starting...');
