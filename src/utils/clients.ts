@@ -90,6 +90,15 @@ export const setConnected = (() => {
 					for (const uuid of uuidChunk) {
 						const deviceState = deviceStates.get(uuid)!;
 						deviceState.currentConnected = connected;
+						if (
+							!connected &&
+							!deviceState.targetConnected &&
+							!pendingUpdates.has(uuid)
+						) {
+							// The API has been told the device is offline and nothing else is pending, so there
+							// is nothing left to track and we can drop it to avoid growing with every device seen
+							deviceStates.delete(uuid);
+						}
 						logger.debug(
 							`successfully updated state for device: uuid=${uuid} connected=${connected}`,
 						);
