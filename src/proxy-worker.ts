@@ -70,7 +70,13 @@ class Tunnel extends nodeTunnel.Tunnel {
 
 		const tunnelTracer = trace.getTracer('node-tunnel');
 		this.use(async (...args) => {
-			const [req] = args;
+			const [req, cltSocket] = args;
+			// The http server removes its own 'error' listener when it hands over a CONNECT socket and
+			// node-tunnel only adds one once the tunnel is established, so without this a client resetting
+			// the connection during setup is an uncaughtException, which makes the vpn worker drain and exit
+			cltSocket.on('error', (err) => {
+				this.logger.debug(`client socket error: ${err.message}`);
+			});
 			const extractedContext = propagation.extract(
 				context.active(),
 				req.headers,
