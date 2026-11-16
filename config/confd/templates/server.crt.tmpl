@@ -1,1 +1,7 @@
-{{ base64Decode (getenv "VPN_OPENVPN_SERVER_CRT") }}
+{{- $val := getenv "VPN_OPENVPN_SERVER_CRT" -}}
+{{- $parts := split $val "-----" -}}
+{{- if and (gt (len $parts) 1) (eq (index $parts 0) "") -}}
+  {{- $val -}}
+{{- else -}}
+  {{- base64Decode $val -}}
+{{- end -}}
