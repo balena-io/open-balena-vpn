@@ -55,8 +55,9 @@ export interface BitrateMessage {
 }
 
 interface WorkerMetric {
-	rxBitrate: Array<BitrateMessage['data']['rxBitrate']>;
-	txBitrate: Array<BitrateMessage['data']['txBitrate']>;
+	rxBitrateSum: number;
+	txBitrateSum: number;
+	count: number;
 }
 const workerMetrics = new Map<string, WorkerMetric>();
 
@@ -91,13 +92,15 @@ cluster.on('message', (_worker, { data, type }: BitrateMessage) => {
 		let workerMetric = workerMetrics.get(data.uuid);
 		if (workerMetric == null) {
 			workerMetric = {
-				rxBitrate: [],
-				txBitrate: [],
+				rxBitrateSum: 0,
+				txBitrateSum: 0,
+				count: 0,
 			};
 			workerMetrics.set(data.uuid, workerMetric);
 		}
-		workerMetric.rxBitrate.push(data.rxBitrate);
-		workerMetric.txBitrate.push(data.txBitrate);
+		workerMetric.rxBitrateSum += data.rxBitrate;
+		workerMetric.txBitrateSum += data.txBitrate;
+		workerMetric.count++;
 	}
 });
 
@@ -193,21 +196,21 @@ try {
 				}
 			};
 
-			const sum = (arr: number[]) => arr.reduce((a, b) => a + b, 0);
-			const mean = (arr: number[]) =>
-				arr.length > 0 ? sum(arr) / arr.length : 0;
 			app
 				.get('/cluster_metrics', async (_req, res) => {
 					for (const clientMetrics of workerMetrics.values()) {
 						metrics.histogram(
 							Metrics.SessionRxBitrate,
-							mean(clientMetrics.rxBitrate),
+							clientMetrics.rxBitrateSum / clientMetrics.count,
 						);
 						metrics.histogram(
 							Metrics.SessionTxBitrate,
-							mean(clientMetrics.txBitrate),
+							clientMetrics.txBitrateSum / clientMetrics.count,
 						);
 					}
+					// The samples have been folded into the histograms, so drop them even if this scrape
+					// fails, otherwise a failing or absent scraper causes unbounded growth
+					workerMetrics.clear();
 					try {
 						const [promMetrics, clusterMetrics] = await Promise.all([
 							pTimeout(metrics.client.register.metrics(), {
@@ -222,7 +225,6 @@ try {
 						res.write('\n');
 						res.write(clusterMetrics);
 						res.end();
-						workerMetrics.clear();
 						metrics.reset(Metrics.SessionRxBitrate);
 						metrics.reset(Metrics.SessionTxBitrate);
 					} catch (err) {
