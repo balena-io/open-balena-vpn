@@ -1,4 +1,29 @@
 - commits:
+    - subject: Stop session bitrate samples accumulating in the primary
+      hash: 98270d93ec4cb1e8de73c672b9257f7284bf7c5b
+      body: |
+        Every bitrate message from the workers, one per client per bytecount
+        interval, was pushed onto per-uuid arrays that were only cleared after
+        a successful /cluster_metrics scrape. With no scraper, or with scrapes
+        failing or timing out, they grew forever (~26 bytes per sample, about
+        360MB a day for 10k clients).
+
+        Only the mean is ever used, so a running sum and count per uuid are
+        kept instead, and the samples are cleared as soon as they have been
+        folded into the histograms rather than only on success. The histograms
+        themselves are still only reset after a successful scrape so no data is
+        lost when a scrape fails.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Otavio Jacobi <otaviojacobi@gmail.com>
+        signed-off-by: Otavio Jacobi <otaviojacobi@gmail.com>
+      author: Otavio Jacobi
+      nested: []
+  version: 12.4.26
+  title: ""
+  date: 2026-11-18T23:10:57.206Z
+- commits:
     - subject: Stop leaking proxy tunnel sockets
       hash: 0f52e23390ad3d6ff3f0044fbf29d96b6e6fae5a
       body: |
