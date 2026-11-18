@@ -1,4 +1,28 @@
 - commits:
+    - subject: Stop tracking devices in the primary once they have disconnected
+      hash: 34a9c41e90bd962352e60f3b374e814b4d576f57
+      body: |
+        clientRefCount in the api and deviceStates in the device state
+        reporter kept an entry for every device that ever connected to the
+        instance, even after its ref count went back to 0 and its disconnect
+        had been reported. Over a long uptime, with devices moving between
+        instances, that approaches the whole fleet (~135 bytes per device).
+
+        A ref count of 0 is now removed rather than stored, and a device's
+        state is dropped once its disconnect has been reported successfully
+        and nothing else is pending for it. If the report fails the state is
+        kept so it is retried as before.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Otavio Jacobi <otaviojacobi@gmail.com>
+        signed-off-by: Otavio Jacobi <otaviojacobi@gmail.com>
+      author: Otavio Jacobi
+      nested: []
+  version: 12.4.24
+  title: ""
+  date: 2026-11-18T14:21:16.754Z
+- commits:
     - subject: Lock file maintenance
       hash: 4e51be06d0215704b20d06dedc164df4b1e4dba5
       body: |
