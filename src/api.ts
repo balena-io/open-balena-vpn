@@ -94,6 +94,13 @@ export const apiFactory = (serviceId: number) => {
 	const api = express.Router();
 
 	const clientRefCount = new Map<string, number>();
+	const setRefCount = (uuid: string, refCount: number) => {
+		if (refCount === 0) {
+			clientRefCount.delete(uuid);
+		} else {
+			clientRefCount.set(uuid, refCount);
+		}
+	};
 
 	const logger = getLogger('vpn', serviceId);
 
@@ -109,7 +116,7 @@ export const apiFactory = (serviceId: number) => {
 		const uuid = req.body.common_name;
 
 		const startingRefCount = clientRefCount.get(uuid) ?? 0;
-		clientRefCount.set(uuid, startingRefCount + 1);
+		setRefCount(uuid, startingRefCount + 1);
 
 		if (startingRefCount === 0) {
 			// Only increment the device as online if it wasn't previously online
@@ -169,7 +176,7 @@ export const apiFactory = (serviceId: number) => {
 		const uuid = req.body.common_name;
 
 		const startingRefCount = clientRefCount.get(uuid) ?? 0;
-		clientRefCount.set(uuid, startingRefCount - 1);
+		setRefCount(uuid, startingRefCount - 1);
 
 		if (startingRefCount !== 1) {
 			logger.warning(
