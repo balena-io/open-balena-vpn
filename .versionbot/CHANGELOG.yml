@@ -1,4 +1,38 @@
 - commits:
+    - subject: Stop leaking proxy tunnel sockets
+      hash: 0f52e23390ad3d6ff3f0044fbf29d96b6e6fae5a
+      body: |
+        node-tunnel only starts listening for the client's 'end' and 'error'
+        once our connect has returned. If the client hung up while the API
+        lookups, the retry delay or the device connection were in progress
+        those events had already fired, so the client socket stayed half open
+        and the device socket was piped to it forever. Once connected we now
+        check whether the client is still there and close the device socket if
+        not.
+
+        Tunnels also had no keepalive or timeout of any kind, and nothing sits
+        in front of the proxy port, so a peer that disappeared without closing
+        the connection kept both sockets open forever. TCP keepalive is now
+        enabled on both sides (VPN_PROXY_KEEPALIVE_DELAY, 60s), and
+        VPN_PROXY_IDLE_TIMEOUT can optionally close tunnels with no traffic
+        (disabled by default to keep long lived idle sessions working).
+
+        When forwarding to another instance the socket had no timeout, so a
+        remote that never answered held it and the client open indefinitely,
+        and on a non-200 answer it was left open without an error listener,
+        so a later reset was an uncaughtException. It now times out after
+        VPN_FORWARD_PROXY_TIMEOUT (30s) and is destroyed on any failure.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Otavio Jacobi <otaviojacobi@gmail.com>
+        signed-off-by: Otavio Jacobi <otaviojacobi@gmail.com>
+      author: Otavio Jacobi
+      nested: []
+  version: 12.4.25
+  title: ""
+  date: 2026-11-18T17:12:51.132Z
+- commits:
     - subject: Stop tracking devices in the primary once they have disconnected
       hash: 34a9c41e90bd962352e60f3b374e814b4d576f57
       body: |
