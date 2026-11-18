@@ -25,6 +25,9 @@ import { getLogger } from './utils/index.ts';
 import {
 	VPN_CONNECT_PROXY_PORT,
 	VPN_FORWARD_PROXY_PORT,
+	VPN_FORWARD_PROXY_TIMEOUT,
+	VPN_PROXY_IDLE_TIMEOUT,
+	VPN_PROXY_KEEPALIVE_DELAY,
 	VPN_SERVICE_API_KEY,
 	VPN_STATUS_FILE_WRITE_INTERVAL_SECONDS,
 } from './utils/config.ts';
@@ -111,6 +114,34 @@ class Tunnel extends nodeTunnel.Tunnel {
 	}
 
 	public connect = async (
+		port: number,
+		host: string,
+		client: net.Socket,
+		req: nodeTunnel.Request,
+	) => {
+		const socket = await this.connectToDevice(port, host, client, req);
+		// node-tunnel only starts listening for the client's 'end'/'error' once we return, so if the
+		// client went away during setup those events have already fired and the tunnel would never be
+		// torn down, leaking both sockets
+		if (client.destroyed || client.readableEnded) {
+			socket.destroy();
+			throw new errors.HandledTunnelingError(
+				'client disconnected during tunnel setup',
+			);
+		}
+		for (const s of [client, socket]) {
+			s.setKeepAlive(true, VPN_PROXY_KEEPALIVE_DELAY);
+			if (VPN_PROXY_IDLE_TIMEOUT > 0) {
+				// Destroy with an error as node-tunnel only tears down the tunnel on 'end'/'error'
+				s.setTimeout(VPN_PROXY_IDLE_TIMEOUT, () => {
+					s.destroy(new errors.HandledTunnelingError('tunnel idle timeout'));
+				});
+			}
+		}
+		return socket;
+	};
+
+	private connectToDevice = async (
 		port: number,
 		host: string,
 		client: net.Socket,
@@ -272,8 +303,14 @@ class Tunnel extends nodeTunnel.Tunnel {
 					socket.write('\r\n');
 				},
 			);
+			socket.setTimeout(VPN_FORWARD_PROXY_TIMEOUT, () => {
+				socket.destroy(
+					new Error(`timed out waiting for ${vpnHost} to accept the tunnel`),
+				);
+			});
 
 			const earlyEnd = () => {
+				socket.destroy();
 				reject(
 					new errors.RemoteTunnellingError(
 						`could not connect to ${uuid}:${port}: tunneling socket closed prematurely`,
@@ -304,6 +341,9 @@ class Tunnel extends nodeTunnel.Tunnel {
 				const httpStatusCode = parseInt(httpStatusLine.split(' ')[1], 10);
 
 				if (httpStatusCode !== 200) {
+					// The error listener has already been removed so the socket must be closed here, both so it
+					// doesn't stay open and so a later error on it is not an uncaughtException
+					socket.destroy();
 					reject(
 						new errors.RemoteTunnellingError(
 							`could not connect to ${uuid}:${port}: ${httpStatusLine}`,
@@ -311,6 +351,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 					);
 					return;
 				}
+				socket.setTimeout(0);
 				resolve(socket);
 			};
 

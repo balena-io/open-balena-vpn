@@ -148,6 +148,19 @@ export const VPN_SERVICE_API_KEY = Buffer.from(
 );
 export const VPN_CONNECT_PROXY_PORT = intVar('VPN_CONNECT_PROXY_PORT', 3128);
 export const VPN_FORWARD_PROXY_PORT = intVar('VPN_FORWARD_PROXY_PORT', 3128);
+// milliseconds, how long to wait for another vpn instance to accept a forwarded tunnel request
+export const VPN_FORWARD_PROXY_TIMEOUT = intVar(
+	'VPN_FORWARD_PROXY_TIMEOUT',
+	30 * SECONDS,
+);
+// milliseconds, TCP keepalive delay for both sides of a proxy tunnel so that peers which disappear
+// without closing the connection are detected
+export const VPN_PROXY_KEEPALIVE_DELAY = intVar(
+	'VPN_PROXY_KEEPALIVE_DELAY',
+	1 * MINUTES,
+);
+// milliseconds, close proxy tunnels that have had no traffic in either direction for this long, 0 disables
+export const VPN_PROXY_IDLE_TIMEOUT = intVar('VPN_PROXY_IDLE_TIMEOUT', 0);
 
 export const VPN_AUTH_CACHE_TIMEOUT = intVar(
 	'VPN_AUTH_CACHE_TIMEOUT',
