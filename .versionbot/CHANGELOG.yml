@@ -1,4 +1,17 @@
 - commits:
+    - subject: Update dependency debian_13/haproxy to v3.0.11-1+deb13u5
+      hash: 04718f6869416795ac0d57033fd16aa649421cde
+      body: |
+        Update debian_13/haproxy from 3.0.11-1+deb13u4 to 3.0.11-1+deb13u5
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: balena-renovate[bot]
+      nested: []
+  version: 12.4.27
+  title: ""
+  date: 2026-11-19T16:22:51.233Z
+- commits:
     - subject: Stop session bitrate samples accumulating in the primary
       hash: 98270d93ec4cb1e8de73c672b9257f7284bf7c5b
       body: |
