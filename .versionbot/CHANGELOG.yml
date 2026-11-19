@@ -1,4 +1,29 @@
 - commits:
+    - subject: Reduce the memory used by each auth process
+      hash: 6ac5ac3f3e9d4926a38cbb22523810bf9ac45228
+      body: |
+        openvpn runs an auth process for each connection attempt, and since
+        `DELAY_ON_AUTH_FAIL` holds back rejections, there can be many that are
+        waiting on the api at once. Each one used ~431 KiB PSS, most of it the
+        128 KiB input and output buffers that ureq allocates by default.
+
+        The request is now made with std's `TcpStream`, the release profile
+        optimizes for size, and the binary is linked statically without PIE so
+        it needs no dynamic loader and dirties no pages applying relocations.
+        This brings each waiting process down to ~61 KiB PSS (~55 KiB private),
+        measured with 200 processes blocked waiting for the response. The
+        credentials are now JSON-escaped when building the request body.
+
+        https://balena.fibery.io/Work/Project/3083
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.4.28
+  title: ""
+  date: 2026-11-19T17:05:02.416Z
+- commits:
     - subject: Update dependency debian_13/haproxy to v3.0.11-1+deb13u5
       hash: 04718f6869416795ac0d57033fd16aa649421cde
       body: |
