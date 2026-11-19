@@ -19,11 +19,13 @@ use std::io::{BufRead, BufReader, Read, Write};
 use std::net::TcpListener;
 use std::path::{Path, PathBuf};
 use std::process::Command;
+use std::sync::mpsc;
 use std::thread;
 
-// Starts a stub of the vpn api that handles a single request by calling `before_response` once the
-// request has been read and then responding with `status`, returning the port it listens on
-fn stub_api(status: u16, before_response: impl FnOnce() + Send + 'static) -> u16 {
+// Starts a stub of the vpn api that handles a single request by calling `before_response` with the
+// request body once it has been read and then responding with `status`, returning the port it
+// listens on
+fn stub_api(status: u16, before_response: impl FnOnce(Vec<u8>) + Send + 'static) -> u16 {
     let listener = TcpListener::bind("127.0.0.1:0").unwrap();
     let port = listener.local_addr().unwrap().port();
     thread::spawn(move || {
@@ -44,7 +46,7 @@ fn stub_api(status: u16, before_response: impl FnOnce() + Send + 'static) -> u16
         }
         let mut body = vec![0; content_length];
         reader.read_exact(&mut body).unwrap();
-        before_response();
+        before_response(body);
         write!(
             reader.get_mut(),
             "HTTP/1.1 {} Stub\r\nContent-Length: 0\r\nConnection: close\r\n\r\n",
@@ -63,10 +65,14 @@ fn create_auth_control_file(name: &str) -> PathBuf {
 }
 
 fn run_auth(port: u16, auth_control_file: &Path) {
+    run_auth_as(port, auth_control_file, "uuid", "api-key");
+}
+
+fn run_auth_as(port: u16, auth_control_file: &Path, username: &str, password: &str) {
     let status = Command::new(env!("CARGO_BIN_EXE_auth"))
         .arg(port.to_string())
-        .env("username", "uuid")
-        .env("password", "api-key")
+        .env("username", username)
+        .env("password", password)
         .env("auth_control_file", auth_control_file)
         .status()
         .unwrap();
@@ -76,7 +82,7 @@ fn run_auth(port: u16, auth_control_file: &Path) {
 #[test]
 fn authorizes_on_success() {
     let auth_control_file = create_auth_control_file("success");
-    run_auth(stub_api(200, || {}), &auth_control_file);
+    run_auth(stub_api(200, |_| {}), &auth_control_file);
     assert_eq!(std::fs::read_to_string(&auth_control_file).unwrap(), "1");
     std::fs::remove_file(&auth_control_file).unwrap();
 }
@@ -84,7 +90,7 @@ fn authorizes_on_success() {
 #[test]
 fn rejects_on_failure() {
     let auth_control_file = create_auth_control_file("failure");
-    run_auth(stub_api(401, || {}), &auth_control_file);
+    run_auth(stub_api(401, |_| {}), &auth_control_file);
     assert_eq!(std::fs::read_to_string(&auth_control_file).unwrap(), "0");
     std::fs::remove_file(&auth_control_file).unwrap();
 }
@@ -96,8 +102,40 @@ fn does_not_recreate_deleted_auth_control_file() {
     let auth_control_file = create_auth_control_file("deleted");
     let to_delete = auth_control_file.clone();
     run_auth(
-        stub_api(401, move || std::fs::remove_file(to_delete).unwrap()),
+        stub_api(401, move |_| std::fs::remove_file(to_delete).unwrap()),
         &auth_control_file,
     );
     assert!(!auth_control_file.exists());
+}
+
+#[test]
+fn escapes_credentials_in_request_body() {
+    // The credentials come from the client so must not be able to add or override fields
+    let auth_control_file = create_auth_control_file("escaping");
+    let (body_tx, body_rx) = mpsc::channel();
+    run_auth_as(
+        stub_api(200, move |body| body_tx.send(body).unwrap()),
+        &auth_control_file,
+        "uuid\",\"username\":\"other",
+        "api\\key\x01",
+    );
+    assert_eq!(
+        String::from_utf8(body_rx.recv().unwrap()).unwrap(),
+        r#"{"username":"uuid\",\"username\":\"other","password":"api\\key\u0001"}"#
+    );
+    std::fs::remove_file(&auth_control_file).unwrap();
+}
+
+#[test]
+fn rejects_when_api_is_unreachable() {
+    let auth_control_file = create_auth_control_file("unreachable");
+    // Bind then drop a listener to get a port that nothing listens on
+    let port = TcpListener::bind("127.0.0.1:0")
+        .unwrap()
+        .local_addr()
+        .unwrap()
+        .port();
+    run_auth(port, &auth_control_file);
+    assert_eq!(std::fs::read_to_string(&auth_control_file).unwrap(), "0");
+    std::fs::remove_file(&auth_control_file).unwrap();
 }

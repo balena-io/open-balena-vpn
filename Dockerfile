@@ -74,6 +74,10 @@ FROM rust:1-trixie@sha256:8a4e90c7946b74626488b1446f712c0fe0ed1a596cbd3d871684bc
 # The rust image uses rustup's minimal profile which does not include rustfmt
 RUN rustup component add rustfmt
 
+# Link statically and without PIE so that each of the potentially many auth processes
+# needs no dynamic loader and dirties no pages applying relocations
+ENV RUSTFLAGS="-C target-feature=+crt-static -C relocation-model=static"
+
 WORKDIR /usr/src/app
 COPY auth .
 # Run the format check and tests as part of the build so that they are checked in CI
