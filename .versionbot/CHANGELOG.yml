@@ -1,4 +1,33 @@
 - commits:
+    - subject: Stop the vpn worker client cache growing with every reconnect
+      hash: 17cb903403fa03d63f09f834ef05f94162031f18
+      body: |
+        Entries were added to clientCache on every CLIENT:ESTABLISHED but never
+        removed. The delete lived in the client:disconnect handler, which was
+        dropped when client auth moved to scripts, and openvpn never sends
+        CLIENT:DISCONNECT anyway as it is not started with
+        --management-client-auth. Client ids only ever increase, so the cache
+        grew by ~153 bytes per reconnect for the life of the worker, and the
+        shutdown drain sent a kill for every stale entry, spiking the heap to
+        hundreds of MB and pushing live clients to the end of the drain window.
+
+        Without --duplicate-cn openvpn disconnects the existing client when one
+        with the same common name connects, so a new connection now replaces
+        any previous entry for that uuid. Entries that have missed three
+        bytecount intervals in a row are also removed, as openvpn reports
+        bytecounts for every connected client and the pushed ping guarantees
+        traffic well within that window.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Otavio Jacobi <otaviojacobi@gmail.com>
+        signed-off-by: Otavio Jacobi <otaviojacobi@gmail.com>
+      author: Otavio Jacobi
+      nested: []
+  version: 12.4.29
+  title: ""
+  date: 2026-11-20T21:46:22.662Z
+- commits:
     - subject: Reduce the memory used by each auth process
       hash: 6ac5ac3f3e9d4926a38cbb22523810bf9ac45228
       body: |
