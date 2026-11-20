@@ -17,9 +17,13 @@
 
 import 'mocha';
 import netmaskTests from './netmask.ts';
+import orphanTests from './orphan.ts';
 
 export default () => {
 	describe('netmask', () => {
 		netmaskTests();
+	});
+	describe('killOrphan', () => {
+		orphanTests();
 	});
 };

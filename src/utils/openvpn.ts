@@ -22,6 +22,7 @@ import split from 'split';
 import { EventEmitter } from 'eventemitter3';
 import fs from 'fs';
 import net from 'net';
+import path from 'path';
 import {
 	VPN_API_PORT,
 	VPN_DOWNRATE,
@@ -90,6 +91,7 @@ const SECONDS = 1000;
 const STARTUP_TIMEOUT = 5 * SECONDS;
 const TERM_TIMEOUT = 5 * SECONDS;
 const KILL_TIMEOUT = TERM_TIMEOUT * 2;
+const OPENVPN_BIN = '/usr/sbin/openvpn';
 
 export declare interface VpnManagerEvents {
 	on(event: 'process:error', callback?: (err: Error) => void): this;
@@ -128,6 +130,24 @@ export declare interface VpnManagerEvents {
 		callback?: (clientId: number, data: VpnClientDisconnectData) => void,
 	): this;
 }
+
+/** Returns true when the signal reached the pid, i.e. the pid exists. */
+export const signalPid = (pid: number, signal: NodeJS.Signals | 0) => {
+	try {
+		return process.kill(pid, signal);
+	} catch {
+		return false;
+	}
+};
+
+/** Returns the kernel's command name for the pid, or undefined when the pid does not exist. */
+const readComm = async (pid: number) => {
+	try {
+		return (await fs.promises.readFile(`/proc/${pid}/comm`, 'utf8')).trim();
+	} catch {
+		return undefined;
+	}
+};
 
 export class VpnManager extends EventEmitter implements VpnManagerEvents {
 	private process?: ChildProcess;
@@ -318,25 +338,25 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 			(await fs.promises.readFile(this.pidFile, 'utf8')).replace(/\D/g, ''),
 			10,
 		);
+		// NaN, 0 and 1 cannot be an orphan openvpn pid.
+		// A pid that another program reused means the pid file is stale.
+		if (!(pid > 1) || (await readComm(pid)) !== path.basename(OPENVPN_BIN)) {
+			return;
+		}
 		/** Signal 0 can be used to check the existence of the PID */
 		const SIGPING = 0 as const;
-		const kill = (signal?: typeof SIGPING | 'SIGTERM' | 'SIGKILL') => {
-			try {
-				return process.kill(pid, signal);
-			} catch {
-				return false;
-			}
-		};
+		const kill = (signal: typeof SIGPING | 'SIGTERM' | 'SIGKILL') =>
+			signalPid(pid, signal);
 
 		const start = Date.now();
-		let error = kill('SIGTERM');
-		while (!error) {
+		let alive = kill('SIGTERM');
+		while (alive) {
 			await setTimeout(100);
 			const elapsedTime = Date.now() - start;
 			if (elapsedTime < TERM_TIMEOUT) {
-				error = kill(SIGPING);
+				alive = kill(SIGPING);
 			} else if (elapsedTime < KILL_TIMEOUT) {
-				error = kill('SIGKILL');
+				alive = kill('SIGKILL');
 			} else {
 				throw new TimeoutError('orphan openvpn process did not go away');
 			}
@@ -347,7 +367,7 @@ export class VpnManager extends EventEmitter implements VpnManagerEvents {
 
 	public async start() {
 		await this.killOrphan();
-		this.process = spawn('/usr/sbin/openvpn', this.args(), {
+		this.process = spawn(OPENVPN_BIN, this.args(), {
 			stdio: ['ignore', 'pipe', 'pipe'],
 		});
 		// proxy logs from the child process stdout/stderr
