@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec s6-log p"haproxy:" 1
