@@ -18,7 +18,7 @@
 import { intVar } from '@balena/env-parsing';
 import PQueue from 'p-queue';
 
-const REQUEST_TIMEOUT = 59000;
+export const REQUEST_TIMEOUT = 59000;
 
 // Nothing uses the response body so it is discarded rather than buffered, but it is still consumed
 // in full so that the connection can be reused and so that the timeout covers the entire request
