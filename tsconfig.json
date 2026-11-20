@@ -12,7 +12,6 @@
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"resolveJsonModule": true,
-		"skipLibCheck": true,
 		"strict": true,
 		"useUnknownInCatchVariables": false,
 		"target": "es2025",
