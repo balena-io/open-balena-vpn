@@ -5,6 +5,7 @@
 {{- else -}}
   {{- base64Decode $val -}}
 {{- end -}}
+{{ "\n" }}
 {{- $val := getenv "VPN_OPENVPN_CA_CRT" -}}
 {{- $parts := split $val "-----" -}}
 {{- if and (gt (len $parts) 1) (eq (index $parts 0) "") -}}
