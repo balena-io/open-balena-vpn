@@ -44,6 +44,9 @@ import { context, propagation, trace } from '@opentelemetry/api';
 import { setTimeout } from 'timers/promises';
 
 const HTTP_500 = 'HTTP/1.0 500 Internal Server Error\r\n\r\n';
+// How much of another vpn instance's response to a forwarded `CONNECT` to buffer before giving up
+// on finding its end
+const MAX_FORWARD_PROXY_RESPONSE_SIZE = 16 * 1024;
 
 const deviceIsLocal = async (uuid: string) => {
 	try {
@@ -371,7 +374,7 @@ export class Tunnel extends nodeTunnel.Tunnel {
 	): Promise<net.Socket> => {
 		let abortListener: Disposable | undefined;
 		return new Promise<net.Socket>((resolve, reject) => {
-			let tunnelProxyResponse = '';
+			let tunnelProxyResponse = Buffer.alloc(0);
 			const socket: net.Socket = net.connect(
 				this.forwardProxyPort,
 				vpnHost,
@@ -388,11 +391,12 @@ export class Tunnel extends nodeTunnel.Tunnel {
 					socket.write('\r\n');
 				},
 			);
-			socket.setTimeout(VPN_FORWARD_PROXY_TIMEOUT, () => {
+			const onTimeout = () => {
 				socket.destroy(
 					new Error(`timed out waiting for ${vpnHost} to accept the tunnel`),
 				);
-			});
+			};
+			socket.setTimeout(VPN_FORWARD_PROXY_TIMEOUT, onTimeout);
 
 			const earlyEnd = () => {
 				socket.destroy();
@@ -412,9 +416,13 @@ export class Tunnel extends nodeTunnel.Tunnel {
 				reject(new errors.RemoteTunnellingError(errMsg));
 			};
 			const proxyData = (chunk: Buffer) => {
-				// read 'data' chunks until full HTTP status line has been read
-				tunnelProxyResponse += chunk.toString();
-				if (!tunnelProxyResponse.includes('\r\n\r\n')) {
+				// read 'data' chunks until the empty line that ends the response has been read
+				tunnelProxyResponse = Buffer.concat([tunnelProxyResponse, chunk]);
+				const responseEnd = tunnelProxyResponse.indexOf('\r\n\r\n');
+				const tooLarge =
+					responseEnd === -1 &&
+					tunnelProxyResponse.length > MAX_FORWARD_PROXY_RESPONSE_SIZE;
+				if (responseEnd === -1 && !tooLarge) {
 					return;
 				}
 				socket.removeListener('data', proxyData);
@@ -422,21 +430,36 @@ export class Tunnel extends nodeTunnel.Tunnel {
 				socket.removeListener('error', earlyError);
 
 				// RFC2616: Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
-				const httpStatusLine = tunnelProxyResponse.split('\r\n')[0];
+				const httpStatusLine = tunnelProxyResponse.toString(
+					'latin1',
+					0,
+					tunnelProxyResponse.indexOf('\r\n'),
+				);
 				const httpStatusCode = parseInt(httpStatusLine.split(' ')[1], 10);
 
-				if (httpStatusCode !== 200) {
+				if (tooLarge || httpStatusCode !== 200) {
 					// The error listener has already been removed so the socket must be closed here, both so it
 					// doesn't stay open and so a later error on it is not an uncaughtException
 					socket.destroy();
 					reject(
 						new errors.RemoteTunnellingError(
-							`could not connect to ${uuid}:${port}: ${httpStatusLine}`,
+							tooLarge
+								? `could not connect to ${uuid}:${port}: response from ${vpnHost} is too large`
+								: `could not connect to ${uuid}:${port}: ${httpStatusLine}`,
 						),
 					);
 					return;
 				}
-				socket.setTimeout(0);
+				// remove the listener too, or it would also run on the tunnel's idle timeout, and keep
+				// this closure (with the response) for the tunnel's lifetime
+				socket.setTimeout(0, onTimeout);
+				// Anything after the response already comes from the device (e.g. its SSH banner), so put
+				// it back, and pause the socket so nothing is emitted before node-tunnel pipes it
+				socket.pause();
+				const rest = tunnelProxyResponse.subarray(responseEnd + 4);
+				if (rest.length > 0) {
+					socket.unshift(rest);
+				}
 				resolve(socket);
 			};
 
