@@ -1,4 +1,24 @@
 - commits:
+    - subject: Correctly disable all node_exporter default collectors
+      hash: ab784d4ef13b5d8d08f0867dad9957e341aab9ff
+      body: |
+        Previously there was no way to disable all default collectors so we
+        disabled them individually by name. Over time more defaults have been
+        added that we have not disabled and so they started being run
+        unnecessarily, but also an option to disable them all easily is now
+        available. Switching to that flag solves the issue both today and
+        going forward
+
+        https://balena.fibery.io/Work/Project/3083
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.4.31
+  title: ""
+  date: 2026-11-23T17:53:12.442Z
+- commits:
     - subject: "patch: Check if the values are already base64 decoded"
       hash: 9cceff85d3d14f7b3366f078aad0b8c07d10e2c4
       body: ""
