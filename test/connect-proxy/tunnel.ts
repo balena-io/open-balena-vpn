@@ -19,6 +19,7 @@ import { expect } from 'chai';
 import { randomBytes } from 'node:crypto';
 import { once } from 'node:events';
 import net from 'node:net';
+import { setTimeout } from 'node:timers/promises';
 
 import { Tunnel } from '../../src/proxy-worker.ts';
 import { apiHostname, mockApi } from '../mock-api.ts';
@@ -330,6 +331,71 @@ export default () => {
 			expect(await forwarded.promise).to.include(
 				`\r\nForwarded: for=client, by=other,By=open-balena-vpn(${serviceId})\r\n`,
 			);
+		});
+	});
+
+	describe('connecting to a device on this instance', () => {
+		it('should not leave the connect timeout on the tunnel socket', async () => {
+			const device = net.createServer((socket) => {
+				sockets.add(socket);
+			});
+			const port = await listen(device);
+			try {
+				const socket = await tunnel['localConnect'](
+					port,
+					'127.0.0.1',
+					new AbortController().signal,
+				);
+				sockets.add(socket);
+				// otherwise it would destroy the tunnel when the idle timeout fires
+				expect(socket.listenerCount('timeout')).to.equal(0);
+			} finally {
+				device.close();
+			}
+		});
+	});
+
+	describe('clients that go away during setup', () => {
+		const tunnelError = () =>
+			new Promise<Error>((resolve) => {
+				tunnel.once('error', resolve);
+			});
+
+		it('should stop waiting for the status file when the client disconnects', async () => {
+			const lookedUp: PromiseWithResolvers<void> = Promise.withResolvers();
+			// registered on this instance but not in its status file yet, so the proxy waits for it
+			const uuid = await mockDevice({
+				vpnServiceId: serviceId,
+				onVpnHostLookup: () => {
+					lookedUp.resolve();
+				},
+			});
+			const socket = await connectToProxy(`${uuid}.balena:22`);
+			await lookedUp.promise;
+			// let the proxy start waiting
+			await setTimeout(100);
+			const failed = tunnelError();
+			socket.end();
+			const err = await failed;
+			expect(err.message).to.equal('client disconnected during tunnel setup');
+		});
+
+		it('should stop waiting for the other instance when the client resets the connection', async () => {
+			const uuid = await mockDevice();
+			const forwarded: PromiseWithResolvers<net.Socket> =
+				Promise.withResolvers();
+			// the other instance never answers
+			onForwardedConnect = (vpnSocket) => {
+				forwarded.resolve(vpnSocket);
+			};
+			const socket = await connectToProxy(`${uuid}.balena:22`);
+			const forwardedSocket = await forwarded.promise;
+			const vpnClosed = once(forwardedSocket, 'close');
+			const failed = tunnelError();
+			socket.resetAndDestroy();
+			const err = await failed;
+			expect(err.message).to.equal('client disconnected during tunnel setup');
+			await vpnClosed;
 		});
 	});
 };

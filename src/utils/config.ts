@@ -153,6 +153,11 @@ export const VPN_FORWARD_PROXY_TIMEOUT = intVar(
 	'VPN_FORWARD_PROXY_TIMEOUT',
 	30 * SECONDS,
 );
+// milliseconds, how long to wait for a device on this instance to accept a proxy tunnel connection
+export const VPN_PROXY_CONNECT_TIMEOUT = intVar(
+	'VPN_PROXY_CONNECT_TIMEOUT',
+	30 * SECONDS,
+);
 // milliseconds, TCP keepalive delay for both sides of a proxy tunnel so that peers which disappear
 // without closing the connection are detected
 export const VPN_PROXY_KEEPALIVE_DELAY = intVar(
