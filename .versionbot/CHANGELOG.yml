@@ -1,4 +1,14 @@
 - commits:
+    - subject: "patch: Check if the values are already base64 decoded"
+      hash: 9cceff85d3d14f7b3366f078aad0b8c07d10e2c4
+      body: ""
+      footer: {}
+      author: Anton B.
+      nested: []
+  version: 12.4.30
+  title: ""
+  date: 2026-11-23T15:48:54.482Z
+- commits:
     - subject: Stop the vpn worker client cache growing with every reconnect
       hash: 17cb903403fa03d63f09f834ef05f94162031f18
       body: |
