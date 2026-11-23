@@ -17,9 +17,13 @@
 
 import 'mocha';
 import deviceTests from './device.ts';
+import tunnelTests from './tunnel.ts';
 
 export default () => {
 	describe('device', () => {
 		deviceTests();
+	});
+	describe('tunnel', () => {
+		tunnelTests();
 	});
 };
