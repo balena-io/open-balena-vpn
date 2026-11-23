@@ -125,11 +125,13 @@ const worker = async (instanceId: number, serviceId: number) => {
 		}
 	});
 
-	let drainConnections: () => Promise<void> | void = async () => {
+	let isDraining = false;
+	const drainConnections: () => Promise<void> | void = async () => {
 		// Only run once
-		drainConnections = () => {
-			// noop
-		};
+		if (isDraining) {
+			return;
+		}
+		isDraining = true;
 
 		logger.info(`setting haproxy for '${instanceId}' into drain mode`);
 		await new HAProxy('/var/run/haproxy.sock').drain(
