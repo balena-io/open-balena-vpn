@@ -1,4 +1,20 @@
 - commits:
+    - subject: Fix the only drain once guard
+      hash: ebdb7154ccf50164a3f8aa3613b6a0ed43150850
+      body: |
+        Since we registered the `drainConnections` directly into the signal
+        handlers it meant that the reassignment had no effect. Switching this
+        to a boolean flag avoids that issue and should also be clearer as to
+        how it works
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.4.33
+  title: ""
+  date: 2026-11-23T19:46:08.626Z
+- commits:
     - subject: Handle client socket errors during proxy tunnel setup
       hash: 8693e650978eecd372672f35c3ba490891cc3560
       body: |
