@@ -237,6 +237,9 @@ export default () => {
 			expect(forwardedRequest).to.match(
 				new RegExp(`^CONNECT ${uuid}\\.balena:22 HTTP/1\\.0\\r\\n`),
 			);
+			expect(forwardedRequest).to.include(
+				`\r\nForwarded: By=open-balena-vpn(${serviceId})\r\n`,
+			);
 
 			socket.write('ping');
 			const echoed = await readBytes(socket, 4);
@@ -252,6 +255,81 @@ export default () => {
 			const socket = await connectToProxy(`${uuid}.balena:22`);
 			const { statusLine } = await readResponse(socket);
 			expect(statusLine).to.equal('HTTP/1.0 500 Internal Server Error');
+		});
+	});
+
+	describe('forwarding loops', () => {
+		// a second instance, which forwards tunnels to the first; created once for the same reason as
+		// the first
+		let otherServer: net.Server;
+		let otherPort: number;
+		before(async () => {
+			const otherTunnel = new Tunnel(1, otherServiceId, {
+				forwardProxyPort: proxyPort,
+			});
+			otherServer = otherTunnel.listen(0, '127.0.0.1');
+			otherServer.on('connection', (conn: net.Socket) => sockets.add(conn));
+			await once(otherServer, 'listening');
+			otherPort = (otherServer.address() as net.AddressInfo).port;
+		});
+
+		after(() => {
+			otherServer.close();
+		});
+
+		it('should respond 500 when another instance would forward the tunnel back', async () => {
+			// both instances think the device is on a third instance, so each forwards to the other
+			let lookups = 0;
+			const loop: PromiseWithResolvers<never> = Promise.withResolvers();
+			const uuid = await mockDevice({
+				vpnServiceId: 3,
+				onVpnHostLookup: () => {
+					if (++lookups > 4) {
+						loop.reject(new Error('the tunnel request kept being forwarded'));
+					}
+				},
+			});
+			// relay what this instance forwards to the other instance
+			onForwardedConnect = (vpnSocket, request) => {
+				const relay = net.connect(otherPort, '127.0.0.1');
+				sockets.add(relay);
+				relay.on('error', () => {
+					vpnSocket.destroy();
+				});
+				relay.write(request);
+				vpnSocket.pipe(relay).pipe(vpnSocket);
+			};
+
+			const socket = await connectToProxy(`${uuid}.balena:22`);
+			const { statusLine } = await Promise.race([
+				readResponse(socket),
+				loop.promise,
+			]);
+			expect(statusLine).to.equal('HTTP/1.0 500 Internal Server Error');
+			// this instance, the other instance, then this instance again, which detects the loop
+			expect(lookups).to.equal(3);
+		});
+
+		it("should keep the client's Forwarded header when forwarding", async () => {
+			const uuid = await mockDevice();
+			const forwarded: PromiseWithResolvers<string> = Promise.withResolvers();
+			onForwardedConnect = (vpnSocket, request) => {
+				forwarded.resolve(request);
+				vpnSocket.destroy();
+			};
+
+			const socket = net.connect(proxyPort, '127.0.0.1');
+			sockets.add(socket);
+			socket.on('error', () => {
+				// ignore
+			});
+			await once(socket, 'connect');
+			socket.write(
+				`CONNECT ${uuid}.balena:22 HTTP/1.0\r\nForwarded: for=client\r\nForwarded: by=other\r\n\r\n`,
+			);
+			expect(await forwarded.promise).to.include(
+				`\r\nForwarded: for=client, by=other,By=open-balena-vpn(${serviceId})\r\n`,
+			);
 		});
 	});
 };

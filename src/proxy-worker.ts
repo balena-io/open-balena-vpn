@@ -202,7 +202,13 @@ export class Tunnel extends nodeTunnel.Tunnel {
 				this.logger.info(
 					`forwarding tunnel request for ${uuid}:${port} via ${vpnHost.id}@${vpnHost.ip_address}`,
 				);
-				return await this.forwardRequest(vpnHost.ip_address, uuid, port, auth);
+				return await this.forwardRequest(
+					vpnHost.ip_address,
+					uuid,
+					port,
+					req.headers.forwarded,
+					auth,
+				);
 			}
 		} catch (err) {
 			if (err instanceof errors.RemoteTunnellingError) {
@@ -301,6 +307,7 @@ export class Tunnel extends nodeTunnel.Tunnel {
 		vpnHost: string,
 		uuid: string,
 		port: number,
+		forwarded: string,
 		proxyAuth?: Buffer,
 	): Promise<net.Socket> =>
 		new Promise((resolve, reject) => {
@@ -310,6 +317,9 @@ export class Tunnel extends nodeTunnel.Tunnel {
 				vpnHost,
 				() => {
 					socket.write(`CONNECT ${uuid}.balena:${port} HTTP/1.0\r\n`);
+					// lets the next instance detect a loop if it would forward the request back; latin1 is how
+					// node decoded the client's header, so its bytes pass through unchanged
+					socket.write(`Forwarded: ${forwarded}\r\n`, 'latin1');
 					if (proxyAuth != null) {
 						socket.write(
 							`Proxy-Authorization: Basic ${proxyAuth.toString('base64')}\r\n`,
