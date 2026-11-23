@@ -1,4 +1,29 @@
 - commits:
+    - subject: Handle client socket errors during proxy tunnel setup
+      hash: 8693e650978eecd372672f35c3ba490891cc3560
+      body: |
+        When the http server hands a CONNECT socket to the 'connect' handler it
+        removes its own 'error' listener, and node-tunnel only adds one after
+        the tunnel to the device has been established. A client that resets
+        the connection while the API lookups or the device connection are in
+        progress therefore raised an uncaughtException.
+
+        The vpn worker treats uncaughtException as a shutdown signal and drains
+        every vpn client before exiting, and the master exits once every
+        instance has drained, so with a single instance one reset on the proxy
+        port restarted the whole service. An 'error' listener is now added to
+        the client socket before any setup work starts.
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Otavio Jacobi <otaviojacobi@gmail.com>
+        signed-off-by: Otavio Jacobi <otaviojacobi@gmail.com>
+      author: Otavio Jacobi
+      nested: []
+  version: 12.4.32
+  title: ""
+  date: 2026-11-23T18:12:48.566Z
+- commits:
     - subject: Correctly disable all node_exporter default collectors
       hash: ab784d4ef13b5d8d08f0867dad9957e341aab9ff
       body: |
