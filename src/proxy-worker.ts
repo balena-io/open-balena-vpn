@@ -291,6 +291,9 @@ export class Tunnel extends nodeTunnel.Tunnel {
 				errors.captureException(err, 'proxy-tunnel-error');
 				cltSocket.end(HTTP_500);
 			}
+			// node-tunnel never sees this request as `next` isn't called, and the server allows
+			// half-open sockets that nothing reads, so close it ourselves once the response is sent
+			cltSocket.destroySoon();
 		}
 	}) satisfies nodeTunnel.Middleware;
 
