@@ -1,4 +1,22 @@
 - commits:
+    - subject: "Tests: Add tests for the proxy's tunnels"
+      hash: 89eaae7b7a9d7c6405f197afb060201344997831
+      body: |
+        The proxy worker had no tests. Its `Tunnel` class is now exported, and
+        the port used to forward tunnels to other vpn instances can be passed
+        to it, so tests can run one against the mock API and a fake vpn
+        instance.
+
+        https://balena.fibery.io/Work/Project/3083
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.4.34
+  title: ""
+  date: 2026-11-24T02:18:27.750Z
+- commits:
     - subject: Fix the only drain once guard
       hash: ebdb7154ccf50164a3f8aa3613b6a0ed43150850
       body: |
