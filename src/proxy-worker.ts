@@ -52,15 +52,21 @@ const deviceIsLocal = async (uuid: string) => {
 	}
 };
 
-class Tunnel extends nodeTunnel.Tunnel {
+export class Tunnel extends nodeTunnel.Tunnel {
 	private readonly logger: winston.Logger;
 	private readonly instanceId: number;
 	private readonly serviceId: number;
+	private readonly forwardProxyPort: number;
 
-	constructor(instanceId: number, serviceId: number) {
+	constructor(
+		instanceId: number,
+		serviceId: number,
+		{ forwardProxyPort = VPN_FORWARD_PROXY_PORT } = {},
+	) {
 		super();
 		this.instanceId = instanceId;
 		this.serviceId = serviceId;
+		this.forwardProxyPort = forwardProxyPort;
 		this.logger = getLogger('proxy', this.serviceId, this.instanceId);
 
 		this.on('error', (err) => {
@@ -297,7 +303,7 @@ class Tunnel extends nodeTunnel.Tunnel {
 		new Promise((resolve, reject) => {
 			let tunnelProxyResponse = '';
 			const socket: net.Socket = net.connect(
-				VPN_FORWARD_PROXY_PORT,
+				this.forwardProxyPort,
 				vpnHost,
 				() => {
 					socket.write(`CONNECT ${uuid}.balena:${port} HTTP/1.0\r\n`);
