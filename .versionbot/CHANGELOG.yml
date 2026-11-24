@@ -1,4 +1,26 @@
 - commits:
+    - subject: Close proxy connections after rejecting them
+      hash: 7a9651cfe491426675975fab258c713605278738
+      body: |
+        Requests rejected while checking access (400, 403, 407, 503 and API
+        errors) were answered with `end()`, but node-tunnel only closes the
+        client socket for requests that get as far as connecting to the device.
+        The http server allows half-open sockets and nothing reads a CONNECT
+        socket, so the connection stayed open until the client closed its side.
+        If the client had sent anything after its request, it stayed open
+        forever, holding up to a highWaterMark of unread data. The socket is now
+        destroyed once the response has been sent.
+
+        https://balena.fibery.io/Work/Project/3083
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.4.35
+  title: ""
+  date: 2026-11-24T12:54:25.412Z
+- commits:
     - subject: "Tests: Add tests for the proxy's tunnels"
       hash: 89eaae7b7a9d7c6405f197afb060201344997831
       body: |
