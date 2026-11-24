@@ -163,8 +163,15 @@ export default () => {
 		fakeVpn.close();
 	});
 
-	const connectToProxy = async (target: string) => {
-		const socket = net.connect(proxyPort, '127.0.0.1');
+	const connectToProxy = async (
+		target: string,
+		{ allowHalfOpen = false } = {},
+	) => {
+		const socket = net.connect({
+			port: proxyPort,
+			host: '127.0.0.1',
+			allowHalfOpen,
+		});
 		sockets.add(socket);
 		socket.on('error', () => {
 			// ignore
@@ -186,6 +193,30 @@ export default () => {
 			const socket = await connectToProxy(`${uuid}.balena:22`);
 			const { statusLine } = await readResponse(socket);
 			expect(statusLine).to.equal('HTTP/1.0 407 Proxy Authorization Required');
+		});
+
+		it('should close the connection after responding, even if the client keeps it open', async () => {
+			const accepted = once(proxyServer, 'connection');
+			// a node client ends its side as soon as the server does unless it allows half-open sockets
+			const socket = await connectToProxy('example.com:80', {
+				allowHalfOpen: true,
+			});
+			const [serverSocket] = (await accepted) as [net.Socket];
+			const closed = once(serverSocket, 'close');
+			await readResponse(socket);
+			await closed;
+		});
+
+		it('should close the connection after responding when the client sent more data', async () => {
+			const uuid = await mockDevice({ accessible: false });
+			const accepted = once(proxyServer, 'connection');
+			const socket = await connectToProxy(`${uuid}.balena:22`);
+			const [serverSocket] = (await accepted) as [net.Socket];
+			const closed = once(serverSocket, 'close');
+			// more than the socket's highWaterMark, which nothing reads
+			socket.write(Buffer.alloc(200 * 1024));
+			socket.end();
+			await closed;
 		});
 	});
 
