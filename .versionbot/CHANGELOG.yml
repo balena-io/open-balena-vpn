@@ -1,4 +1,26 @@
 - commits:
+    - subject: Send the `Forwarded` header when forwarding a tunnel to another instance
+      hash: d6447a454d5cd5df7585d5a2912c6388b65a71e7
+      body: |
+        `connectToDevice` adds this instance's signature to the request's
+        `Forwarded` header to detect forwarding loops, but `forwardRequest`
+        only sent `CONNECT` and `Proxy-Authorization`, so the next instance
+        never saw it. If the API and the instances' status files disagreed
+        about where a device was, two instances could keep forwarding the
+        same request to each other, each hop opening another connection and
+        holding it until it timed out. The header is now sent, so the loop is
+        detected when the request comes back to an instance it passed through.
+
+        https://balena.fibery.io/Work/Project/3083
+      footer:
+        Change-type: patch
+        change-type: patch
+      author: Pagan Gazzard
+      nested: []
+  version: 12.4.36
+  title: ""
+  date: 2026-11-24T17:47:41.317Z
+- commits:
     - subject: Close proxy connections after rejecting them
       hash: 7a9651cfe491426675975fab258c713605278738
       body: |
