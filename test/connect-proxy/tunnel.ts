@@ -247,10 +247,62 @@ export default () => {
 			expect(echoed.toString()).to.equal('ping');
 		});
 
+		it('should not leave the forwarding timeout on the tunnel socket', async () => {
+			onForwardedConnect = (vpnSocket) => {
+				vpnSocket.write('HTTP/1.0 200 Connection Established\r\n\r\n');
+			};
+			const socket = await tunnel['forwardRequest'](
+				'127.0.0.1',
+				randomBytes(16).toString('hex'),
+				22,
+				`By=open-balena-vpn(${serviceId})`,
+				undefined,
+				new AbortController().signal,
+			);
+			sockets.add(socket);
+			// otherwise it would destroy the tunnel when the idle timeout fires
+			expect(socket.listenerCount('timeout')).to.equal(0);
+		});
+
 		it('should respond 500 when the other instance refuses the tunnel', async () => {
 			const uuid = await mockDevice();
 			onForwardedConnect = (vpnSocket) => {
 				vpnSocket.end('HTTP/1.0 503 Service Unavailable\r\n\r\n');
+			};
+
+			const socket = await connectToProxy(`${uuid}.balena:22`);
+			const { statusLine } = await readResponse(socket);
+			expect(statusLine).to.equal('HTTP/1.0 500 Internal Server Error');
+		});
+
+		it("should pass on device data that arrives with the other instance's response", async () => {
+			const uuid = await mockDevice();
+			// e.g. the device's SSH banner, followed by bytes that aren't valid UTF-8
+			const deviceData = Buffer.concat([
+				Buffer.from('SSH-2.0-dropbear\r\n'),
+				Buffer.from([0xff, 0xfe, 0x80]),
+			]);
+			onForwardedConnect = (vpnSocket) => {
+				vpnSocket.write(
+					Buffer.concat([
+						Buffer.from('HTTP/1.0 200 Connection Established\r\n\r\n'),
+						deviceData,
+					]),
+				);
+			};
+
+			const socket = await connectToProxy(`${uuid}.balena:22`);
+			const { statusLine } = await readResponse(socket);
+			expect(statusLine).to.equal('HTTP/1.0 200 Connection Established');
+			const received = await readBytes(socket, deviceData.length);
+			expect(received).to.deep.equal(deviceData);
+		});
+
+		it("should respond 500 without waiting for the timeout when the other instance's response doesn't end", async () => {
+			const uuid = await mockDevice();
+			onForwardedConnect = (vpnSocket) => {
+				vpnSocket.write('HTTP/1.0 200 Connection Established\r\n');
+				vpnSocket.write(`X-Padding: ${'a'.repeat(20 * 1024)}\r\n`);
 			};
 
 			const socket = await connectToProxy(`${uuid}.balena:22`);
