@@ -17,6 +17,7 @@
 
 import { metrics } from '@balena/node-metrics-gatherer';
 import { promises as dns } from 'dns';
+import { addAbortListener, once } from 'events';
 import net from 'net';
 import * as nodeTunnel from 'node-tunnel';
 import type winston from 'winston';
@@ -26,6 +27,7 @@ import {
 	VPN_CONNECT_PROXY_PORT,
 	VPN_FORWARD_PROXY_PORT,
 	VPN_FORWARD_PROXY_TIMEOUT,
+	VPN_PROXY_CONNECT_TIMEOUT,
 	VPN_PROXY_IDLE_TIMEOUT,
 	VPN_PROXY_KEEPALIVE_DELAY,
 	VPN_SERVICE_API_KEY,
@@ -57,6 +59,8 @@ export class Tunnel extends nodeTunnel.Tunnel {
 	private readonly instanceId: number;
 	private readonly serviceId: number;
 	private readonly forwardProxyPort: number;
+	// Aborted when the client goes away while its tunnel is still being set up
+	private readonly setupSignals = new WeakMap<net.Socket, AbortSignal>();
 
 	constructor(
 		instanceId: number,
@@ -86,6 +90,15 @@ export class Tunnel extends nodeTunnel.Tunnel {
 			cltSocket.on('error', (err) => {
 				this.logger.debug(`client socket error: ${err.message}`);
 			});
+			// Nothing reads the socket during setup, so 'end' is only seen if the client sent nothing
+			// after its request, and a reset only until the client has filled the socket's buffer (Node
+			// then stops reading). Any other client is still bounded by the setup's timeouts
+			const setup = new AbortController();
+			const abortSetup = () => {
+				setup.abort();
+			};
+			cltSocket.once('end', abortSetup).once('close', abortSetup);
+			this.setupSignals.set(cltSocket, setup.signal);
 			const extractedContext = propagation.extract(
 				context.active(),
 				req.headers,
@@ -97,7 +110,7 @@ export class Tunnel extends nodeTunnel.Tunnel {
 				extractedContext,
 				async (span) => {
 					try {
-						await this.tunnelToDevice(...args);
+						await this.tunnelToDevice(setup.signal, ...args);
 					} finally {
 						span.end();
 					}
@@ -106,14 +119,21 @@ export class Tunnel extends nodeTunnel.Tunnel {
 		});
 	}
 
-	private async localConnect(
-		port: number,
-		host: string,
-		client: net.Socket,
-		req: nodeTunnel.Request,
-	) {
+	private async localConnect(port: number, host: string, signal: AbortSignal) {
 		this.logger.info(`connecting to ${host}:${port}`);
-		const socket = await super.connect(port, host, client, req);
+		const socket = net.connect(port, host);
+		const onTimeout = () => {
+			socket.destroy(new Error(`timed out connecting to ${host}:${port}`));
+		};
+		socket.setTimeout(VPN_PROXY_CONNECT_TIMEOUT, onTimeout);
+		try {
+			await once(socket, 'connect', { signal });
+		} catch (err) {
+			socket.destroy();
+			throw err;
+		}
+		// remove the listener too, or it would also run on the tunnel's idle timeout
+		socket.setTimeout(0, onTimeout);
 		metrics.inc(Metrics.ActiveTunnels);
 		metrics.inc(Metrics.TotalTunnels);
 		socket.on('close', (hadError) => {
@@ -153,6 +173,15 @@ export class Tunnel extends nodeTunnel.Tunnel {
 		return socket;
 	};
 
+	private getSetupSignal = (client: net.Socket) => {
+		const signal = this.setupSignals.get(client);
+		if (signal == null) {
+			// The middleware registers one for every request before node-tunnel connects it
+			throw new Error('no setup signal registered for the tunnel request');
+		}
+		return signal;
+	};
+
 	private connectToDevice = async (
 		port: number,
 		host: string,
@@ -160,12 +189,16 @@ export class Tunnel extends nodeTunnel.Tunnel {
 		req: nodeTunnel.Request,
 	) => {
 		const { uuid, auth } = this.parseRequest(req);
+		const signal = this.getSetupSignal(client);
 
 		try {
-			if (await deviceIsLocal(uuid)) {
-				return await this.localConnect(port, host, client, req);
+			const isLocal = await deviceIsLocal(uuid);
+			signal.throwIfAborted();
+			if (isLocal) {
+				return await this.localConnect(port, host, signal);
 			} else {
 				const vpnHost = await getDeviceVpnHost(uuid, auth);
+				signal.throwIfAborted();
 				if (vpnHost == null) {
 					client.end(HTTP_500);
 					throw new errors.HandledTunnelingError(
@@ -178,9 +211,15 @@ export class Tunnel extends nodeTunnel.Tunnel {
 					// the device locally was due to a race condition where the status file had not yet been updated. We match the delay to the
 					// interval for writing the VPN status file to ensure it definitely has enough time to be updated, however it would be possible
 					// to use a shorter delay/more retries to improve responsiveness.
-					await setTimeout(VPN_STATUS_FILE_WRITE_INTERVAL_SECONDS * 1000);
-					if (await deviceIsLocal(uuid)) {
-						return await this.localConnect(port, host, client, req);
+					await setTimeout(
+						VPN_STATUS_FILE_WRITE_INTERVAL_SECONDS * 1000,
+						undefined,
+						{ signal },
+					);
+					const isLocalNow = await deviceIsLocal(uuid);
+					signal.throwIfAborted();
+					if (isLocalNow) {
+						return await this.localConnect(port, host, signal);
 					}
 					client.end(HTTP_500);
 					throw new errors.HandledTunnelingError(
@@ -208,9 +247,18 @@ export class Tunnel extends nodeTunnel.Tunnel {
 					port,
 					req.headers.forwarded,
 					auth,
+					signal,
 				);
 			}
 		} catch (err) {
+			if (signal.aborted) {
+				this.logger.info(
+					`client disconnected while connecting to ${uuid}:${port}`,
+				);
+				throw new errors.HandledTunnelingError(
+					'client disconnected during tunnel setup',
+				);
+			}
 			if (err instanceof errors.RemoteTunnellingError) {
 				client.end(HTTP_500);
 				this.logger.crit(
@@ -260,12 +308,16 @@ export class Tunnel extends nodeTunnel.Tunnel {
 		return { uuid, port: parseInt(port, 10), auth };
 	};
 
-	private tunnelToDevice = (async (req, cltSocket, _head, next) => {
+	private tunnelToDevice = async (
+		signal: AbortSignal,
+		...[req, cltSocket, _head, next]: Parameters<nodeTunnel.Middleware>
+	) => {
 		try {
 			const { uuid, port, auth } = this.parseRequest(req);
 			this.logger.info(`tunnel requested to ${uuid}:${port}`);
 
 			const deviceId = await canAccessDevice(uuid, port, auth);
+			signal.throwIfAborted();
 			if (!deviceId) {
 				cltSocket.end('HTTP/1.0 407 Proxy Authorization Required\r\n\r\n');
 				throw new errors.HandledTunnelingError(
@@ -277,6 +329,7 @@ export class Tunnel extends nodeTunnel.Tunnel {
 				deviceId,
 				VPN_SERVICE_API_KEY,
 			);
+			signal.throwIfAborted();
 			if (!isConnectedToVpn) {
 				cltSocket.end('HTTP/1.0 503 Service Unavailable\r\n\r\n');
 				throw new errors.HandledTunnelingError(`device not available: ${uuid}`);
@@ -284,6 +337,11 @@ export class Tunnel extends nodeTunnel.Tunnel {
 			req.url = `${uuid}.vpn:${port}`;
 			next();
 		} catch (err) {
+			if (signal.aborted) {
+				this.logger.info(`client disconnected while checking access`);
+				cltSocket.destroy();
+				return;
+			}
 			if (err instanceof errors.APIError) {
 				this.logger.alert(`Invalid Response from API (${err.message})`);
 				cltSocket.end(HTTP_500);
@@ -301,16 +359,18 @@ export class Tunnel extends nodeTunnel.Tunnel {
 			// half-open sockets that nothing reads, so close it ourselves once the response is sent
 			cltSocket.destroySoon();
 		}
-	}) satisfies nodeTunnel.Middleware;
+	};
 
 	private forwardRequest = (
 		vpnHost: string,
 		uuid: string,
 		port: number,
 		forwarded: string,
-		proxyAuth?: Buffer,
-	): Promise<net.Socket> =>
-		new Promise((resolve, reject) => {
+		proxyAuth: Buffer | undefined,
+		signal: AbortSignal,
+	): Promise<net.Socket> => {
+		let abortListener: Disposable | undefined;
+		return new Promise<net.Socket>((resolve, reject) => {
 			let tunnelProxyResponse = '';
 			const socket: net.Socket = net.connect(
 				this.forwardProxyPort,
@@ -381,7 +441,18 @@ export class Tunnel extends nodeTunnel.Tunnel {
 			};
 
 			socket.on('end', earlyEnd).on('error', earlyError).on('data', proxyData);
+			abortListener = addAbortListener(signal, () => {
+				socket.destroy();
+				reject(
+					new errors.HandledTunnelingError(
+						'client disconnected during tunnel setup',
+					),
+				);
+			});
+		}).finally(() => {
+			abortListener?.[Symbol.dispose]();
 		});
+	};
 }
 
 const worker = (instanceId: number, serviceId: number) => {
