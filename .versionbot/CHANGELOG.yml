@@ -1,4 +1,30 @@
 - commits:
+    - subject: Stop setting up proxy tunnels for clients that have gone away
+      hash: c76f313857841b9a194d430dea06aa552d85a200
+      body: |
+        Setting up a tunnel can take a while: the API lookups, waiting for the
+        status file (`VPN_STATUS_FILE_WRITE_INTERVAL_SECONDS`), up to
+        `VPN_FORWARD_PROXY_TIMEOUT` for another vpn instance to answer, and
+        connecting to a device on this instance, which had no timeout at all.
+        If the client went away in the meantime, all of that carried on, holding
+        the client socket and anything it had sent, and was only abandoned once
+        the device had been connected. Setup now stops when the client resets
+        the connection, or closes it without having sent anything after its
+        request.
+
+        Connecting to a device on this instance now times out after
+        `VPN_PROXY_CONNECT_TIMEOUT` (default 30s).
+
+        https://balena.fibery.io/Work/Project/3083
+      footer:
+        Change-type: minor
+        change-type: minor
+      author: Pagan Gazzard
+      nested: []
+  version: 12.5.0
+  title: ""
+  date: 2026-11-25T00:23:12.220Z
+- commits:
     - subject: Send the `Forwarded` header when forwarding a tunnel to another instance
       hash: d6447a454d5cd5df7585d5a2912c6388b65a71e7
       body: |
