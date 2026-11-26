@@ -151,7 +151,7 @@ export const setConnected = (() => {
 		}
 	};
 
-	return (
+	const report = (
 		uuid: string,
 		serviceId: number,
 		connected: boolean,
@@ -175,4 +175,25 @@ export const setConnected = (() => {
 		pendingUpdates.add(uuid);
 		void updateLoop(serviceId, logger);
 	};
+
+	// Reports every tracked device as disconnected and waits, up to `timeoutMs`, for the API to have
+	// been told, so that a stopping service does not leave its devices marked as connected to it
+	const disconnectAll = async (
+		serviceId: number,
+		logger: Logger,
+		timeoutMs: number,
+	) => {
+		for (const uuid of deviceStates.keys()) {
+			report(uuid, serviceId, false, logger);
+		}
+		const deadline = Date.now() + timeoutMs;
+		while (
+			(currentlyReporting || pendingUpdates.size > 0) &&
+			Date.now() < deadline
+		) {
+			await setTimeout(100);
+		}
+	};
+
+	return Object.assign(report, { disconnectAll });
 })();
