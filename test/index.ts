@@ -16,6 +16,7 @@
 */
 
 import 'mocha';
+import clientsTests from './clients.ts';
 import connectProxyTests from './connect-proxy/index.ts';
 import serviceTests from './service.ts';
 import utilsTests from './utils/index.ts';
@@ -30,6 +31,9 @@ after(async () => {
 	await stopMockApi();
 });
 
+describe('clients', () => {
+	clientsTests();
+});
 describe('connect-proxy', () => {
 	connectProxyTests();
 });

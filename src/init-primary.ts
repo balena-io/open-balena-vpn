@@ -21,6 +21,7 @@ import express from 'express';
 import pTimeout from 'p-timeout';
 
 import { apiServer } from './api.ts';
+import { setConnected } from './utils/clients.ts';
 import { getLogger, VERSION } from './utils/index.ts';
 import {
 	DEFAULT_SIGTERM_TIMEOUT,
@@ -124,7 +125,9 @@ cluster.on('message', (_worker, msg: { type: string; data: WorkerState }) => {
 			}
 			if (drainCount >= VPN_INSTANCE_COUNT) {
 				masterLogger.notice(`all ${drainCount} worker(s) drained`);
-				process.exit(0);
+				void setConnected
+					.disconnectAll(service.getId(), masterLogger, DEFAULT_SIGTERM_TIMEOUT)
+					.finally(() => process.exit(0));
 			}
 		} catch (err) {
 			masterLogger.warning(`${err} handling message from worker`);
